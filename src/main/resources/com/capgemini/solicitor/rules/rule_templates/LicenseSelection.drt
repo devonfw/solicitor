@@ -1,0 +1,55 @@
+// Copyright 2019 Capgemini SE.
+// SPDX-License-Identifier: Apache-2.0
+
+template header
+groupId
+artifactId
+version
+normalizedLicenseType
+normalizedLicense
+effectiveLicenseType
+effectiveLicense
+effectiveLicenseUrl
+comment
+
+package com.capgemini.solicitor.rules;
+
+import com.capgemini.solicitor.model.inventory.NormalizedLicense;
+import com.capgemini.solicitor.model.inventory.ApplicationComponent;
+import com.capgemini.solicitor.model.masterdata.Application;
+import com.capgemini.solicitor.model.masterdata.Engagement;
+
+
+template "Effective License Selection"
+
+rule "License Selection @{row.rowNumber}" salience -@{row.rowNumber}
+agenda-group "LicenseSelection" 
+    when
+        $ac : ApplicationComponent(
+        	groupId == "@{groupId}", 
+        	artifactId == "@{artifactId}", 
+        	version == "@{version}",
+        	$dummyAssignemt : application )
+        $li : NormalizedLicense(
+        	effectiveNormalizedLicense == null, 
+        	normalizedLicenseType != null,
+        	normalizedLicenseType ==  "@{normalizedLicenseType}",
+        	normalizedLicense != null,
+        	normalizedLicense ==  "@{normalizedLicense}",
+        	$theLicenseTypeToTake : normalizedLicenseType,
+        	$theLicenseToTake : normalizedLicense,
+        	$theLicenseUrlToTake : normalizedLicenseUrl,
+        	applicationComponent == $ac )
+      	
+    then
+        $li.setEffectiveNormalizedLicenseType( $theLicenseTypeToTake );
+        $li.setEffectiveNormalizedLicenseType( "@{effectiveLicenseType}" );
+        $li.setEffectiveNormalizedLicense( $theLicenseToTake );
+        $li.setEffectiveNormalizedLicense( "@{effectiveLicense}" );
+        $li.setEffectiveNormalizedLicenseUrl( $theLicenseUrlToTake );
+        $li.setEffectiveNormalizedLicenseUrl( "@{effectiveLicenseUrl}" );
+        update($li);
+        
+        
+end
+end template
