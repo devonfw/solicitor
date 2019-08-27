@@ -96,7 +96,7 @@ ul, ol, li {
   #set($nl = $ul.effectiveNormalizedLicense)
   #set($nlu = $ul.effectiveNormalizedLicenseUrl)
 	<p>
-		Die Lizenz $nl ($nlu) wird in folgenden Komponenten verwendet (Name/GroupId/Version):
+		The license $nl ($nlu) is used in following components (Name/GroupId/Version):
 		<ul>
 		#foreach($ac in $OSSLICENSES )
 			#set( $aid  = $ac.artifactId )
@@ -127,7 +127,7 @@ ul, ol, li {
 ##			$esc.html($nlc)
 			$nlc
 		#else
-			Es liegt kein Lizenztext vor.
+			No license text available.
 		#end
 	</p>
 #end
