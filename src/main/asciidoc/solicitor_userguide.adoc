@@ -5,6 +5,7 @@ Oliver Hecker <oliver.hecker@capgemini.com>
 
 :sectnums:
 :sectnumlevels: 2
+:imagesdir: images
 
 Copyright 2019 Capgemini SE - SPDX-License-Identifier: Apache-2.0
 
@@ -59,7 +60,7 @@ In the _legal assessment_ the compliance of applicable licenses will be checked 
 
 The final _export_ step produces documents based on the internal data model. This might be the list of licenses to be forwarded to the customer or a license compliance report. Data might also be fed into other systems.
 
-A more technical oriented view of _Solicitor_ is gviven below.
+A more technical oriented view of _Solicitor_ is given below.
 
 image:solution.png[width=100%,scaledwidth=100%]
 
