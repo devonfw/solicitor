@@ -305,8 +305,8 @@ The writer configuration defines how the processed data will be exported and/or 
     "target" : "OSS-Inventory-DevonFW.xlsx", <3>
     "description" : "The XLS OSS-Inventory document", <4>
     "dataTables" : { <5>
-      "ENGAGEMENT"  : "classpath:com/capgemini/solicitor/sql/allden_engagements.sql",
-      "LICENSE" : "classpath:com/capgemini/solicitor/sql/allden_normalizedlicenses.sql"
+      "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
+      "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql"
     }
   } ]
   
