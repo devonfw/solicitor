@@ -7,7 +7,7 @@ Oliver Hecker <oliver.hecker@capgemini.com>
 :sectnumlevels: 2
 :imagesdir: images
 
-Copyright 2019 Capgemini SE - SPDX-License-Identifier: Apache-2.0
+SPDX-License-Identifier: Apache-2.0
 
 == Introduction
 Todays software projects often make use of large amounts of Open Source software. Being
