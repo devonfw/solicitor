@@ -1,4 +1,3 @@
--- Copyright 2019 Capgemini SE.
 -- SPDX-License-Identifier: Apache-2.0
 --
 -- generate all NormalizedLicenses in denormalized form including all hierachical data  (allden -> "all denormalized")
