@@ -177,7 +177,7 @@ A "normalized" license id might be either a SPDX-Id or a "pseudo license id" whi
 _Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java 8 runtime environment. _Solicitor_ is executed with the following command:
 
 [listing]
-java -jar solicitor.jar <configfile>
+java -jar solicitor.jar -c <configfile>
 
 where `<configfile>` is to be replaced by the location of the <<Basic Configuration File>>.
 
