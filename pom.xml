@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.devonfw.tools</groupId>
 	<artifactId>solicitor</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<name>Solicitor</name>
 	<description>A tool for rule based checking of license conditions in software projects.</description>
 	<parent>
@@ -89,6 +89,12 @@
 			<artifactId>velocity-tools</artifactId>
 			<version>2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -107,6 +113,10 @@
 				<includes>
 					<include>com/devonfw/tools/solicitor/version.properties</include>
 				</includes>
+			</resource>
+			<resource>
+				<directory>target/generated-docs</directory>
+				<filtering>false</filtering>
 			</resource>
 		</resources>
 
@@ -142,13 +152,13 @@
 					<outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
 					<sortArtifactByName>true</sortArtifactByName>
 					<includeTransitiveDependencies>true</includeTransitiveDependencies>
-					<!-- the "missing file" declares licenses for dependencies that could
+					<!-- the "missing file" declares licenses for dependencies that could 
 						not be detected automatically -->
 					<useMissingFile>true</useMissingFile>
-					<!-- find the "missing files" in all child-projects at the following
+					<!-- find the "missing files" in all child-projects at the following 
 						location -->
 					<missingFile>src/license/THIRD-PARTY.properties</missingFile>
-					<!-- if the "missing files" are not yet existing in child-projects they
+					<!-- if the "missing files" are not yet existing in child-projects they 
 						will be created automatically -->
 					<failOnMissing>false</failOnMissing>
 					<overrideFile>src/license/override-THIRD-PARTY.properties</overrideFile>
@@ -166,14 +176,14 @@
 						<artifactId>asciidoctorj-pdf</artifactId>
 						<version>${asciidoctorj.pdf.version}</version>
 					</dependency>
-					<!-- Comment this section to use the default jruby artifact provided
+					<!-- Comment this section to use the default jruby artifact provided 
 						by the plugin -->
 					<dependency>
 						<groupId>org.jruby</groupId>
 						<artifactId>jruby-complete</artifactId>
 						<version>${jruby.version}</version>
 					</dependency>
-					<!-- Comment this section to use the default AsciidoctorJ artifact provided
+					<!-- Comment this section to use the default AsciidoctorJ artifact provided 
 						by the plugin -->
 					<dependency>
 						<groupId>org.asciidoctor</groupId>
@@ -226,7 +236,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -267,7 +278,7 @@
 			<name>Apache Software License, Version 2.0</name>
 			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
-			<comments/>
+			<comments />
 		</license>
 	</licenses>
 </project>

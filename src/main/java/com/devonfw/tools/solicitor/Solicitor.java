@@ -10,8 +10,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
 import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
 import com.devonfw.tools.solicitor.common.DataTable;
+import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
+import com.devonfw.tools.solicitor.common.ResourceToFileCopier.ResourceGroup;
 import com.devonfw.tools.solicitor.config.ConfigReader;
 import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
@@ -46,10 +49,32 @@ public class Solicitor {
     @Autowired
     private WriterFactory writerFactory;
 
-    public void run(String[] args) {
+    @Autowired
+    private ResourceToFileCopier resourceToFileCopier;
 
+    public void run(CommandLineOptions clo) {
+
+        boolean doMainProcessing = true;
         LOG.info("Solicitor starts");
-        configReader.readConfig(args[0]);
+
+        if (clo.externalizeUserguide) {
+            externalizeUserguide();
+            doMainProcessing = false;
+        }
+        if (doMainProcessing) {
+            mainProcessing(clo);
+        }
+        LOG.info("Solicitor finished");
+    }
+
+    private void externalizeUserguide() {
+
+        resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE);
+    }
+
+    private void mainProcessing(CommandLineOptions clo) {
+
+        configReader.readConfig(clo.configUrl);
         readInventory();
 
         Engagement engagement = solicitorSetup.getEngagement();
@@ -58,8 +83,6 @@ public class Solicitor {
         resultDatabaseFactory.setEngagement(engagement);
 
         writeResult();
-
-        LOG.info("Solicitor finished");
     }
 
     private void readInventory() {
