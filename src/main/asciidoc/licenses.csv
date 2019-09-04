@@ -1,0 +1,7 @@
+"module name","licenses","repository","licenseUrl","parents"
+"@angular-devkit/architect@0.10.6","MIT","https://github.com/angular/angular-cli","https://github.com/angular/angular-cli/raw/master/LICENSE","mythaistar-restaurant"
+"@types/selenium-webdriver@2.53.43","MIT","https://github.com/DefinitelyTyped/DefinitelyTyped","https://github.com/DefinitelyTyped/DefinitelyTyped/raw/master/LICENSE","protractor:mythaistar-restaurant"
+"aws-sign2@0.6.0","Apache-2.0","https://github.com/mikeal/aws-sign","https://github.com/mikeal/aws-sign/raw/master/LICENSE","loggly:mythaistar-restaurant"
+"is-posix-bracket@0.1.1","MIT","https://github.com/jonschlinkert/is-posix-bracket","https://github.com/jonschlinkert/is-posix-bracket/raw/master/LICENSE","mythaistar-restaurant"
+"npm-package-arg@5.1.2","ISC","https://github.com/npm/npm-package-arg","https://github.com/npm/npm-package-arg/raw/master/LICENSE","npm:npx:mythaistar-restaurant"
+"readable-stream@2.0.6","MIT","https://github.com/nodejs/readable-stream","https://github.com/nodejs/readable-stream/raw/master/LICENSE","bl:mythaistar-restaurant"

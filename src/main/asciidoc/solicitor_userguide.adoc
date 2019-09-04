@@ -1,5 +1,5 @@
 = Solicitor User Guide
-Oliver Hecker <oliver.hecker@capgemini.com> 
+Oliver Hecker <oliver.hecker@capgemini.com>
 :revnumber: {project-version}-{buildNumber}
 :revdate: {timestamp}
 
@@ -38,10 +38,10 @@ When running _Solicitor_ three subsequent processing steps are executed:
 
 * Creating an initial component and license inventory based on technology specific input files
 * Rule based normalization and evaluation of licenses
-* Generation of output documents 
+* Generation of output documents
 
 === Licensing of Solicitor
-The _Solicitor_ source code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw-forge/solicitor are itself licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0). 
+The _Solicitor_ source code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw-forge/solicitor are itself licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0).
 
 == Architecture
 The following picture show a business oriented view of _Solicitor_.
@@ -64,7 +64,7 @@ A more technical oriented view of _Solicitor_ is given below.
 
 image:solution.png[width=100%,scaledwidth=100%]
 
-There are three major technical components: The _reader_ and _writer_ components are performing import and export of data. The business logic - doing _normalization_, _qualification_ and _legal assessment_ is done by a _rule engine_. Rules are mainly defined via _decision tables_. _Solicitor_ comes with a starting set of rules for _normalization_ and _qualification_ but these rulesets need to be extended within the projects. Rules for legal evaluation need to be completely defined by the user. 
+There are three major technical components: The _reader_ and _writer_ components are performing import and export of data. The business logic - doing _normalization_, _qualification_ and _legal assessment_ is done by a _rule engine_. Rules are mainly defined via _decision tables_. _Solicitor_ comes with a starting set of rules for _normalization_ and _qualification_ but these rulesets need to be extended within the projects. Rules for legal evaluation need to be completely defined by the user.
 
 _Solicitor_ is working without additional persisted data: When being executed it generates the output direcly from the read input data after processing the business rules.
 
@@ -111,7 +111,7 @@ The internal business data model consists of 5 entities:
 | usagePattern | UsagePattern | possible values: DYNAMIC_LINKING
 | ossModified | boolean | is the OSS modified?
 | ossHomepage | String | URL of the OSS homepage
-| groupId | String | component identifier: maven group 
+| groupId | String | component identifier: maven group
 | artifactId | String | component identifier: maven artifactId
 | version | String | component identifier: Version
 |===
@@ -136,9 +136,9 @@ The internal business data model consists of 5 entities:
 | normalizedLicense | String | name of the license in normalized form (SPDX-Id) or special "pseudo license id", see <<Pseudo License Ids>>
 | normalizedLicenseUrl | String | URL pointing to a normalized form of the license
 | normalizedLicenseType | String | type of the license, see <<License types>>
-| effectiveNormalizedLicenseType | String | type of the effective license, see <<License types>>| effectiveNormalizedLicense | String | effective normalized license (SPDX-Id) or "pseudo license id"; this is the information after selecting the right license in case of multi licensing or any license override due to a component being redistributed under a different license 
+| effectiveNormalizedLicenseType | String | type of the effective license, see <<License types>>| effectiveNormalizedLicense | String | effective normalized license (SPDX-Id) or "pseudo license id"; this is the information after selecting the right license in case of multi licensing or any license override due to a component being redistributed under a different license
 | effectiveNormalizedLicenseUrl | String | URL pointing to the effective normalized license
-| effectiveNormalizedLicenseContent | String | resolved content of effectiveNormalizedLicenseUrl 
+| effectiveNormalizedLicenseContent | String | resolved content of effectiveNormalizedLicenseUrl
 | legalPreApproved | String | indicates whether the license is pre approved based on company standard policy
 | copyLeft | String | indicates the type of copyleft of the license
 | licenseCompliance | String | indicates if the license is compliant according to the default company policy
@@ -146,7 +146,7 @@ The internal business data model consists of 5 entities:
 | licenseRefContent | String | resolved content of licenseRefUrl
 | includeLicense | String | does the license require to include the license text ?
 | includeSource | String | does the license require to deliver source code of OSS component ?
-| reviewedForRelease | String | for which release was the legal evaluation done? 
+| reviewedForRelease | String | for which release was the legal evaluation done?
 | comments | String | comments on the component/license (mainly as input to legal)
 | legalApproved | String | indicates whether this usage is legally approved
 | legalComments | String | comments from legal, possibly indicating additional conditions to be fulfilled
@@ -162,14 +162,14 @@ Defines the type of license
 * `OSS-OTHER` - An OSS license which has no SPDX-Id
 * `COMMERCIAL` - Commercial (non OSS) license; this might also include code which is owned by the project
 * `UNKNOWN`- License is unknown
-* `IGNORED`- license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License Type") 
+* `IGNORED`- license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License Type")
 
 ===== Pseudo License Ids
 A "normalized" license id might be either a SPDX-Id or a "pseudo license id" which is used to indicate a specific situation. The following pseudo license ids are used:
 
 * `OSS specific` - a nonstandard OSS license which could not be mapped to a SPDX-Id
 * `PublicDomain` - any form of public domain which is not represented by an explicit SPDX-Id
-* `Ignored` - license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License") 
+* `Ignored` - license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License")
 * `NonOSS` - commercial license, not OSS
 
 == Usage
@@ -204,7 +204,7 @@ The config file has the following skeleton:
   "writers" : [ ... ] <4>
 }
 
-<1> The leading data defines the engagement master data, see <<Engagement Master Data>> 
+<1> The leading data defines the engagement master data, see <<Engagement Master Data>>
 <2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Readers / Applications>>
 <3> `rules` references the rules to apply to the imported data, see <<Business Rules>>
 <4> `writers` configures how the processed data should be exported, see <<Writers / Reporting>>
@@ -221,7 +221,7 @@ The engagement master data is defined in the leading section of the config file.
   "contractAllowsOss" : true, <6>
   "ossPolicyFollowed" : true, <7>
   "customerProvidesOss" : false, <8>
-  
+
 <1> is a free text comment (no further function at the moment)
 <2> the engagement name (any string)
 <3> the engagement type; possible values: INTERN, EXTERN
@@ -246,7 +246,7 @@ Within this section the different applications (=deliverables) of the engagement
       "usagePattern" : "DYNAMIC_LINKING" <8>
     } ]
   } ],
-  
+
 <1> The name of the application / deliverable (any string)
 <2> Version identifier of the application (any string)
 <3> URL of the source repo of the application (string; should be an URL)
@@ -259,6 +259,92 @@ Within this section the different applications (=deliverables) of the engagement
 ===== Specific Readers
 
 NOTE: TBD: csv and maven reader to be described
+
+====== NPM Export
+
+For the Export of the the Licenses from a NPM based Project the NPM License Crawler is used.
+To install the Crawler the following command needs to be executed.
+
+----
+Use: npm i npm-license-crawler -g
+----
+
+To get the licenses, the crawler needs to be exec like the following example
+----
+Example: npm-license-crawler --dependencies --csv licenses.csv
+----
+
+The Export should look like this:
+
+[format="csv",width="100%",cols="5"]
+[frame="topbot",grid="none"]
+|======
+include::licenses.csv[]
+|======
+
+
+Source: https://www.npmjs.com/package/npm-license-crawler
+
+In Solicitor the Data is readed with the following part of the config
+
+----
+"readers" : [ {
+      "type" : "npm",
+      "source" : "file:$/input/licenses.csv",
+      "usagePattern" : "DYNAMIC_LINKING"
+   	} ]
+----
+
+
+====== Gradle Export
+
+For the Export of the the Licenses from a Gradle based Project the Gradle License Plugin is used.
+
+To install the Plugin some changes needs to be done in the build.gradle, like following example
+----
+buildscript {
+  repositories {
+    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+  }
+
+  dependencies {
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5-SNAPSHOT'
+  }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'com.jaredsburrows.license'
+----
+
+Afterwards execute the following command in the console:
+
+For Windows(Java Application)
+----
+gradlew licenseReport
+----
+
+TODO: Describe specifics of Android builds
+
+The Export should look like this:
+
+----
+include::licenses.json[]
+----
+
+
+Source: https://github.com/jaredsburrows/gradle-license-plugin
+
+In Solicitor the Data is readed with the following part of the config
+
+----
+"readers" : [ {
+      "type" : "gradle",
+      "source" : "file:$/input/licenses.json",
+      "usagePattern" : "DYNAMIC_LINKING"
+   	} ]
+----
+
+
 
 ==== Business Rules
 
@@ -282,7 +368,7 @@ Business rules are executed within a https://www.drools.org/[Drools] rule engine
     "agendaGroup" : "LegalEvaluation",
     "decription" : "final legal evaluation based on the rules defined by legal"
   } ],
-  
+
 <1> type of the rule; only possible value: `dt` which stands for "decision table"
 <2> location of the tabular decision table data
 <3> location of the drools rule template to be used to define the rules together with the decision table data
@@ -309,15 +395,15 @@ The writer configuration defines how the processed data will be exported and/or 
       "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql"
     }
   } ]
-  
-<1> type of writer to be selected; possible values: `xls` 
+
+<1> type of writer to be selected; possible values: `xls`
 <2> path to the template to be used
 <3> location of the output file
 <4> some textual description
 <5> reference to SQL statements used to transform the internal data model to data tables used for reporting
 
 For working with XLS templates see <<Using Excel for Reporting>>
-  
+
 == Working with Decision Tables
 
 Solicitor uses the Drools rule engine to execute business rules. Business rules are
@@ -337,9 +423,9 @@ When processing, _Solicitor_ will internally use the rule template to create one
 ** The excel tables contain header information in the first row which is only there for documentation purposes; the first row is completely ignored when creating rules from the xls
 ** The rows starting from the second row contain decision table data
 ** The first "empty" row (which does not contain data in any of the defined columns) ends the decision table
-** Decision tables might use multiple condition columns which define the data that a rule matches. Often such conditions are optional: If left free in the Excel table the condition will be omitted from the rule conditions. This allows to define very specific rules (which only fire on exact data patterns) or quite general rules which get activated on large groups of data. Defining general rules further down in the table (with lower salience/priority) ensures that more specific rules get fired earlier. This even allows to define a default rule at the end of the table which gets fired if no other rule could be applied. 
+** Decision tables might use multiple condition columns which define the data that a rule matches. Often such conditions are optional: If left free in the Excel table the condition will be omitted from the rule conditions. This allows to define very specific rules (which only fire on exact data patterns) or quite general rules which get activated on large groups of data. Defining general rules further down in the table (with lower salience/priority) ensures that more specific rules get fired earlier. This even allows to define a default rule at the end of the table which gets fired if no other rule could be applied.
 
-* `AgendaGroups`: Business rules are executed within Drools `AgendaGroups`. All rules resulting from a single decision table are assigned to the same `AgendaGroup`. The order of execution of the `AgendaGroups` is defined by the sequence of declaration in the config file. Processing of the current `AgendaGroup`  will be finished when there are no more rules to fire in that group. Processing of the next `AgendaGroup` will then start. `AgendaGroups` which have been finished processing will not be resumed even if rules within that `AgendaGroup` might have been activated again.   
+* `AgendaGroups`: Business rules are executed within Drools `AgendaGroups`. All rules resulting from a single decision table are assigned to the same `AgendaGroup`. The order of execution of the `AgendaGroups` is defined by the sequence of declaration in the config file. Processing of the current `AgendaGroup`  will be finished when there are no more rules to fire in that group. Processing of the next `AgendaGroup` will then start. `AgendaGroups` which have been finished processing will not be resumed even if rules within that `AgendaGroup` might have been activated again.
 
 NOTE: A concept for organizing rules into common and project specific rules is not
 yet in place
@@ -394,7 +480,7 @@ This phase consists of two decision tables.
 This group of rules has the speciality that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as `Ignored`.
 
 * LHS conditions:
-** `ApplicationComponent.groupId` 
+** `ApplicationComponent.groupId`
 ** `ApplicationComponent.artifactId`
 ** `ApplicationComponent.version`
 ** `NormalizedLicense.normalizedLicense` (licenseToTake; mandatory)
@@ -403,8 +489,8 @@ This group of rules has the speciality that it might match to a group of Normali
 ** `NormalizedLicense.normalizedLicense` (licenseToIgnore3; optional)
 
 * RHS result
-** license matching "licenseToTake" will get this value assigned to `effectiveNormalizedLicense` 
-** licenses matching "licenseToIgnoreN" will get `IGNORED` assigned to `effectiveNormalizedLicenseType` `Ignored` assigned to `effectiveNormalizedLicense` 
+** license matching "licenseToTake" will get this value assigned to `effectiveNormalizedLicense`
+** licenses matching "licenseToIgnoreN" will get `IGNORED` assigned to `effectiveNormalizedLicenseType` `Ignored` assigned to `effectiveNormalizedLicense`
 
 It is important to note that the rules only match, if all licenses given in the conditions actually exist and are assigned to the same ApplicationComponent.
 
@@ -413,7 +499,7 @@ It is important to note that the rules only match, if all licenses given in the 
 The second decision table in this group is used to define the `effectiveNormalizedLicense` (if not already handled by the decision table before).
 
 * LHS conditions:
-** `ApplicationComponent.groupId` 
+** `ApplicationComponent.groupId`
 ** `ApplicationComponent.artifactId`
 ** `ApplicationComponent.version`
 ** `NormalizedLicense.normalizedLicenseType`
@@ -429,26 +515,26 @@ The second decision table in this group is used to define the `effectiveNormaliz
 The third phase ist the legal evaluation of the licenses and the check, whether OSS usage is according to defined legal policies. Again this phase comprises two decision tables.
 
 ==== Pre-Evaluation based on common rules
-Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furtheron they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the `effectiveNormalizedLicense` and do not consider any project, application of component information. 
+Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furtheron they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the `effectiveNormalizedLicense` and do not consider any project, application of component information.
 
 * LHS condition:
-** `NormalizedLicense.effectiveNormalizedLicenseType` 
-** `NormalizedLicense.effectiveNormalizedLicense` 
+** `NormalizedLicense.effectiveNormalizedLicenseType`
+** `NormalizedLicense.effectiveNormalizedLicense`
 
 * RHS result:
-** `NormalizedLicense.legalPreApproved` 
-** `NormalizedLicense.copyLeft` 
-** `NormalizedLicense.licenseCompliance` 
-** `NormalizedLicense.licenseRefUrl` 
-** `NormalizedLicense.includeLicense` 
-** `NormalizedLicense.includeSource` 
+** `NormalizedLicense.legalPreApproved`
+** `NormalizedLicense.copyLeft`
+** `NormalizedLicense.licenseCompliance`
+** `NormalizedLicense.licenseRefUrl`
+** `NormalizedLicense.includeLicense`
+** `NormalizedLicense.includeSource`
 
 ==== Final evaluation
 The decision table for final legal evaluation defines all rules which are needed
 to create the result of the legal evaluation. Rules here might be general for all projects or even very specific to a project if the rule can not be applied to other projects.
 
 * LHS condition:
-** `Engagement.clientName` 
+** `Engagement.clientName`
 ** `Engagement.engagementName`
 ** `Engagement.customerProvidesOss`
 ** `Application.applicationName`
@@ -478,7 +564,7 @@ The attributes of the tables are named as follows:
 
 [options="header"]
 |====
-| Attribute | Origin Entity 
+| Attribute | Origin Entity
 | rowCount | -none-
 | engagementName | Engagement
 | engagementType | Engagement
