@@ -276,11 +276,11 @@ Example: npm-license-crawler --dependencies --csv licenses.csv
 
 The Export should look like this:
 
-[format="csv",width="100%",cols="5"]
-[frame="topbot",grid="none"]
-|======
+[source]
+----
 include::licenses.csv[]
-|======
+
+----
 
 
 Source: https://www.npmjs.com/package/npm-license-crawler

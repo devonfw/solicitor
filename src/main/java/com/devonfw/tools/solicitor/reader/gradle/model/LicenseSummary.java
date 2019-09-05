@@ -1,5 +1,4 @@
 /**
- * Copyright 2019 Capgemini SE.
  * SPDX-License-Identifier: Apache-2.0
  */
 

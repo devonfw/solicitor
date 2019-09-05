@@ -1,3 +1,7 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.devonfw.tools.solicitor.reader.gradle;
 
 
@@ -46,7 +50,7 @@ public class GradleReader implements Reader {
         LicenseSummary ls = new LicenseSummary();
         ls.setDependencies(new LinkedList<Dependency>());
 
-        // Nach Tutorial https://github.com/FasterXML/jackson-databind/
+        // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper =
                 new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {

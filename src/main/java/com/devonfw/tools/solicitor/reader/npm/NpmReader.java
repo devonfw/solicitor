@@ -1,3 +1,7 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.devonfw.tools.solicitor.reader.npm;
 
 import java.io.IOException;
