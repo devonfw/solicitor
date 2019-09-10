@@ -260,7 +260,100 @@ Within this section the different applications (=deliverables) of the engagement
 
 ===== Specific Readers
 
-NOTE: TBD: csv and maven reader to be described
+====== Maven Export
+
+For the Export of the the Licenses from a Maven based Project the license-maven-plugin is used.
+To install the Plugin some changes needs to be done in the pom.xml, like following example
+----
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>1.14</version>
+			<configuration>
+				<outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+				<sortArtifactByName>true</sortArtifactByName>
+				<includeTransitiveDependencies>true</includeTransitiveDependencies>
+				<useMissingFile>true</useMissingFile>
+				<missingFile>src/license/THIRD-PARTY.properties</missingFile>
+				<failOnMissing>false</failOnMissing>
+				<overrideFile>src/license/override-THIRD-PARTY.properties</overrideFile>
+				<encoding>utf-8</encoding>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-dependency-plugin</artifactId>
+			<version>3.0.2</version>
+			<configuration>
+			<classifier>sources</classifier>
+				<failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+				<outputDirectory>${project.build.directory}/sources</outputDirectory>
+			</configuration>
+			<executions>
+				<execution>
+					<id>src-dependencies</id>
+					<phase>package</phase>
+					<goals>
+						<goal>copy-dependencies</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+</build>
+----
+
+To execute the License Plugin the following commands are used
+----
+	mvn license:license-list
+	mvn license:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
+	mvn license:aggregate-add-third-party -Dlicense.excludedScopes=test,provided
+----
+
+Also Maven provides a Depedency plugin which copies all dependencies into the project.
+This is executed with the following command
+----
+	mvn dependency:copy-dependencies -Dclassifier=sources
+----
+
+The Export should look like this:
+
+----
+include::licenses.xml[]
+----
+
+In Solicitor the Data is readed with the following part of the config
+
+----
+"readers" : [ {
+      "type" : "maven",
+      "source" : "file:$/input/licenses.xml",
+      "usagePattern" : "DYNAMIC_LINKING"
+   	} ]
+----
+
+====== CSV
+The CSV input is normally manually generated and should look like this(The csv File is ";" seperated)
+
+[format="csv",width="100%",cols="5", separator=";"]
+[frame="topbot",grid="none"]
+|======
+include::csvlicenses.csv[]
+|======
+
+In Solicitor the Data is readed with the following part of the config
+
+----
+"readers" : [ {
+      "type" : "csv",
+      "source" : "file:$/input/csvlicenses.csv",
+      "usagePattern" : "DYNAMIC_LINKING"
+   	} ]
+----
+
+
 
 ====== NPM Export
 
@@ -276,7 +369,7 @@ To get the licenses, the crawler needs to be exec like the following example
 Example: npm-license-crawler --dependencies --csv licenses.csv
 ----
 
-The Export should look like this:
+The Export should look like this(The csv file is "," seperated)
 
 [source]
 ----
@@ -340,7 +433,7 @@ In Solicitor the Data is readed with the following part of the config
 
 ----
 "readers" : [ {
-      "type" : "gradle",
+      "type" : "maven",
       "source" : "file:$/input/licenses.json",
       "usagePattern" : "DYNAMIC_LINKING"
    	} ]
