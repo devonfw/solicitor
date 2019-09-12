@@ -21,6 +21,7 @@ import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
 
 template "LegalEvaluation"
 
@@ -49,6 +50,26 @@ agenda-group "LegalEvaluation"
     then
         $nl.setLegalApproved( "@{legalApproved}" );
         $nl.setLegalComments( "@{legalComments}" );
+
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleName("Legal Evaluation @{row.rowNumber}")
+        .withMatching("clientName", "@{clientName}" )
+		.withMatching("engagementName", "@{engagementName}" )
+        .withMatching("customerProvidesOss", "@{customerProvidesOss}" )
+        .withMatching("name", "@{applicationName}" )
+        .withMatching("groupId", "@{groupId}" )
+        .withMatching("artifactId", "@{artifactId}" )
+        .withMatching("version", "@{version}" )
+        .withMatching("usagePattern", "@{usagePattern}" )
+        .withMatching("ossModified", "@{ossModified}" )
+        .withMatching("effectiveNormalizedLicenseType", "@{effectiveNormalizedLicenseType}" )
+        .withMatching("effectiveNormalizedLicense", "@{effectiveNormalizedLicense}" )
+        .withSetting("legalApproved", "@{legalApproved}" )
+        .withSetting("legalComments", "@{legalComments}" )
+        .nop();
+        $nl.appendTrace(aeb.build()); 
+        
         update($nl);
 end
 end template

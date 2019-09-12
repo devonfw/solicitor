@@ -17,6 +17,7 @@ import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
 
 
 template "Effective License Selection"
@@ -47,6 +48,24 @@ agenda-group "LicenseSelection"
         $li.setEffectiveNormalizedLicense( "@{effectiveLicense}" );
         $li.setEffectiveNormalizedLicenseUrl( $theLicenseUrlToTake );
         $li.setEffectiveNormalizedLicenseUrl( "@{effectiveLicenseUrl}" );
+
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleName("License Selection @{row.rowNumber}")
+        .withMatching("groupId", "@{groupId}" )
+        .withMatching("artifactId", "@{artifactId}" )
+        .withMatching("version", "@{version}" )
+        .withMatching("normalizedLicenseType", "@{normalizedLicenseType} " )
+        .withMatching("normalizedLicense", "@{normalizedLicense}" )
+        .withSetting("effectiveNormalizedLicenseType", $theLicenseTypeToTake, "taking data from input" )
+        .withSetting("effectiveNormalizedLicenseType","@{effectiveLicenseType}" )
+        .withSetting("effectiveNormalizedLicense", $theLicenseToTake, "taking data from input" )
+        .withSetting("effectiveNormalizedLicense", "@{effectiveLicense}" )
+        .withSetting("effectiveNormalizedLicenseUrl", $theLicenseUrlToTake, "taking data from input" )
+        .withSetting("effectiveNormalizedLicenseUrl", "@{effectiveLicenseUrl}" )
+        .nop();
+        $li.appendTrace(aeb.build()); 
+        
         update($li);
         
         

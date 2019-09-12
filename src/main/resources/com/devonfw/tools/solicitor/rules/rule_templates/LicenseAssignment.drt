@@ -23,6 +23,7 @@ import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
 
 
 template "License Assignment"
@@ -78,11 +79,32 @@ agenda-group "LicenseAssignment"
         not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalizedLicense}") )  // differs from above
         	
     then
-        NormalizedLicense normalizedLicense = ModelFactory.newNormalizedLicense($ac, $rl.getDeclaredLicense(), $licUrl, "@{normalizedLicenseType}" );
+        NormalizedLicense normalizedLicense = ModelFactory.newNormalizedLicense($rl );
+        normalizedLicense.setNormalizedLicenseType("@{normalizedLicenseType}");
         normalizedLicense.setNormalizedLicense("@{normalizedLicense}"); 
         normalizedLicense.setNormalizedLicenseUrl($licUrl);
  		normalizedLicense.setNormalizedLicenseUrl( "@{normalizedLicenseUrl}" ); 
         normalizedLicense.addComment( "@{comment}" );
+        
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleName("License Assignment @{row.rowNumber} - add given NormalizedLicense")
+        .withMatching("clientName", "@{clientName}" ) 
+        .withMatching("engagementName", "@{engagementName}" )
+        .withMatching("name", "@{applicationName}" ) 
+        .withMatching("groupId", "@{groupId}" )
+        .withMatching("artifactId", "@{artifactId}" )
+        .withMatching("version", "@{version}" )
+        .withMatching("declaredLicense", "@{declaredLicense}" )
+        .withMatching("licenseUrl", "@{url}" )
+        .withSetting("normalizedLicenseType", "@{normalizedLicenseType}" )
+        .withSetting("normalizedLicense", "@{normalizedLicense}" )
+        .withSetting("normalizedLicenseUrl", $licUrl, "taking url from read data" )
+        .withSetting("normalizedLicenseUrl", "@{normalizedLicenseUrl}" )
+        .withSetting("comment", "@{comment}")
+        .nop();
+        normalizedLicense.appendTrace(aeb.build()); 
+        
         insert(normalizedLicense);
        
 end

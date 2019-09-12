@@ -16,24 +16,24 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
-import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
 
 import lombok.Setter;
 
 @Component
-public class CsvReader implements Reader {
+public class CsvReader extends AbstractReader implements Reader {
 
     @Autowired
     @Setter
     private InputStreamFactory inputStreamFactory;
 
     @Override
-    public boolean accept(String type) {
+    public String getSupportedType() {
 
-        return "csv".equals(type);
+        return "csv";
     }
 
     @Override
@@ -64,11 +64,8 @@ public class CsvReader implements Reader {
                     appComponent.setApplication(application);
                     lastAppComponent = appComponent;
                 }
-                RawLicense mlic = new RawLicense();
-                mlic.setApplicationComponent(lastAppComponent);
-                mlic.setDeclaredLicense(record.get(3));
-                mlic.setLicenseUrl(record.get(4));
-
+                addRawLicense(lastAppComponent, record.get(3), record.get(4),
+                        sourceUrl);
             }
         } catch (IOException e1) {
             throw new SolicitorRuntimeException(

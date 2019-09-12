@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.webcontent.InMemoryMapWebContentProvider;
-import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
+import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 
 @Component
 public class ModelFactory {
@@ -19,11 +19,9 @@ public class ModelFactory {
     private InMemoryMapWebContentProvider licenseContentProvider;
 
     public static NormalizedLicense newNormalizedLicense(
-            ApplicationComponent applicationComponent, String declaredLicense,
-            String licenseUrl, String normalizedLicense) {
+            RawLicense rawLicense) {
 
-        NormalizedLicense result = new NormalizedLicense(applicationComponent,
-                declaredLicense, licenseUrl, normalizedLicense);
+        NormalizedLicense result = new NormalizedLicense(rawLicense);
         result.setLicenseContentProvider(instance.licenseContentProvider);
         return result;
     }

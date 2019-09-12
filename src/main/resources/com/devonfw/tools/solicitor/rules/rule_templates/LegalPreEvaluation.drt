@@ -13,6 +13,7 @@ includeSource
 package com.devonfw.tools.solicitor.rules;
 
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
+import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
 
 template "LegalPreEvaluation"
 
@@ -30,6 +31,21 @@ agenda-group "LegalPreEvaluation"
         $nl.setLicenseRefUrl( "@{licenseRefUrl}" );
         $nl.setIncludeLicense( "@{includeLicense}" );
         $nl.setIncludeSource( "@{includeSource}" );
+ 
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleName("Legal Preevaluation @{row.rowNumber}")
+        .withMatching("effectiveNormalizedLicenseType", "@{type}" )
+        .withMatching("effectiveNormalizedLicense", "@{spdxid}" )
+        .withSetting("legalPreApproved",  "@{legalPreApproved}" )
+        .withSetting("copyLeft", "@{copyLeft}" )
+        .withSetting("licenseCompliance", "@{licenseCompliance}" )
+        .withSetting("licenseRefUrl", "@{licenseRefUrl}" )
+        .withSetting("includeLicense", "@{includeLicense}" )
+        .withSetting("includeSource", "@{includeSource}" )
+        .nop();
+        $nl.appendTrace(aeb.build()); 
+ 
         update($nl);
 end
 end template

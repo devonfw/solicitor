@@ -17,9 +17,9 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
-import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.maven.model.Dependency;
 import com.devonfw.tools.solicitor.reader.maven.model.License;
@@ -28,16 +28,16 @@ import com.devonfw.tools.solicitor.reader.maven.model.LicenseSummary;
 import lombok.Setter;
 
 @Component
-public class MavenReader implements Reader {
+public class MavenReader extends AbstractReader implements Reader {
 
     @Autowired
     @Setter
     private InputStreamFactory inputStreamFactory;
 
     @Override
-    public boolean accept(String type) {
+    public String getSupportedType() {
 
-        return "maven".equals(type);
+        return "maven";
     }
 
     @Override
@@ -75,14 +75,11 @@ public class MavenReader implements Reader {
             appComponent.setUsagePattern(usagePattern);
             if (dep.getLicenses().isEmpty()) {
                 // in case no license is found insert an empty entry
-                RawLicense mlic = new RawLicense();
-                mlic.setApplicationComponent(appComponent);
+                addRawLicense(appComponent, null, null, sourceUrl);
             } else {
                 for (License lic : dep.getLicenses()) {
-                    RawLicense mlic = new RawLicense();
-                    mlic.setApplicationComponent(appComponent);
-                    mlic.setDeclaredLicense(lic.getName());
-                    mlic.setLicenseUrl(lic.getUrl());
+                    addRawLicense(appComponent, lic.getName(), lic.getUrl(),
+                            sourceUrl);
                 }
             }
         }

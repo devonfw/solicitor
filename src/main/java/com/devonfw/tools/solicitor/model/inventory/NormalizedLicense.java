@@ -11,10 +11,12 @@ import com.devonfw.tools.solicitor.common.webcontent.WebContentProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Slf4j
 public class NormalizedLicense extends AbstractDataRowSource
         implements DataRowSource {
 
@@ -54,19 +56,18 @@ public class NormalizedLicense extends AbstractDataRowSource
 
     private String legalComments;
 
+    private String trace;
+
     private ApplicationComponent applicationComponent;
 
     private WebContentProvider licenseContentProvider;
 
-    // TODO: probably we don't need that constructer (user setters instead)
-    public NormalizedLicense(ApplicationComponent applicationComponent,
-            String declaredLicense, String licenseUrl,
-            String normalizedLicenseType) {
+    public NormalizedLicense(RawLicense rawLicense) {
 
-        setApplicationComponent(applicationComponent);
-        this.declaredLicense = declaredLicense;
-        this.licenseUrl = licenseUrl;
-        this.normalizedLicenseType = normalizedLicenseType;
+        setApplicationComponent(rawLicense.getApplicationComponent());
+        this.declaredLicense = rawLicense.getDeclaredLicense();
+        this.licenseUrl = rawLicense.getLicenseUrl();
+        this.trace = rawLicense.getTrace();
     }
 
     public String getDeclaredLicenseContent() {
@@ -106,7 +107,7 @@ public class NormalizedLicense extends AbstractDataRowSource
         "effectiveNormalizedLicenseContent", "legalPreApproved", "copyLeft",
         "licenseCompliance", "licenseRefUrl", "licenseRefContent",
         "includeLicense", "includeSource", "reviewedForRelease", "comments",
-        "legalApproved", "legalComments" };
+        "legalApproved", "legalComments", "trace" };
     }
 
     @Override
@@ -119,7 +120,7 @@ public class NormalizedLicense extends AbstractDataRowSource
         getEffectiveNormalizedLicenseContent(), legalPreApproved, copyLeft,
         licenseCompliance, licenseRefUrl, getLicenseRefContent(),
         includeLicense, includeSource, reviewedForRelease, comments,
-        legalApproved, legalComments };
+        legalApproved, legalComments, trace };
     }
 
     @Override
@@ -134,6 +135,16 @@ public class NormalizedLicense extends AbstractDataRowSource
             this.comments = comment;
         } else {
             this.comments = this.comments + "; " + comment;
+        }
+    }
+
+    public void appendTrace(String traceEntry) {
+
+        LOG.debug(traceEntry);
+        if (this.trace == null) {
+            this.trace = traceEntry;
+        } else {
+            this.trace += System.lineSeparator() + traceEntry;
         }
     }
 

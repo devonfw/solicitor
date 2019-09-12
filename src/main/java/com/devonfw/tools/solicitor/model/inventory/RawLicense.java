@@ -20,6 +20,8 @@ public class RawLicense extends AbstractDataRowSource implements DataRowSource {
 
     private String licenseUrl;
 
+    private String trace;
+
     private boolean specialHandling;
 
     private ApplicationComponent applicationComponent;
@@ -38,13 +40,13 @@ public class RawLicense extends AbstractDataRowSource implements DataRowSource {
     @Override
     public String[] getHeadElements() {
 
-        return new String[] { "declaredLicense", "licenseUrl" };
+        return new String[] { "declaredLicense", "licenseUrl", "trace" };
     }
 
     @Override
     public String[] getDataElements() {
 
-        return new String[] { declaredLicense, licenseUrl };
+        return new String[] { declaredLicense, licenseUrl, trace };
     }
 
     @Override
