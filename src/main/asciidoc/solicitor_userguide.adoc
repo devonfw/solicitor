@@ -122,6 +122,7 @@ The internal business data model consists of 5 entities:
 | Property | Type | Description
 | declaredLicense | String | name of the declared license
 | licenseUrl | String | URL of the declared license
+| trace | String | detail info of history of this data record
 | specialHandling | boolean | _(for controlling rule processing)_
 |===
 
@@ -150,6 +151,7 @@ The internal business data model consists of 5 entities:
 | comments | String | comments on the component/license (mainly as input to legal)
 | legalApproved | String | indicates whether this usage is legally approved
 | legalComments | String | comments from legal, possibly indicating additional conditions to be fulfilled
+| trace | String | detail info of history of this data record (rule executions)
 |===
 
 For the mechanism how _Solicitor_ resolves the content of URLs and how the result
