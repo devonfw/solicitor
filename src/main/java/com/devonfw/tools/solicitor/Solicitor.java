@@ -52,6 +52,9 @@ public class Solicitor {
     @Autowired
     private ResourceToFileCopier resourceToFileCopier;
 
+    @Autowired
+    private ModelExporter modelExporter;
+
     public void run(CommandLineOptions clo) {
 
         boolean doMainProcessing = true;
@@ -79,6 +82,10 @@ public class Solicitor {
 
         Engagement engagement = solicitorSetup.getEngagement();
         ruleEngine.executeRules(engagement);
+
+        if (clo.save) {
+            modelExporter.export(engagement, clo.pathForSave);
+        }
 
         resultDatabaseFactory.setEngagement(engagement);
 

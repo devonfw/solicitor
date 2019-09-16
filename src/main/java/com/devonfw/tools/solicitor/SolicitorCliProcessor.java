@@ -23,6 +23,10 @@ public class SolicitorCliProcessor {
 
         public boolean externalizeUserguide;
 
+        public boolean save;
+
+        public String pathForSave;
+
         public String configUrl;
     }
 
@@ -69,6 +73,19 @@ public class SolicitorCliProcessor {
 
         options.addOption(config);
 
+        // option "s" (save)
+        builder = Option.builder("s");
+        builder.longOpt("saveModel");
+        builder.hasArg();
+        builder.optionalArg(true);
+        builder.argName("filename");
+        description =
+                "after rule evaluation save the internal data model to a file";
+        builder.desc(description);
+        Option save = builder.build();
+
+        options.addOption(save);
+
         // evaluating the arguments
         CommandLineParser parser = new DefaultParser();
         CommandLine line;
@@ -86,6 +103,12 @@ public class SolicitorCliProcessor {
             if (line.hasOption("eu")) {
                 solClo.externalizeUserguide = true;
                 LOG.debug("externalizeUserguide option detected");
+            }
+
+            if (line.hasOption("s")) {
+                solClo.save = true;
+
+                solClo.pathForSave = line.getOptionValue("s");
             }
 
             if (line.hasOption("c")) {

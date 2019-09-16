@@ -10,6 +10,8 @@ import java.util.List;
 import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,23 +24,30 @@ import lombok.Setter;
 public class Application extends AbstractDataRowSource
         implements DataRowSource {
     @NonNull
+    @JsonProperty
     private String name;
 
     @NonNull
+    @JsonProperty
     private String releaseId;
 
     @NonNull
+    @JsonProperty
     private String releaseDate;
 
     @NonNull
+    @JsonProperty
     private String sourceRepo;
 
     @NonNull
+    @JsonProperty
     private String programmingEcosystem;
 
+    @JsonProperty
     private List<ApplicationComponent> applicationComponents =
             new ArrayList<>();
 
+    @JsonIgnore
     private Engagement engagement;
 
     public void setEngagement(Engagement engagement) {

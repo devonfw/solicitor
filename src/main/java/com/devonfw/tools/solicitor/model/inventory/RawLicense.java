@@ -6,6 +6,8 @@ package com.devonfw.tools.solicitor.model.inventory;
 
 import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.DataRowSource;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +18,19 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class RawLicense extends AbstractDataRowSource implements DataRowSource {
 
+    @JsonProperty
     private String declaredLicense;
 
+    @JsonProperty
     private String licenseUrl;
 
+    @JsonProperty
     private String trace;
 
+    @JsonProperty
     private boolean specialHandling;
 
+    @JsonIgnore
     private ApplicationComponent applicationComponent;
 
     public void setApplicationComponent(

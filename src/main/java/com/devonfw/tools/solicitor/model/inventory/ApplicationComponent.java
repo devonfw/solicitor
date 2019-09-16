@@ -11,6 +11,8 @@ import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,22 +24,31 @@ import lombok.Setter;
 public class ApplicationComponent extends AbstractDataRowSource
         implements DataRowSource {
 
+    @JsonIgnore
     private Application application;
 
+    @JsonProperty
     private UsagePattern usagePattern;
 
+    @JsonProperty
     private boolean ossModified;
 
+    @JsonProperty
     private String ossHomepage;
 
+    @JsonProperty
     private String groupId;
 
+    @JsonProperty
     private String artifactId;
 
+    @JsonProperty
     private String version;
 
+    @JsonProperty
     private List<NormalizedLicense> normalizedLicenses = new ArrayList<>();
 
+    @JsonProperty
     private List<RawLicense> rawLicenses = new ArrayList<>();
 
     public void setApplication(Application application) {

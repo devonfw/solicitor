@@ -7,6 +7,8 @@ package com.devonfw.tools.solicitor.model.inventory;
 import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.common.webcontent.WebContentProvider;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,46 +22,67 @@ import lombok.extern.slf4j.Slf4j;
 public class NormalizedLicense extends AbstractDataRowSource
         implements DataRowSource {
 
+    @JsonProperty
     private String declaredLicense;
 
+    @JsonProperty
     private String licenseUrl;
 
+    @JsonProperty
     private String normalizedLicenseType;
 
+    @JsonProperty
     private String normalizedLicense;
 
+    @JsonProperty
     private String normalizedLicenseUrl;
 
+    @JsonProperty
     private String effectiveNormalizedLicenseType;
 
+    @JsonProperty
     private String effectiveNormalizedLicense;
 
+    @JsonProperty
     private String effectiveNormalizedLicenseUrl; // really needed?
 
+    @JsonProperty
     private String legalPreApproved;
 
+    @JsonProperty
     private String copyLeft;
 
+    @JsonProperty
     private String licenseCompliance;
 
+    @JsonProperty
     private String licenseRefUrl;
 
+    @JsonProperty
     private String includeLicense;
 
+    @JsonProperty
     private String includeSource;
 
+    @JsonProperty
     private String reviewedForRelease;
 
+    @JsonProperty
     private String comments;
 
+    @JsonProperty
     private String legalApproved;
 
+    @JsonProperty
     private String legalComments;
 
+    @JsonProperty
     private String trace;
 
+    @JsonIgnore
     private ApplicationComponent applicationComponent;
 
+    @JsonIgnore
     private WebContentProvider licenseContentProvider;
 
     public NormalizedLicense(RawLicense rawLicense) {
