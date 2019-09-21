@@ -25,13 +25,10 @@ import com.devonfw.tools.solicitor.reader.maven.model.Dependency;
 import com.devonfw.tools.solicitor.reader.maven.model.License;
 import com.devonfw.tools.solicitor.reader.maven.model.LicenseSummary;
 
-import lombok.Setter;
-
 @Component
 public class MavenReader extends AbstractReader implements Reader {
 
     @Autowired
-    @Setter
     private InputStreamFactory inputStreamFactory;
 
     @Override
@@ -67,7 +64,8 @@ public class MavenReader extends AbstractReader implements Reader {
         }
 
         for (Dependency dep : ls.getDependencies()) {
-            ApplicationComponent appComponent = new ApplicationComponent();
+            ApplicationComponent appComponent =
+                    getModelFactory().newApplicationComponent();
             appComponent.setApplication(application);
             appComponent.setGroupId(dep.getGroupId());
             appComponent.setArtifactId(dep.getArtifactId());
@@ -83,6 +81,16 @@ public class MavenReader extends AbstractReader implements Reader {
                 }
             }
         }
+    }
+
+    /**
+     * This method sets the field <tt>inputStreamFactory</tt>.
+     *
+     * @param inputStreamFactory the new value of the field inputStreamFactory
+     */
+    public void setInputStreamFactory(InputStreamFactory inputStreamFactory) {
+
+        this.inputStreamFactory = inputStreamFactory;
     }
 
 }

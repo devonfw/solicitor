@@ -4,13 +4,26 @@
 package com.devonfw.tools.solicitor.common;
 
 import java.text.DecimalFormat;
+import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class AbstractDataRowSource implements DataRowSource {
 
     private static long idSingleton = 0;
 
+    // TODO: Map of all instances: leak and can not be cleared!
+    private static Map<String, AbstractDataRowSource> allInstances =
+            new TreeMap<>();
+
     private static final DecimalFormat integerFormat =
             new DecimalFormat("000000000");
+
+    public static AbstractDataRowSource getInstance(String id) {
+
+        synchronized (integerFormat) {
+            return allInstances.get(id);
+        }
+    }
 
     private String id;
 
@@ -18,6 +31,7 @@ public abstract class AbstractDataRowSource implements DataRowSource {
 
         synchronized (integerFormat) {
             id = integerFormat.format(idSingleton++);
+            allInstances.put(id, this);
         }
     }
 
@@ -55,6 +69,17 @@ public abstract class AbstractDataRowSource implements DataRowSource {
         } else {
             return DataRowSource.concatDataRow(getParent().getDataRow(),
                     getDataElements());
+        }
+
+    }
+
+    /**
+     * Remove this object from the collection of {@link AbstractDataRowSource}s.
+     */
+    public void remove() {
+
+        synchronized (integerFormat) {
+            allInstances.remove(this.id);
         }
 
     }

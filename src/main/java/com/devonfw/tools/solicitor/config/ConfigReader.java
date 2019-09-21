@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,9 @@ public class ConfigReader {
 
     @Autowired
     private InputStreamFactory inputStreamFactory;
+
+    @Autowired
+    private ModelFactory modelFactory;
 
     ObjectMapper objectMapper =
             new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -42,16 +46,16 @@ public class ConfigReader {
                     e);
         }
 
-        Engagement engagement =
-                new Engagement(sc.getEngagementName(), sc.getEngagementType(),
-                        sc.getClientName(), sc.getGoToMarketModel());
+        Engagement engagement = modelFactory.newEngagement(sc.getEngagementName(),
+                sc.getEngagementType(), sc.getClientName(),
+                sc.getGoToMarketModel());
         engagement.setContractAllowsOss(sc.isContractAllowsOss());
         engagement.setOssPolicyFollowed(sc.isOssPolicyFollowed());
         engagement.setCustomerProvidesOss(sc.isCustomerProvidesOss());
         solicitorSetup.setEngagement(engagement);
         for (ApplicationConfig ac : sc.getApplications()) {
-            Application app = new Application(ac.getName(), ac.getReleaseId(),
-                    "-UNDEFINED-", ac.getSourceRepo(),
+            Application app = modelFactory.newApplication(ac.getName(),
+                    ac.getReleaseId(), "-UNDEFINED-", ac.getSourceRepo(),
                     ac.getProgrammingEcosystem());
             app.setEngagement(engagement);
             for (ReaderConfig rc : ac.getReaders()) {

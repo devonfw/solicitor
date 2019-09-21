@@ -17,7 +17,7 @@ import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
-
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "Multi License Selection"
 
@@ -47,9 +47,9 @@ agenda-group "MultiLicenseSelection"
         .withSetting("effectiveNormalizedLicenseType", "IGNORE", "multilicensing: ignore this, prefer @{licenseToTake}" )
         .withSetting("effectiveNormalizedLicense", "Ignore" )
         .nop();
-        $liIgnore1.setEffectiveNormalizedLicense( "@{licenseToIgnore1}" ); $liIgnore1.setEffectiveNormalizedLicenseType( "IGNORE" ); $liIgnore1.setEffectiveNormalizedLicense( "Ignore" ); $liIgnore1.appendTrace(aeb.clone().withMatching("normalizedLicense", "@{licenseToIgnore1}" ).build() );update($liIgnore1);
-        $liIgnore2.setEffectiveNormalizedLicense( "@{licenseToIgnore2}" ); $liIgnore2.setEffectiveNormalizedLicenseType( "IGNORE" ); $liIgnore2.setEffectiveNormalizedLicense( "Ignore" ); $liIgnore2.appendTrace(aeb.clone().withMatching("normalizedLicense", "@{licenseToIgnore2}" ).build() );update($liIgnore2);
-        $liIgnore3.setEffectiveNormalizedLicense( "@{licenseToIgnore3}" ); $liIgnore3.setEffectiveNormalizedLicenseType( "IGNORE" ); $liIgnore3.setEffectiveNormalizedLicense( "Ignore" ); $liIgnore3.appendTrace(aeb.clone().withMatching("normalizedLicense", "@{licenseToIgnore3}" ).build() );update($liIgnore3);
+        $liIgnore1.setEffectiveNormalizedLicense( "@{licenseToIgnore1}" ); $liIgnore1.setEffectiveNormalizedLicenseType( "IGNORE" ); $liIgnore1.setEffectiveNormalizedLicense( "Ignore" ); ModelHelper.appendTraceToNormalizedLicense($liIgnore1, aeb.clone().withMatching("normalizedLicense", "@{licenseToIgnore1}" ).build() );update($liIgnore1);
+        $liIgnore2.setEffectiveNormalizedLicense( "@{licenseToIgnore2}" ); $liIgnore2.setEffectiveNormalizedLicenseType( "IGNORE" ); $liIgnore2.setEffectiveNormalizedLicense( "Ignore" ); ModelHelper.appendTraceToNormalizedLicense($liIgnore2, aeb.clone().withMatching("normalizedLicense", "@{licenseToIgnore2}" ).build() );update($liIgnore2);
+        $liIgnore3.setEffectiveNormalizedLicense( "@{licenseToIgnore3}" ); $liIgnore3.setEffectiveNormalizedLicenseType( "IGNORE" ); $liIgnore3.setEffectiveNormalizedLicense( "Ignore" ); ModelHelper.appendTraceToNormalizedLicense($liIgnore3, aeb.clone().withMatching("normalizedLicense", "@{licenseToIgnore3}" ).build() );update($liIgnore3);
         
 end
 end template

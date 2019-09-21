@@ -22,6 +22,7 @@ import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "LegalEvaluation"
 
@@ -68,7 +69,7 @@ agenda-group "LegalEvaluation"
         .withSetting("legalApproved", "@{legalApproved}" )
         .withSetting("legalComments", "@{legalComments}" )
         .nop();
-        $nl.appendTrace(aeb.build()); 
+        ModelHelper.appendTraceToNormalizedLicense($nl, aeb.build()); 
         
         update($nl);
 end

@@ -7,6 +7,8 @@ package com.devonfw.tools.solicitor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,11 +27,10 @@ import com.devonfw.tools.solicitor.writer.ResultDatabaseFactory;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.WriterFactory;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class Solicitor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Solicitor.class);
 
     @Autowired
     private SolicitorSetup solicitorSetup;
@@ -80,7 +81,7 @@ public class Solicitor {
         Engagement engagement = solicitorSetup.getEngagement();
         ruleEngine.executeRules(engagement);
 
-        resultDatabaseFactory.setEngagement(engagement);
+        resultDatabaseFactory.initDataModel();
 
         writeResult();
     }

@@ -19,6 +19,8 @@ import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,11 +35,11 @@ import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
 import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class DroolsRuleEngine implements RuleEngine {
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(DroolsRuleEngine.class);
 
     @Value("${drools-rule-engine.debuglog}")
     private String debugLog;

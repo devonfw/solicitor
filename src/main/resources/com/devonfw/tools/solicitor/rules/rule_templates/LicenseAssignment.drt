@@ -17,13 +17,13 @@ comment
 
 package com.devonfw.tools.solicitor.rules;
 
-import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 
 template "License Assignment"
@@ -79,12 +79,12 @@ agenda-group "LicenseAssignment"
         not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalizedLicense}") )  // differs from above
         	
     then
-        NormalizedLicense normalizedLicense = ModelFactory.newNormalizedLicense($rl );
+        NormalizedLicense normalizedLicense = ModelHelper.newNormalizedLicense($rl );
         normalizedLicense.setNormalizedLicenseType("@{normalizedLicenseType}");
         normalizedLicense.setNormalizedLicense("@{normalizedLicense}"); 
         normalizedLicense.setNormalizedLicenseUrl($licUrl);
  		normalizedLicense.setNormalizedLicenseUrl( "@{normalizedLicenseUrl}" ); 
-        normalizedLicense.addComment( "@{comment}" );
+        ModelHelper.addCommentToNormalizedLicense(normalizedLicense, "@{comment}" );
         
 		// Create trace entry        
         AuditEntryBuilder aeb = AuditEntryBuilder.instance();
@@ -103,7 +103,7 @@ agenda-group "LicenseAssignment"
         .withSetting("normalizedLicenseUrl", "@{normalizedLicenseUrl}" )
         .withSetting("comment", "@{comment}")
         .nop();
-        normalizedLicense.appendTrace(aeb.build()); 
+         ModelHelper.appendTraceToNormalizedLicense(normalizedLicense,aeb.build()); 
         
         insert(normalizedLicense);
        

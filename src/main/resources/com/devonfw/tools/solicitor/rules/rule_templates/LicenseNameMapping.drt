@@ -8,10 +8,10 @@ normalized
 
 package com.devonfw.tools.solicitor.rules;
 
-import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
 import com.devonfw.tools.solicitor.model.inventory.RawLicense
 import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "NameNormalizer"
 
@@ -27,7 +27,7 @@ agenda-group "LicenseNameMapping"
         	applicationComponent == $ac )
         	not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalized}" ) )
     then
-        NormalizedLicense normalizedLicense = ModelFactory.newNormalizedLicense($rl ); 
+        NormalizedLicense normalizedLicense = ModelHelper.newNormalizedLicense($rl ); 
         normalizedLicense.setNormalizedLicenseType("@{type}");
         normalizedLicense.setNormalizedLicense("@{normalized}");
         normalizedLicense.setNormalizedLicenseUrl($licUrl);
@@ -41,7 +41,7 @@ agenda-group "LicenseNameMapping"
         .withSetting("normalizedLicense", "@{normalized}" )
         .withSetting("normalizedLicenseUrl", $licUrl, "taking data from input" )
         .nop();
-        normalizedLicense.appendTrace(aeb.build()); 
+        ModelHelper.appendTraceToNormalizedLicense(normalizedLicense, aeb.build()); 
 
         insert(normalizedLicense);
         $rl.setSpecialHandling(true);

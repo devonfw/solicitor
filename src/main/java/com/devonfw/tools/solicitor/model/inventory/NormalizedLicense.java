@@ -1,151 +1,292 @@
-/**
- * SPDX-License-Identifier: Apache-2.0
- */
-
 package com.devonfw.tools.solicitor.model.inventory;
 
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
-import com.devonfw.tools.solicitor.common.webcontent.WebContentProvider;
+public interface NormalizedLicense {
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+    String getDeclaredLicenseContent();
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-@Slf4j
-public class NormalizedLicense extends AbstractDataRowSource
-        implements DataRowSource {
+    String getEffectiveNormalizedLicenseContent();
 
-    private String declaredLicense;
+    String getLicenseRefContent();
 
-    private String licenseUrl;
+    void setApplicationComponent(ApplicationComponent applicationComponent);
 
-    private String normalizedLicenseType;
+    /**
+     * This method gets the field <tt>declaredLicense</tt>.
+     *
+     * @return the field declaredLicense
+     */
+    String getDeclaredLicense();
 
-    private String normalizedLicense;
+    /**
+     * This method sets the field <tt>declaredLicense</tt>.
+     *
+     * @param declaredLicense the new value of the field declaredLicense
+     */
+    void setDeclaredLicense(String declaredLicense);
 
-    private String normalizedLicenseUrl;
+    /**
+     * This method gets the field <tt>licenseUrl</tt>.
+     *
+     * @return the field licenseUrl
+     */
+    String getLicenseUrl();
 
-    private String effectiveNormalizedLicenseType;
+    /**
+     * This method sets the field <tt>licenseUrl</tt>.
+     *
+     * @param licenseUrl the new value of the field licenseUrl
+     */
+    void setLicenseUrl(String licenseUrl);
 
-    private String effectiveNormalizedLicense;
+    /**
+     * This method gets the field <tt>normalizedLicenseType</tt>.
+     *
+     * @return the field normalizedLicenseType
+     */
+    String getNormalizedLicenseType();
 
-    private String effectiveNormalizedLicenseUrl; // really needed?
+    /**
+     * This method sets the field <tt>normalizedLicenseType</tt>.
+     *
+     * @param normalizedLicenseType the new value of the field
+     *        normalizedLicenseType
+     */
+    void setNormalizedLicenseType(String normalizedLicenseType);
 
-    private String legalPreApproved;
+    /**
+     * This method gets the field <tt>normalizedLicense</tt>.
+     *
+     * @return the field normalizedLicense
+     */
+    String getNormalizedLicense();
 
-    private String copyLeft;
+    /**
+     * This method sets the field <tt>normalizedLicense</tt>.
+     *
+     * @param normalizedLicense the new value of the field normalizedLicense
+     */
+    void setNormalizedLicense(String normalizedLicense);
 
-    private String licenseCompliance;
+    /**
+     * This method gets the field <tt>normalizedLicenseUrl</tt>.
+     *
+     * @return the field normalizedLicenseUrl
+     */
+    String getNormalizedLicenseUrl();
 
-    private String licenseRefUrl;
+    /**
+     * This method sets the field <tt>normalizedLicenseUrl</tt>.
+     *
+     * @param normalizedLicenseUrl the new value of the field
+     *        normalizedLicenseUrl
+     */
+    void setNormalizedLicenseUrl(String normalizedLicenseUrl);
 
-    private String includeLicense;
+    /**
+     * This method gets the field <tt>effectiveNormalizedLicenseType</tt>.
+     *
+     * @return the field effectiveNormalizedLicenseType
+     */
+    String getEffectiveNormalizedLicenseType();
 
-    private String includeSource;
+    /**
+     * This method sets the field <tt>effectiveNormalizedLicenseType</tt>.
+     *
+     * @param effectiveNormalizedLicenseType the new value of the field
+     *        effectiveNormalizedLicenseType
+     */
+    void setEffectiveNormalizedLicenseType(
+            String effectiveNormalizedLicenseType);
 
-    private String reviewedForRelease;
+    /**
+     * This method gets the field <tt>effectiveNormalizedLicense</tt>.
+     *
+     * @return the field effectiveNormalizedLicense
+     */
+    String getEffectiveNormalizedLicense();
 
-    private String comments;
+    /**
+     * This method sets the field <tt>effectiveNormalizedLicense</tt>.
+     *
+     * @param effectiveNormalizedLicense the new value of the field
+     *        effectiveNormalizedLicense
+     */
+    void setEffectiveNormalizedLicense(String effectiveNormalizedLicense);
 
-    private String legalApproved;
+    /**
+     * This method gets the field <tt>effectiveNormalizedLicenseUrl</tt>.
+     *
+     * @return the field effectiveNormalizedLicenseUrl
+     */
+    String getEffectiveNormalizedLicenseUrl();
 
-    private String legalComments;
+    /**
+     * This method sets the field <tt>effectiveNormalizedLicenseUrl</tt>.
+     *
+     * @param effectiveNormalizedLicenseUrl the new value of the field
+     *        effectiveNormalizedLicenseUrl
+     */
+    void setEffectiveNormalizedLicenseUrl(String effectiveNormalizedLicenseUrl);
 
-    private String trace;
+    /**
+     * This method gets the field <tt>legalPreApproved</tt>.
+     *
+     * @return the field legalPreApproved
+     */
+    String getLegalPreApproved();
 
-    private ApplicationComponent applicationComponent;
+    /**
+     * This method sets the field <tt>legalPreApproved</tt>.
+     *
+     * @param legalPreApproved the new value of the field legalPreApproved
+     */
+    void setLegalPreApproved(String legalPreApproved);
 
-    private WebContentProvider licenseContentProvider;
+    /**
+     * This method gets the field <tt>copyLeft</tt>.
+     *
+     * @return the field copyLeft
+     */
+    String getCopyLeft();
 
-    public NormalizedLicense(RawLicense rawLicense) {
+    /**
+     * This method sets the field <tt>copyLeft</tt>.
+     *
+     * @param copyLeft the new value of the field copyLeft
+     */
+    void setCopyLeft(String copyLeft);
 
-        setApplicationComponent(rawLicense.getApplicationComponent());
-        this.declaredLicense = rawLicense.getDeclaredLicense();
-        this.licenseUrl = rawLicense.getLicenseUrl();
-        this.trace = rawLicense.getTrace();
-    }
+    /**
+     * This method gets the field <tt>licenseCompliance</tt>.
+     *
+     * @return the field licenseCompliance
+     */
+    String getLicenseCompliance();
 
-    public String getDeclaredLicenseContent() {
+    /**
+     * This method sets the field <tt>licenseCompliance</tt>.
+     *
+     * @param licenseCompliance the new value of the field licenseCompliance
+     */
+    void setLicenseCompliance(String licenseCompliance);
 
-        return licenseContentProvider.getWebContentForUrl(this.licenseUrl);
-    }
+    /**
+     * This method gets the field <tt>licenseRefUrl</tt>.
+     *
+     * @return the field licenseRefUrl
+     */
+    String getLicenseRefUrl();
 
-    public String getEffectiveNormalizedLicenseContent() {
+    /**
+     * This method sets the field <tt>licenseRefUrl</tt>.
+     *
+     * @param licenseRefUrl the new value of the field licenseRefUrl
+     */
+    void setLicenseRefUrl(String licenseRefUrl);
 
-        return licenseContentProvider
-                .getWebContentForUrl(this.effectiveNormalizedLicenseUrl);
-    }
+    /**
+     * This method gets the field <tt>includeLicense</tt>.
+     *
+     * @return the field includeLicense
+     */
+    String getIncludeLicense();
 
-    public String getLicenseRefContent() {
+    /**
+     * This method sets the field <tt>includeLicense</tt>.
+     *
+     * @param includeLicense the new value of the field includeLicense
+     */
+    void setIncludeLicense(String includeLicense);
 
-        return licenseContentProvider.getWebContentForUrl(this.licenseRefUrl);
-    }
+    /**
+     * This method gets the field <tt>includeSource</tt>.
+     *
+     * @return the field includeSource
+     */
+    String getIncludeSource();
 
-    public void setApplicationComponent(
-            ApplicationComponent applicationComponent) {
+    /**
+     * This method sets the field <tt>includeSource</tt>.
+     *
+     * @param includeSource the new value of the field includeSource
+     */
+    void setIncludeSource(String includeSource);
 
-        if (this.applicationComponent != null) {
-            throw new IllegalStateException(
-                    "Once the ApplicationComponent is set it can not be changed");
-        }
-        this.applicationComponent = applicationComponent;
-        applicationComponent.getNormalizedLicenses().add(this);
-    }
+    /**
+     * This method gets the field <tt>reviewedForRelease</tt>.
+     *
+     * @return the field reviewedForRelease
+     */
+    String getReviewedForRelease();
 
-    @Override
-    public String[] getHeadElements() {
+    /**
+     * This method sets the field <tt>reviewedForRelease</tt>.
+     *
+     * @param reviewedForRelease the new value of the field reviewedForRelease
+     */
+    void setReviewedForRelease(String reviewedForRelease);
 
-        return new String[] { "declaredLicense", "licenseUrl",
-        "declaredLicenseContent", "normalizedLicenseType", "normalizedLicense",
-        "normalizedLicenseUrl", "effectiveNormalizedLicenseType",
-        "effectiveNormalizedLicense", "effectiveNormalizedLicenseUrl",
-        "effectiveNormalizedLicenseContent", "legalPreApproved", "copyLeft",
-        "licenseCompliance", "licenseRefUrl", "licenseRefContent",
-        "includeLicense", "includeSource", "reviewedForRelease", "comments",
-        "legalApproved", "legalComments", "trace" };
-    }
+    /**
+     * This method gets the field <tt>comments</tt>.
+     *
+     * @return the field comments
+     */
+    String getComments();
 
-    @Override
-    public String[] getDataElements() {
+    /**
+     * This method sets the field <tt>comments</tt>.
+     *
+     * @param comments the new value of the field comments
+     */
+    void setComments(String comments);
 
-        return new String[] { declaredLicense, licenseUrl,
-        getDeclaredLicenseContent(), normalizedLicenseType, normalizedLicense,
-        normalizedLicenseUrl, effectiveNormalizedLicenseType,
-        effectiveNormalizedLicense, effectiveNormalizedLicenseUrl,
-        getEffectiveNormalizedLicenseContent(), legalPreApproved, copyLeft,
-        licenseCompliance, licenseRefUrl, getLicenseRefContent(),
-        includeLicense, includeSource, reviewedForRelease, comments,
-        legalApproved, legalComments, trace };
-    }
+    /**
+     * This method gets the field <tt>legalApproved</tt>.
+     *
+     * @return the field legalApproved
+     */
+    String getLegalApproved();
 
-    @Override
-    public AbstractDataRowSource getParent() {
+    /**
+     * This method sets the field <tt>legalApproved</tt>.
+     *
+     * @param legalApproved the new value of the field legalApproved
+     */
+    void setLegalApproved(String legalApproved);
 
-        return applicationComponent;
-    }
+    /**
+     * This method gets the field <tt>legalComments</tt>.
+     *
+     * @return the field legalComments
+     */
+    String getLegalComments();
 
-    public void addComment(String comment) {
+    /**
+     * This method sets the field <tt>legalComments</tt>.
+     *
+     * @param legalComments the new value of the field legalComments
+     */
+    void setLegalComments(String legalComments);
 
-        if (this.comments == null) {
-            this.comments = comment;
-        } else {
-            this.comments = this.comments + "; " + comment;
-        }
-    }
+    /**
+     * This method gets the field <tt>trace</tt>.
+     *
+     * @return the field trace
+     */
+    String getTrace();
 
-    public void appendTrace(String traceEntry) {
+    /**
+     * This method sets the field <tt>trace</tt>.
+     *
+     * @param trace the new value of the field trace
+     */
+    void setTrace(String trace);
 
-        LOG.debug(traceEntry);
-        if (this.trace == null) {
-            this.trace = traceEntry;
-        } else {
-            this.trace += System.lineSeparator() + traceEntry;
-        }
-    }
+    /**
+     * This method gets the field <tt>applicationComponent</tt>.
+     *
+     * @return the field applicationComponent
+     */
+    ApplicationComponent getApplicationComponent();
 
 }
