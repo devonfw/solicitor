@@ -8,15 +8,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class FilesystemCachingWebContentProvider
         extends CachingWebContentProviderBase {
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(FilesystemCachingWebContentProvider.class);
 
     @Autowired
     private HttpWebContentProvider httpWebContentProvider;

@@ -25,6 +25,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFSheet; // xssf is the java implementation of excel 2007 (.xlsx format)
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +36,11 @@ import com.devonfw.tools.solicitor.common.DataTableRow;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.writer.Writer;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class ExcelSheetWriter implements Writer {
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(ExcelSheetWriter.class);
 
     @Autowired
     private InputStreamFactory inputStreamFactory;
@@ -46,7 +48,8 @@ public class ExcelSheetWriter implements Writer {
     /*
      * (non-Javadoc)
      * 
-     * @see com.devonfw.tools.solicitor.writer.xls.Writer#accept(java.lang.String)
+     * @see
+     * com.devonfw.tools.solicitor.writer.xls.Writer#accept(java.lang.String)
      */
     @Override
     public boolean accept(String type) {
@@ -57,9 +60,8 @@ public class ExcelSheetWriter implements Writer {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.devonfw.tools.solicitor.writer.xls.Writer#writeReport(java.lang.String,
-     * java.lang.String)
+     * @see com.devonfw.tools.solicitor.writer.xls.Writer#writeReport(java.lang.
+     * String, java.lang.String)
      */
 
     /**

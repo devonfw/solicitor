@@ -9,13 +9,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class HttpWebContentProvider implements WebContentProvider {
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(HttpWebContentProvider.class);
 
     public HttpWebContentProvider() {
 

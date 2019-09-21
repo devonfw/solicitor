@@ -3,6 +3,9 @@
  */
 package com.devonfw.tools.solicitor.reader;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 
@@ -11,6 +14,8 @@ import com.devonfw.tools.solicitor.model.inventory.RawLicense;
  */
 public abstract class AbstractReader implements Reader {
 
+    private ModelFactory modelFactory;
+
     /**
      * {@inheritDoc}
      */
@@ -18,6 +23,27 @@ public abstract class AbstractReader implements Reader {
     public boolean accept(String type) {
 
         return getSupportedType().equals(type);
+    }
+
+    /**
+     * This method gets the field <tt>modelFactory</tt>.
+     *
+     * @return the field modelFactory
+     */
+    public ModelFactory getModelFactory() {
+
+        return modelFactory;
+    }
+
+    /**
+     * This method sets the field <tt>modelFactory</tt>.
+     *
+     * @param modelFactory the new value of the field modelFactory
+     */
+    @Autowired
+    public void setModelFactory(ModelFactory modelFactory) {
+
+        this.modelFactory = modelFactory;
     }
 
     /**
@@ -37,7 +63,7 @@ public abstract class AbstractReader implements Reader {
     public void addRawLicense(ApplicationComponent appComponent, String name,
             String url, String path) {
 
-        RawLicense mlic = new RawLicense();
+        RawLicense mlic = modelFactory.newRawLicense();
         mlic.setApplicationComponent(appComponent);
         mlic.setDeclaredLicense(name);
         mlic.setLicenseUrl(url);

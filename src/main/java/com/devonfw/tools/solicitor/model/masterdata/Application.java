@@ -1,74 +1,104 @@
-/**
- * SPDX-License-Identifier: Apache-2.0
- */
-
 package com.devonfw.tools.solicitor.model.masterdata;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+public interface Application {
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-public class Application extends AbstractDataRowSource
-        implements DataRowSource {
-    @NonNull
-    private String name;
+    void setEngagement(Engagement engagement);
 
-    @NonNull
-    private String releaseId;
+    /**
+     * This method gets the field <tt>name</tt>.
+     *
+     * @return the field name
+     */
+    String getName();
 
-    @NonNull
-    private String releaseDate;
+    /**
+     * This method sets the field <tt>name</tt>.
+     *
+     * @param name the new value of the field name
+     */
+    void setName(String name);
 
-    @NonNull
-    private String sourceRepo;
+    /**
+     * This method gets the field <tt>releaseId</tt>.
+     *
+     * @return the field releaseId
+     */
+    String getReleaseId();
 
-    @NonNull
-    private String programmingEcosystem;
+    /**
+     * This method sets the field <tt>releaseId</tt>.
+     *
+     * @param releaseId the new value of the field releaseId
+     */
+    void setReleaseId(String releaseId);
 
-    private List<ApplicationComponent> applicationComponents =
-            new ArrayList<>();
+    /**
+     * This method gets the field <tt>releaseDate</tt>.
+     *
+     * @return the field releaseDate
+     */
+    String getReleaseDate();
 
-    private Engagement engagement;
+    /**
+     * This method sets the field <tt>releaseDate</tt>.
+     *
+     * @param releaseDate the new value of the field releaseDate
+     */
+    void setReleaseDate(String releaseDate);
 
-    public void setEngagement(Engagement engagement) {
+    /**
+     * This method gets the field <tt>sourceRepo</tt>.
+     *
+     * @return the field sourceRepo
+     */
+    String getSourceRepo();
 
-        if (this.engagement != null) {
-            throw new IllegalStateException(
-                    "Once the Engagement is set it can not be changed");
-        }
-        this.engagement = engagement;
-        engagement.getApplications().add(this);
-    }
+    /**
+     * This method sets the field <tt>sourceRepo</tt>.
+     *
+     * @param sourceRepo the new value of the field sourceRepo
+     */
+    void setSourceRepo(String sourceRepo);
 
-    @Override
-    public String[] getHeadElements() {
+    /**
+     * This method gets the field <tt>programmingEcosystem</tt>.
+     *
+     * @return the field programmingEcosystem
+     */
+    String getProgrammingEcosystem();
 
-        return new String[] { "applicationName", "releaseId", "releaseDate",
-        "sourceRepo", "programmingEcosystem" };
-    }
+    /**
+     * This method sets the field <tt>programmingEcosystem</tt>.
+     *
+     * @param programmingEcosystem the new value of the field
+     *        programmingEcosystem
+     */
+    void setProgrammingEcosystem(String programmingEcosystem);
 
-    @Override
-    public String[] getDataElements() {
+    /**
+     * This method gets an unmodifiable copy of the field
+     * <tt>applicationComponents</tt>.
+     *
+     * @return the field applicationComponents
+     */
+    List<ApplicationComponent> getApplicationComponents();
 
-        return new String[] { name, releaseId, releaseDate, sourceRepo,
-        programmingEcosystem };
-    }
+    /**
+     * Adds an {@link ApplicationComponent} to this Application.
+     *
+     * @param applicationComponent
+     */
+    void addApplicationComponent(ApplicationComponent applicationComponent);
 
-    @Override
-    public AbstractDataRowSource getParent() {
-
-        return engagement;
-    }
+    /**
+     * This method gets the field <tt>engagement</tt>.
+     *
+     * @return the field engagement
+     */
+    Engagement getEngagement();
 
 }

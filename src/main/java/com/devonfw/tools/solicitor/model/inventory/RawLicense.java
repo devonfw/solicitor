@@ -1,58 +1,70 @@
-/**
- * SPDX-License-Identifier: Apache-2.0
- */
-
 package com.devonfw.tools.solicitor.model.inventory;
 
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
+public interface RawLicense {
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+    void setApplicationComponent(ApplicationComponent applicationComponent);
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-public class RawLicense extends AbstractDataRowSource implements DataRowSource {
+    /**
+     * This method gets the field <tt>declaredLicense</tt>.
+     *
+     * @return the field declaredLicense
+     */
+    String getDeclaredLicense();
 
-    private String declaredLicense;
+    /**
+     * This method sets the field <tt>declaredLicense</tt>.
+     *
+     * @param declaredLicense the new value of the field declaredLicense
+     */
+    void setDeclaredLicense(String declaredLicense);
 
-    private String licenseUrl;
+    /**
+     * This method gets the field <tt>licenseUrl</tt>.
+     *
+     * @return the field licenseUrl
+     */
+    String getLicenseUrl();
 
-    private String trace;
+    /**
+     * This method sets the field <tt>licenseUrl</tt>.
+     *
+     * @param licenseUrl the new value of the field licenseUrl
+     */
+    void setLicenseUrl(String licenseUrl);
 
-    private boolean specialHandling;
+    /**
+     * This method gets the field <tt>trace</tt>.
+     *
+     * @return the field trace
+     */
+    String getTrace();
 
-    private ApplicationComponent applicationComponent;
+    /**
+     * This method sets the field <tt>trace</tt>.
+     *
+     * @param trace the new value of the field trace
+     */
+    void setTrace(String trace);
 
-    public void setApplicationComponent(
-            ApplicationComponent applicationComponent) {
+    /**
+     * This method gets the field <tt>specialHandling</tt>.
+     *
+     * @return the field specialHandling
+     */
+    boolean isSpecialHandling();
 
-        if (this.applicationComponent != null) {
-            throw new IllegalStateException(
-                    "Once the ApplicationComponent is set it can not be changed");
-        }
-        this.applicationComponent = applicationComponent;
-        applicationComponent.getRawLicenses().add(this);
-    }
+    /**
+     * This method sets the field <tt>specialHandling</tt>.
+     *
+     * @param specialHandling the new value of the field specialHandling
+     */
+    void setSpecialHandling(boolean specialHandling);
 
-    @Override
-    public String[] getHeadElements() {
-
-        return new String[] { "declaredLicense", "licenseUrl", "trace" };
-    }
-
-    @Override
-    public String[] getDataElements() {
-
-        return new String[] { declaredLicense, licenseUrl, trace };
-    }
-
-    @Override
-    public AbstractDataRowSource getParent() {
-
-        return applicationComponent;
-    }
+    /**
+     * This method gets the field <tt>applicationComponent</tt>.
+     *
+     * @return the field applicationComponent
+     */
+    ApplicationComponent getApplicationComponent();
 
 }

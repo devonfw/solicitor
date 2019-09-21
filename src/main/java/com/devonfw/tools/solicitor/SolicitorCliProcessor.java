@@ -9,14 +9,16 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a command line interface for configuring the generator.
  */
-@Slf4j
 public class SolicitorCliProcessor {
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(SolicitorCliProcessor.class);
 
     public static class CommandLineOptions {
         public boolean help;

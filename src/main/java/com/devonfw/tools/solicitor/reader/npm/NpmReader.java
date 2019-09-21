@@ -21,13 +21,10 @@ import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
 
-import lombok.Setter;
-
 @Component
 public class NpmReader extends AbstractReader implements Reader {
 
     @Autowired
-    @Setter
     private InputStreamFactory inputStreamFactory;
 
     @Override
@@ -46,21 +43,40 @@ public class NpmReader extends AbstractReader implements Reader {
 
             java.io.Reader reader = new InputStreamReader(is);
 
+            ApplicationComponent lastAppComponent = null;
             for (CSVRecord record : CSVFormat.newFormat(',').withQuote('\"')
                     .parse(reader)) {
                 if (record.get(0).contains("module name")) {
                     continue;
                 }
 
-                ApplicationComponent appComponent = new ApplicationComponent();
+                ApplicationComponent appComponent =
+                        getModelFactory().newApplicationComponent();
                 String[] module = record.get(0).split("@");
                 appComponent.setArtifactId(module[module.length - 2]);
                 appComponent.setVersion(module[module.length - 1]);
-                appComponent.setApplication(application);
                 appComponent.setUsagePattern(usagePattern);
                 appComponent.setGroupId(record.get(4));
                 appComponent.setOssHomepage(record.get(2));
-                addRawLicense(appComponent, record.get(1), record.get(3),
+                // merge ApplicationComponentImpl with same key if they appear
+                // on
+                // subsequent lines (multilicensing)
+                if (lastAppComponent != null
+                        && lastAppComponent.getGroupId()
+                                .equals(appComponent.getGroupId())
+                        && lastAppComponent.getArtifactId()
+                                .equals(appComponent.getArtifactId())
+                        && lastAppComponent.getVersion()
+                                .equals(appComponent.getVersion())) {
+                    // same applicationComponent as previous line ->
+                    // append rawLicense to already existing
+                    // ApplicationComponent
+                } else {
+                    // new ApplicationComponentImpl
+                    appComponent.setApplication(application);
+                    lastAppComponent = appComponent;
+                }
+                addRawLicense(lastAppComponent, record.get(1), record.get(3),
                         sourceUrl);
             }
         } catch (IOException e) {
@@ -69,4 +85,15 @@ public class NpmReader extends AbstractReader implements Reader {
                     e);
         }
     }
+
+    /**
+     * This method sets the field <tt>inputStreamFactory</tt>.
+     *
+     * @param inputStreamFactory the new value of the field inputStreamFactory
+     */
+    public void setInputStreamFactory(InputStreamFactory inputStreamFactory) {
+
+        this.inputStreamFactory = inputStreamFactory;
+    }
+
 }

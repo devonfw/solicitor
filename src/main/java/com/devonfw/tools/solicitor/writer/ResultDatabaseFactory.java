@@ -7,17 +7,19 @@ package com.devonfw.tools.solicitor.writer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.common.DataTable;
@@ -25,16 +27,13 @@ import com.devonfw.tools.solicitor.common.DataTableImpl;
 import com.devonfw.tools.solicitor.common.DataTableRow;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
-import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
-import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
-import com.devonfw.tools.solicitor.model.masterdata.Application;
-import com.devonfw.tools.solicitor.model.masterdata.Engagement;
-
-import lombok.extern.slf4j.Slf4j;
+import com.devonfw.tools.solicitor.model.ModelFactory;
 
 @Component
-@Slf4j
 public class ResultDatabaseFactory {
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(ResultDatabaseFactory.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -42,31 +41,21 @@ public class ResultDatabaseFactory {
     @Autowired
     private InputStreamFactory inputStreamFactory;
 
-    private Engagement engagement;
+    @Autowired
+    private ModelFactory modelFactory;
 
-    private Map<String, Engagement> engagementMap = new HashMap<>();
-
-    private Map<String, Application> applicationMap = new HashMap<>();
-
-    private Map<String, ApplicationComponent> applicationComponentMap =
-            new HashMap<>();
-
-    private Map<String, NormalizedLicense> licenseMap = new HashMap<>();
+    @Autowired
+    private SolicitorSetup solicitorSetup;
 
     private Set<Class<? extends AbstractDataRowSource>> definedTablesSet =
             new HashSet<>();
 
-    public enum Level {
-        ENGAGEMENT, APPLICATION, APPLICATIONCOMPONENT, LICENSE
-    } // level values fit the data model
+    public void initDataModel() {
 
-    public void setEngagement(Engagement engagement) {
-
-        this.engagement = engagement;
-        createDatabaseTable(Level.ENGAGEMENT);
-        createDatabaseTable(Level.APPLICATION);
-        createDatabaseTable(Level.APPLICATIONCOMPONENT);
-        createDatabaseTable(Level.LICENSE);
+        for (Object adrs : modelFactory
+                .getAllModelObjects(solicitorSetup.getEngagement())) {
+            saveToDatabase((AbstractDataRowSource) adrs);
+        }
     }
 
     /**
@@ -132,15 +121,14 @@ public class ResultDatabaseFactory {
 
     private Object getEntity(Map<String, Object> oneRow, String fieldname) {
 
+        // TODO: Try to avoid this explicit coding
         switch (fieldname) {
         case "ID_ENGAGEMENT":
-            return engagementMap.get(oneRow.get(fieldname));
         case "ID_APPLICATION":
-            return applicationMap.get(oneRow.get(fieldname));
         case "ID_APPLICATIONCOMPONENT":
-            return applicationComponentMap.get(oneRow.get(fieldname));
         case "ID_NORMALIZEDLICENSE":
-            return licenseMap.get(oneRow.get(fieldname));
+            return AbstractDataRowSource
+                    .getInstance((String) oneRow.get(fieldname));
         default:
             return null;
         }
@@ -160,7 +148,7 @@ public class ResultDatabaseFactory {
         }
     }
 
-    private void saveToDatabase(AbstractDataRowSource row) {
+    public void saveToDatabase(AbstractDataRowSource row) {
 
         String[] params = row.getDataElements();
 
@@ -170,7 +158,8 @@ public class ResultDatabaseFactory {
             createTableDefinition(row);
         }
         StringBuilder sb = new StringBuilder();
-        String name = row.getClass().getSimpleName().toUpperCase();
+        String name = row.getClass().getSimpleName().toUpperCase()
+                .replace("IMPL", "");
         sb.append("insert into ").append(name).append(" values ( ");
         for (String fields : row.getDataElements()) {
             sb.append("?").append(", ");
@@ -192,7 +181,8 @@ public class ResultDatabaseFactory {
     private void createTableDefinition(AbstractDataRowSource row) {
 
         StringBuilder sb = new StringBuilder();
-        String name = row.getClass().getSimpleName().toUpperCase();
+        String name = row.getClass().getSimpleName().toUpperCase()
+                .replace("IMPL", "");
         sb.append("create table ").append(name).append(" ( ");
         for (String fields : row.getHeadElements()) {
             sb.append("\"").append(fields).append("\" ")
@@ -209,58 +199,6 @@ public class ResultDatabaseFactory {
         String sql = sb.toString();
         jdbcTemplate.execute(sql);
 
-    }
-
-    /**
-     * This function will return a DataTable that holds information about all
-     * elements of the specified level. That means that the columns of the
-     * DataTable will differ depending on the level. For information about what
-     * columns will be provided for what level, look up the fields in the
-     * classes matching the specified level.
-     * 
-     * @see com.devonfw.tools.solicitor.model.masterdata.Engagement
-     * @see com.devonfw.tools.solicitor.model.masterdata.Application
-     * @see com.devonfw.tools.solicitor.model.inventory.ApplicationComponent
-     * @see com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
-     * @param level @see com.devonfw.tools.solicitor.writer.ResultTableFactory.Level
-     * @return DataTableImpl
-     */
-    public void createDatabaseTable(Level level) {
-
-        List<DataRowSource> dataRowSources = new ArrayList<>();
-        // add content to dataRowSources depending on the level
-        switch (level) {
-        case ENGAGEMENT:
-            saveToDatabase(engagement);
-            engagementMap.put(engagement.getId(), engagement);
-            break;
-        case APPLICATION:
-            for (Application a : engagement.getApplications()) {
-                saveToDatabase(a);
-                applicationMap.put(a.getId(), a);
-            }
-            break;
-        case APPLICATIONCOMPONENT:
-            for (Application a : engagement.getApplications()) {
-                for (ApplicationComponent ac : a.getApplicationComponents()) {
-                    saveToDatabase(ac);
-                    applicationComponentMap.put(ac.getId(), ac);
-                }
-            }
-            break;
-        case LICENSE:
-            for (Application a : engagement.getApplications()) {
-                for (ApplicationComponent ac : a.getApplicationComponents()) {
-                    for (NormalizedLicense l : ac.getNormalizedLicenses()) {
-                        saveToDatabase(l);
-                        licenseMap.put(l.getId(), l);
-                    }
-                }
-            }
-            break;
-        default:
-            throw new SolicitorRuntimeException("Unmatched Case");
-        }
     }
 
 }

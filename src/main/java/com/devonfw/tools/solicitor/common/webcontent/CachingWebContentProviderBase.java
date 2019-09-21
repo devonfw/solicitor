@@ -8,15 +8,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.devonfw.tools.solicitor.common.UrlInputStreamFactory;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public abstract class CachingWebContentProviderBase
         implements WebContentProvider {
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(CachingWebContentProviderBase.class);
 
     @Autowired
     private UrlInputStreamFactory urlInputStreamFactory;

@@ -1,34 +1,79 @@
-/**
- * SPDX-License-Identifier: Apache-2.0
- */
 package com.devonfw.tools.solicitor.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Collection;
 
-import com.devonfw.tools.solicitor.common.webcontent.InMemoryMapWebContentProvider;
+import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
+import com.devonfw.tools.solicitor.model.impl.masterdata.EngagementImpl;
+import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
+import com.devonfw.tools.solicitor.model.masterdata.Application;
+import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
+import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 
-@Component
-public class ModelFactory {
+public abstract class ModelFactory {
 
-    private static ModelFactory instance;
+    /**
+     * Creates a {@link NormalizedLicense}.
+     * 
+     * @param rawLicense
+     * @return the new instance
+     */
+    public abstract NormalizedLicense newNormalizedLicense(RawLicense rawLicense);
 
-    @Autowired
-    private InMemoryMapWebContentProvider licenseContentProvider;
+    /**
+     * Creates a new {@link RawLicense}
+     * 
+     * @return the new instance
+     */
+    public abstract RawLicense newRawLicense();
 
-    public static NormalizedLicense newNormalizedLicense(
-            RawLicense rawLicense) {
+    /**
+     * Creates a new {@link ApplicationComponent}
+     * 
+     * @return the new instance
+     */
+    public abstract ApplicationComponent newApplicationComponent();
 
-        NormalizedLicense result = new NormalizedLicense(rawLicense);
-        result.setLicenseContentProvider(instance.licenseContentProvider);
-        return result;
-    }
+    /**
+     * Creates a new {@link Application}
+     * 
+     * @param name
+     * @param releaseId
+     * @param releaseDate
+     * @param sourceRepo
+     * @param programmingEcosystem
+     * @return the new instance
+     */
+    public abstract Application newApplication(String name, String releaseId,
+            String releaseDate, String sourceRepo, String programmingEcosystem);
 
-    public ModelFactory() {
+    /**
+     * Creates a new {@link Engagement}
+     * 
+     * @param engagementName
+     * @param engagementType
+     * @param clientName
+     * @param goToMarketModel
+     * @return the new instance
+     */
+    public abstract Engagement newEngagement(String engagementName,
+            EngagementType engagementType, String clientName,
+            GoToMarketModel goToMarketModel);
 
-        instance = this;
-    }
+    /**
+     * Returns the collection of all {@link AbstractDataRowSource} objects of
+     * the model tree starting from the given {@link Engagement}. All model
+     * objects must be instances of the implementation classes for the model
+     * objects as used / created by this model factory. *
+     * 
+     * @param engagementthe root of the model tree; needs to ba an instance of
+     *        {@link EngagementImpl}.
+     * @return a collection of {@link AbstractDataRowSource} representing all
+     *         objects of the model
+     */
+    public abstract Collection<Object> getAllModelObjects(
+            Engagement engagement);
 
 }

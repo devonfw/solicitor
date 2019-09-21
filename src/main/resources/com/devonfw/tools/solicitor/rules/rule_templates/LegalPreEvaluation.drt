@@ -14,6 +14,7 @@ package com.devonfw.tools.solicitor.rules;
 
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
 import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "LegalPreEvaluation"
 
@@ -44,7 +45,7 @@ agenda-group "LegalPreEvaluation"
         .withSetting("includeLicense", "@{includeLicense}" )
         .withSetting("includeSource", "@{includeSource}" )
         .nop();
-        $nl.appendTrace(aeb.build()); 
+         ModelHelper.appendTraceToNormalizedLicense($nl,aeb.build()); 
  
         update($nl);
 end

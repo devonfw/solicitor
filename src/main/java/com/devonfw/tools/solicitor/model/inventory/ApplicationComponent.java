@@ -1,77 +1,132 @@
-/**
- * SPDX-License-Identifier: Apache-2.0
- */
-
 package com.devonfw.tools.solicitor.model.inventory;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+public interface ApplicationComponent {
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-public class ApplicationComponent extends AbstractDataRowSource
-        implements DataRowSource {
+    void setApplication(Application application);
 
-    private Application application;
+    /**
+     * This method gets the field <tt>application</tt>.
+     *
+     * @return the field application
+     */
+    Application getApplication();
 
-    private UsagePattern usagePattern;
+    /**
+     * This method gets the field <tt>usagePattern</tt>.
+     *
+     * @return the field usagePattern
+     */
+    UsagePattern getUsagePattern();
 
-    private boolean ossModified;
+    /**
+     * This method sets the field <tt>usagePattern</tt>.
+     *
+     * @param usagePattern the new value of the field usagePattern
+     */
+    void setUsagePattern(UsagePattern usagePattern);
 
-    private String ossHomepage;
+    /**
+     * This method gets the field <tt>ossModified</tt>.
+     *
+     * @return the field ossModified
+     */
+    boolean isOssModified();
 
-    private String groupId;
+    /**
+     * This method sets the field <tt>ossModified</tt>.
+     *
+     * @param ossModified the new value of the field ossModified
+     */
+    void setOssModified(boolean ossModified);
 
-    private String artifactId;
+    /**
+     * This method gets the field <tt>ossHomepage</tt>.
+     *
+     * @return the field ossHomepage
+     */
+    String getOssHomepage();
 
-    private String version;
+    /**
+     * This method sets the field <tt>ossHomepage</tt>.
+     *
+     * @param ossHomepage the new value of the field ossHomepage
+     */
+    void setOssHomepage(String ossHomepage);
 
-    private List<NormalizedLicense> normalizedLicenses = new ArrayList<>();
+    /**
+     * This method gets the field <tt>groupId</tt>.
+     *
+     * @return the field groupId
+     */
+    String getGroupId();
 
-    private List<RawLicense> rawLicenses = new ArrayList<>();
+    /**
+     * This method sets the field <tt>groupId</tt>.
+     *
+     * @param groupId the new value of the field groupId
+     */
+    void setGroupId(String groupId);
 
-    public void setApplication(Application application) {
+    /**
+     * This method gets the field <tt>artifactId</tt>.
+     *
+     * @return the field artifactId
+     */
+    String getArtifactId();
 
-        if (this.application != null) {
-            throw new IllegalStateException(
-                    "Once the Application is set it can not be changed");
-        }
-        this.application = application;
-        application.getApplicationComponents().add(this);
-    }
+    /**
+     * This method sets the field <tt>artifactId</tt>.
+     *
+     * @param artifactId the new value of the field artifactId
+     */
+    void setArtifactId(String artifactId);
 
-    public String getKey() {
+    /**
+     * This method gets the field <tt>version</tt>.
+     *
+     * @return the field version
+     */
+    String getVersion();
 
-        return groupId + "/" + artifactId + "/" + version;
-    }
+    /**
+     * This method sets the field <tt>version</tt>.
+     *
+     * @param version the new value of the field version
+     */
+    void setVersion(String version);
 
-    @Override
-    public String[] getHeadElements() {
+    /**
+     * This method gets an unmodifiable copy of the field
+     * <tt>normalizedLicenses</tt>.
+     *
+     * @return the field normalizedLicenses
+     */
+    List<NormalizedLicense> getNormalizedLicenses();
 
-        return new String[] { "groupId", "artifactId", "version", "ossHomepage",
-        "usagePattern", "ossModified" };
-    }
+    /**
+     * Adds the given {@link NormalizedLicense} to this ApplicationComponent.
+     *
+     * @param normalizedLicense
+     */
+    void addNormalizedLicense(NormalizedLicense normalizedLicense);
 
-    @Override
-    public String[] getDataElements() {
+    /**
+     * This method gets an unmodifiable copy of the field <tt>rawLicenses</tt>.
+     *
+     * @return the field rawLicenses
+     */
+    List<RawLicense> getRawLicenses();
 
-        return new String[] { groupId, artifactId, version, getOssHomepage(),
-        getUsagePattern().toString(), isOssModified() ? "true" : "false" };
-    }
+    /**
+     * Adds the given {@link RawLicense} to this ApplicateComponent.
+     *
+     * @param rawLicense
+     */
+    void addRawLicense(RawLicense rawLicense);
 
-    @Override
-    public AbstractDataRowSource getParent() {
-
-        return application;
-    }
 }

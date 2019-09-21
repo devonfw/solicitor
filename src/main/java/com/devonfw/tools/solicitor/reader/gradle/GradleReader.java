@@ -25,13 +25,10 @@ import com.devonfw.tools.solicitor.reader.gradle.model.LicenseSummary;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import lombok.Setter;
-
 @Component
 public class GradleReader extends AbstractReader implements Reader {
 
     @Autowired
-    @Setter
     private InputStreamFactory inputStreamFactory;
 
     @Override
@@ -83,7 +80,8 @@ public class GradleReader extends AbstractReader implements Reader {
         }
 
         for (Dependency dep : ls.getDependencies()) {
-            ApplicationComponent appComponent = new ApplicationComponent();
+            ApplicationComponent appComponent =
+                    getModelFactory().newApplicationComponent();
             appComponent.setApplication(application);
             appComponent.setGroupId(dep.getProject());
             appComponent.setArtifactId(dep.getDependency());
@@ -102,4 +100,15 @@ public class GradleReader extends AbstractReader implements Reader {
             }
         }
     }
+
+    /**
+     * This method sets the field <tt>inputStreamFactory</tt>.
+     *
+     * @param inputStreamFactory the new value of the field inputStreamFactory
+     */
+    public void setInputStreamFactory(InputStreamFactory inputStreamFactory) {
+
+        this.inputStreamFactory = inputStreamFactory;
+    }
+
 }

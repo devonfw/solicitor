@@ -24,8 +24,6 @@ import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.writer.Writer;
 
-//import lombok.extern.slf4j.Slf4j;
-
 @Component
 public class VelocityWriter implements Writer {
 

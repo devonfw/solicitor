@@ -18,6 +18,7 @@ import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 
 template "Effective License Selection"
@@ -64,7 +65,7 @@ agenda-group "LicenseSelection"
         .withSetting("effectiveNormalizedLicenseUrl", $theLicenseUrlToTake, "taking data from input" )
         .withSetting("effectiveNormalizedLicenseUrl", "@{effectiveLicenseUrl}" )
         .nop();
-        $li.appendTrace(aeb.build()); 
+        ModelHelper.appendTraceToNormalizedLicense($li, aeb.build()); 
         
         update($li);
         

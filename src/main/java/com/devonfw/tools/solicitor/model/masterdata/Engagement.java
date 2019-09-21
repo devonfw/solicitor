@@ -1,61 +1,119 @@
-/**
- * SPDX-License-Identifier: Apache-2.0
- */
-
 package com.devonfw.tools.solicitor.model.masterdata;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
+public interface Engagement {
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+    /**
+     * This method gets the field <tt>engagementName</tt>.
+     *
+     * @return the field engagementName
+     */
+    String getEngagementName();
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-public class Engagement extends AbstractDataRowSource implements DataRowSource {
+    /**
+     * This method sets the field <tt>engagementName</tt>.
+     *
+     * @param engagementName the new value of the field engagementName
+     */
+    void setEngagementName(String engagementName);
 
-    @NonNull
-    private String engagementName;
+    /**
+     * This method gets the field <tt>engagementType</tt>.
+     *
+     * @return the field engagementType
+     */
+    EngagementType getEngagementType();
 
-    @NonNull
-    private EngagementType engagementType;
+    /**
+     * This method sets the field <tt>engagementType</tt>.
+     *
+     * @param engagementType the new value of the field engagementType
+     */
+    void setEngagementType(EngagementType engagementType);
 
-    @NonNull
-    private String clientName;
+    /**
+     * This method gets the field <tt>clientName</tt>.
+     *
+     * @return the field clientName
+     */
+    String getClientName();
 
-    @NonNull
-    private GoToMarketModel goToMarketModel;
+    /**
+     * This method sets the field <tt>clientName</tt>.
+     *
+     * @param clientName the new value of the field clientName
+     */
+    void setClientName(String clientName);
 
-    private boolean contractAllowsOss;
+    /**
+     * This method gets the field <tt>goToMarketModel</tt>.
+     *
+     * @return the field goToMarketModel
+     */
+    GoToMarketModel getGoToMarketModel();
 
-    private boolean ossPolicyFollowed;
+    /**
+     * This method sets the field <tt>goToMarketModel</tt>.
+     *
+     * @param goToMarketModel the new value of the field goToMarketModel
+     */
+    void setGoToMarketModel(GoToMarketModel goToMarketModel);
 
-    private boolean customerProvidesOss;
+    /**
+     * This method gets the field <tt>contractAllowsOss</tt>.
+     *
+     * @return the field contractAllowsOss
+     */
+    boolean isContractAllowsOss();
 
-    private List<Application> applications = new ArrayList<>();
+    /**
+     * This method sets the field <tt>contractAllowsOss</tt>.
+     *
+     * @param contractAllowsOss the new value of the field contractAllowsOss
+     */
+    void setContractAllowsOss(boolean contractAllowsOss);
 
-    @Override
-    public String[] getHeadElements() {
+    /**
+     * This method gets the field <tt>ossPolicyFollowed</tt>.
+     *
+     * @return the field ossPolicyFollowed
+     */
+    boolean isOssPolicyFollowed();
 
-        return new String[] { "engagementName", "engagementType", "clientName",
-        "goToMarketModel", "contractAllowsOss", "ossPolicyFollowed",
-        "customerProvidesOss" };
-    }
+    /**
+     * This method sets the field <tt>ossPolicyFollowed</tt>.
+     *
+     * @param ossPolicyFollowed the new value of the field ossPolicyFollowed
+     */
+    void setOssPolicyFollowed(boolean ossPolicyFollowed);
 
-    @Override
-    public String[] getDataElements() {
+    /**
+     * This method gets the field <tt>customerProvidesOss</tt>.
+     *
+     * @return the field customerProvidesOss
+     */
+    boolean isCustomerProvidesOss();
 
-        return new String[] { engagementName, engagementType.toString(),
-        clientName, goToMarketModel.toString(),
-        contractAllowsOss ? "true" : "false",
-        ossPolicyFollowed ? "true" : "false",
-        customerProvidesOss ? "true" : "false" };
-    }
+    /**
+     * This method sets the field <tt>customerProvidesOss</tt>.
+     *
+     * @param customerProvidesOss the new value of the field customerProvidesOss
+     */
+    void setCustomerProvidesOss(boolean customerProvidesOss);
+
+    /**
+     * This method gets an unmodifiable copy of the field <tt>applications</tt>.
+     *
+     * @return the field applications
+     */
+    List<Application> getApplications();
+
+    /**
+     * Adds the given {@link Application} to this EngagementImpl.
+     * 
+     * @param application
+     */
+    void addApplication(Application application);
 
 }

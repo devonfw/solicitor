@@ -7,13 +7,15 @@ package com.devonfw.tools.solicitor.common;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.devonfw.tools.solicitor.common.webcontent.HttpWebContentProvider;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class CachingLicenseContentProviderImplTests {
+
+    private static final Logger LOG = LoggerFactory
+            .getLogger(CachingLicenseContentProviderImplTests.class);
 
     @Test
     public void readFile() {
