@@ -5,38 +5,48 @@ package com.devonfw.tools.solicitor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Exports the data model.
  */
 @Component
-@Slf4j
 public class ModelExporter {
+    private static final Logger LOG =
+            LoggerFactory.getLogger(ModelExporter.class);
 
-    /**
-     * The Constructor. TODO ohecker
-     */
-    public ModelExporter() {
+    private static class SolicitorState {
+        @SuppressWarnings("unused")
+        public String executionTime;
 
-        // TODO Auto-generated constructor stub
+        @SuppressWarnings("unused")
+        public Engagement engagement;
     }
 
-    public void export(Engagement engagement, String filename) {
+    @Autowired
+    private SolicitorSetup solicitorSetup;
+
+    public void export(String filename) {
+
+        SolicitorState state = new SolicitorState();
+        state.executionTime = (new Date()).toString();
+        state.engagement = solicitorSetup.getEngagement();
 
         String effectiveFilename = (filename != null) ? filename
-                : "data" + System.currentTimeMillis() + ".json";
+                : "solicitor_" + System.currentTimeMillis() + ".json";
         ObjectMapper objectMapper =
                 new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            objectMapper.writeValue(new File(effectiveFilename), engagement);
+            objectMapper.writeValue(new File(effectiveFilename), state);
         } catch (IOException e) {
             LOG.error("Could not write internal data model to file '{}'",
                     effectiveFilename, e);

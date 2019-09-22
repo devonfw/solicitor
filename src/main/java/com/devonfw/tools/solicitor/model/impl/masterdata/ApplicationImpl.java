@@ -13,6 +13,7 @@ import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ApplicationImpl extends AbstractDataRowSource
         implements DataRowSource, Application {
@@ -190,6 +191,7 @@ public class ApplicationImpl extends AbstractDataRowSource
      * {@inheritDoc}
      */
     @Override
+    @JsonIgnore
     public Engagement getEngagement() {
 
         return engagement;

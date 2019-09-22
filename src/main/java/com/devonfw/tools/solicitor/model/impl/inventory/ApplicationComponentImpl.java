@@ -15,6 +15,7 @@ import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ApplicationComponentImpl extends AbstractDataRowSource
         implements DataRowSource, ApplicationComponent {
@@ -55,6 +56,7 @@ public class ApplicationComponentImpl extends AbstractDataRowSource
      * {@inheritDoc}
      */
     @Override
+    @JsonIgnore
     public Application getApplication() {
 
         return application;

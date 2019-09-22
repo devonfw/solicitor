@@ -82,7 +82,8 @@ public class SolicitorCliProcessor {
         builder.optionalArg(true);
         builder.argName("filename");
         description =
-                "after rule evaluation save the internal data model to a file";
+                "after rule evaluation save the internal data model to a file; "
+                        + "if no filename is given a filename will be automatically created";
         builder.desc(description);
         Option save = builder.build();
 

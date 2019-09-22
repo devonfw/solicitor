@@ -49,6 +49,7 @@ public abstract class AbstractDataRowSource implements DataRowSource {
         return null;
     }
 
+    @JsonIgnore
     public String getId() {
 
         return id;

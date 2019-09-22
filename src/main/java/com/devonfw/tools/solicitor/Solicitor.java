@@ -85,7 +85,7 @@ public class Solicitor {
         ruleEngine.executeRules(engagement);
 
         if (clo.save) {
-            modelExporter.export(engagement, clo.pathForSave);
+            modelExporter.export(clo.pathForSave);
         }
 
         resultDatabaseFactory.initDataModel();

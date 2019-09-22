@@ -13,6 +13,7 @@ import com.devonfw.tools.solicitor.common.webcontent.WebContentProvider;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class NormalizedLicenseImpl extends AbstractDataRowSource
         implements DataRowSource, NormalizedLicense {
@@ -74,6 +75,7 @@ public class NormalizedLicenseImpl extends AbstractDataRowSource
      * {@inheritDoc}
      */
     @Override
+    @JsonIgnore
     public String getDeclaredLicenseContent() {
 
         return licenseContentProvider.getWebContentForUrl(this.licenseUrl);
@@ -83,6 +85,7 @@ public class NormalizedLicenseImpl extends AbstractDataRowSource
      * {@inheritDoc}
      */
     @Override
+    @JsonIgnore
     public String getEffectiveNormalizedLicenseContent() {
 
         return licenseContentProvider
@@ -93,6 +96,7 @@ public class NormalizedLicenseImpl extends AbstractDataRowSource
      * {@inheritDoc}
      */
     @Override
+    @JsonIgnore
     public String getLicenseRefContent() {
 
         return licenseContentProvider.getWebContentForUrl(this.licenseRefUrl);
@@ -496,6 +500,7 @@ public class NormalizedLicenseImpl extends AbstractDataRowSource
      *
      * @return the field licenseContentProvider
      */
+    @JsonIgnore
     public WebContentProvider getLicenseContentProvider() {
 
         return licenseContentProvider;
@@ -517,6 +522,7 @@ public class NormalizedLicenseImpl extends AbstractDataRowSource
      * {@inheritDoc}
      */
     @Override
+    @JsonIgnore
     public ApplicationComponent getApplicationComponent() {
 
         return applicationComponent;
