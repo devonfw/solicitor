@@ -6,10 +6,14 @@ package com.devonfw.tools.solicitor.common;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public interface DataRowSource {
 
+    @JsonIgnore
     String[] getHeadRow();
 
+    @JsonIgnore
     String[] getDataRow();
 
     public static String[] concatHeadRow(String[] first, String[] second) {

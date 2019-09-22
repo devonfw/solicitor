@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class AbstractDataRowSource implements DataRowSource {
 
     private static long idSingleton = 0;
@@ -35,15 +37,19 @@ public abstract class AbstractDataRowSource implements DataRowSource {
         }
     }
 
+    @JsonIgnore
     public abstract String[] getHeadElements();
 
+    @JsonIgnore
     public abstract String[] getDataElements();
 
+    @JsonIgnore
     public AbstractDataRowSource getParent() {
 
         return null;
     }
 
+    @JsonIgnore
     public String getId() {
 
         return id;
