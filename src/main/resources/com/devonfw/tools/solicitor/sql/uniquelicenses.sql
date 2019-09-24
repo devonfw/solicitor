@@ -4,7 +4,7 @@
 select distinct 
 	l."effectiveNormalizedLicense",
 	l."effectiveNormalizedLicenseUrl", 
-	l."licenseRefContent" as "effectiveNormalizedLicenseContent" 
+	l."effectiveNormalizedLicenseContent" 
 from 
 	NORMALIZEDLICENSE l
 where
