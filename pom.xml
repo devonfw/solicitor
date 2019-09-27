@@ -147,17 +147,7 @@
 					<outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
 					<sortArtifactByName>true</sortArtifactByName>
 					<includeTransitiveDependencies>true</includeTransitiveDependencies>
-					<!-- the "missing file" declares licenses for dependencies that could 
-						not be detected automatically -->
-					<useMissingFile>true</useMissingFile>
-					<!-- find the "missing files" in all child-projects at the following 
-						location -->
-					<missingFile>src/license/THIRD-PARTY.properties</missingFile>
-					<!-- if the "missing files" are not yet existing in child-projects they 
-						will be created automatically -->
 					<failOnMissing>false</failOnMissing>
-					<overrideFile>src/license/override-THIRD-PARTY.properties</overrideFile>
-					<!-- harmonize different ways of writing license names -->
 					<encoding>utf-8</encoding>
 				</configuration>
 			</plugin>

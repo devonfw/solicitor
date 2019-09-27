@@ -233,7 +233,7 @@ The engagement master data is defined in the leading section of the config file.
 <7> is the companies OSS policy followed? (boolean)
 <8> does the customer provide the OSS? (boolean)
 
-==== Readers / Applications
+==== Applications
 Within this section the different applications (=deliverables) of the engagement are defined. Furtheron for each application at least one reader needs to be defined which imports the component and license information.
 
 [listing]
@@ -254,192 +254,11 @@ Within this section the different applications (=deliverables) of the engagement
 <3> URL of the source repo of the application (string; should be an URL)
 <4> programming ecosystem (any string; e.g. Java8; Android/Java, iOS / Objective C)
 <5> multiple readers might be defined per application
-<6> the type of reader; possible values: csv, maven
+<6> the type of reader; possible values: csv, maven, npm, gradle
 <7> location of the source file to read (ResourceLoader-URL)
 <8> usage pattern; possible values: DYNAMIC_LINKING
 
-===== Specific Readers
-
-====== Maven Export
-
-For the Export of the the Licenses from a Maven based Project the license-maven-plugin is used.
-To install the Plugin some changes needs to be done in the pom.xml, like following example
-----
-<build>
-	<plugins>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>license-maven-plugin</artifactId>
-			<version>1.14</version>
-			<configuration>
-				<outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-				<sortArtifactByName>true</sortArtifactByName>
-				<includeTransitiveDependencies>true</includeTransitiveDependencies>
-				<useMissingFile>true</useMissingFile>
-				<missingFile>src/license/THIRD-PARTY.properties</missingFile>
-				<failOnMissing>false</failOnMissing>
-				<overrideFile>src/license/override-THIRD-PARTY.properties</overrideFile>
-				<encoding>utf-8</encoding>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-dependency-plugin</artifactId>
-			<version>3.0.2</version>
-			<configuration>
-			<classifier>sources</classifier>
-				<failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
-				<outputDirectory>${project.build.directory}/sources</outputDirectory>
-			</configuration>
-			<executions>
-				<execution>
-					<id>src-dependencies</id>
-					<phase>package</phase>
-					<goals>
-						<goal>copy-dependencies</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
-	</plugins>
-</build>
-----
-
-To execute the License Plugin the following commands are used
-----
-	mvn license:license-list
-	mvn license:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
-	mvn license:aggregate-add-third-party -Dlicense.excludedScopes=test,provided
-----
-
-Also Maven provides a Depedency plugin which copies all dependencies into the project.
-This is executed with the following command
-----
-	mvn dependency:copy-dependencies -Dclassifier=sources
-----
-
-The Export should look like this:
-
-----
-include::licenses.xml[]
-----
-
-In Solicitor the Data is readed with the following part of the config
-
-----
-"readers" : [ {
-      "type" : "maven",
-      "source" : "file:$/input/licenses.xml",
-      "usagePattern" : "DYNAMIC_LINKING"
-   	} ]
-----
-
-====== CSV
-The CSV input is normally manually generated and should look like this(The csv File is ";" seperated)
-
-[format="csv",width="100%",cols="5", separator=";"]
-[frame="topbot",grid="none"]
-|======
-include::csvlicenses.csv[]
-|======
-
-In Solicitor the Data is readed with the following part of the config
-
-----
-"readers" : [ {
-      "type" : "csv",
-      "source" : "file:$/input/csvlicenses.csv",
-      "usagePattern" : "DYNAMIC_LINKING"
-   	} ]
-----
-
-
-
-====== NPM Export
-
-For the Export of the the Licenses from a NPM based Project the NPM License Crawler is used.
-To install the Crawler the following command needs to be executed.
-
-----
-Use: npm i npm-license-crawler -g
-----
-
-To get the licenses, the crawler needs to be exec like the following example
-----
-Example: npm-license-crawler --dependencies --csv licenses.csv
-----
-
-The Export should look like this(The csv file is "," seperated)
-
-[source]
-----
-include::licenses.csv[]
-
-----
-
-
-Source: https://www.npmjs.com/package/npm-license-crawler
-
-In Solicitor the Data is readed with the following part of the config
-
-----
-"readers" : [ {
-      "type" : "npm",
-      "source" : "file:$/input/licenses.csv",
-      "usagePattern" : "DYNAMIC_LINKING"
-   	} ]
-----
-
-
-====== Gradle Export
-
-For the Export of the the Licenses from a Gradle based Project the Gradle License Plugin is used.
-
-To install the Plugin some changes needs to be done in the build.gradle, like following example
-----
-buildscript {
-  repositories {
-    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
-  }
-
-  dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5-SNAPSHOT'
-  }
-}
-
-apply plugin: 'java-library'
-apply plugin: 'com.jaredsburrows.license'
-----
-
-Afterwards execute the following command in the console:
-
-For Windows(Java Application)
-----
-gradlew licenseReport
-----
-
-TODO: Describe specifics of Android builds
-
-The Export should look like this:
-
-----
-include::licenses.json[]
-----
-
-
-Source: https://github.com/jaredsburrows/gradle-license-plugin
-
-In Solicitor the Data is readed with the following part of the config
-
-----
-"readers" : [ {
-      "type" : "maven",
-      "source" : "file:$/input/licenses.json",
-      "usagePattern" : "DYNAMIC_LINKING"
-   	} ]
-----
-
-
+The different readers are described in chapter <<Reading License Information with Readers>>
 
 ==== Business Rules
 
@@ -498,6 +317,174 @@ The writer configuration defines how the processed data will be exported and/or 
 <5> reference to SQL statements used to transform the internal data model to data tables used for reporting
 
 For working with XLS templates see <<Using Excel for Reporting>>
+
+== Reading License Information with Readers
+Different Readers are available to import raw component / license information for different 
+technologies. This chapter describes how to setup the different build / dependency management systems to create the required input and how to configure the corresponding reader.
+
+=== Maven
+
+For the export of the licenses from a maven based project the license-maven-plugin is used.
+To configure the plugin some changes needs to be done in the pom.xml, like in the
+following example
+----
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>license-maven-plugin</artifactId>
+      <version>1.14</version>
+      <configuration>
+        <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+        <sortArtifactByName>true</sortArtifactByName>
+        <includeTransitiveDependencies>true</includeTransitiveDependencies>
+        <failOnMissing>false</failOnMissing>
+        <encoding>utf-8</encoding>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+----
+
+To generate the input file required for _Solicitor_ the License Plugin needs to be executed
+with the following command:
+
+----
+mvn license:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
+----
+
+The generated output file named `licenses.xml` (in the directory specified in the
+plugin config) should look like the following:
+
+----
+include::licenses.xml[]
+----
+
+In _Solicitor_ the data is read with the following reader config:
+
+----
+"readers" : [ {
+  "type" : "maven",
+  "source" : "file:target/generated-resouces/licenses.xml",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+(the above assumes that _Solicitor_ is executed in the maven projects main directory)
+
+=== CSV
+The CSV input is normally manually generated and should look like this (The csv File is ";" separated):
+
+[source]
+----
+include::csvlicenses.csv[]
+----
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+The following 5 columns need to be contained:
+
+* groupId
+* artifactId
+* version
+* license name
+* license URL
+
+In case that a component has multiple licenses attached, there needs to be a separate 
+line in the file for each license.
+
+=== NPM Export
+
+For the export of the the licenses from a NPM based Project the NPM License Crawler is used.
+To install the crawler the following command needs to be executed.
+
+----
+npm i npm-license-crawler -g
+----
+
+To get the licenses, the crawler needs to be executed like the following example
+
+----
+npm-license-crawler --dependencies --csv licenses.csv
+----
+
+The export should look like the following (The csv file is "," separated)
+
+[source]
+----
+include::licenses.csv[]
+
+----
+
+
+Source: https://www.npmjs.com/package/npm-license-crawler
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm",
+  "source" : "file:path/to/licenses.csv",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+
+=== Gradle Export
+
+For the export of the licenses from a Gradle based project the Gradle License Plugin is used.
+
+To install the plugin some changes needs to be done in `build.gradle`, like following example
+----
+buildscript {
+  repositories {
+    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+  }
+
+  dependencies {
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5-SNAPSHOT'
+  }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'com.jaredsburrows.license'
+----
+
+Afterwards execute the following command in the console:
+
+For Windows (Java Application)
+----
+gradlew licenseReport
+----
+
+TODO: Describe specifics of Android builds
+
+The Export should look like this:
+
+----
+include::licenses.json[]
+----
+
+
+Source: https://github.com/jaredsburrows/gradle-license-plugin
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "maven",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
 
 == Working with Decision Tables
 
