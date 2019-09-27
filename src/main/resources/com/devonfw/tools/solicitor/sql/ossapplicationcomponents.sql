@@ -7,7 +7,8 @@ select
 	ac."artifactId", 
 	l."effectiveNormalizedLicense", 
 	l."effectiveNormalizedLicenseUrl", 
-	l."effectiveNormalizedLicenseContent" 
+	l."effectiveNormalizedLicenseContent",
+	UCASE(REGEXP_REPLACE(l."effectiveNormalizedLicenseContent",'\s','')) as "unifiedEffectiveNormalizedLicenseContent"
 from 
 	APPLICATION a, 
 	APPLICATIONCOMPONENT ac, 
@@ -21,7 +22,8 @@ group by
 	"artifactId", 
 	"effectiveNormalizedLicense", 
 	"effectiveNormalizedLicenseUrl", 
-	"effectiveNormalizedLicenseContent" 
+	"effectiveNormalizedLicenseContent",
+	"unifiedEffectiveNormalizedLicenseContent" 
 order by 
 	"groupId", 
 	"artifactId", 

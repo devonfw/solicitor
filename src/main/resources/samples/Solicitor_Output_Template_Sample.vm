@@ -11,7 +11,7 @@
 <style>
 
 table {
-  width:90%;
+  width:auto;
 }
 table, th, td {
   border: 1px solid black;
@@ -94,8 +94,12 @@ ul, ol, li {
 #foreach($ul in $UNIQUELICENSES)
   #set($nl = $ul.effectiveNormalizedLicense)
   #set($nlu = $ul.effectiveNormalizedLicenseUrl)
-	<p>
-		The license $nl ($nlu) is used in following components (Name/GroupId/Version):
+  #set($nlc = $ul.effectiveNormalizedLicenseContent)
+  #set($unlc = $ul.unifiedEffectiveNormalizedLicenseContent)
+<hr/>
+<h3>$nl</h3>
+<p>
+The component(s) (Name/GroupId/Version): 
 		<ul>
 		#foreach($ac in $OSSLICENSES )
 			#set( $aid  = $ac.artifactId )
@@ -104,31 +108,28 @@ ul, ol, li {
 			#set( $apps = $ac.APPS )
 			#set( $enl  = $ac.effectiveNormalizedLicense )
 			#set( $enlu = $ac.effectiveNormalizedLicenseUrl )
-			#if( $enl == $nl && $enlu == $nlu )
+			#set( $enlc = $ac.effectiveNormalizedLicenseContent )
+			#set( $uenlc = $ac.unifiedEffectiveNormalizedLicenseContent )
+			#if( $enl == $nl && $uenlc == $unlc )
 			<li>$aid/$gid/$ver ($apps)</li>
 			#end
 		#end
 		</ul>
-	</p>
-#end
-
-<h2>License texts</h2>
-
-## print license texts
-
-#foreach ($ul in $UNIQUELICENSES)
-  #set($nl = $ul.effectiveNormalizedLicense)
-  #set($nlu = $ul.effectiveNormalizedLicenseUrl)
-  #set($nlc = $ul.effectiveNormalizedLicenseContent)
-	<h3>$nl ($nlu)</h3>
-	<p>
+are at least partly licensed via the following license of type $nl:
+</p>
+<p>
 		#if ($nlc)
-##			$esc.html($nlc)
-			$nlc
+		<table border="1">
+		<tr><td>
+			<pre>$esc.html($nlc)</pre>
+ 		</td></tr>
+		</table>
 		#else
-			No license text available.
+			<i>No license text available.</i>
 		#end
-	</p>
+		<br/>
+URL(s) leading to the above given license text: $nlu 
+</p>
 #end
 
 </body>
