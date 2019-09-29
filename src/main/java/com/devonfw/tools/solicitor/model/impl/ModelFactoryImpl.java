@@ -41,6 +41,17 @@ public class ModelFactoryImpl extends ModelFactory {
      * {@inheritDoc}
      */
     @Override
+    public NormalizedLicense newNormalizedLicense() {
+
+        NormalizedLicenseImpl result = new NormalizedLicenseImpl();
+        result.setLicenseContentProvider(licenseContentProvider);
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public NormalizedLicense newNormalizedLicense(RawLicense rawLicense) {
 
         NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
@@ -94,8 +105,7 @@ public class ModelFactoryImpl extends ModelFactory {
      * {@inheritDoc}
      */
     @Override
-    public Collection<Object> getAllModelObjects(
-            Engagement engagement) {
+    public Collection<Object> getAllModelObjects(Engagement engagement) {
 
         Map<String, AbstractDataRowSource> resultMap = new TreeMap<>();
         EngagementImpl eg = (EngagementImpl) engagement;

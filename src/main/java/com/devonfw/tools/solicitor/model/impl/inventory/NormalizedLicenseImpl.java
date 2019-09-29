@@ -63,6 +63,19 @@ public class NormalizedLicenseImpl extends AbstractDataRowSource
 
     private WebContentProvider licenseContentProvider;
 
+    /**
+     * Creates a new instance.
+     */
+    public NormalizedLicenseImpl() {
+
+    }
+
+    /**
+     * Creates a anew instance.
+     * 
+     * @param rawLicense the raw license which this object should be based on;
+     *        identical fields will be copied.
+     */
     public NormalizedLicenseImpl(RawLicense rawLicense) {
 
         setApplicationComponent(rawLicense.getApplicationComponent());

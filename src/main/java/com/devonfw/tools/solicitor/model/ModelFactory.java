@@ -17,10 +17,18 @@ public abstract class ModelFactory {
     /**
      * Creates a {@link NormalizedLicense}.
      * 
+     * @return the new instance
+     */
+    public abstract NormalizedLicense newNormalizedLicense();
+
+    /**
+     * Creates a {@link NormalizedLicense}.
+     * 
      * @param rawLicense
      * @return the new instance
      */
-    public abstract NormalizedLicense newNormalizedLicense(RawLicense rawLicense);
+    public abstract NormalizedLicense newNormalizedLicense(
+            RawLicense rawLicense);
 
     /**
      * Creates a new {@link RawLicense}

@@ -54,7 +54,7 @@ public class Solicitor {
     private ResourceToFileCopier resourceToFileCopier;
 
     @Autowired
-    private ModelExporter modelExporter;
+    private ModelImporterExporter modelImporterExporter;
 
     public void run(CommandLineOptions clo) {
 
@@ -79,15 +79,19 @@ public class Solicitor {
     private void mainProcessing(CommandLineOptions clo) {
 
         configReader.readConfig(clo.configUrl);
-        readInventory();
-
-        Engagement engagement = solicitorSetup.getEngagement();
-        ruleEngine.executeRules(engagement);
-
-        if (clo.save) {
-            modelExporter.export(clo.pathForSave);
+        if (clo.load) {
+            Engagement engagement =
+                    modelImporterExporter.loadModel(clo.pathForLoad);
+            solicitorSetup.setEngagement(engagement);
+        } else {
+            readInventory();
+            Engagement engagement = solicitorSetup.getEngagement();
+            ruleEngine.executeRules(engagement);
         }
-
+        if (clo.save) {
+            modelImporterExporter.saveModel(solicitorSetup.getEngagement(),
+                    clo.pathForSave);
+        }
         resultDatabaseFactory.initDataModel();
 
         writeResult();
