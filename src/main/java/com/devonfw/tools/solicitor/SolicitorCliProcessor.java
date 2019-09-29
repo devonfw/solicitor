@@ -30,6 +30,10 @@ public class SolicitorCliProcessor {
         public String pathForSave;
 
         public String configUrl;
+
+        public boolean load;
+
+        public String pathForLoad;
     }
 
     /**
@@ -89,6 +93,20 @@ public class SolicitorCliProcessor {
 
         options.addOption(save);
 
+        // option "l" (load)
+        builder = Option.builder("l");
+        builder.longOpt("loadModel");
+        builder.hasArg();
+        builder.optionalArg(false);
+        builder.argName("filename");
+        description =
+                "instead of reading raw license data and processing rules load the already "
+                        + "processed model from a previously saved file";
+        builder.desc(description);
+        Option load = builder.build();
+
+        options.addOption(load);
+
         // evaluating the arguments
         CommandLineParser parser = new DefaultParser();
         CommandLine line;
@@ -112,6 +130,12 @@ public class SolicitorCliProcessor {
                 solClo.save = true;
 
                 solClo.pathForSave = line.getOptionValue("s");
+            }
+
+            if (line.hasOption("l")) {
+                solClo.load = true;
+
+                solClo.pathForLoad = line.getOptionValue("l");
             }
 
             if (line.hasOption("c")) {

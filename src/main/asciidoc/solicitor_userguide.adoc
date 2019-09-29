@@ -183,6 +183,11 @@ java -jar solicitor.jar -c <configfile>
 
 where `<configfile>` is to be replaced by the location of the <<Basic Configuration File>>.
 
+To get an overview of the available command line options use
+
+[listing]
+java -jar solicitor.jar -h
+
 .Adressing of resources
 ****
 For unique adressing of resources (configuration files, input data, rule templates and decision tables) _Solicitor_ makes use of the Spring ResourceLoader functionality, see https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#resources-resourceloader . This allows to load from the classpath, the filesystem or even via http get.
