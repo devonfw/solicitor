@@ -4,10 +4,10 @@
 
 package com.devonfw.tools.solicitor.ruleengine;
 
-import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 
 public interface RuleEngine {
 
-    public void executeRules(Engagement engagement);
+    public void executeRules(ModelRoot modelRoot);
 
 }

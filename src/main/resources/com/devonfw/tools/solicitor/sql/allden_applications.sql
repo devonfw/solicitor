@@ -2,6 +2,7 @@
 --
 -- generate all Applications in denormalized form including all hierachical data  (allden -> "all denormalized")
 select 
+    a."applicationName" as DIFF_KEY_0,
 	e.*,
 	a.* 
 from 

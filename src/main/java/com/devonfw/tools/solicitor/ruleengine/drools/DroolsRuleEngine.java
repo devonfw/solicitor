@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.config.RuleConfig;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
@@ -51,7 +52,7 @@ public class DroolsRuleEngine implements RuleEngine {
     private SolicitorSetup setup;
 
     @Override
-    public void executeRules(Engagement engagement) {
+    public void executeRules(ModelRoot modelRoot) {
 
         KieSession ksession = prepareSession();
 
@@ -64,6 +65,8 @@ public class DroolsRuleEngine implements RuleEngine {
             KieServices.get().getLoggers().newFileLogger(ksession, debugLog);
         }
 
+        ksession.insert(modelRoot);
+        Engagement engagement = modelRoot.getEngagement();
         ksession.insert(engagement);
         for (Application app : engagement.getApplications()) {
             ksession.insert(app);

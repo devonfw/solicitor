@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.config.RuleConfig;
 import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
-import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
 @Component
@@ -108,33 +107,11 @@ public class SolicitorSetup {
         }
     }
 
-    private Engagement engagement;
-
     private List<ReaderSetup> readerSetups = new ArrayList<>();
 
     private List<RuleConfig> ruleSetups = new ArrayList<>();
 
     private List<WriterConfig> writerSetups = new ArrayList<>();
-
-    /**
-     * This method gets the field <tt>engagement</tt>.
-     *
-     * @return the field engagement
-     */
-    public Engagement getEngagement() {
-
-        return engagement;
-    }
-
-    /**
-     * This method sets the field <tt>engagement</tt>.
-     *
-     * @param engagement the new value of the field engagement
-     */
-    public void setEngagement(Engagement engagement) {
-
-        this.engagement = engagement;
-    }
 
     /**
      * This method gets the field <tt>readerSetups</tt>.

@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.SolicitorVersion;
 import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.webcontent.InMemoryMapWebContentProvider;
 import com.devonfw.tools.solicitor.model.ModelFactory;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.impl.inventory.ApplicationComponentImpl;
 import com.devonfw.tools.solicitor.model.impl.inventory.NormalizedLicenseImpl;
 import com.devonfw.tools.solicitor.model.impl.inventory.RawLicenseImpl;
@@ -36,6 +38,9 @@ public class ModelFactoryImpl extends ModelFactory {
 
     @Autowired
     private InMemoryMapWebContentProvider licenseContentProvider;
+
+    @Autowired
+    private SolicitorVersion solicitorVersion;
 
     /**
      * {@inheritDoc}
@@ -105,10 +110,26 @@ public class ModelFactoryImpl extends ModelFactory {
      * {@inheritDoc}
      */
     @Override
-    public Collection<Object> getAllModelObjects(Engagement engagement) {
+    public ModelRoot newModelRoot() {
+
+        ModelRoot modelRoot = new ModelRootImpl();
+        modelRoot.setSolicitorVersion(solicitorVersion.getVersion());
+        modelRoot.setSolicitorGitHash(solicitorVersion.getGithash());
+        modelRoot.setSolicitorBuilddate(solicitorVersion.getBuilddate());
+        return modelRoot;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<Object> getAllModelObjects(ModelRoot modelRoot) {
 
         Map<String, AbstractDataRowSource> resultMap = new TreeMap<>();
-        EngagementImpl eg = (EngagementImpl) engagement;
+        ModelRootImpl mr = (ModelRootImpl) modelRoot;
+        resultMap.put(mr.getId(), mr);
+
+        EngagementImpl eg = (EngagementImpl) modelRoot.getEngagement();
         resultMap.put(eg.getId(), eg);
         for (Application application : eg.getApplications()) {
             ApplicationImpl ap = (ApplicationImpl) application;

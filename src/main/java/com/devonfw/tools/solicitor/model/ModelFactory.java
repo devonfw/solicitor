@@ -71,17 +71,23 @@ public abstract class ModelFactory {
             GoToMarketModel goToMarketModel);
 
     /**
+     * Creates a {@link ModelRoot}.
+     * 
+     * @return the new instance
+     */
+    public abstract ModelRoot newModelRoot();
+
+    /**
      * Returns the collection of all {@link AbstractDataRowSource} objects of
-     * the model tree starting from the given {@link Engagement}. All model
+     * the model tree starting from the given {@link ModelRoot}. All model
      * objects must be instances of the implementation classes for the model
-     * objects as used / created by this model factory. *
+     * objects as used / created by this model factory.
      * 
      * @param engagementthe root of the model tree; needs to ba an instance of
      *        {@link EngagementImpl}.
      * @return a collection of {@link AbstractDataRowSource} representing all
      *         objects of the model
      */
-    public abstract Collection<Object> getAllModelObjects(
-            Engagement engagement);
+    public abstract Collection<Object> getAllModelObjects(ModelRoot modelRoot);
 
 }

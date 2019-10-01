@@ -5,7 +5,6 @@ package com.devonfw.tools.solicitor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.model.ModelFactory;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
@@ -33,19 +33,6 @@ public class ModelImporterExporter {
     private static final Logger LOG =
             LoggerFactory.getLogger(ModelImporterExporter.class);
 
-    private static final int MODEL_VERSION = 1;
-
-    private static class SolicitorState {
-        @SuppressWarnings("unused")
-        public String executionTime;
-
-        @SuppressWarnings("unused")
-        public int modelVersion;
-
-        @SuppressWarnings("unused")
-        public Engagement engagement;
-    }
-
     @Autowired
     private ModelFactory modelFactory;
 
@@ -57,19 +44,14 @@ public class ModelImporterExporter {
      *        <code>node</code> a filename in the current directory will be
      *        autocreated.
      */
-    public void saveModel(Engagement engagement, String filename) {
-
-        SolicitorState state = new SolicitorState();
-        state.executionTime = (new Date()).toString();
-        state.modelVersion = MODEL_VERSION;
-        state.engagement = engagement;
+    public void saveModel(ModelRoot modelRoot, String filename) {
 
         String effectiveFilename = (filename != null) ? filename
                 : "solicitor_" + System.currentTimeMillis() + ".json";
         ObjectMapper objectMapper =
                 new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            objectMapper.writeValue(new File(effectiveFilename), state);
+            objectMapper.writeValue(new File(effectiveFilename), modelRoot);
         } catch (IOException e) {
             LOG.error("Could not write internal data model to file '{}'",
                     effectiveFilename, e);
@@ -83,20 +65,29 @@ public class ModelImporterExporter {
      * @param filename the name of the file to load from.
      * @return the root object of the data model
      */
-    public Engagement loadModel(String filename) {
+    public ModelRoot loadModel(String filename) {
 
         ObjectMapper objectMapper =
                 new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
             JsonNode root = objectMapper.readTree(new File(filename));
             int modelVersion = root.get("modelVersion").asInt();
-            if (modelVersion != MODEL_VERSION) {
+            ModelRoot modelRoot = modelFactory.newModelRoot();
+            if (modelVersion != modelRoot.getModelVersion()) {
                 throw new SolicitorRuntimeException("Unsupported model version "
                         + modelVersion + " can not be loaded");
             }
+            String executionTime = root.get("executionTime").asText();
+            String solicitorVersion = root.get("solicitorVersion").asText();
+            String solicitorGitHash = root.get("solicitorGitHash").asText();
+            String solicitorBuilddate = root.get("solicitorBuilddate").asText();
             JsonNode engagementNode = root.get("engagement");
-            Engagement engagement = readEngagement(engagementNode);
-            return engagement;
+            modelRoot.setExecutionTime(executionTime);
+            modelRoot.setSolicitorVersion(solicitorVersion);
+            modelRoot.setSolicitorGitHash(solicitorGitHash);
+            modelRoot.setSolicitorBuilddate(solicitorBuilddate);
+            readEngagement(modelRoot, engagementNode);
+            return modelRoot;
         } catch (IOException e) {
             throw new SolicitorRuntimeException(
                     "Could not load internal data model from file '" + filename
@@ -106,7 +97,7 @@ public class ModelImporterExporter {
 
     }
 
-    private Engagement readEngagement(JsonNode engagementNode) {
+    private void readEngagement(ModelRoot modelRoot, JsonNode engagementNode) {
 
         String engagementName =
                 engagementNode.get("engagementName").asText(null);
@@ -126,11 +117,11 @@ public class ModelImporterExporter {
         Engagement engagement = modelFactory.newEngagement(engagementName,
                 EngagementType.valueOf(engagementType), clientName,
                 GoToMarketModel.valueOf(goToMarketModel));
+        engagement.setModelRoot(modelRoot);
         engagement.setContractAllowsOss(contractAllowsOss);
         engagement.setOssPolicyFollowed(ossPolicyFollowed);
         engagement.setCustomerProvidesOss(customerProvidesOss);
         readApplications(engagement, applicationsNode);
-        return engagement;
     }
 
     private void readApplications(Engagement engagement,

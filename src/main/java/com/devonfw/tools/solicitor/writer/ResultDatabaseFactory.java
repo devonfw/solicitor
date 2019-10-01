@@ -23,11 +23,14 @@ import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.DataRowSource;
 import com.devonfw.tools.solicitor.common.DataTable;
+import com.devonfw.tools.solicitor.common.DataTableField;
+import com.devonfw.tools.solicitor.common.DataTableFieldImpl;
 import com.devonfw.tools.solicitor.common.DataTableImpl;
 import com.devonfw.tools.solicitor.common.DataTableRow;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.model.ModelFactory;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 
 @Component
 public class ResultDatabaseFactory {
@@ -50,12 +53,28 @@ public class ResultDatabaseFactory {
     private Set<Class<? extends AbstractDataRowSource>> definedTablesSet =
             new HashSet<>();
 
-    public void initDataModel() {
+    public void initDataModel(ModelRoot modelRoot) {
 
-        for (Object adrs : modelFactory
-                .getAllModelObjects(solicitorSetup.getEngagement())) {
+        // first drop any already existing tables
+        for (Class<? extends AbstractDataRowSource> oneTable : definedTablesSet) {
+            dropExistingTable(oneTable);
+        }
+        definedTablesSet.clear();
+        // create all needed tables and add all data
+        for (Object adrs : modelFactory.getAllModelObjects(modelRoot)) {
             saveToDatabase((AbstractDataRowSource) adrs);
         }
+    }
+
+    private void dropExistingTable(
+            Class<? extends AbstractDataRowSource> oneTable) {
+
+        StringBuilder sb = new StringBuilder();
+        String name = determineTableName(oneTable);
+        sb.append("drop table ").append(name).append(";");
+        LOG.info("Dropping Reporting table '{}'", name);
+        String sql = sb.toString();
+        jdbcTemplate.execute(sql);
     }
 
     /**
@@ -86,19 +105,19 @@ public class ResultDatabaseFactory {
         // get the final data
         int i = 1;
         for (Map<String, Object> oneRow : rawResult) {
-            List<Object> fields = new ArrayList<>();
+            List<DataTableField> fields = new ArrayList<>();
             for (String fieldname : finalHeaders) {
                 Object entity = getEntity(oneRow, fieldname);
                 if (entity != null) {
-                    fields.add(entity);
+                    fields.add(new DataTableFieldImpl(entity));
                 } else if (fieldname.equals("rowCount")) {
-                    fields.add("" + i++);
+                    fields.add(new DataTableFieldImpl("" + i++));
                 } else {
-                    fields.add(oneRow.get(fieldname));
+                    fields.add(new DataTableFieldImpl(oneRow.get(fieldname)));
                 }
             }
 
-            result.addRow(fields.toArray(new Object[0]));
+            result.addRow(fields.toArray(new DataTableField[0]));
         }
 
         logData(result);
@@ -123,6 +142,7 @@ public class ResultDatabaseFactory {
 
         // TODO: Try to avoid this explicit coding
         switch (fieldname) {
+        case "ID_MODELROOT":
         case "ID_ENGAGEMENT":
         case "ID_APPLICATION":
         case "ID_APPLICATIONCOMPONENT":
@@ -158,8 +178,7 @@ public class ResultDatabaseFactory {
             createTableDefinition(row);
         }
         StringBuilder sb = new StringBuilder();
-        String name = row.getClass().getSimpleName().toUpperCase()
-                .replace("IMPL", "");
+        String name = determineTableName(row.getClass());
         sb.append("insert into ").append(name).append(" values ( ");
         for (String fields : row.getDataElements()) {
             sb.append("?").append(", ");
@@ -181,8 +200,7 @@ public class ResultDatabaseFactory {
     private void createTableDefinition(AbstractDataRowSource row) {
 
         StringBuilder sb = new StringBuilder();
-        String name = row.getClass().getSimpleName().toUpperCase()
-                .replace("IMPL", "");
+        String name = determineTableName(row.getClass());
         sb.append("create table ").append(name).append(" ( ");
         for (String fields : row.getHeadElements()) {
             sb.append("\"").append(fields).append("\" ")
@@ -196,9 +214,22 @@ public class ResultDatabaseFactory {
                 .append("LONGVARCHAR NOT NULL, ");
         sb.append("PRIMARY KEY ( ID_").append(name).append(")");
         sb.append(" );");
+        LOG.info("Creating Reporting table '{}'", name);
         String sql = sb.toString();
         jdbcTemplate.execute(sql);
 
+    }
+
+    /**
+     * Determine the table name for the given AbstratcDataRowSource.
+     * 
+     * @param row
+     * @return the table name for storing this to the reporting database
+     */
+    public String determineTableName(
+            Class<? extends AbstractDataRowSource> tableClass) {
+
+        return tableClass.getSimpleName().toUpperCase().replace("IMPL", "");
     }
 
 }

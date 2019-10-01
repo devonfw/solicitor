@@ -56,6 +56,7 @@ ul, ol, li {
 <h1>Textual OSS Sample Report</h1>
 
 <p>Project: $ENGAGEMENT.getDataRow(0).engagementName</p>
+<p>generated: $MODELROOT.getDataRow(0).executionTime</p>
 
 <h2>Overview of components which at least partly are licenced as Open Source Software</h2>
 

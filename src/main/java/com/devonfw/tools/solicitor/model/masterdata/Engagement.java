@@ -2,6 +2,8 @@ package com.devonfw.tools.solicitor.model.masterdata;
 
 import java.util.List;
 
+import com.devonfw.tools.solicitor.model.ModelRoot;
+
 public interface Engagement {
 
     /**
@@ -115,5 +117,19 @@ public interface Engagement {
      * @param application
      */
     void addApplication(Application application);
+
+    /**
+     * Sets the field <tt>modelRoot</tt>.
+     * 
+     * @param modelRoot the new value of the field modelRoot
+     */
+    void setModelRoot(ModelRoot modelRoot);
+
+    /**
+     * This method gets the value of the field <tt>modelRoot</tt>.
+     * 
+     * @return the field modelRoot
+     */
+    ModelRoot getModelRoot();
 
 }
