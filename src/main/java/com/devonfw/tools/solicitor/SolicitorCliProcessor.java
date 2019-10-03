@@ -34,6 +34,10 @@ public class SolicitorCliProcessor {
         public boolean load;
 
         public String pathForLoad;
+
+        public boolean diff;
+
+        public String pathForDiff;
     }
 
     /**
@@ -57,7 +61,7 @@ public class SolicitorCliProcessor {
 
         options.addOption(help);
 
-        // option "h" (help)
+        // option "eu" (externalize userguide)
         builder = Option.builder("eu");
         builder.longOpt("externalizeUserguide");
         description =
@@ -107,6 +111,19 @@ public class SolicitorCliProcessor {
 
         options.addOption(load);
 
+        // option "d" (diff)
+        builder = Option.builder("d");
+        builder.longOpt("diff");
+        builder.hasArg();
+        builder.optionalArg(false);
+        builder.argName("filename");
+        description =
+                "create a diff report to the already processed model given by this filename";
+        builder.desc(description);
+        Option diff = builder.build();
+
+        options.addOption(diff);
+
         // evaluating the arguments
         CommandLineParser parser = new DefaultParser();
         CommandLine line;
@@ -136,6 +153,12 @@ public class SolicitorCliProcessor {
                 solClo.load = true;
 
                 solClo.pathForLoad = line.getOptionValue("l");
+            }
+
+            if (line.hasOption("d")) {
+                solClo.diff = true;
+
+                solClo.pathForDiff = line.getOptionValue("d");
             }
 
             if (line.hasOption("c")) {

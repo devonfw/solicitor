@@ -72,13 +72,23 @@ _Solicitor_ is working without additional persisted data: When being executed it
 
 image:datamodel.png[width=50%,scaledwidth=50%]
 
-The internal business data model consists of 5 entities:
+The internal business data model consists of 6 entities:
 
+* *`ModelRoot`*: root object of the business data model which holds metadata about the data processing
 * *`Engagement`*: the masterdata of the overall project
 * *`Application`*: a deliverable within the `Engagement`
 * *`ApplicationComponent`*: component within an `Application`
 * *`RawLicense`*: License info attached to an `ApplicationComponent` as it is read from the input data
 * *`NormalizedLicense`*: License info attached to an `ApplicationComponent` processed by the business rules
+
+
+==== ModelRoot
+[cols="3,1,6", options="header"]
+|===
+| Property | Type | Description
+| modelVersion | int | version number of the data model
+| executionTime | String | timestamp when the data was processed
+|===
 
 ==== Engagement
 [cols="3,1,6", options="header"]
@@ -97,7 +107,7 @@ The internal business data model consists of 5 entities:
 [cols="3,1,6", options="header"]
 |===
 | Property | Type | Description
-| name | String | the name of the application / deliverable
+| applicationName | String | the name of the application / deliverable
 | releaseId | String | version identifier of the application
 | releaseDate | Sting | release data of the application
 | sourceRepo | String | URL of the source repo of the application (should be an URL)

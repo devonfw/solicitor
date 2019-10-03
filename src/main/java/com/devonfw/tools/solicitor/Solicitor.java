@@ -15,11 +15,12 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
 import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
 import com.devonfw.tools.solicitor.common.DataTable;
+import com.devonfw.tools.solicitor.common.DataTableDiffer;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier.ResourceGroup;
 import com.devonfw.tools.solicitor.config.ConfigReader;
 import com.devonfw.tools.solicitor.config.WriterConfig;
-import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.ReaderFactory;
 import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
@@ -31,6 +32,9 @@ import com.devonfw.tools.solicitor.writer.WriterFactory;
 public class Solicitor {
 
     private static final Logger LOG = LoggerFactory.getLogger(Solicitor.class);
+
+    @Autowired
+    private SolicitorVersion solicitorVersion;
 
     @Autowired
     private SolicitorSetup solicitorSetup;
@@ -51,6 +55,9 @@ public class Solicitor {
     private WriterFactory writerFactory;
 
     @Autowired
+    private DataTableDiffer dataTableDiffer;
+
+    @Autowired
     private ResourceToFileCopier resourceToFileCopier;
 
     @Autowired
@@ -59,7 +66,9 @@ public class Solicitor {
     public void run(CommandLineOptions clo) {
 
         boolean doMainProcessing = true;
-        LOG.info("Solicitor starts");
+        LOG.info("Solicitor starts, Version:" + solicitorVersion.getVersion()
+                + ", Buildnumber:" + solicitorVersion.getGithash()
+                + ", Builddate:" + solicitorVersion.getBuilddate());
 
         if (clo.externalizeUserguide) {
             externalizeUserguide();
@@ -78,23 +87,21 @@ public class Solicitor {
 
     private void mainProcessing(CommandLineOptions clo) {
 
-        configReader.readConfig(clo.configUrl);
+        ModelRoot modelRoot = configReader.readConfig(clo.configUrl);
         if (clo.load) {
-            Engagement engagement =
-                    modelImporterExporter.loadModel(clo.pathForLoad);
-            solicitorSetup.setEngagement(engagement);
+            modelRoot = modelImporterExporter.loadModel(clo.pathForLoad);
         } else {
             readInventory();
-            Engagement engagement = solicitorSetup.getEngagement();
-            ruleEngine.executeRules(engagement);
+            ruleEngine.executeRules(modelRoot);
         }
         if (clo.save) {
-            modelImporterExporter.saveModel(solicitorSetup.getEngagement(),
-                    clo.pathForSave);
+            modelImporterExporter.saveModel(modelRoot, clo.pathForSave);
         }
-        resultDatabaseFactory.initDataModel();
-
-        writeResult();
+        ModelRoot oldModelRoot = null;
+        if (clo.diff) {
+            oldModelRoot = modelImporterExporter.loadModel(clo.pathForDiff);
+        }
+        writeResult(modelRoot, oldModelRoot);
     }
 
     private void readInventory() {
@@ -107,23 +114,41 @@ public class Solicitor {
         }
     }
 
-    private void writeResult() {
+    private void writeResult(ModelRoot modelRoot, ModelRoot oldModelRoot) {
 
         for (WriterConfig writerConfig : solicitorSetup.getWriterSetups()) {
             Writer writer = writerFactory.writerFor(writerConfig.getType());
             writer.writeReport(writerConfig.getTemplateSource(),
-                    writerConfig.getTarget(), getDataTables(writerConfig));
+                    writerConfig.getTarget(),
+                    getDataTables(modelRoot, oldModelRoot, writerConfig));
         }
     }
 
-    private Map<String, DataTable> getDataTables(WriterConfig writerConfig) {
+    private Map<String, DataTable> getDataTables(ModelRoot modelRoot,
+            ModelRoot oldModelRoot, WriterConfig writerConfig) {
 
+        // create the table for the current data model
+        resultDatabaseFactory.initDataModel(modelRoot);
         Map<String, DataTable> result = new HashMap<>();
         for (Map.Entry<String, String> table : writerConfig.getDataTables()
                 .entrySet()) {
             result.put(table.getKey(),
                     resultDatabaseFactory.getDataTable(table.getValue()));
         }
+        // if old model data is defined then transform it and create diff
+        // between new and old
+        if (oldModelRoot != null) {
+            resultDatabaseFactory.initDataModel(oldModelRoot);
+            for (Map.Entry<String, String> table : writerConfig.getDataTables()
+                    .entrySet()) {
+                DataTable newTable = result.get(table.getKey());
+                DataTable oldTable =
+                        resultDatabaseFactory.getDataTable(table.getValue());
+                DataTable diffTable = dataTableDiffer.diff(newTable, oldTable);
+                result.put(table.getKey(), diffTable);
+            }
+        }
+
         return result;
     }
 

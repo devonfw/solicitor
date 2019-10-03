@@ -10,13 +10,17 @@ import java.util.List;
 
 import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.DataRowSource;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class EngagementImpl extends AbstractDataRowSource
         implements DataRowSource, Engagement {
+
+    private ModelRoot modelRoot;
 
     private String engagementName;
 
@@ -60,6 +64,34 @@ public class EngagementImpl extends AbstractDataRowSource
         contractAllowsOss ? "true" : "false",
         ossPolicyFollowed ? "true" : "false",
         customerProvidesOss ? "true" : "false" };
+    }
+
+    /**
+     * This method gets the field <tt>modelRoot</tt>.
+     *
+     * @return the field modelRoot
+     */
+    @Override
+    @JsonIgnore
+    public ModelRoot getModelRoot() {
+
+        return modelRoot;
+    }
+
+    /**
+     * This method sets the field <tt>modelRoot</tt>.
+     *
+     * @param modelRoot the new value of the field modelRoot
+     */
+    @Override
+    public void setModelRoot(ModelRoot modelRoot) {
+
+        if (this.modelRoot != null) {
+            throw new IllegalStateException(
+                    "Once the ModelImpl is set it can not be changed");
+        }
+        this.modelRoot = modelRoot;
+        modelRoot.setEngagement(this);
     }
 
     /**
@@ -204,6 +236,15 @@ public class EngagementImpl extends AbstractDataRowSource
     public void addApplication(Application application) {
 
         applications.add(application);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AbstractDataRowSource getParent() {
+
+        return (AbstractDataRowSource) modelRoot;
     }
 
 }

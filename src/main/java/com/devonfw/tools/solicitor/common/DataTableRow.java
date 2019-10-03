@@ -9,13 +9,42 @@ package com.devonfw.tools.solicitor.common;
  */
 public interface DataTableRow extends Cloneable {
 
+    public static enum RowDiffStatus {
+        /**
+         * no diff has been done or no old row known
+         */
+        UNAVAILABLE,
+
+        /**
+         * row has changed
+         */
+        CHANGED,
+
+        /**
+         * row is unchanged
+         */
+        UNCHANGED,
+
+        /**
+         * row is new
+         */
+        NEW
+    }
+
+    /**
+     * Gets the number of Fields in this row.
+     * 
+     * @return the size of this row (number of columns/fields)
+     */
+    int getSize();
+
     /**
      * Gets a field value by its index.
      * 
      * @param index the index of the field
      * @return the field value
      */
-    Object getValueByIndex(int index);
+    DataTableField getValueByIndex(int index);
 
     /**
      * Gets a field value by its name.
@@ -23,7 +52,21 @@ public interface DataTableRow extends Cloneable {
      * @param fieldName the name of the field
      * @return the field value
      */
-    Object get(String fieldName);
+    DataTableField get(String fieldName);
+
+    /**
+     * Gets the {@link RowDiffStatus}.
+     * 
+     * @return the diff status of this row
+     */
+    RowDiffStatus getRowDiffStatus();
+
+    /**
+     * Sets the {@link RowDiffStatus}.
+     * 
+     * @return rowDiffStatus
+     */
+    void setRowDiffStatus(RowDiffStatus rowDiffStatus);
 
     /**
      * The clone method.

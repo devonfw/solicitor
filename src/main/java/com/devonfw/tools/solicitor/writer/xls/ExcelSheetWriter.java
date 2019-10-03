@@ -19,6 +19,11 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,7 +37,10 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.DataTable;
+import com.devonfw.tools.solicitor.common.DataTableField;
+import com.devonfw.tools.solicitor.common.DataTableField.FieldDiffStatus;
 import com.devonfw.tools.solicitor.common.DataTableRow;
+import com.devonfw.tools.solicitor.common.DataTableRow.RowDiffStatus;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.writer.Writer;
 
@@ -125,6 +133,24 @@ public class ExcelSheetWriter implements Writer {
 
     }
 
+    private void addCommentToCell(Cell cell, String commentText) {
+
+        Row row = cell.getRow();
+        Sheet sheet = row.getSheet();
+        CreationHelper helper = sheet.getWorkbook().getCreationHelper();
+        Drawing drawing = sheet.createDrawingPatriarch();
+        ClientAnchor anchor = helper.createClientAnchor();
+        anchor.setCol1(cell.getColumnIndex());
+        anchor.setCol2(cell.getColumnIndex() + 1);
+        anchor.setRow1(row.getRowNum());
+        anchor.setRow2(row.getRowNum() + 3);
+        Comment comment = drawing.createCellComment(anchor);
+        RichTextString str = helper.createRichTextString(commentText);
+        comment.setString(str);
+        comment.setAuthor("Solicitor");
+        cell.setCellComment(comment);
+    }
+
     /**
      * This function will fill in information in the template sheet.
      * 
@@ -150,26 +176,59 @@ public class ExcelSheetWriter implements Writer {
                                          // necessary
                 copyRowsDown(row);
             }
+            if (rowData.getRowDiffStatus() == RowDiffStatus.NEW) {
+                Cell firstCellInRow = row.getCell(row.getFirstCellNum());
+                addCommentToCell(firstCellInRow, "NEWLY INSERTED LINE");
+            }
             // replace the placeholders
             for (Cell oneCell : row) {
                 if (oneCell.getCellTypeEnum() == CellType.STRING) {
                     String text = oneCell.getStringCellValue();
+                    String oldModelText = text;
+                    boolean hasChanged = false;
                     // remove # placeholders
                     text = text.replace("#" + label + "#", "");
+                    oldModelText = oldModelText.replace("#" + label + "#", "");
                     // replace $ placeholders with the corresponding part of the
                     // gathered information
                     for (int i = 0; i < headers.length; i++) {
                         String toReplace = "$" + headers[i] + "$";
-                        Object value = rowData.getValueByIndex(i);
-                        String textValue =
-                                value == null ? "" : value.toString();
-                        if (textValue.length() > 32767) {
-                            LOG.warn("Shortening text content for XLS");
-                            textValue = textValue.substring(0, 32767);
+                        if (text.contains(toReplace)) {
+                            DataTableField value = rowData.getValueByIndex(i);
+                            String textValue = value.toString() == null ? ""
+                                    : value.toString();
+                            if (textValue.length() > 32767) {
+                                LOG.warn("Shortening text content for XLS");
+                                textValue = textValue.substring(0, 32767);
+                            }
+                            text = text.replace(toReplace, textValue);
+                            if (value
+                                    .getDiffStatus() == FieldDiffStatus.CHANGED) {
+                                hasChanged = true;
+                                String oldTextValue =
+                                        value.getOldValue() == null ? ""
+                                                : value.getOldValue()
+                                                        .toString();
+                                if (oldTextValue.length() > 32767) {
+                                    LOG.warn("Shortening text content for XLS");
+                                    oldTextValue =
+                                            oldTextValue.substring(0, 32767);
+                                }
+                                oldModelText = oldModelText.replace(toReplace,
+                                        oldTextValue);
+
+                            } else {
+                                oldModelText = oldModelText.replace(toReplace,
+                                        textValue);
+                            }
                         }
-                        text = text.replace(toReplace, textValue);
                     }
                     oneCell.setCellValue(text);
+                    if (hasChanged) {
+                        addCommentToCell(oneCell,
+                                "Previous value: '" + oldModelText + "'");
+
+                    }
                 }
             }
             if (rowIterator.hasNext()) { // update row for next iteration

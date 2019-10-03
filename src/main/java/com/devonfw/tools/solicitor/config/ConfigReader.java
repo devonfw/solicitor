@@ -13,6 +13,7 @@ import com.devonfw.tools.solicitor.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.model.ModelFactory;
+import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,11 +34,10 @@ public class ConfigReader {
     ObjectMapper objectMapper =
             new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-    public void readConfig(String url) {
+    public ModelRoot readConfig(String url) {
 
         SolicitorConfig sc;
         try {
-//      sc = objectMapper.readValue(new File(fileName), SolicitorConfig.class);
             sc = objectMapper.readValue(
                     inputStreamFactory.createInputStreamFor(url),
                     SolicitorConfig.class);
@@ -46,13 +46,15 @@ public class ConfigReader {
                     e);
         }
 
-        Engagement engagement = modelFactory.newEngagement(sc.getEngagementName(),
-                sc.getEngagementType(), sc.getClientName(),
-                sc.getGoToMarketModel());
+        ModelRoot modelRoot = modelFactory.newModelRoot();
+
+        Engagement engagement = modelFactory.newEngagement(
+                sc.getEngagementName(), sc.getEngagementType(),
+                sc.getClientName(), sc.getGoToMarketModel());
+        engagement.setModelRoot(modelRoot);
         engagement.setContractAllowsOss(sc.isContractAllowsOss());
         engagement.setOssPolicyFollowed(sc.isOssPolicyFollowed());
         engagement.setCustomerProvidesOss(sc.isCustomerProvidesOss());
-        solicitorSetup.setEngagement(engagement);
         for (ApplicationConfig ac : sc.getApplications()) {
             Application app = modelFactory.newApplication(ac.getName(),
                     ac.getReleaseId(), "-UNDEFINED-", ac.getSourceRepo(),
@@ -70,7 +72,7 @@ public class ConfigReader {
         }
         solicitorSetup.setRuleSetups(sc.getRules());
         solicitorSetup.setWriterSetups(sc.getWriters());
-
+        return modelRoot;
     }
 
 }

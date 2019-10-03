@@ -2,6 +2,8 @@
 --
 -- generate all NormalizedLicenses in denormalized form including all hierachical data  (allden -> "all denormalized")
 select
+    CONCAT(a."applicationName",ac."groupId",ac."artifactId",ac."version",l."normalizedLicense") as DIFF_KEY_0,
+    CONCAT(a."applicationName",ac."groupId",ac."artifactId",l."normalizedLicense") as DIFF_KEY_1,
 	e.*,
 	a.*,
 	ac.*,

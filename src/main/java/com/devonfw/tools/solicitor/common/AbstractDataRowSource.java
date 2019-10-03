@@ -79,15 +79,4 @@ public abstract class AbstractDataRowSource implements DataRowSource {
 
     }
 
-    /**
-     * Remove this object from the collection of {@link AbstractDataRowSource}s.
-     */
-    public void remove() {
-
-        synchronized (integerFormat) {
-            allInstances.remove(this.id);
-        }
-
-    }
-
 }

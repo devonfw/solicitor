@@ -14,21 +14,41 @@ public class DataTableImpl implements DataTable {
 
     public class DataTableRowImpl implements DataTableRow {
 
-        private Object[] data;
+        private DataTableField[] data;
 
-        DataTableRowImpl(Object[] data) {
+        private RowDiffStatus rowDiffStatus;
+
+        /**
+         * Creates a {@link DataTableRow} setting the field
+         * {@link #rowDiffStatus} to {@link RowDiffStatus#UNAVAILABLE}.
+         * 
+         * @param data the row data
+         */
+        DataTableRowImpl(DataTableField[] data) {
+
+            this(data, RowDiffStatus.UNAVAILABLE);
+        }
+
+        /**
+         * Creates a {@link DataTableRow}
+         * 
+         * @param data the row data
+         * @param rowDiffStatus
+         */
+        DataTableRowImpl(DataTableField[] data, RowDiffStatus rowDiffStatus) {
 
             this.data = data.clone();
+            this.rowDiffStatus = rowDiffStatus;
         }
 
         @Override
-        public Object getValueByIndex(int index) {
+        public DataTableField getValueByIndex(int index) {
 
             return data[index];
         }
 
         @Override
-        public Object get(String fieldName) {
+        public DataTableField get(String fieldName) {
 
             Integer i = fieldnameToIndexMap.get(fieldName);
             if (i == null) {
@@ -41,6 +61,25 @@ public class DataTableImpl implements DataTable {
         public DataTableRow clone() {
 
             return new DataTableRowImpl(data);
+        }
+
+        @Override
+        public RowDiffStatus getRowDiffStatus() {
+
+            return rowDiffStatus;
+        }
+
+        @Override
+        public void setRowDiffStatus(RowDiffStatus rowDiffStatus) {
+
+            this.rowDiffStatus = rowDiffStatus;
+
+        }
+
+        @Override
+        public int getSize() {
+
+            return data.length;
         }
 
     }
@@ -77,7 +116,7 @@ public class DataTableImpl implements DataTable {
             @Override
             public DataTableRow next() {
 
-                return delegateIterator.next().clone();
+                return delegateIterator.next();
             }
 
         };
@@ -92,10 +131,10 @@ public class DataTableImpl implements DataTable {
     @Override
     public DataTableRow getDataRow(int rowNum) {
 
-        return data.get(rowNum).clone();
+        return data.get(rowNum);
     }
 
-    public void addRow(Object[] dataRow) {
+    public void addRow(DataTableField[] dataRow) {
 
         if (dataRow.length != headline.length) {
             throw new IllegalArgumentException(
