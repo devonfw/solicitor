@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorVersion;
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
 import com.devonfw.tools.solicitor.common.webcontent.InMemoryMapWebContentProvider;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -31,10 +30,13 @@ import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 
+/**
+ * Implementation of the {@link ModelFactory} interface. All model object
+ * created by this factory will be extensions of {@link AbstractModelObject}.
+ */
 @Component
 public class ModelFactoryImpl extends ModelFactory {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ModelFactoryImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ModelFactoryImpl.class);
 
     @Autowired
     private InMemoryMapWebContentProvider licenseContentProvider;
@@ -42,73 +44,59 @@ public class ModelFactoryImpl extends ModelFactory {
     @Autowired
     private SolicitorVersion solicitorVersion;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public NormalizedLicense newNormalizedLicense() {
+    public Collection<Object> getAllModelObjects(ModelRoot modelRoot) {
 
-        NormalizedLicenseImpl result = new NormalizedLicenseImpl();
-        result.setLicenseContentProvider(licenseContentProvider);
-        return result;
+        Map<String, AbstractModelObject> resultMap = new TreeMap<>();
+        ModelRootImpl mr = (ModelRootImpl) modelRoot;
+        resultMap.put(mr.getId(), mr);
+
+        EngagementImpl eg = (EngagementImpl) modelRoot.getEngagement();
+        resultMap.put(eg.getId(), eg);
+        for (Application application : eg.getApplications()) {
+            ApplicationImpl ap = (ApplicationImpl) application;
+            resultMap.put(ap.getId(), ap);
+            for (ApplicationComponent applicationComponent : ap.getApplicationComponents()) {
+                ApplicationComponentImpl ac = (ApplicationComponentImpl) applicationComponent;
+                resultMap.put(ac.getId(), ac);
+                for (RawLicense rawLicense : ac.getRawLicenses()) {
+                    RawLicenseImpl rl = (RawLicenseImpl) rawLicense;
+                    resultMap.put(rl.getId(), rl);
+                }
+                for (NormalizedLicense normalizedLicense : ac.getNormalizedLicenses()) {
+                    NormalizedLicenseImpl nl = (NormalizedLicenseImpl) normalizedLicense;
+                    resultMap.put(nl.getId(), nl);
+                }
+            }
+        }
+        return Collections.unmodifiableCollection(resultMap.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public NormalizedLicense newNormalizedLicense(RawLicense rawLicense) {
+    public Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
+            String programmingEcosystem) {
 
-        NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
-        result.setLicenseContentProvider(licenseContentProvider);
-        return result;
+        return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public RawLicense newRawLicense() {
-
-        return new RawLicenseImpl();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public ApplicationComponent newApplicationComponent() {
 
         return new ApplicationComponentImpl();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public Application newApplication(String name, String releaseId,
-            String releaseDate, String sourceRepo,
-            String programmingEcosystem) {
-
-        return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo,
-                programmingEcosystem);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Engagement newEngagement(String engagementName,
-            EngagementType engagementType, String clientName,
+    public Engagement newEngagement(String engagementName, EngagementType engagementType, String clientName,
             GoToMarketModel goToMarketModel) {
 
-        return new EngagementImpl(engagementName, engagementType, clientName,
-                goToMarketModel);
+        return new EngagementImpl(engagementName, engagementType, clientName, goToMarketModel);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public ModelRoot newModelRoot() {
 
@@ -119,39 +107,29 @@ public class ModelFactoryImpl extends ModelFactory {
         return modelRoot;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public Collection<Object> getAllModelObjects(ModelRoot modelRoot) {
+    public NormalizedLicense newNormalizedLicense() {
 
-        Map<String, AbstractDataRowSource> resultMap = new TreeMap<>();
-        ModelRootImpl mr = (ModelRootImpl) modelRoot;
-        resultMap.put(mr.getId(), mr);
+        NormalizedLicenseImpl result = new NormalizedLicenseImpl();
+        result.setLicenseContentProvider(licenseContentProvider);
+        return result;
+    }
 
-        EngagementImpl eg = (EngagementImpl) modelRoot.getEngagement();
-        resultMap.put(eg.getId(), eg);
-        for (Application application : eg.getApplications()) {
-            ApplicationImpl ap = (ApplicationImpl) application;
-            resultMap.put(ap.getId(), ap);
-            for (ApplicationComponent applicationComponent : ap
-                    .getApplicationComponents()) {
-                ApplicationComponentImpl ac =
-                        (ApplicationComponentImpl) applicationComponent;
-                resultMap.put(ac.getId(), ac);
-                for (RawLicense rawLicense : ac.getRawLicenses()) {
-                    RawLicenseImpl rl = (RawLicenseImpl) rawLicense;
-                    resultMap.put(rl.getId(), rl);
-                }
-                for (NormalizedLicense normalizedLicense : ac
-                        .getNormalizedLicenses()) {
-                    NormalizedLicenseImpl nl =
-                            (NormalizedLicenseImpl) normalizedLicense;
-                    resultMap.put(nl.getId(), nl);
-                }
-            }
-        }
-        return Collections.unmodifiableCollection(resultMap.values());
+    /** {@inheritDoc} */
+    @Override
+    public NormalizedLicense newNormalizedLicense(RawLicense rawLicense) {
+
+        NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
+        result.setLicenseContentProvider(licenseContentProvider);
+        return result;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public RawLicense newRawLicense() {
+
+        return new RawLicenseImpl();
     }
 
 }

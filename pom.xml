@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.devonfw.tools</groupId>
 	<artifactId>solicitor</artifactId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<name>Solicitor</name>
 	<description>A tool for rule based checking of license conditions in software projects.</description>
 	<parent>
@@ -218,6 +218,25 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-javadoc-plugin</artifactId>
+<!--         		<version>3.1.1</version>  --> 
+       			  <executions>
+	                <execution>
+	                    <goals>
+	                        <goal>javadoc</goal>
+	                    </goals>
+	                    <id>default_javadoc</id>
+	                    <phase>package</phase>
+	                </execution>
+           		 </executions>
+        		<configuration>
+        			<show>private</show>
+        			<force>true</force>
+        			<fixTags>param,return,throws,link</fixTags>
+        		</configuration>
+      		</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

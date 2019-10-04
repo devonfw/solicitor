@@ -4,6 +4,9 @@
 
 package com.devonfw.tools.solicitor.model.masterdata;
 
+/**
+ * The GoToMarketModel.
+ */
 public enum GoToMarketModel {
     LICENSE
 

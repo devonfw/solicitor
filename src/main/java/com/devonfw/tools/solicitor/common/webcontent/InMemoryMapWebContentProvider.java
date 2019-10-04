@@ -9,6 +9,10 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * A {@link WebContentProvider} which tries to lookup web content in a local in
+ * memory cache.
+ */
 @Component
 public class InMemoryMapWebContentProvider implements WebContentProvider {
 
@@ -17,11 +21,20 @@ public class InMemoryMapWebContentProvider implements WebContentProvider {
 
     Map<String, String> contentMap = new TreeMap<>();
 
+    /**
+     * Constructor.
+     */
     public InMemoryMapWebContentProvider() {
 
-        // TODO Auto-generated constructor stub
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Tries to find the web content in an in memory map. If not found then it
+     * delegates to {@link ClasspathWebContentProvider}. The result will be
+     * stored in the in Memory map for further calls to the same URL.
+     */
     @Override
     public String getWebContentForUrl(String url) {
 

@@ -8,6 +8,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+/**
+ * Java representation of License in the Maven XML data file.
+ */
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class License {
     @XmlElement(name = "name")
@@ -20,6 +24,16 @@ public class License {
     private String distribution;
 
     /**
+     * This method gets the field <tt>distribution</tt>.
+     *
+     * @return the field distribution
+     */
+    public String getDistribution() {
+
+        return distribution;
+    }
+
+    /**
      * This method gets the field <tt>name</tt>.
      *
      * @return the field name
@@ -27,16 +41,6 @@ public class License {
     public String getName() {
 
         return name;
-    }
-
-    /**
-     * This method sets the field <tt>name</tt>.
-     *
-     * @param name the new value of the field name
-     */
-    public void setName(String name) {
-
-        this.name = name;
     }
 
     /**
@@ -50,26 +54,6 @@ public class License {
     }
 
     /**
-     * This method sets the field <tt>url</tt>.
-     *
-     * @param url the new value of the field url
-     */
-    public void setUrl(String url) {
-
-        this.url = url;
-    }
-
-    /**
-     * This method gets the field <tt>distribution</tt>.
-     *
-     * @return the field distribution
-     */
-    public String getDistribution() {
-
-        return distribution;
-    }
-
-    /**
      * This method sets the field <tt>distribution</tt>.
      *
      * @param distribution the new value of the field distribution
@@ -77,6 +61,26 @@ public class License {
     public void setDistribution(String distribution) {
 
         this.distribution = distribution;
+    }
+
+    /**
+     * This method sets the field <tt>name</tt>.
+     *
+     * @param name the new value of the field name
+     */
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    /**
+     * This method sets the field <tt>url</tt>.
+     *
+     * @param url the new value of the field url
+     */
+    public void setUrl(String url) {
+
+        this.url = url;
     }
 
 }

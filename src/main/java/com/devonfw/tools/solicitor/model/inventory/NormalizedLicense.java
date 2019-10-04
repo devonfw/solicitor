@@ -1,14 +1,31 @@
 package com.devonfw.tools.solicitor.model.inventory;
 
+/**
+ * Represents a NormalizedLicense in the Solicitor data model.
+ */
+
 public interface NormalizedLicense {
 
-    String getDeclaredLicenseContent();
+    /**
+     * This method gets the field <tt>applicationComponent</tt>.
+     *
+     * @return the field applicationComponent
+     */
+    ApplicationComponent getApplicationComponent();
 
-    String getEffectiveNormalizedLicenseContent();
+    /**
+     * This method gets the field <tt>comments</tt>.
+     *
+     * @return the field comments
+     */
+    String getComments();
 
-    String getLicenseRefContent();
-
-    void setApplicationComponent(ApplicationComponent applicationComponent);
+    /**
+     * This method gets the field <tt>copyLeft</tt>.
+     *
+     * @return the field copyLeft
+     */
+    String getCopyLeft();
 
     /**
      * This method gets the field <tt>declaredLicense</tt>.
@@ -18,69 +35,26 @@ public interface NormalizedLicense {
     String getDeclaredLicense();
 
     /**
-     * This method sets the field <tt>declaredLicense</tt>.
+     * Gets the content referenced by {@link #getLicenseUrl()}
      *
-     * @param declaredLicense the new value of the field declaredLicense
+     * @return the referenced content.
      */
-    void setDeclaredLicense(String declaredLicense);
+    String getDeclaredLicenseContent();
 
     /**
-     * This method gets the field <tt>licenseUrl</tt>.
+     * This method gets the field <tt>effectiveNormalizedLicense</tt>.
      *
-     * @return the field licenseUrl
+     * @return the field effectiveNormalizedLicense
      */
-    String getLicenseUrl();
+    String getEffectiveNormalizedLicense();
 
     /**
-     * This method sets the field <tt>licenseUrl</tt>.
+     * Gets the content referenced by
+     * {@link #getEffectiveNormalizedLicenseUrl()}
      *
-     * @param licenseUrl the new value of the field licenseUrl
+     * @return the referenced content.
      */
-    void setLicenseUrl(String licenseUrl);
-
-    /**
-     * This method gets the field <tt>normalizedLicenseType</tt>.
-     *
-     * @return the field normalizedLicenseType
-     */
-    String getNormalizedLicenseType();
-
-    /**
-     * This method sets the field <tt>normalizedLicenseType</tt>.
-     *
-     * @param normalizedLicenseType the new value of the field
-     *        normalizedLicenseType
-     */
-    void setNormalizedLicenseType(String normalizedLicenseType);
-
-    /**
-     * This method gets the field <tt>normalizedLicense</tt>.
-     *
-     * @return the field normalizedLicense
-     */
-    String getNormalizedLicense();
-
-    /**
-     * This method sets the field <tt>normalizedLicense</tt>.
-     *
-     * @param normalizedLicense the new value of the field normalizedLicense
-     */
-    void setNormalizedLicense(String normalizedLicense);
-
-    /**
-     * This method gets the field <tt>normalizedLicenseUrl</tt>.
-     *
-     * @return the field normalizedLicenseUrl
-     */
-    String getNormalizedLicenseUrl();
-
-    /**
-     * This method sets the field <tt>normalizedLicenseUrl</tt>.
-     *
-     * @param normalizedLicenseUrl the new value of the field
-     *        normalizedLicenseUrl
-     */
-    void setNormalizedLicenseUrl(String normalizedLicenseUrl);
+    String getEffectiveNormalizedLicenseContent();
 
     /**
      * This method gets the field <tt>effectiveNormalizedLicenseType</tt>.
@@ -90,20 +64,138 @@ public interface NormalizedLicense {
     String getEffectiveNormalizedLicenseType();
 
     /**
-     * This method sets the field <tt>effectiveNormalizedLicenseType</tt>.
+     * This method gets the field <tt>effectiveNormalizedLicenseUrl</tt>.
      *
-     * @param effectiveNormalizedLicenseType the new value of the field
-     *        effectiveNormalizedLicenseType
+     * @return the field effectiveNormalizedLicenseUrl
      */
-    void setEffectiveNormalizedLicenseType(
-            String effectiveNormalizedLicenseType);
+    String getEffectiveNormalizedLicenseUrl();
 
     /**
-     * This method gets the field <tt>effectiveNormalizedLicense</tt>.
+     * This method gets the field <tt>includeLicense</tt>.
      *
-     * @return the field effectiveNormalizedLicense
+     * @return the field includeLicense
      */
-    String getEffectiveNormalizedLicense();
+    String getIncludeLicense();
+
+    /**
+     * This method gets the field <tt>includeSource</tt>.
+     *
+     * @return the field includeSource
+     */
+    String getIncludeSource();
+
+    /**
+     * This method gets the field <tt>legalApproved</tt>.
+     *
+     * @return the field legalApproved
+     */
+    String getLegalApproved();
+
+    /**
+     * This method gets the field <tt>legalComments</tt>.
+     *
+     * @return the field legalComments
+     */
+    String getLegalComments();
+
+    /**
+     * This method gets the field <tt>legalPreApproved</tt>.
+     *
+     * @return the field legalPreApproved
+     */
+    String getLegalPreApproved();
+
+    /**
+     * This method gets the field <tt>licenseCompliance</tt>.
+     *
+     * @return the field licenseCompliance
+     */
+    String getLicenseCompliance();
+
+    /**
+     * Gets the content referenced by {@link #getLicenseRefUrl()}
+     *
+     * @return the referenced content.
+     */
+    String getLicenseRefContent();
+
+    /**
+     * This method gets the field <tt>licenseRefUrl</tt>.
+     *
+     * @return the field licenseRefUrl
+     */
+    String getLicenseRefUrl();
+
+    /**
+     * This method gets the field <tt>licenseUrl</tt>.
+     *
+     * @return the field licenseUrl
+     */
+    String getLicenseUrl();
+
+    /**
+     * This method gets the field <tt>normalizedLicense</tt>.
+     *
+     * @return the field normalizedLicense
+     */
+    String getNormalizedLicense();
+
+    /**
+     * This method gets the field <tt>normalizedLicenseType</tt>.
+     *
+     * @return the field normalizedLicenseType
+     */
+    String getNormalizedLicenseType();
+
+    /**
+     * This method gets the field <tt>normalizedLicenseUrl</tt>.
+     *
+     * @return the field normalizedLicenseUrl
+     */
+    String getNormalizedLicenseUrl();
+
+    /**
+     * This method gets the field <tt>reviewedForRelease</tt>.
+     *
+     * @return the field reviewedForRelease
+     */
+    String getReviewedForRelease();
+
+    /**
+     * This method gets the field <tt>trace</tt>.
+     *
+     * @return the field trace
+     */
+    String getTrace();
+
+    /**
+     * Set the {@link ApplicationComponent} to which the
+     * {@link NormalizedLicense} belongs.
+     *
+     * @param applicationComponent the parent of this object
+     */
+    void setApplicationComponent(ApplicationComponent applicationComponent);
+
+    /**
+     * This method sets the field <tt>comments</tt>.
+     *
+     * @param comments the new value of the field comments
+     */
+    void setComments(String comments);
+
+    /**
+     * This method sets the field <tt>copyLeft</tt>.
+     *
+     * @param copyLeft the new value of the field copyLeft
+     */
+    void setCopyLeft(String copyLeft);
+
+    /**
+     * This method sets the field <tt>declaredLicense</tt>.
+     *
+     * @param declaredLicense the new value of the field declaredLicense
+     */
+    void setDeclaredLicense(String declaredLicense);
 
     /**
      * This method sets the field <tt>effectiveNormalizedLicense</tt>.
@@ -114,11 +206,12 @@ public interface NormalizedLicense {
     void setEffectiveNormalizedLicense(String effectiveNormalizedLicense);
 
     /**
-     * This method gets the field <tt>effectiveNormalizedLicenseUrl</tt>.
+     * This method sets the field <tt>effectiveNormalizedLicenseType</tt>.
      *
-     * @return the field effectiveNormalizedLicenseUrl
+     * @param effectiveNormalizedLicenseType the new value of the field
+     *        effectiveNormalizedLicenseType
      */
-    String getEffectiveNormalizedLicenseUrl();
+    void setEffectiveNormalizedLicenseType(String effectiveNormalizedLicenseType);
 
     /**
      * This method sets the field <tt>effectiveNormalizedLicenseUrl</tt>.
@@ -129,81 +222,11 @@ public interface NormalizedLicense {
     void setEffectiveNormalizedLicenseUrl(String effectiveNormalizedLicenseUrl);
 
     /**
-     * This method gets the field <tt>legalPreApproved</tt>.
-     *
-     * @return the field legalPreApproved
-     */
-    String getLegalPreApproved();
-
-    /**
-     * This method sets the field <tt>legalPreApproved</tt>.
-     *
-     * @param legalPreApproved the new value of the field legalPreApproved
-     */
-    void setLegalPreApproved(String legalPreApproved);
-
-    /**
-     * This method gets the field <tt>copyLeft</tt>.
-     *
-     * @return the field copyLeft
-     */
-    String getCopyLeft();
-
-    /**
-     * This method sets the field <tt>copyLeft</tt>.
-     *
-     * @param copyLeft the new value of the field copyLeft
-     */
-    void setCopyLeft(String copyLeft);
-
-    /**
-     * This method gets the field <tt>licenseCompliance</tt>.
-     *
-     * @return the field licenseCompliance
-     */
-    String getLicenseCompliance();
-
-    /**
-     * This method sets the field <tt>licenseCompliance</tt>.
-     *
-     * @param licenseCompliance the new value of the field licenseCompliance
-     */
-    void setLicenseCompliance(String licenseCompliance);
-
-    /**
-     * This method gets the field <tt>licenseRefUrl</tt>.
-     *
-     * @return the field licenseRefUrl
-     */
-    String getLicenseRefUrl();
-
-    /**
-     * This method sets the field <tt>licenseRefUrl</tt>.
-     *
-     * @param licenseRefUrl the new value of the field licenseRefUrl
-     */
-    void setLicenseRefUrl(String licenseRefUrl);
-
-    /**
-     * This method gets the field <tt>includeLicense</tt>.
-     *
-     * @return the field includeLicense
-     */
-    String getIncludeLicense();
-
-    /**
      * This method sets the field <tt>includeLicense</tt>.
      *
      * @param includeLicense the new value of the field includeLicense
      */
     void setIncludeLicense(String includeLicense);
-
-    /**
-     * This method gets the field <tt>includeSource</tt>.
-     *
-     * @return the field includeSource
-     */
-    String getIncludeSource();
 
     /**
      * This method sets the field <tt>includeSource</tt>.
@@ -213,53 +236,11 @@ public interface NormalizedLicense {
     void setIncludeSource(String includeSource);
 
     /**
-     * This method gets the field <tt>reviewedForRelease</tt>.
-     *
-     * @return the field reviewedForRelease
-     */
-    String getReviewedForRelease();
-
-    /**
-     * This method sets the field <tt>reviewedForRelease</tt>.
-     *
-     * @param reviewedForRelease the new value of the field reviewedForRelease
-     */
-    void setReviewedForRelease(String reviewedForRelease);
-
-    /**
-     * This method gets the field <tt>comments</tt>.
-     *
-     * @return the field comments
-     */
-    String getComments();
-
-    /**
-     * This method sets the field <tt>comments</tt>.
-     *
-     * @param comments the new value of the field comments
-     */
-    void setComments(String comments);
-
-    /**
-     * This method gets the field <tt>legalApproved</tt>.
-     *
-     * @return the field legalApproved
-     */
-    String getLegalApproved();
-
-    /**
      * This method sets the field <tt>legalApproved</tt>.
      *
      * @param legalApproved the new value of the field legalApproved
      */
     void setLegalApproved(String legalApproved);
-
-    /**
-     * This method gets the field <tt>legalComments</tt>.
-     *
-     * @return the field legalComments
-     */
-    String getLegalComments();
 
     /**
      * This method sets the field <tt>legalComments</tt>.
@@ -269,11 +250,62 @@ public interface NormalizedLicense {
     void setLegalComments(String legalComments);
 
     /**
-     * This method gets the field <tt>trace</tt>.
+     * This method sets the field <tt>legalPreApproved</tt>.
      *
-     * @return the field trace
+     * @param legalPreApproved the new value of the field legalPreApproved
      */
-    String getTrace();
+    void setLegalPreApproved(String legalPreApproved);
+
+    /**
+     * This method sets the field <tt>licenseCompliance</tt>.
+     *
+     * @param licenseCompliance the new value of the field licenseCompliance
+     */
+    void setLicenseCompliance(String licenseCompliance);
+
+    /**
+     * This method sets the field <tt>licenseRefUrl</tt>.
+     *
+     * @param licenseRefUrl the new value of the field licenseRefUrl
+     */
+    void setLicenseRefUrl(String licenseRefUrl);
+
+    /**
+     * This method sets the field <tt>licenseUrl</tt>.
+     *
+     * @param licenseUrl the new value of the field licenseUrl
+     */
+    void setLicenseUrl(String licenseUrl);
+
+    /**
+     * This method sets the field <tt>normalizedLicense</tt>.
+     *
+     * @param normalizedLicense the new value of the field normalizedLicense
+     */
+    void setNormalizedLicense(String normalizedLicense);
+
+    /**
+     * This method sets the field <tt>normalizedLicenseType</tt>.
+     *
+     * @param normalizedLicenseType the new value of the field
+     *        normalizedLicenseType
+     */
+    void setNormalizedLicenseType(String normalizedLicenseType);
+
+    /**
+     * This method sets the field <tt>normalizedLicenseUrl</tt>.
+     *
+     * @param normalizedLicenseUrl the new value of the field
+     *        normalizedLicenseUrl
+     */
+    void setNormalizedLicenseUrl(String normalizedLicenseUrl);
+
+    /**
+     * This method sets the field <tt>reviewedForRelease</tt>.
+     *
+     * @param reviewedForRelease the new value of the field reviewedForRelease
+     */
+    void setReviewedForRelease(String reviewedForRelease);
 
     /**
      * This method sets the field <tt>trace</tt>.
@@ -281,12 +313,5 @@ public interface NormalizedLicense {
      * @param trace the new value of the field trace
      */
     void setTrace(String trace);
-
-    /**
-     * This method gets the field <tt>applicationComponent</tt>.
-     *
-     * @return the field applicationComponent
-     */
-    ApplicationComponent getApplicationComponent();
 
 }

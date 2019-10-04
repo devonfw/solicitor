@@ -10,21 +10,18 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.devonfw.tools.solicitor.common.webcontent.HttpWebContentProvider;
+import com.devonfw.tools.solicitor.common.webcontent.DirectUrlWebContentProvider;
 
 public class CachingLicenseContentProviderImplTests {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(CachingLicenseContentProviderImplTests.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CachingLicenseContentProviderImplTests.class);
 
     @Test
     public void readFile() {
 
-        HttpWebContentProvider licenseContentProvider =
-                new HttpWebContentProvider();
+        DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider();
 
-        String result = licenseContentProvider.getWebContentForUrl(
-                "http://www.apache.org/licenses/LICENSE-2.0.txt");
+        String result = licenseContentProvider.getWebContentForUrl("http://www.apache.org/licenses/LICENSE-2.0.txt");
         LOG.debug(result);
         assertNotNull(result);
     }

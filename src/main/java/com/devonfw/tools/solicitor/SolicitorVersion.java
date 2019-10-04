@@ -23,6 +23,9 @@ public class SolicitorVersion {
 
     private String builddate;
 
+    /**
+     * Constructor.
+     */
     public SolicitorVersion() {
 
     }
@@ -38,13 +41,13 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>version</tt>.
+     * This method gets the field <tt>builddate</tt>.
      *
-     * @return the field version
+     * @return the field builddate
      */
-    public String getVersion() {
+    public String getBuilddate() {
 
-        return version;
+        return builddate;
     }
 
     /**
@@ -58,13 +61,13 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>builddate</tt>.
+     * This method gets the field <tt>version</tt>.
      *
-     * @return the field builddate
+     * @return the field version
      */
-    public String getBuilddate() {
+    public String getVersion() {
 
-        return builddate;
+        return version;
     }
 
     /**
@@ -78,13 +81,13 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method sets the field <tt>version</tt>.
+     * This method sets the field <tt>builddate</tt>.
      *
-     * @param version the new value of the field version
+     * @param builddate the new value of the field builddate
      */
-    public void setVersion(String version) {
+    public void setBuilddate(String builddate) {
 
-        this.version = version;
+        this.builddate = builddate;
     }
 
     /**
@@ -98,13 +101,13 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method sets the field <tt>builddate</tt>.
+     * This method sets the field <tt>version</tt>.
      *
-     * @param builddate the new value of the field builddate
+     * @param version the new value of the field version
      */
-    public void setBuilddate(String builddate) {
+    public void setVersion(String version) {
 
-        this.builddate = builddate;
+        this.version = version;
     }
 
 }

@@ -13,17 +13,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * A {@link WebContentProvider} which tries to load the web content directly via
+ * the given URL.
+ */
 @Component
-public class HttpWebContentProvider implements WebContentProvider {
+public class DirectUrlWebContentProvider implements WebContentProvider {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(HttpWebContentProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DirectUrlWebContentProvider.class);
 
-    public HttpWebContentProvider() {
+    /**
+     * Constructor.
+     */
+    public DirectUrlWebContentProvider() {
 
-        // TODO Auto-generated constructor stub
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * Directly tries to access the given URL via the web.
+     */
     @Override
     public String getWebContentForUrl(String url) {
 
@@ -38,8 +48,7 @@ public class HttpWebContentProvider implements WebContentProvider {
             return null;
         }
 
-        try (InputStream is = webContentUrl.openConnection().getInputStream();
-                Scanner s = new Scanner(is)) {
+        try (InputStream is = webContentUrl.openConnection().getInputStream(); Scanner s = new Scanner(is)) {
             s.useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
             return result;

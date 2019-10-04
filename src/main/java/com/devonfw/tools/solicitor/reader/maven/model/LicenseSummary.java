@@ -12,6 +12,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Java representation of LicenseSummary in the Maven XML data file.
+ */
+
 @XmlRootElement(name = "licenseSummary")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LicenseSummary {

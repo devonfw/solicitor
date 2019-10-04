@@ -5,8 +5,12 @@
 package com.devonfw.tools.solicitor.config;
 
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.devonfw.tools.solicitor.reader.Reader;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Represents the configuration of a {@link Reader} in JSON format.
+ */
 public class ReaderConfig {
     @JsonProperty
     private String type;
@@ -16,6 +20,16 @@ public class ReaderConfig {
 
     @JsonProperty
     private UsagePattern usagePattern;
+
+    /**
+     * This method gets the field <tt>source</tt>.
+     *
+     * @return the field source
+     */
+    public String getSource() {
+
+        return source;
+    }
 
     /**
      * This method gets the field <tt>type</tt>.
@@ -28,23 +42,13 @@ public class ReaderConfig {
     }
 
     /**
-     * This method sets the field <tt>type</tt>.
+     * This method gets the field <tt>usagePattern</tt>.
      *
-     * @param type the new value of the field type
+     * @return the field usagePattern
      */
-    public void setType(String type) {
+    public UsagePattern getUsagePattern() {
 
-        this.type = type;
-    }
-
-    /**
-     * This method gets the field <tt>source</tt>.
-     *
-     * @return the field source
-     */
-    public String getSource() {
-
-        return source;
+        return usagePattern;
     }
 
     /**
@@ -58,13 +62,13 @@ public class ReaderConfig {
     }
 
     /**
-     * This method gets the field <tt>usagePattern</tt>.
+     * This method sets the field <tt>type</tt>.
      *
-     * @return the field usagePattern
+     * @param type the new value of the field type
      */
-    public UsagePattern getUsagePattern() {
+    public void setType(String type) {
 
-        return usagePattern;
+        this.type = type;
     }
 
     /**

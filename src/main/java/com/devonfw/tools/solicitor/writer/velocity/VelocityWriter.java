@@ -18,17 +18,28 @@ import org.apache.velocity.tools.generic.EscapeTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.SolicitorRuntimeException;
-import com.devonfw.tools.solicitor.common.DataTable;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.writer.Writer;
+import com.devonfw.tools.solicitor.writer.data.DataTable;
 
+/**
+ * A {@link Writer} which uses a
+ * <a href="http://velocity.apache.org/">Velocity</a> template to create the
+ * report.
+ */
 @Component
 public class VelocityWriter implements Writer {
 
     @Autowired
     private InputStreamFactory inputStreamFactory;
+
+    /**
+     * {@inheritDoc}
+     * 
+     * Accepted type is "velo".
+     */
 
     @Override
     public boolean accept(String type) {
@@ -37,18 +48,13 @@ public class VelocityWriter implements Writer {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * This function will generate a report based on the given velocity
      * template.
-     * 
-     * @param templateSource full path to the template (given in the config
-     *        file)
-     * @param target file the report will be written to (given in the config
-     *        file)
-     * @param dataTables
      */
     @Override
-    public void writeReport(String templateSource, String target,
-            Map<String, DataTable> dataTables) {
+    public void writeReport(String templateSource, String target, Map<String, DataTable> dataTables) {
 
         // initialize velocity runtime engine
         Velocity.init();
@@ -65,24 +71,20 @@ public class VelocityWriter implements Writer {
         // springboot)
 
         String templateString;
-        try (InputStream inp =
-                inputStreamFactory.createInputStreamFor(templateSource)) {
+        try (InputStream inp = inputStreamFactory.createInputStreamFor(templateSource)) {
             templateString = IOHelper.readStringFromInputStream(inp);
 
         } catch (IOException e) {
-            throw new SolicitorRuntimeException(
-                    "Reading of template for Velocity report failed", e);
+            throw new SolicitorRuntimeException("Reading of template for Velocity report failed", e);
         }
 
         // write output
         File file = new File(target);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            Velocity.evaluate(context, writer, "solicitor report velocity",
-                    templateString);
+            Velocity.evaluate(context, writer, "solicitor report velocity", templateString);
             writer.flush();
         } catch (IOException e) {
-            throw new SolicitorRuntimeException(
-                    "Processing of velocity report failed", e);
+            throw new SolicitorRuntimeException("Processing of velocity report failed", e);
         }
 
     }

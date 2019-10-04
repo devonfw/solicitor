@@ -5,9 +5,32 @@ import java.util.List;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
+/**
+ * Represents an ApplicationComponent in the Solicitor data model.
+ */
 public interface ApplicationComponent {
 
-    void setApplication(Application application);
+    /**
+     * Adds the given
+     * {@link com.devonfw.tools.solicitor.model.inventory.NormalizedLicense} to
+     * this ApplicationComponent.
+     *
+     * @param normalizedLicense a
+     *        {@link com.devonfw.tools.solicitor.model.inventory.NormalizedLicense}
+     *        object.
+     */
+    void addNormalizedLicense(NormalizedLicense normalizedLicense);
+
+    /**
+     * Adds the given
+     * {@link com.devonfw.tools.solicitor.model.inventory.RawLicense} to this
+     * ApplicateComponent.
+     *
+     * @param rawLicense a
+     *        {@link com.devonfw.tools.solicitor.model.inventory.RawLicense}
+     *        object.
+     */
+    void addRawLicense(RawLicense rawLicense);
 
     /**
      * This method gets the field <tt>application</tt>.
@@ -17,62 +40,6 @@ public interface ApplicationComponent {
     Application getApplication();
 
     /**
-     * This method gets the field <tt>usagePattern</tt>.
-     *
-     * @return the field usagePattern
-     */
-    UsagePattern getUsagePattern();
-
-    /**
-     * This method sets the field <tt>usagePattern</tt>.
-     *
-     * @param usagePattern the new value of the field usagePattern
-     */
-    void setUsagePattern(UsagePattern usagePattern);
-
-    /**
-     * This method gets the field <tt>ossModified</tt>.
-     *
-     * @return the field ossModified
-     */
-    boolean isOssModified();
-
-    /**
-     * This method sets the field <tt>ossModified</tt>.
-     *
-     * @param ossModified the new value of the field ossModified
-     */
-    void setOssModified(boolean ossModified);
-
-    /**
-     * This method gets the field <tt>ossHomepage</tt>.
-     *
-     * @return the field ossHomepage
-     */
-    String getOssHomepage();
-
-    /**
-     * This method sets the field <tt>ossHomepage</tt>.
-     *
-     * @param ossHomepage the new value of the field ossHomepage
-     */
-    void setOssHomepage(String ossHomepage);
-
-    /**
-     * This method gets the field <tt>groupId</tt>.
-     *
-     * @return the field groupId
-     */
-    String getGroupId();
-
-    /**
-     * This method sets the field <tt>groupId</tt>.
-     *
-     * @param groupId the new value of the field groupId
-     */
-    void setGroupId(String groupId);
-
-    /**
      * This method gets the field <tt>artifactId</tt>.
      *
      * @return the field artifactId
@@ -80,25 +47,11 @@ public interface ApplicationComponent {
     String getArtifactId();
 
     /**
-     * This method sets the field <tt>artifactId</tt>.
+     * This method gets the field <tt>groupId</tt>.
      *
-     * @param artifactId the new value of the field artifactId
+     * @return the field groupId
      */
-    void setArtifactId(String artifactId);
-
-    /**
-     * This method gets the field <tt>version</tt>.
-     *
-     * @return the field version
-     */
-    String getVersion();
-
-    /**
-     * This method sets the field <tt>version</tt>.
-     *
-     * @param version the new value of the field version
-     */
-    void setVersion(String version);
+    String getGroupId();
 
     /**
      * This method gets an unmodifiable copy of the field
@@ -109,11 +62,11 @@ public interface ApplicationComponent {
     List<NormalizedLicense> getNormalizedLicenses();
 
     /**
-     * Adds the given {@link NormalizedLicense} to this ApplicationComponent.
+     * This method gets the field <tt>ossHomepage</tt>.
      *
-     * @param normalizedLicense
+     * @return the field ossHomepage
      */
-    void addNormalizedLicense(NormalizedLicense normalizedLicense);
+    String getOssHomepage();
 
     /**
      * This method gets an unmodifiable copy of the field <tt>rawLicenses</tt>.
@@ -123,10 +76,74 @@ public interface ApplicationComponent {
     List<RawLicense> getRawLicenses();
 
     /**
-     * Adds the given {@link RawLicense} to this ApplicateComponent.
+     * This method gets the field <tt>usagePattern</tt>.
      *
-     * @param rawLicense
+     * @return the field usagePattern
      */
-    void addRawLicense(RawLicense rawLicense);
+    UsagePattern getUsagePattern();
+
+    /**
+     * This method gets the field <tt>version</tt>.
+     *
+     * @return the field version
+     */
+    String getVersion();
+
+    /**
+     * This method gets the field <tt>ossModified</tt>.
+     *
+     * @return the field ossModified
+     */
+    boolean isOssModified();
+
+    /**
+     * Sets the {@link Application}.
+     *
+     * @param application the application to which this
+     *        {@link ApplicationComponent} belongs to.
+     */
+    void setApplication(Application application);
+
+    /**
+     * This method sets the field <tt>artifactId</tt>.
+     *
+     * @param artifactId the new value of the field artifactId
+     */
+    void setArtifactId(String artifactId);
+
+    /**
+     * This method sets the field <tt>groupId</tt>.
+     *
+     * @param groupId the new value of the field groupId
+     */
+    void setGroupId(String groupId);
+
+    /**
+     * This method sets the field <tt>ossHomepage</tt>.
+     *
+     * @param ossHomepage the new value of the field ossHomepage
+     */
+    void setOssHomepage(String ossHomepage);
+
+    /**
+     * This method sets the field <tt>ossModified</tt>.
+     *
+     * @param ossModified the new value of the field ossModified
+     */
+    void setOssModified(boolean ossModified);
+
+    /**
+     * This method sets the field <tt>usagePattern</tt>.
+     *
+     * @param usagePattern the new value of the field usagePattern
+     */
+    void setUsagePattern(UsagePattern usagePattern);
+
+    /**
+     * This method sets the field <tt>version</tt>.
+     *
+     * @param version the new value of the field version
+     */
+    void setVersion(String version);
 
 }

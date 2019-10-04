@@ -8,15 +8,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
+import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class ApplicationImpl extends AbstractDataRowSource
-        implements DataRowSource, Application {
+/**
+ * Implementation of the {@link Application} model object interface.
+ */
+public class ApplicationImpl extends AbstractModelObject implements Application {
     private String name;
 
     private String releaseId;
@@ -27,13 +28,21 @@ public class ApplicationImpl extends AbstractDataRowSource
 
     private String programmingEcosystem;
 
-    private List<ApplicationComponent> applicationComponents =
-            new ArrayList<>();
+    private List<ApplicationComponent> applicationComponents = new ArrayList<>();
 
     private Engagement engagement;
 
-    public ApplicationImpl(String name, String releaseId, String releaseDate,
-            String sourceRepo, String programmingEcosystem) {
+    /**
+     * Constructor.
+     *
+     * @param name the application name
+     * @param releaseId the release id.
+     * @param releaseDate the date of the release.
+     * @param sourceRepo pointer to the source repo
+     * @param programmingEcosystem name of the programming ecosystem
+     */
+    public ApplicationImpl(String name, String releaseId, String releaseDate, String sourceRepo,
+            String programmingEcosystem) {
 
         super();
         this.name = name;
@@ -43,158 +52,128 @@ public class ApplicationImpl extends AbstractDataRowSource
         this.programmingEcosystem = programmingEcosystem;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void setEngagement(Engagement engagement) {
+    public void addApplicationComponent(ApplicationComponent applicationComponent) {
 
-        if (this.engagement != null) {
-            throw new IllegalStateException(
-                    "Once the EngagementImpl is set it can not be changed");
-        }
-        this.engagement = engagement;
-        engagement.addApplication(this);
+        this.applicationComponents.add(applicationComponent);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public String[] getHeadElements() {
+    protected Engagement doGetParent() {
 
-        return new String[] { "applicationName", "releaseId", "releaseDate",
-        "sourceRepo", "programmingEcosystem" };
+        return engagement;
     }
 
-    @Override
-    public String[] getDataElements() {
-
-        return new String[] { name, releaseId, releaseDate, sourceRepo,
-        programmingEcosystem };
-    }
-
-    @Override
-    public AbstractDataRowSource getParent() {
-
-        // TODO: How to avoid casting?
-        return (AbstractDataRowSource) engagement;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName() {
-
-        return name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setName(String name) {
-
-        this.name = name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getReleaseId() {
-
-        return releaseId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setReleaseId(String releaseId) {
-
-        this.releaseId = releaseId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getReleaseDate() {
-
-        return releaseDate;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setReleaseDate(String releaseDate) {
-
-        this.releaseDate = releaseDate;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getSourceRepo() {
-
-        return sourceRepo;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSourceRepo(String sourceRepo) {
-
-        this.sourceRepo = sourceRepo;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getProgrammingEcosystem() {
-
-        return programmingEcosystem;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setProgrammingEcosystem(String programmingEcosystem) {
-
-        this.programmingEcosystem = programmingEcosystem;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public List<ApplicationComponent> getApplicationComponents() {
 
         return Collections.unmodifiableList(applicationComponents);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void addApplicationComponent(
-            ApplicationComponent applicationComponent) {
+    public String[] getDataElements() {
 
-        this.applicationComponents.add(applicationComponent);
+        return new String[] { name, releaseId, releaseDate, sourceRepo, programmingEcosystem };
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     @JsonIgnore
     public Engagement getEngagement() {
 
         return engagement;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String[] getHeadElements() {
+
+        return new String[] { "applicationName", "releaseId", "releaseDate", "sourceRepo", "programmingEcosystem" };
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName() {
+
+        return name;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getProgrammingEcosystem() {
+
+        return programmingEcosystem;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getReleaseDate() {
+
+        return releaseDate;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getReleaseId() {
+
+        return releaseId;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getSourceRepo() {
+
+        return sourceRepo;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setEngagement(Engagement engagement) {
+
+        if (this.engagement != null) {
+            throw new IllegalStateException("Once the EngagementImpl is set it can not be changed");
+        }
+        this.engagement = engagement;
+        engagement.addApplication(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setProgrammingEcosystem(String programmingEcosystem) {
+
+        this.programmingEcosystem = programmingEcosystem;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setReleaseDate(String releaseDate) {
+
+        this.releaseDate = releaseDate;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setReleaseId(String releaseId) {
+
+        this.releaseId = releaseId;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSourceRepo(String sourceRepo) {
+
+        this.sourceRepo = sourceRepo;
     }
 
 }

@@ -11,6 +11,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+/**
+ * Java representation of Dependency in the Maven XML data file.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Dependency {
 
@@ -28,26 +31,6 @@ public class Dependency {
     private ArrayList<License> licenses;
 
     /**
-     * This method gets the field <tt>groupId</tt>.
-     *
-     * @return the field groupId
-     */
-    public String getGroupId() {
-
-        return groupId;
-    }
-
-    /**
-     * This method sets the field <tt>groupId</tt>.
-     *
-     * @param groupId the new value of the field groupId
-     */
-    public void setGroupId(String groupId) {
-
-        this.groupId = groupId;
-    }
-
-    /**
      * This method gets the field <tt>artifactId</tt>.
      *
      * @return the field artifactId
@@ -58,33 +41,13 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>artifactId</tt>.
+     * This method gets the field <tt>groupId</tt>.
      *
-     * @param artifactId the new value of the field artifactId
+     * @return the field groupId
      */
-    public void setArtifactId(String artifactId) {
+    public String getGroupId() {
 
-        this.artifactId = artifactId;
-    }
-
-    /**
-     * This method gets the field <tt>version</tt>.
-     *
-     * @return the field version
-     */
-    public String getVersion() {
-
-        return version;
-    }
-
-    /**
-     * This method sets the field <tt>version</tt>.
-     *
-     * @param version the new value of the field version
-     */
-    public void setVersion(String version) {
-
-        this.version = version;
+        return groupId;
     }
 
     /**
@@ -98,6 +61,36 @@ public class Dependency {
     }
 
     /**
+     * This method gets the field <tt>version</tt>.
+     *
+     * @return the field version
+     */
+    public String getVersion() {
+
+        return version;
+    }
+
+    /**
+     * This method sets the field <tt>artifactId</tt>.
+     *
+     * @param artifactId the new value of the field artifactId
+     */
+    public void setArtifactId(String artifactId) {
+
+        this.artifactId = artifactId;
+    }
+
+    /**
+     * This method sets the field <tt>groupId</tt>.
+     *
+     * @param groupId the new value of the field groupId
+     */
+    public void setGroupId(String groupId) {
+
+        this.groupId = groupId;
+    }
+
+    /**
      * This method sets the field <tt>licenses</tt>.
      *
      * @param licenses the new value of the field licenses
@@ -105,5 +98,15 @@ public class Dependency {
     public void setLicenses(ArrayList<License> licenses) {
 
         this.licenses = licenses;
+    }
+
+    /**
+     * This method sets the field <tt>version</tt>.
+     *
+     * @param version the new value of the field version
+     */
+    public void setVersion(String version) {
+
+        this.version = version;
     }
 }

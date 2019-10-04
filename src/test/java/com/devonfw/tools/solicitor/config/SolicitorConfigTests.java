@@ -14,11 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.devonfw.tools.solicitor.config.ApplicationConfig;
-import com.devonfw.tools.solicitor.config.ReaderConfig;
-import com.devonfw.tools.solicitor.config.RuleConfig;
-import com.devonfw.tools.solicitor.config.SolicitorConfig;
-import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -36,8 +31,7 @@ public class SolicitorConfigTests {
     }
 
     @Test
-    public void writeAndReadConfig()
-            throws JsonGenerationException, JsonMappingException, IOException {
+    public void writeAndReadConfig() throws JsonGenerationException, JsonMappingException, IOException {
 
         SolicitorConfig solicitorConfig = new SolicitorConfig();
         solicitorConfig.setEngagementName("TestProject");
@@ -52,8 +46,7 @@ public class SolicitorConfigTests {
         applicationConfig.setName("testApplication");
         applicationConfig.setProgrammingEcosystem("Java8");
         applicationConfig.setReleaseId("0.0.1-RELEASE");
-        applicationConfig
-                .setSourceRepo("https://github.com/ohecker/solicitor.git");
+        applicationConfig.setSourceRepo("https://github.com/ohecker/solicitor.git");
 
         ReaderConfig readerConfig = new ReaderConfig();
         readerConfig.setType("maven");
@@ -68,8 +61,7 @@ public class SolicitorConfigTests {
 
         WriterConfig writerConfig = new WriterConfig();
         writerConfig.setType("xls");
-        writerConfig
-                .setTemplateSource("OSS-Inventory-Template-Test_20190414.xlsx");
+        writerConfig.setTemplateSource("OSS-Inventory-Template-Test_20190414.xlsx");
         writerConfig.setTarget("OSS-Inventory_generated.xlsx");
         writerConfig.setDescription("The XLS OSS-Inventory document");
         Map<String, String> dataTables = new HashMap<>();
@@ -82,10 +74,8 @@ public class SolicitorConfigTests {
         solicitorConfig.getRules().add(ruleConfig);
         solicitorConfig.getWriters().add(writerConfig);
 
-        ObjectMapper objectMapper =
-                new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.writeValue(new File("target/solicitor_gen.cfg"),
-                solicitorConfig);
+        ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.writeValue(new File("target/solicitor_gen.cfg"), solicitorConfig);
 
     }
 

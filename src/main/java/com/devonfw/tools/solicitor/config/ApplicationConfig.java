@@ -9,6 +9,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Represents the configuration of an application in JSON format.
+ */
 public class ApplicationConfig {
 
     @JsonProperty
@@ -37,13 +40,23 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method sets the field <tt>name</tt>.
+     * This method gets the field <tt>programmingEcosystem</tt>.
      *
-     * @param name the new value of the field name
+     * @return the field programmingEcosystem
      */
-    public void setName(String name) {
+    public String getProgrammingEcosystem() {
 
-        this.name = name;
+        return programmingEcosystem;
+    }
+
+    /**
+     * This method gets the field <tt>readers</tt>.
+     *
+     * @return the field readers
+     */
+    public List<ReaderConfig> getReaders() {
+
+        return readers;
     }
 
     /**
@@ -57,16 +70,6 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method sets the field <tt>releaseId</tt>.
-     *
-     * @param releaseId the new value of the field releaseId
-     */
-    public void setReleaseId(String releaseId) {
-
-        this.releaseId = releaseId;
-    }
-
-    /**
      * This method gets the field <tt>sourceRepo</tt>.
      *
      * @return the field sourceRepo
@@ -77,23 +80,13 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method sets the field <tt>sourceRepo</tt>.
+     * This method sets the field <tt>name</tt>.
      *
-     * @param sourceRepo the new value of the field sourceRepo
+     * @param name the new value of the field name
      */
-    public void setSourceRepo(String sourceRepo) {
+    public void setName(String name) {
 
-        this.sourceRepo = sourceRepo;
-    }
-
-    /**
-     * This method gets the field <tt>programmingEcosystem</tt>.
-     *
-     * @return the field programmingEcosystem
-     */
-    public String getProgrammingEcosystem() {
-
-        return programmingEcosystem;
+        this.name = name;
     }
 
     /**
@@ -108,16 +101,6 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method gets the field <tt>readers</tt>.
-     *
-     * @return the field readers
-     */
-    public List<ReaderConfig> getReaders() {
-
-        return readers;
-    }
-
-    /**
      * This method sets the field <tt>readers</tt>.
      *
      * @param readers the new value of the field readers
@@ -125,5 +108,25 @@ public class ApplicationConfig {
     public void setReaders(List<ReaderConfig> readers) {
 
         this.readers = readers;
+    }
+
+    /**
+     * This method sets the field <tt>releaseId</tt>.
+     *
+     * @param releaseId the new value of the field releaseId
+     */
+    public void setReleaseId(String releaseId) {
+
+        this.releaseId = releaseId;
+    }
+
+    /**
+     * This method sets the field <tt>sourceRepo</tt>.
+     *
+     * @param sourceRepo the new value of the field sourceRepo
+     */
+    public void setSourceRepo(String sourceRepo) {
+
+        this.sourceRepo = sourceRepo;
     }
 }

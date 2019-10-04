@@ -14,37 +14,64 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.devonfw.tools.solicitor.common.UrlInputStreamFactory;
 
-public abstract class CachingWebContentProviderBase
-        implements WebContentProvider {
+import net.bytebuddy.implementation.Implementation;
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(CachingWebContentProviderBase.class);
+/**
+ * Abstract base {@link Implementation} of {@link WebContentProvider}s which
+ * first try to load the content from some cache. If they are not able to load
+ * the content from the cache they will deletate to some other
+ * {@link WebContentProvider} for further handling.
+ *
+ */
+public abstract class CachingWebContentProviderBase implements WebContentProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CachingWebContentProviderBase.class);
 
     @Autowired
     private UrlInputStreamFactory urlInputStreamFactory;
 
+    /**
+     * Constructor.
+     */
     public CachingWebContentProviderBase() {
 
-        // TODO Auto-generated constructor stub
     }
 
+    /**
+     * Determine the URL to take in the cache for loading the content.
+     *
+     * @param key the cache key of the content.
+     * @return the URL to take for looking up the content in the cache
+     */
     protected abstract String getCacheUrl(String key);
 
+    /**
+     * Calcutalte the key for the given web content URL.
+     *
+     * @param url the URL of the web content
+     * @return the cache key
+     */
     public String getKey(String url) {
 
         String result = url.replaceAll("\\W", "_");
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * Tries to load the web content from the resource fpound via the URL
+     * returned by {@link #getCacheUrl(String)}. If this doies not succeed, the
+     * delegate further processing to the
+     * {@link CachingWebContentProviderBase#loadFromNext(String)}.
+     */
     @Override
     public String getWebContentForUrl(String url) {
 
         String key = getKey(url);
         String classPathUrl = getCacheUrl(key);
 
-        try (InputStream is =
-                urlInputStreamFactory.createInputStreamFor(classPathUrl);
-                Scanner s = new Scanner(is)) {
+        try (InputStream is = urlInputStreamFactory.createInputStreamFor(classPathUrl); Scanner s = new Scanner(is)) {
             s.useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
             return result;
@@ -56,6 +83,13 @@ public abstract class CachingWebContentProviderBase
         return loadFromNext(url);
     }
 
+    /**
+     * Method for loading the requested web content from the next new
+     * {@link WebContentProvider} defined in the chain.
+     *
+     * @param url the URL of the requests web content
+     * @return the content of the web content given by the URL
+     */
     protected abstract String loadFromNext(String url);
 
 }

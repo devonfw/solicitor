@@ -10,79 +10,58 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * A builder for creating and audit/trace entry.
+ *
+ */
 public class AuditEntryBuilder implements Cloneable {
 
-    private static class StringDouble {
-        public StringDouble(String string1, String string2) {
+    /**
+     * A pair of Strings.
+     */
+    private static class StringPair {
+        public String string1;
+
+        public String string2;
+
+        public StringPair(String string1, String string2) {
 
             super();
             this.string1 = string1;
             this.string2 = string2;
         }
-
-        public String string1;
-
-        public String string2;
     }
 
-    private Map<String, String> matchings;
-
-    private Map<String, StringDouble> settings;
-
-    private String ruleName;
-
+    /**
+     * Creates a new instance.
+     *
+     * @return a builder instance
+     */
     public static AuditEntryBuilder instance() {
 
         return new AuditEntryBuilder();
     }
 
-    public AuditEntryBuilder() {
+    private Map<String, String> matchings;
+
+    private Map<String, StringPair> settings;
+
+    private String ruleName;
+
+    /**
+     * Private Constructor. Use {@link #instance()} to get an instance instead.
+     */
+    private AuditEntryBuilder() {
 
         matchings = new LinkedHashMap<>();
         settings = new LinkedHashMap<>();
     }
 
-    @Override
-    public AuditEntryBuilder clone() {
-
-        AuditEntryBuilder clone = new AuditEntryBuilder();
-        clone.matchings = new LinkedHashMap<>(matchings);
-        clone.settings = new LinkedHashMap<>(settings);
-        clone.ruleName = ruleName;
-        return clone;
-    }
-
-    public AuditEntryBuilder withRuleName(String name) {
-
-        ruleName = name;
-        return this;
-    }
-
-    public AuditEntryBuilder withMatching(String fieldName, String value) {
-
-        matchings.put(fieldName, value);
-        return this;
-    }
-
-    public AuditEntryBuilder withSetting(String fieldName, String value,
-            String comment) {
-
-        // TODO: handle comment
-        settings.put(fieldName, new StringDouble(value, comment));
-        return this;
-    }
-
-    public AuditEntryBuilder withSetting(String fieldName, String value) {
-
-        settings.put(fieldName, new StringDouble(value, null));
-        return this;
-    }
-
-    public AuditEntryBuilder nop() {
-
-        return this;
-    }
-
+    /**
+     * Builds the audit entry string from the data contained in the builder.
+     *
+     * @return The audit entry string
+     */
     public String build() {
 
         StringBuilder sb = new StringBuilder();
@@ -99,7 +78,7 @@ public class AuditEntryBuilder implements Cloneable {
         }
         sb.append("; Setting: ");
         stringList.clear();
-        for (Entry<String, StringDouble> e : settings.entrySet()) {
+        for (Entry<String, StringPair> e : settings.entrySet()) {
             String theEntry = e.getKey() + "=" + e.getValue().string1;
             String string2 = e.getValue().string2;
             if (string2 != null) {
@@ -109,6 +88,79 @@ public class AuditEntryBuilder implements Cloneable {
         }
         sb.append(String.join(", ", stringList));
         return sb.toString();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public AuditEntryBuilder clone() {
+
+        AuditEntryBuilder clone = new AuditEntryBuilder();
+        clone.matchings = new LinkedHashMap<>(matchings);
+        clone.settings = new LinkedHashMap<>(settings);
+        clone.ruleName = ruleName;
+        return clone;
+    }
+
+    /**
+     * Does nothing.
+     *
+     * @return the same builder to allow chaining
+     */
+    public AuditEntryBuilder nop() {
+
+        return this;
+    }
+
+    /**
+     * Add information about a matching field.
+     *
+     * @param fieldName the name of the matching field
+     * @param value the machting value
+     * @return the same builder to allow chaining
+     */
+    public AuditEntryBuilder withMatching(String fieldName, String value) {
+
+        matchings.put(fieldName, value);
+        return this;
+    }
+
+    /**
+     * Add a rule name.
+     *
+     * @param name the rule name to use
+     * @return the same builder to allow chaining
+     */
+    public AuditEntryBuilder withRuleName(String name) {
+
+        ruleName = name;
+        return this;
+    }
+
+    /**
+     * Add information about a field being set to some value.
+     *
+     * @param fieldName the name of the field
+     * @param value the value to which the field was set
+     * @return the same builder to allow chaining
+     */
+    public AuditEntryBuilder withSetting(String fieldName, String value) {
+
+        settings.put(fieldName, new StringPair(value, null));
+        return this;
+    }
+
+    /**
+     * Add information about a field being set to some value.
+     *
+     * @param fieldName the name of the field
+     * @param value the value to which the field was set
+     * @param comment an optional comment (might be <code>null</code>
+     * @return the same builder to allow chaining
+     */
+    public AuditEntryBuilder withSetting(String fieldName, String value, String comment) {
+
+        settings.put(fieldName, new StringPair(value, comment));
+        return this;
     }
 
 }
