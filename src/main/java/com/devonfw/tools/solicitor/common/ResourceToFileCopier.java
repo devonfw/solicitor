@@ -12,14 +12,19 @@ import java.io.OutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.SolicitorRuntimeException;
-
 /**
+ * Copies one or more resources to the file system.
  */
 @Component
 public class ResourceToFileCopier {
 
+    /**
+     * Depicts different groups of resources which might be copied.
+     */
     public static enum ResourceGroup {
+        /**
+         * The User Guide.
+         */
         USERGUIDE
     }
 
@@ -27,28 +32,37 @@ public class ResourceToFileCopier {
     private InputStreamFactory inputStreamFactory;
 
     /**
-     * The Constructor. TODO ohecker
+     * Constructor.
      */
     public ResourceToFileCopier() {
 
-        // TODO Auto-generated constructor stub
     }
 
+    /**
+     * Copies all resources of the given group to the filesystem.
+     * 
+     * @param resourceGroup a {@link ResourceGroup} which identifies the files
+     *        to copy.
+     */
     public void copyReourcesToFile(ResourceGroup resourceGroup) {
 
         switch (resourceGroup) {
         case USERGUIDE:
-            copyResourceToFile("classpath:solicitor_userguide.pdf",
-                    "solicitor_userguide.pdf");
+            copyResourceToFile("classpath:solicitor_userguide.pdf", "solicitor_userguide.pdf");
             break;
         }
     }
 
+    /**
+     * Copies a single reource to the file system.
+     *
+     * @param resourceUrl the URL of the resource to be used as source
+     * @param fileName the name of the target file.
+     */
     public void copyResourceToFile(String resourceUrl, String fileName) {
 
         File outputFile = new File(fileName);
-        try (InputStream inputStream =
-                inputStreamFactory.createInputStreamFor(resourceUrl);
+        try (InputStream inputStream = inputStreamFactory.createInputStreamFor(resourceUrl);
                 OutputStream outputStream = new FileOutputStream(outputFile)) {
             byte[] buffer = new byte[1024];
             int length;
@@ -56,8 +70,7 @@ public class ResourceToFileCopier {
                 outputStream.write(buffer, 0, length);
             }
         } catch (IOException e) {
-            throw new SolicitorRuntimeException(
-                    "Could not copy resource to file", e);
+            throw new SolicitorRuntimeException("Could not copy resource to file", e);
         }
 
     }

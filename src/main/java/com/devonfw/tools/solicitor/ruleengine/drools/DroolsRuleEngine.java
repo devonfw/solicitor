@@ -36,11 +36,15 @@ import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
 import com.google.common.collect.Lists;
 
+/**
+ * Implementation of the {@link RuleEngine} interface using the
+ * <a href="https://www.drools.org/">Drools Rule Engine</a>.
+ *
+ */
 @Component
 public class DroolsRuleEngine implements RuleEngine {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(DroolsRuleEngine.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DroolsRuleEngine.class);
 
     @Value("${drools-rule-engine.debuglog}")
     private String debugLog;
@@ -51,6 +55,7 @@ public class DroolsRuleEngine implements RuleEngine {
     @Autowired
     private SolicitorSetup setup;
 
+    /** {@inheritDoc} */
     @Override
     public void executeRules(ModelRoot modelRoot) {
 
@@ -87,18 +92,21 @@ public class DroolsRuleEngine implements RuleEngine {
         ksession.dispose();
     }
 
+    /**
+     * Prepare the {@link KieSession} by reading and preprocessing all rules.
+     * 
+     * @return the prepared {@link KieSession}
+     */
     private KieSession prepareSession() {
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        ReleaseId rid =
-                ks.newReleaseId("com.devonfw.tools", "solicitor", "0.0.1");
+        ReleaseId rid = ks.newReleaseId("com.devonfw.tools", "solicitor", "0.0.1");
         kfs.generateAndWritePomXML(rid);
 
         KieModuleModel kModuleModel = ks.newKieModuleModel();
-        KieBaseModel baseModel =
-                kModuleModel.newKieBaseModel("ProgrammaticTestBaseModel");
+        KieBaseModel baseModel = kModuleModel.newKieBaseModel("ProgrammaticTestBaseModel");
 
         baseModel.addPackage("com.devonfw.tools.solicitor.rules");
 
@@ -106,8 +114,7 @@ public class DroolsRuleEngine implements RuleEngine {
         List<String> agendaGroups = new ArrayList<>();
 
         for (RuleConfig rs : setup.getRuleSetups()) {
-            ruleReaderFactory.readerFor(rs.getType()).readRules(
-                    rs.getRuleSource(), rs.getTemplateSource(),
+            ruleReaderFactory.readerFor(rs.getType()).readRules(rs.getRuleSource(), rs.getTemplateSource(),
                     rs.getDescription(), baseModel, resources);
             agendaGroups.add(rs.getAgendaGroup());
         }
@@ -123,14 +130,12 @@ public class DroolsRuleEngine implements RuleEngine {
         KieBuilder kb = ks.newKieBuilder(kfs);
         kb.buildAll();
         if (kb.getResults().hasMessages(Level.ERROR)) {
-            throw new RuntimeException(
-                    "Build Errors:\n" + kb.getResults().toString());
+            throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
         }
 
         KieContainer kContainer = ks.newKieContainer(rid);
 
-        KieSession kSession =
-                kContainer.newKieSession("LicenseNameMappingKSProgrammatic");
+        KieSession kSession = kContainer.newKieSession("LicenseNameMappingKSProgrammatic");
         for (String ag : Lists.reverse(agendaGroups)) {
             kSession.getAgenda().getAgendaGroup(ag).setFocus();
         }

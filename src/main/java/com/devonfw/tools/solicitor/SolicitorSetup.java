@@ -13,10 +13,17 @@ import com.devonfw.tools.solicitor.config.RuleConfig;
 import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.devonfw.tools.solicitor.reader.Reader;
 
+/**
+ * Holder for the Solicitor configuration.
+ */
 @Component
 public class SolicitorSetup {
 
+    /**
+     * Holder for the setup of a {@link Reader}.
+     */
     public static class ReaderSetup {
         private String type;
 
@@ -27,23 +34,13 @@ public class SolicitorSetup {
         private UsagePattern usagePattern;
 
         /**
-         * This method gets the field <tt>type</tt>.
+         * This method gets the field <tt>application</tt>.
          *
-         * @return the field type
+         * @return the field application
          */
-        public String getType() {
+        public Application getApplication() {
 
-            return type;
-        }
-
-        /**
-         * This method sets the field <tt>type</tt>.
-         *
-         * @param type the new value of the field type
-         */
-        public void setType(String type) {
-
-            this.type = type;
+            return application;
         }
 
         /**
@@ -57,23 +54,23 @@ public class SolicitorSetup {
         }
 
         /**
-         * This method sets the field <tt>source</tt>.
+         * This method gets the field <tt>type</tt>.
          *
-         * @param source the new value of the field source
+         * @return the field type
          */
-        public void setSource(String source) {
+        public String getType() {
 
-            this.source = source;
+            return type;
         }
 
         /**
-         * This method gets the field <tt>application</tt>.
+         * This method gets the field <tt>usagePattern</tt>.
          *
-         * @return the field application
+         * @return the field usagePattern
          */
-        public Application getApplication() {
+        public UsagePattern getUsagePattern() {
 
-            return application;
+            return usagePattern;
         }
 
         /**
@@ -87,13 +84,23 @@ public class SolicitorSetup {
         }
 
         /**
-         * This method gets the field <tt>usagePattern</tt>.
+         * This method sets the field <tt>source</tt>.
          *
-         * @return the field usagePattern
+         * @param source the new value of the field source
          */
-        public UsagePattern getUsagePattern() {
+        public void setSource(String source) {
 
-            return usagePattern;
+            this.source = source;
+        }
+
+        /**
+         * This method sets the field <tt>type</tt>.
+         *
+         * @param type the new value of the field type
+         */
+        public void setType(String type) {
+
+            this.type = type;
         }
 
         /**
@@ -124,16 +131,6 @@ public class SolicitorSetup {
     }
 
     /**
-     * This method sets the field <tt>readerSetups</tt>.
-     *
-     * @param readerSetups the new value of the field readerSetups
-     */
-    public void setReaderSetups(List<ReaderSetup> readerSetups) {
-
-        this.readerSetups = readerSetups;
-    }
-
-    /**
      * This method gets the field <tt>ruleSetups</tt>.
      *
      * @return the field ruleSetups
@@ -144,16 +141,6 @@ public class SolicitorSetup {
     }
 
     /**
-     * This method sets the field <tt>ruleSetups</tt>.
-     *
-     * @param ruleSetups the new value of the field ruleSetups
-     */
-    public void setRuleSetups(List<RuleConfig> ruleSetups) {
-
-        this.ruleSetups = ruleSetups;
-    }
-
-    /**
      * This method gets the field <tt>writerSetups</tt>.
      *
      * @return the field writerSetups
@@ -161,6 +148,26 @@ public class SolicitorSetup {
     public List<WriterConfig> getWriterSetups() {
 
         return writerSetups;
+    }
+
+    /**
+     * This method sets the field <tt>readerSetups</tt>.
+     *
+     * @param readerSetups the new value of the field readerSetups
+     */
+    public void setReaderSetups(List<ReaderSetup> readerSetups) {
+
+        this.readerSetups = readerSetups;
+    }
+
+    /**
+     * This method sets the field <tt>ruleSetups</tt>.
+     *
+     * @param ruleSetups the new value of the field ruleSetups
+     */
+    public void setRuleSetups(List<RuleConfig> ruleSetups) {
+
+        this.ruleSetups = ruleSetups;
     }
 
     /**

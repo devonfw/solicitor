@@ -11,32 +11,37 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.SolicitorRuntimeException;
-import com.devonfw.tools.solicitor.SolicitorSetup;
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
-import com.devonfw.tools.solicitor.common.DataTable;
-import com.devonfw.tools.solicitor.common.DataTableField;
-import com.devonfw.tools.solicitor.common.DataTableFieldImpl;
-import com.devonfw.tools.solicitor.common.DataTableImpl;
-import com.devonfw.tools.solicitor.common.DataTableRow;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
+import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
+import com.devonfw.tools.solicitor.writer.data.DataTable;
+import com.devonfw.tools.solicitor.writer.data.DataTableField;
+import com.devonfw.tools.solicitor.writer.data.DataTableFieldImpl;
+import com.devonfw.tools.solicitor.writer.data.DataTableImpl;
+import com.devonfw.tools.solicitor.writer.data.DataTableRow;
 
+/**
+ * Transforms the internal Solicitor data model to result tables in
+ * {@link DataTable} format by loading the internal data model into a temporary
+ * database and creating tablular result by executing SQL statements on the
+ * data.
+ */
 @Component
 public class ResultDatabaseFactory {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ResultDatabaseFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ResultDatabaseFactory.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -47,27 +52,56 @@ public class ResultDatabaseFactory {
     @Autowired
     private ModelFactory modelFactory;
 
-    @Autowired
-    private SolicitorSetup solicitorSetup;
+    private Set<Class<? extends AbstractModelObject>> definedTablesSet = new HashSet<>();
 
-    private Set<Class<? extends AbstractDataRowSource>> definedTablesSet =
-            new HashSet<>();
+    private Map<String, AbstractModelObject> allModelObjectInstances = new TreeMap<>();
 
-    public void initDataModel(ModelRoot modelRoot) {
+    /**
+     * Creates a database table for storing the given
+     * {@link AbstractModelObject}.
+     * 
+     * @param modelObject the model object for which the table should be defined
+     */
+    private void createTable(AbstractModelObject modelObject) {
 
-        // first drop any already existing tables
-        for (Class<? extends AbstractDataRowSource> oneTable : definedTablesSet) {
-            dropExistingTable(oneTable);
+        StringBuilder sb = new StringBuilder();
+        String name = determineTableName(modelObject.getClass());
+        sb.append("create table ").append(name).append(" ( ");
+        for (String fields : modelObject.getHeadElements()) {
+            sb.append("\"").append(fields).append("\" ").append("LONGVARCHAR, ");
         }
-        definedTablesSet.clear();
-        // create all needed tables and add all data
-        for (Object adrs : modelFactory.getAllModelObjects(modelRoot)) {
-            saveToDatabase((AbstractDataRowSource) adrs);
+        if (modelObject.getParent() != null) {
+            sb.append("PARENT_").append(name).append(" ").append("LONGVARCHAR NOT NULL, ");
         }
+        sb.append("ID_").append(name).append(" ").append("LONGVARCHAR NOT NULL, ");
+        sb.append("PRIMARY KEY ( ID_").append(name).append(")");
+        sb.append(" );");
+        LOG.info("Creating Reporting table '{}'", name);
+        String sql = sb.toString();
+        jdbcTemplate.execute(sql);
+
     }
 
-    private void dropExistingTable(
-            Class<? extends AbstractDataRowSource> oneTable) {
+    /**
+     * Determine the table name for the given {@link AbstractModelObject}
+     * subtype.
+     *
+     * @param tableClass a class name of the {@link AbstractModelObject} subtype
+     * @return the table name for storing this to the reporting database
+     */
+    public String determineTableName(Class<? extends AbstractModelObject> tableClass) {
+
+        return tableClass.getSimpleName().toUpperCase().replace("IMPL", "");
+    }
+
+    /**
+     * Drop the database table which corresponds to the given
+     * {@link AbstractModelObject}.
+     * 
+     * @param oneTable the model class for which the corresponding database
+     *        table should be dropped
+     */
+    private void dropExistingTable(Class<? extends AbstractModelObject> oneTable) {
 
         StringBuilder sb = new StringBuilder();
         String name = determineTableName(oneTable);
@@ -78,19 +112,19 @@ public class ResultDatabaseFactory {
     }
 
     /**
-     * @param sql
-     * @return
+     * Creates a {@link DataTable} by executing the referenced SQL.
+     *
+     * @param sqlResourceUrl URL which references an SQL statement
+     * @return the result of the SQL statement
      */
     public DataTable getDataTable(String sqlResourceUrl) {
 
         String sql;
 
-        try (InputStream inp =
-                inputStreamFactory.createInputStreamFor(sqlResourceUrl)) {
+        try (InputStream inp = inputStreamFactory.createInputStreamFor(sqlResourceUrl)) {
             sql = IOHelper.readStringFromInputStream(inp);
         } catch (IOException e) {
-            throw new SolicitorRuntimeException("Could not read SQL statement",
-                    e);
+            throw new SolicitorRuntimeException("Could not read SQL statement", e);
         }
 
         List<Map<String, Object>> rawResult = jdbcTemplate.queryForList(sql);
@@ -99,8 +133,7 @@ public class ResultDatabaseFactory {
 
         String[] headers = rawResult.get(0).keySet().toArray(new String[0]);
         // create the final header
-        String[] finalHeaders = DataRowSource
-                .concatHeadRow(new String[] { "rowCount" }, headers);
+        String[] finalHeaders = AbstractModelObject.concatRow(new String[] { "rowCount" }, headers);
         DataTableImpl result = new DataTableImpl(modifyHeaders(finalHeaders));
         // get the final data
         int i = 1;
@@ -124,6 +157,74 @@ public class ResultDatabaseFactory {
         return result;
     }
 
+    /**
+     * Checks if the referenced field name starts with prefix "ID_" if yes then
+     * return the {@link AbstractModelObject} given by its id.
+     * 
+     * @param oneRow the row of data
+     * @param fieldname the name of the field
+     * @return the {@link AbstractModelObject} or <code>null</code> if the field
+     *         does not start with "ID_"
+     */
+    private Object getEntity(Map<String, Object> oneRow, String fieldname) {
+
+        if (fieldname.startsWith("ID_")) {
+            return allModelObjectInstances.get(oneRow.get(fieldname));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Initializes the database with the data of the internal data model.
+     * 
+     * @param modelRoot the root object of the internal data model which gives
+     *        access to the complete data model
+     */
+    public void initDataModel(ModelRoot modelRoot) {
+
+        // delete all possibly existing entries in the model instances map
+        allModelObjectInstances.clear();
+        // drop any already existing tables
+        for (Class<? extends AbstractModelObject> oneTable : definedTablesSet) {
+            dropExistingTable(oneTable);
+        }
+        definedTablesSet.clear();
+        // create all needed tables and add all data; also store object in map
+        // to access it via given id
+        for (Object amo : modelFactory.getAllModelObjects(modelRoot)) {
+            saveToDatabase((AbstractModelObject) amo);
+            allModelObjectInstances.put(((AbstractModelObject) amo).getId(), (AbstractModelObject) amo);
+        }
+    }
+
+    /**
+     * Logs the data of the given table on level {@link Level#TRACE}.
+     * 
+     * @param dataTable the data to log
+     */
+    private void logData(DataTable dataTable) {
+
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(String.join(",", dataTable.getHeadRow()));
+            int size = dataTable.getHeadRow().length;
+            for (DataTableRow row : dataTable) {
+                String[] s = new String[size];
+                for (int i = 0; i < size; i++) {
+                    s[i] = (row.getValueByIndex(i) == null) ? "" : row.getValueByIndex(i).toString();
+                }
+                LOG.trace(String.join(",", s));
+            }
+        }
+    }
+
+    /**
+     * Modifies the array of header strings by replacing any prefixes "ID_" with
+     * "OBJ_".
+     * 
+     * @param finalHeaders the array of strings to modify
+     * @return the modified array
+     */
     private String[] modifyHeaders(String[] finalHeaders) {
 
         String[] modifiedHeaders = new String[finalHeaders.length];
@@ -138,98 +239,37 @@ public class ResultDatabaseFactory {
         return modifiedHeaders;
     }
 
-    private Object getEntity(Map<String, Object> oneRow, String fieldname) {
+    /**
+     * Save the given {@link AbstractModelObject} to the database. In case that
+     * no appropriate database table exist it will be created.
+     * 
+     * @param modelObject the object to save
+     */
+    public void saveToDatabase(AbstractModelObject modelObject) {
 
-        // TODO: Try to avoid this explicit coding
-        switch (fieldname) {
-        case "ID_MODELROOT":
-        case "ID_ENGAGEMENT":
-        case "ID_APPLICATION":
-        case "ID_APPLICATIONCOMPONENT":
-        case "ID_NORMALIZEDLICENSE":
-            return AbstractDataRowSource
-                    .getInstance((String) oneRow.get(fieldname));
-        default:
-            return null;
-        }
-    }
+        String[] params = modelObject.getDataElements();
 
-    private void logData(DataTable dataTable) {
-
-        LOG.debug(String.join(",", dataTable.getHeadRow()));
-        int size = dataTable.getHeadRow().length;
-        for (DataTableRow row : dataTable) {
-            String[] s = new String[size];
-            for (int i = 0; i < size; i++) {
-                s[i] = (row.getValueByIndex(i) == null) ? ""
-                        : row.getValueByIndex(i).toString();
-            }
-            LOG.debug(String.join(",", s));
-        }
-    }
-
-    public void saveToDatabase(AbstractDataRowSource row) {
-
-        String[] params = row.getDataElements();
-
-        Class<? extends AbstractDataRowSource> clazz = row.getClass();
+        Class<? extends AbstractModelObject> clazz = modelObject.getClass();
         if (!definedTablesSet.contains(clazz)) {
             definedTablesSet.add(clazz);
-            createTableDefinition(row);
+            createTable(modelObject);
         }
         StringBuilder sb = new StringBuilder();
-        String name = determineTableName(row.getClass());
+        String name = determineTableName(modelObject.getClass());
         sb.append("insert into ").append(name).append(" values ( ");
-        for (String fields : row.getDataElements()) {
+        for (String fields : modelObject.getDataElements()) {
             sb.append("?").append(", ");
         }
-        if (row.getParent() != null) {
+        if (modelObject.getParent() != null) {
             sb.append("?, ");
-            params = DataRowSource.concatDataRow(params,
-                    new String[] { row.getParent().getId() });
+            params = AbstractModelObject.concatRow(params, new String[] { modelObject.getParent().getId() });
         }
         sb.append("?");
         sb.append(" );");
         String sql = sb.toString();
-        params = DataRowSource.concatDataRow(params,
-                new String[] { row.getId() });
+        params = AbstractModelObject.concatRow(params, new String[] { modelObject.getId() });
         jdbcTemplate.update(sql, (Object[]) params);
 
-    }
-
-    private void createTableDefinition(AbstractDataRowSource row) {
-
-        StringBuilder sb = new StringBuilder();
-        String name = determineTableName(row.getClass());
-        sb.append("create table ").append(name).append(" ( ");
-        for (String fields : row.getHeadElements()) {
-            sb.append("\"").append(fields).append("\" ")
-                    .append("LONGVARCHAR, ");
-        }
-        if (row.getParent() != null) {
-            sb.append("PARENT_").append(name).append(" ")
-                    .append("LONGVARCHAR NOT NULL, ");
-        }
-        sb.append("ID_").append(name).append(" ")
-                .append("LONGVARCHAR NOT NULL, ");
-        sb.append("PRIMARY KEY ( ID_").append(name).append(")");
-        sb.append(" );");
-        LOG.info("Creating Reporting table '{}'", name);
-        String sql = sb.toString();
-        jdbcTemplate.execute(sql);
-
-    }
-
-    /**
-     * Determine the table name for the given AbstratcDataRowSource.
-     * 
-     * @param row
-     * @return the table name for storing this to the reporting database
-     */
-    public String determineTableName(
-            Class<? extends AbstractDataRowSource> tableClass) {
-
-        return tableClass.getSimpleName().toUpperCase().replace("IMPL", "");
     }
 
 }

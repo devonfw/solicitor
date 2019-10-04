@@ -16,45 +16,47 @@ import org.kie.internal.io.ResourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 
+/**
+ * A {@link DroolsRulesReader} which reads decision tables in XLS format.
+ */
 @Component
 public class DroolsDecisionTableReader implements DroolsRulesReader {
 
     @Autowired
     private InputStreamFactory inputStreamFactory;
 
+    /**
+     * Constructor.
+     */
     public DroolsDecisionTableReader() {
 
-        // TODO Auto-generated constructor stub
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean accept(String type) {
 
         return "dt".equals(type);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void readRules(String ruleSource, String templateSource,
-            String decription, KieBaseModel baseModel,
+    public void readRules(String ruleSource, String templateSource, String decription, KieBaseModel baseModel,
             Collection<Resource> resources) {
 
-        String ruleUuid =
-                "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
-        String templateUuid =
-                "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
+        String ruleUuid = "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
+        String templateUuid = "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
 
         baseModel.addRuleTemplate(ruleUuid, templateUuid, 2, 1);
         Resource dt;
         try {
-            dt = ResourceFactory.newInputStreamResource(
-                    inputStreamFactory.createInputStreamFor(ruleSource));
+            dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(ruleSource));
         } catch (IOException e) {
             throw new SolicitorRuntimeException(
-                    "Could not open decision table xls resource '" + ruleSource
-                            + "'for reading");
+                    "Could not open decision table xls resource '" + ruleSource + "'for reading");
         }
         // Resource dt = ResourceFactory.newClassPathResource(ruleSource,
         // getClass());
@@ -69,12 +71,10 @@ public class DroolsDecisionTableReader implements DroolsRulesReader {
         // compile the rules
         resources.add(dt);
         try {
-            dt = ResourceFactory.newInputStreamResource(
-                    inputStreamFactory.createInputStreamFor(templateSource));
+            dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(templateSource));
         } catch (IOException e) {
             throw new SolicitorRuntimeException(
-                    "Could not open rule template resource '" + templateSource
-                            + "'for reading");
+                    "Could not open rule template resource '" + templateSource + "'for reading");
         }
         dt.setSourcePath(templateUuid);
         dt.setSourcePath(templateUuid);

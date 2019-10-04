@@ -15,21 +15,19 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
 public class MavenReaderTests {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(MavenReaderTests.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MavenReaderTests.class);
 
     @Test
     public void readFile() {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
-        Application application = modelFactory.newApplication("testApp",
-                "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
+        Application application =
+                modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
         MavenReader mr = new MavenReader();
         mr.setModelFactory(modelFactory);
         mr.setInputStreamFactory(new FileInputStreamFactory());
-        mr.readInventory("src/test/resources/licenses_sample.xml", application,
-                UsagePattern.DYNAMIC_LINKING);
+        mr.readInventory("src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING);
         LOG.info(application.toString());
     }
 

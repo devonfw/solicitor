@@ -4,14 +4,15 @@
 
 package com.devonfw.tools.solicitor.model.impl.inventory;
 
-import com.devonfw.tools.solicitor.common.AbstractDataRowSource;
-import com.devonfw.tools.solicitor.common.DataRowSource;
+import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class RawLicenseImpl extends AbstractDataRowSource
-        implements DataRowSource, RawLicense {
+/**
+ * Implementation of the {@link RawLicense} model object interface.
+ */
+public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
 
     private String declaredLicense;
 
@@ -23,120 +24,100 @@ public class RawLicenseImpl extends AbstractDataRowSource
 
     private ApplicationComponent applicationComponent;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void setApplicationComponent(
-            ApplicationComponent applicationComponent) {
+    protected ApplicationComponent doGetParent() {
 
-        if (this.applicationComponent != null) {
-            throw new IllegalStateException(
-                    "Once the ApplicationComponentImpl is set it can not be changed");
-        }
-        this.applicationComponent = applicationComponent;
-        applicationComponent.addRawLicense(this);
+        return applicationComponent;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public String[] getHeadElements() {
+    @JsonIgnore
+    public ApplicationComponent getApplicationComponent() {
 
-        return new String[] { "declaredLicense", "licenseUrl", "trace" };
+        return applicationComponent;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String[] getDataElements() {
 
         return new String[] { declaredLicense, licenseUrl, trace };
     }
 
-    @Override
-    public AbstractDataRowSource getParent() {
-
-        // TODO: How to avoid casting?
-        return (AbstractDataRowSource) applicationComponent;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getDeclaredLicense() {
 
         return declaredLicense;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void setDeclaredLicense(String declaredLicense) {
+    public String[] getHeadElements() {
 
-        this.declaredLicense = declaredLicense;
+        return new String[] { "declaredLicense", "licenseUrl", "trace" };
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getLicenseUrl() {
 
         return licenseUrl;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLicenseUrl(String licenseUrl) {
-
-        this.licenseUrl = licenseUrl;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getTrace() {
 
         return trace;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTrace(String trace) {
-
-        this.trace = trace;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean isSpecialHandling() {
 
         return specialHandling;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
+    @Override
+    public void setApplicationComponent(ApplicationComponent applicationComponent) {
+
+        if (this.applicationComponent != null) {
+            throw new IllegalStateException("Once the ApplicationComponentImpl is set it can not be changed");
+        }
+        this.applicationComponent = applicationComponent;
+        applicationComponent.addRawLicense(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setDeclaredLicense(String declaredLicense) {
+
+        this.declaredLicense = declaredLicense;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setLicenseUrl(String licenseUrl) {
+
+        this.licenseUrl = licenseUrl;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void setSpecialHandling(boolean specialHandling) {
 
         this.specialHandling = specialHandling;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    @JsonIgnore
-    public ApplicationComponent getApplicationComponent() {
+    public void setTrace(String trace) {
 
-        return applicationComponent;
+        this.trace = trace;
     }
 
 }

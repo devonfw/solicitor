@@ -11,11 +11,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.SolicitorRuntimeException;
-import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
@@ -25,31 +23,36 @@ import com.devonfw.tools.solicitor.reader.maven.model.Dependency;
 import com.devonfw.tools.solicitor.reader.maven.model.License;
 import com.devonfw.tools.solicitor.reader.maven.model.LicenseSummary;
 
+/**
+ * A {@link Reader} which reads data produced by the
+ * <a href="https://www.mojohaus.org/license-maven-plugin/">Maven License
+ * Plugin</a>.
+ */
 @Component
 public class MavenReader extends AbstractReader implements Reader {
 
-    @Autowired
-    private InputStreamFactory inputStreamFactory;
+    /**
+     * The supported type of this {@link Reader}.
+     */
+    public static final String SUPPORTED_TYPE = "maven";
 
+    /** {@inheritDoc} */
     @Override
     public String getSupportedType() {
 
-        return "maven";
+        return SUPPORTED_TYPE;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application,
-            UsagePattern usagePattern) {
+    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
 
         // File file = new File(source);
         InputStream is;
         try {
             is = inputStreamFactory.createInputStreamFor(sourceUrl);
         } catch (IOException e1) {
-            throw new SolicitorRuntimeException(
-                    "Could not open inventory source +'" + sourceUrl
-                            + "' for reading",
-                    e1);
+            throw new SolicitorRuntimeException("Could not open inventory source +'" + sourceUrl + "' for reading", e1);
         }
         LicenseSummary ls;
 
@@ -59,13 +62,11 @@ public class MavenReader extends AbstractReader implements Reader {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             ls = (LicenseSummary) unmarshaller.unmarshal(is);
         } catch (JAXBException e) {
-            throw new SolicitorRuntimeException(
-                    "Could nor read maven license info", e);
+            throw new SolicitorRuntimeException("Could nor read maven license info", e);
         }
 
         for (Dependency dep : ls.getDependencies()) {
-            ApplicationComponent appComponent =
-                    getModelFactory().newApplicationComponent();
+            ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
             appComponent.setApplication(application);
             appComponent.setGroupId(dep.getGroupId());
             appComponent.setArtifactId(dep.getArtifactId());
@@ -76,21 +77,10 @@ public class MavenReader extends AbstractReader implements Reader {
                 addRawLicense(appComponent, null, null, sourceUrl);
             } else {
                 for (License lic : dep.getLicenses()) {
-                    addRawLicense(appComponent, lic.getName(), lic.getUrl(),
-                            sourceUrl);
+                    addRawLicense(appComponent, lic.getName(), lic.getUrl(), sourceUrl);
                 }
             }
         }
-    }
-
-    /**
-     * This method sets the field <tt>inputStreamFactory</tt>.
-     *
-     * @param inputStreamFactory the new value of the field inputStreamFactory
-     */
-    public void setInputStreamFactory(InputStreamFactory inputStreamFactory) {
-
-        this.inputStreamFactory = inputStreamFactory;
     }
 
 }

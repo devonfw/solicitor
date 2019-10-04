@@ -11,6 +11,10 @@ import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Represents the complete Solicitor JSON configuration file.
+ * 
+ */
 public class SolicitorConfig {
 
     @JsonProperty
@@ -47,63 +51,13 @@ public class SolicitorConfig {
     private List<WriterConfig> writers = new ArrayList<>();
 
     /**
-     * This method gets the field <tt>comment</tt>.
+     * This method gets the field <tt>applications</tt>.
      *
-     * @return the field comment
+     * @return the field applications
      */
-    public String getComment() {
+    public List<ApplicationConfig> getApplications() {
 
-        return comment;
-    }
-
-    /**
-     * This method sets the field <tt>comment</tt>.
-     *
-     * @param comment the new value of the field comment
-     */
-    public void setComment(String comment) {
-
-        this.comment = comment;
-    }
-
-    /**
-     * This method gets the field <tt>engagementName</tt>.
-     *
-     * @return the field engagementName
-     */
-    public String getEngagementName() {
-
-        return engagementName;
-    }
-
-    /**
-     * This method sets the field <tt>engagementName</tt>.
-     *
-     * @param engagementName the new value of the field engagementName
-     */
-    public void setEngagementName(String engagementName) {
-
-        this.engagementName = engagementName;
-    }
-
-    /**
-     * This method gets the field <tt>engagementType</tt>.
-     *
-     * @return the field engagementType
-     */
-    public EngagementType getEngagementType() {
-
-        return engagementType;
-    }
-
-    /**
-     * This method sets the field <tt>engagementType</tt>.
-     *
-     * @param engagementType the new value of the field engagementType
-     */
-    public void setEngagementType(EngagementType engagementType) {
-
-        this.engagementType = engagementType;
+        return applications;
     }
 
     /**
@@ -117,13 +71,33 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>clientName</tt>.
+     * This method gets the field <tt>comment</tt>.
      *
-     * @param clientName the new value of the field clientName
+     * @return the field comment
      */
-    public void setClientName(String clientName) {
+    public String getComment() {
 
-        this.clientName = clientName;
+        return comment;
+    }
+
+    /**
+     * This method gets the field <tt>engagementName</tt>.
+     *
+     * @return the field engagementName
+     */
+    public String getEngagementName() {
+
+        return engagementName;
+    }
+
+    /**
+     * This method gets the field <tt>engagementType</tt>.
+     *
+     * @return the field engagementType
+     */
+    public EngagementType getEngagementType() {
+
+        return engagementType;
     }
 
     /**
@@ -137,13 +111,23 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>goToMarketModel</tt>.
+     * This method gets the field <tt>rules</tt>.
      *
-     * @param goToMarketModel the new value of the field goToMarketModel
+     * @return the field rules
      */
-    public void setGoToMarketModel(GoToMarketModel goToMarketModel) {
+    public List<RuleConfig> getRules() {
 
-        this.goToMarketModel = goToMarketModel;
+        return rules;
+    }
+
+    /**
+     * This method gets the field <tt>writers</tt>.
+     *
+     * @return the field writers
+     */
+    public List<WriterConfig> getWriters() {
+
+        return writers;
     }
 
     /**
@@ -157,13 +141,13 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>contractAllowsOss</tt>.
+     * This method gets the field <tt>customerProvidesOss</tt>.
      *
-     * @param contractAllowsOss the new value of the field contractAllowsOss
+     * @return the field customerProvidesOss
      */
-    public void setContractAllowsOss(boolean contractAllowsOss) {
+    public boolean isCustomerProvidesOss() {
 
-        this.contractAllowsOss = contractAllowsOss;
+        return customerProvidesOss;
     }
 
     /**
@@ -177,23 +161,43 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>ossPolicyFollowed</tt>.
+     * This method sets the field <tt>applications</tt>.
      *
-     * @param ossPolicyFollowed the new value of the field ossPolicyFollowed
+     * @param applications the new value of the field applications
      */
-    public void setOssPolicyFollowed(boolean ossPolicyFollowed) {
+    public void setApplications(List<ApplicationConfig> applications) {
 
-        this.ossPolicyFollowed = ossPolicyFollowed;
+        this.applications = applications;
     }
 
     /**
-     * This method gets the field <tt>customerProvidesOss</tt>.
+     * This method sets the field <tt>clientName</tt>.
      *
-     * @return the field customerProvidesOss
+     * @param clientName the new value of the field clientName
      */
-    public boolean isCustomerProvidesOss() {
+    public void setClientName(String clientName) {
 
-        return customerProvidesOss;
+        this.clientName = clientName;
+    }
+
+    /**
+     * This method sets the field <tt>comment</tt>.
+     *
+     * @param comment the new value of the field comment
+     */
+    public void setComment(String comment) {
+
+        this.comment = comment;
+    }
+
+    /**
+     * This method sets the field <tt>contractAllowsOss</tt>.
+     *
+     * @param contractAllowsOss the new value of the field contractAllowsOss
+     */
+    public void setContractAllowsOss(boolean contractAllowsOss) {
+
+        this.contractAllowsOss = contractAllowsOss;
     }
 
     /**
@@ -207,33 +211,43 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method gets the field <tt>applications</tt>.
+     * This method sets the field <tt>engagementName</tt>.
      *
-     * @return the field applications
+     * @param engagementName the new value of the field engagementName
      */
-    public List<ApplicationConfig> getApplications() {
+    public void setEngagementName(String engagementName) {
 
-        return applications;
+        this.engagementName = engagementName;
     }
 
     /**
-     * This method sets the field <tt>applications</tt>.
+     * This method sets the field <tt>engagementType</tt>.
      *
-     * @param applications the new value of the field applications
+     * @param engagementType the new value of the field engagementType
      */
-    public void setApplications(List<ApplicationConfig> applications) {
+    public void setEngagementType(EngagementType engagementType) {
 
-        this.applications = applications;
+        this.engagementType = engagementType;
     }
 
     /**
-     * This method gets the field <tt>rules</tt>.
+     * This method sets the field <tt>goToMarketModel</tt>.
      *
-     * @return the field rules
+     * @param goToMarketModel the new value of the field goToMarketModel
      */
-    public List<RuleConfig> getRules() {
+    public void setGoToMarketModel(GoToMarketModel goToMarketModel) {
 
-        return rules;
+        this.goToMarketModel = goToMarketModel;
+    }
+
+    /**
+     * This method sets the field <tt>ossPolicyFollowed</tt>.
+     *
+     * @param ossPolicyFollowed the new value of the field ossPolicyFollowed
+     */
+    public void setOssPolicyFollowed(boolean ossPolicyFollowed) {
+
+        this.ossPolicyFollowed = ossPolicyFollowed;
     }
 
     /**
@@ -244,16 +258,6 @@ public class SolicitorConfig {
     public void setRules(List<RuleConfig> rules) {
 
         this.rules = rules;
-    }
-
-    /**
-     * This method gets the field <tt>writers</tt>.
-     *
-     * @return the field writers
-     */
-    public List<WriterConfig> getWriters() {
-
-        return writers;
     }
 
     /**

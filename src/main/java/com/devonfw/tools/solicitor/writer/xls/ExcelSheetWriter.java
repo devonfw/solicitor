@@ -35,102 +35,35 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.SolicitorRuntimeException;
-import com.devonfw.tools.solicitor.common.DataTable;
-import com.devonfw.tools.solicitor.common.DataTableField;
-import com.devonfw.tools.solicitor.common.DataTableField.FieldDiffStatus;
-import com.devonfw.tools.solicitor.common.DataTableRow;
-import com.devonfw.tools.solicitor.common.DataTableRow.RowDiffStatus;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.writer.Writer;
+import com.devonfw.tools.solicitor.writer.data.DataTable;
+import com.devonfw.tools.solicitor.writer.data.DataTableField;
+import com.devonfw.tools.solicitor.writer.data.DataTableRow;
+import com.devonfw.tools.solicitor.writer.data.DataTableField.FieldDiffStatus;
+import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
 
+/**
+ * A {@link Writer} which uses a XLS file as a template to create the report.
+ */
 @Component
 public class ExcelSheetWriter implements Writer {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ExcelSheetWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExcelSheetWriter.class);
 
     @Autowired
     private InputStreamFactory inputStreamFactory;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.devonfw.tools.solicitor.writer.xls.Writer#accept(java.lang.String)
+    /**
+     * {@inheritDoc}
+     *
+     * Accepted type is "xls".
      */
     @Override
     public boolean accept(String type) {
 
         return "xls".equals(type);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.devonfw.tools.solicitor.writer.xls.Writer#writeReport(java.lang.
-     * String, java.lang.String)
-     */
-
-    /**
-     * This function will generate a report based on the given excel template.
-     * 
-     * @param templateSource full path to the template (given in the config
-     *        file)
-     * @param target file the report will be written to (given in the config
-     *        file)
-     * @param dataTables
-     */
-    @Override
-    public void writeReport(String templateSource, String target,
-            Map<String, DataTable> dataTables) {
-
-        Map<Cell, String> dataIterators = new HashMap<>(); // this map will
-                                                           // store
-                                                           // all cells of the
-                                                           // template which
-                                                           // have
-                                                           // something like
-                                                           // #Level.value# as
-                                                           // content
-
-        try (InputStream inp =
-                inputStreamFactory.createInputStreamFor(templateSource)) { // read
-                                                                           // the
-                                                                           // template
-
-            Workbook wb = WorkbookFactory.create(inp);
-
-            // ensure xlsx format of the template
-            if (!(wb instanceof XSSFWorkbook)) {
-                throw new IllegalArgumentException(
-                        "XLS template must be in XSLX format");
-            }
-
-            // find all cells of the template which have something like
-            // #Level.value# as content and add them to dataIterators
-            findCellsToIterate(dataIterators, wb, dataTables.keySet()); // key:
-                                                                        // cell,
-                                                                        // value:
-            // Level.value
-
-            for (Cell cell : dataIterators.keySet()) {
-
-                String label = dataIterators.get(cell);
-                DataTable dataTable = dataTables.get(label);
-                iterateFromCell(wb, cell, dataTable, label);
-            }
-
-            // Write the output to a file
-            try (OutputStream fileOut = new FileOutputStream(target)) {
-                wb.write(fileOut);
-            }
-        } catch (IOException | EncryptedDocumentException
-                | InvalidFormatException e) {
-            throw new SolicitorRuntimeException(
-                    "Processing of XLS report failed", e);
-        }
-
     }
 
     private void addCommentToCell(Cell cell, String commentText) {
@@ -151,15 +84,45 @@ public class ExcelSheetWriter implements Writer {
         cell.setCellComment(comment);
     }
 
+    private void copyRowsDown(Row row) {
+
+        // copy the current row to the row directly beneath it
+        XSSFSheet worksheet = (XSSFSheet) row.getSheet();
+        worksheet.copyRows(row.getRowNum(), row.getRowNum(), row.getRowNum() + 1, new CellCopyPolicy());
+    }
+
+    private void findCellsToIterate(Map<Cell, String> dataIterators, Workbook wb, Collection<String> tableLabels) {
+
+        // add all cells that contain one of the levels ENGAGEMENT, APPLICATION,
+        // APPLICATIONCOMPONENT, LICENSE surrounded by # to dataIterators
+        // with the cell as key and the level as value
+
+        for (Sheet sheet : wb) {
+            for (Row row : sheet) {
+                for (Cell cell : row) {
+                    if (cell.getCellTypeEnum() == CellType.STRING) {
+                        String cellText = cell.getStringCellValue();
+                        for (String tableLabel : tableLabels) {
+                            if (cellText != null && cellText.contains("#" + tableLabel + "#")) {
+                                LOG.debug("Found " + cell.getStringCellValue());
+                                dataIterators.put(cell, tableLabel);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * This function will fill in information in the template sheet.
      * 
-     * @param wb
-     * @param cell
-     * @param level
+     * @param wb the workbook to work on
+     * @param cell the cell to start from
+     * @param dataTable the table which contains the data
+     * @param label the label value representing the name of the data table
      */
-    private void iterateFromCell(Workbook wb, Cell cell, DataTable dataTable,
-            String label) {
+    private void iterateFromCell(Workbook wb, Cell cell, DataTable dataTable, String label) {
 
         // get the information gathered by solicitor
         DataTable dt = dataTable;
@@ -169,8 +132,7 @@ public class ExcelSheetWriter implements Writer {
         Row row = cell.getRow();
 
         // add additional rows if necessary and replace the placeholders
-        for (Iterator<DataTableRow> rowIterator = dt.iterator(); rowIterator
-                .hasNext();) {
+        for (Iterator<DataTableRow> rowIterator = dt.iterator(); rowIterator.hasNext();) {
             DataTableRow rowData = rowIterator.next();
             if (rowIterator.hasNext()) { // add an additional template row if
                                          // necessary
@@ -195,38 +157,29 @@ public class ExcelSheetWriter implements Writer {
                         String toReplace = "$" + headers[i] + "$";
                         if (text.contains(toReplace)) {
                             DataTableField value = rowData.getValueByIndex(i);
-                            String textValue = value.toString() == null ? ""
-                                    : value.toString();
+                            String textValue = value.toString() == null ? "" : value.toString();
                             if (textValue.length() > 32767) {
                                 LOG.warn("Shortening text content for XLS");
                                 textValue = textValue.substring(0, 32767);
                             }
                             text = text.replace(toReplace, textValue);
-                            if (value
-                                    .getDiffStatus() == FieldDiffStatus.CHANGED) {
+                            if (value.getDiffStatus() == FieldDiffStatus.CHANGED) {
                                 hasChanged = true;
-                                String oldTextValue =
-                                        value.getOldValue() == null ? ""
-                                                : value.getOldValue()
-                                                        .toString();
+                                String oldTextValue = value.getOldValue() == null ? "" : value.getOldValue().toString();
                                 if (oldTextValue.length() > 32767) {
                                     LOG.warn("Shortening text content for XLS");
-                                    oldTextValue =
-                                            oldTextValue.substring(0, 32767);
+                                    oldTextValue = oldTextValue.substring(0, 32767);
                                 }
-                                oldModelText = oldModelText.replace(toReplace,
-                                        oldTextValue);
+                                oldModelText = oldModelText.replace(toReplace, oldTextValue);
 
                             } else {
-                                oldModelText = oldModelText.replace(toReplace,
-                                        textValue);
+                                oldModelText = oldModelText.replace(toReplace, textValue);
                             }
                         }
                     }
                     oneCell.setCellValue(text);
                     if (hasChanged) {
-                        addCommentToCell(oneCell,
-                                "Previous value: '" + oldModelText + "'");
+                        addCommentToCell(oneCell, "Previous value: '" + oldModelText + "'");
 
                     }
                 }
@@ -237,37 +190,56 @@ public class ExcelSheetWriter implements Writer {
         }
     }
 
-    private void copyRowsDown(Row row) {
+    /**
+     * {@inheritDoc}
+     *
+     * This function will generate a report based on the given excel template.
+     */
+    @Override
+    public void writeReport(String templateSource, String target, Map<String, DataTable> dataTables) {
 
-        // copy the current row to the row directly beneath it
-        XSSFSheet worksheet = (XSSFSheet) row.getSheet();
-        worksheet.copyRows(row.getRowNum(), row.getRowNum(),
-                row.getRowNum() + 1, new CellCopyPolicy());
-    }
+        Map<Cell, String> dataIterators = new HashMap<>(); // this map will
+                                                           // store
+                                                           // all cells of the
+                                                           // template which
+                                                           // have
+                                                           // something like
+                                                           // #Level.value# as
+                                                           // content
 
-    private void findCellsToIterate(Map<Cell, String> dataIterators,
-            Workbook wb, Collection<String> tableLabels) {
+        try (InputStream inp = inputStreamFactory.createInputStreamFor(templateSource)) { // read
+                                                                                          // the
+                                                                                          // template
 
-        // add all cells that contain one of the levels ENGAGEMENT, APPLICATION,
-        // APPLICATIONCOMPONENT, LICENSE surrounded by # to dataIterators
-        // with the cell as key and the level as value
+            Workbook wb = WorkbookFactory.create(inp);
 
-        for (Sheet sheet : wb) {
-            for (Row row : sheet) {
-                for (Cell cell : row) {
-                    if (cell.getCellTypeEnum() == CellType.STRING) {
-                        String cellText = cell.getStringCellValue();
-                        for (String tableLabel : tableLabels) {
-                            if (cellText != null && cellText
-                                    .contains("#" + tableLabel + "#")) {
-                                LOG.debug("Found " + cell.getStringCellValue());
-                                dataIterators.put(cell, tableLabel);
-                            }
-                        }
-                    }
-                }
+            // ensure xlsx format of the template
+            if (!(wb instanceof XSSFWorkbook)) {
+                throw new IllegalArgumentException("XLS template must be in XSLX format");
             }
+
+            // find all cells of the template which have something like
+            // #Level.value# as content and add them to dataIterators
+            findCellsToIterate(dataIterators, wb, dataTables.keySet()); // key:
+                                                                        // cell,
+                                                                        // value:
+            // Level.value
+
+            for (Cell cell : dataIterators.keySet()) {
+
+                String label = dataIterators.get(cell);
+                DataTable dataTable = dataTables.get(label);
+                iterateFromCell(wb, cell, dataTable, label);
+            }
+
+            // Write the output to a file
+            try (OutputStream fileOut = new FileOutputStream(target)) {
+                wb.write(fileOut);
+            }
+        } catch (IOException | EncryptedDocumentException | InvalidFormatException e) {
+            throw new SolicitorRuntimeException("Processing of XLS report failed", e);
         }
+
     }
 
 }

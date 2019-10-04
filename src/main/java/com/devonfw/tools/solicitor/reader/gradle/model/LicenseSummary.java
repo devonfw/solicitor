@@ -6,18 +6,12 @@ package com.devonfw.tools.solicitor.reader.gradle.model;
 
 import java.util.List;
 
+/**
+ * Java representation of LicenseSummary in the Gradle JSON data file.
+ */
+
 public class LicenseSummary {
     private List<Dependency> dependencies;
-
-    @Override
-    public String toString() {
-
-        String ld = "";
-        for (Dependency d : dependencies) {
-            ld += d + "\n";
-        }
-        return ld;
-    }
 
     /**
      * This method gets the field <tt>dependencies</tt>.
@@ -37,5 +31,16 @@ public class LicenseSummary {
     public void setDependencies(List<Dependency> dependencies) {
 
         this.dependencies = dependencies;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+
+        String ld = "";
+        for (Dependency d : dependencies) {
+            ld += d + "\n";
+        }
+        return ld;
     }
 }

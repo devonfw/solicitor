@@ -13,24 +13,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * A {@link CachingWebContentProviderBase} which tries to load web content from
+ * the file system.
+ *
+ */
 @Component
-public class FilesystemCachingWebContentProvider
-        extends CachingWebContentProviderBase {
+public class FilesystemCachingWebContentProvider extends CachingWebContentProviderBase {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(FilesystemCachingWebContentProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FilesystemCachingWebContentProvider.class);
 
     @Autowired
-    private HttpWebContentProvider httpWebContentProvider;
+    private DirectUrlWebContentProvider httpWebContentProvider;
 
+    /**
+     * Constructor.
+     */
     public FilesystemCachingWebContentProvider() {
 
-        // TODO Auto-generated constructor stub
     }
 
     /**
-     * @param key
-     * @return
+     * {@inheritDoc}
+     * 
+     * Points to a subdirectory "licenses" in the current working directory.
      */
     @Override
     protected String getCacheUrl(String key) {
@@ -38,6 +44,14 @@ public class FilesystemCachingWebContentProvider
         return "file:licenses/" + key;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Delegates to {@link DirectUrlWebContentProvider}. The result returned
+     * will be stored in the file system in the subdirectory "licenses" of the
+     * current working directory so that it will be taken from there in
+     * subsequent attempts to load the same web content again.
+     */
     @Override
     public String loadFromNext(String url) {
 
