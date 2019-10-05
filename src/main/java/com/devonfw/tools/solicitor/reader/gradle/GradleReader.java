@@ -47,7 +47,8 @@ public class GradleReader extends AbstractReader implements Reader {
     @Override
     public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
 
-        String input = "";
+        int components = 0;
+        int licenses = 0;
         LicenseSummary ls = new LicenseSummary();
         ls.setDependencies(new LinkedList<Dependency>());
 
@@ -63,6 +64,7 @@ public class GradleReader extends AbstractReader implements Reader {
                 dep.setUrl((String) m.get("url"));
                 dep.setYear((String) m.get("year"));
                 dep.setDependency((String) m.get("dependency"));
+                components++;
                 List<Map> lml = (List) m.get("licenses");
                 List<License> ll = new LinkedList();
                 for (Map<String, String> ml : lml) {
@@ -70,10 +72,12 @@ public class GradleReader extends AbstractReader implements Reader {
                     license.setLicense(ml.get("license"));
                     license.setLicense_url(ml.get("license_url"));
                     ll.add(license);
+                    licenses++;
                 }
                 dep.setLicenses(ll);
                 ls.getDependencies().add(dep);
             }
+            doLogging(sourceUrl, application, components, licenses);
 
         } catch (IOException e) {
             throw new SolicitorRuntimeException("Could not read Gradle inventory source +'" + sourceUrl + "'", e);

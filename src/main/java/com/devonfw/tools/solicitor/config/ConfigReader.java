@@ -6,11 +6,14 @@ package com.devonfw.tools.solicitor.config;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -24,6 +27,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 @Component
 public class ConfigReader {
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigReader.class);
 
     @Autowired
     private SolicitorSetup solicitorSetup;
@@ -46,6 +50,7 @@ public class ConfigReader {
      */
     public ModelRoot readConfig(String url) {
 
+        LOG.info(LogMessages.READING_CONFIG.msg(), url);
         SolicitorConfig sc;
         try {
             sc = objectMapper.readValue(inputStreamFactory.createInputStreamFor(url), SolicitorConfig.class);
@@ -55,6 +60,7 @@ public class ConfigReader {
 
         ModelRoot modelRoot = modelFactory.newModelRoot();
 
+        LOG.info(LogMessages.CREATING_ENGAGEMENT.msg(), sc.getEngagementName());
         Engagement engagement = modelFactory.newEngagement(sc.getEngagementName(), sc.getEngagementType(),
                 sc.getClientName(), sc.getGoToMarketModel());
         engagement.setModelRoot(modelRoot);
@@ -62,6 +68,7 @@ public class ConfigReader {
         engagement.setOssPolicyFollowed(sc.isOssPolicyFollowed());
         engagement.setCustomerProvidesOss(sc.isCustomerProvidesOss());
         for (ApplicationConfig ac : sc.getApplications()) {
+            LOG.info(LogMessages.CREATING_APPLICATION.msg(), ac.getName());
             Application app = modelFactory.newApplication(ac.getName(), ac.getReleaseId(), "-UNDEFINED-",
                     ac.getSourceRepo(), ac.getProgrammingEcosystem());
             app.setEngagement(engagement);

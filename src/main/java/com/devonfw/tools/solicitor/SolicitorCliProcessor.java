@@ -23,7 +23,7 @@ public class SolicitorCliProcessor {
     public static class CommandLineOptions {
         public boolean help;
 
-        public boolean externalizeUserguide;
+        public boolean userGuide;
 
         public boolean save;
 
@@ -63,14 +63,14 @@ public class SolicitorCliProcessor {
 
         options.addOption(help);
 
-        // option "eu" (externalize userguide)
-        builder = Option.builder("eu");
-        builder.longOpt("externalizeUserguide");
+        // option "ug" (store user guide)
+        builder = Option.builder("ug");
+        builder.longOpt("userGuide");
         description = "stores a copy of the user guide in the current directory (no main processing)";
         builder.desc(description);
-        Option externalizeDoc = builder.build();
+        Option userGuide = builder.build();
 
-        options.addOption(externalizeDoc);
+        options.addOption(userGuide);
 
         // option "c" (config)
         builder = Option.builder("c");
@@ -135,9 +135,9 @@ public class SolicitorCliProcessor {
                 solClo.help = true;
             }
 
-            if (line.hasOption("eu")) {
-                solClo.externalizeUserguide = true;
-                LOG.debug("externalizeUserguide option detected");
+            if (line.hasOption("ug")) {
+                solClo.userGuide = true;
+                LOG.debug("userGuide option detected");
             }
 
             if (line.hasOption("s")) {

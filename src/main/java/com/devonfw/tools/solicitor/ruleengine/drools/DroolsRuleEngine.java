@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorSetup;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.config.RuleConfig;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -85,10 +86,11 @@ public class DroolsRuleEngine implements RuleEngine {
                 }
             }
         }
+        LOG.info(LogMessages.ADDING_FACTS.msg(), ksession.getFactCount());
 
         // Fire the rules.
         int count = ksession.fireAllRules();
-        LOG.info("Number of Rules Fired: " + count);
+        LOG.info(LogMessages.RULE_ENGINE_FINISHED.msg(), count);
         ksession.dispose();
     }
 
@@ -117,6 +119,8 @@ public class DroolsRuleEngine implements RuleEngine {
             ruleReaderFactory.readerFor(rs.getType()).readRules(rs.getRuleSource(), rs.getTemplateSource(),
                     rs.getDescription(), baseModel, resources);
             agendaGroups.add(rs.getAgendaGroup());
+            LOG.info(LogMessages.LOAD_RULES.msg(), rs.getType(), rs.getRuleSource(), rs.getTemplateSource(),
+                    rs.getAgendaGroup());
         }
 
         baseModel.newKieSessionModel("LicenseNameMappingKSProgrammatic");

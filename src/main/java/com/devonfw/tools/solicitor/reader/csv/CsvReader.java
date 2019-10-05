@@ -51,6 +51,8 @@ public class CsvReader extends AbstractReader implements Reader {
     @Override
     public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
 
+        int components = 0;
+        int licenses = 0;
         InputStream is;
         try {
             is = inputStreamFactory.createInputStreamFor(sourceUrl);
@@ -76,9 +78,12 @@ public class CsvReader extends AbstractReader implements Reader {
                     // new ApplicationComponentImpl
                     appComponent.setApplication(application);
                     lastAppComponent = appComponent;
+                    components++;
                 }
+                licenses++;
                 addRawLicense(lastAppComponent, record.get(3), record.get(4), sourceUrl);
             }
+            doLogging(sourceUrl, application, components, licenses);
         } catch (IOException e1) {
             throw new SolicitorRuntimeException("Could not read CSV inventory source +'" + sourceUrl + "'", e1);
         }

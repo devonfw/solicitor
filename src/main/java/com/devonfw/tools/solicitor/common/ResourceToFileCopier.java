@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ResourceToFileCopier {
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceToFileCopier.class);
 
     /**
      * Depicts different groups of resources which might be copied.
@@ -62,6 +65,7 @@ public class ResourceToFileCopier {
     public void copyResourceToFile(String resourceUrl, String fileName) {
 
         File outputFile = new File(fileName);
+        LOG.info(LogMessages.COPYING_RESOURCE.msg(), resourceUrl, fileName);
         try (InputStream inputStream = inputStreamFactory.createInputStreamFor(resourceUrl);
                 OutputStream outputStream = new FileOutputStream(outputFile)) {
             byte[] buffer = new byte[1024];

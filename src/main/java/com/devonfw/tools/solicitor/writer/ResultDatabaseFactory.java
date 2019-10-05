@@ -76,7 +76,7 @@ public class ResultDatabaseFactory {
         sb.append("ID_").append(name).append(" ").append("LONGVARCHAR NOT NULL, ");
         sb.append("PRIMARY KEY ( ID_").append(name).append(")");
         sb.append(" );");
-        LOG.info("Creating Reporting table '{}'", name);
+        LOG.debug("Creating Reporting table '{}'", name);
         String sql = sb.toString();
         jdbcTemplate.execute(sql);
 
@@ -106,7 +106,7 @@ public class ResultDatabaseFactory {
         StringBuilder sb = new StringBuilder();
         String name = determineTableName(oneTable);
         sb.append("drop table ").append(name).append(";");
-        LOG.info("Dropping Reporting table '{}'", name);
+        LOG.debug("Dropping Reporting table '{}'", name);
         String sql = sb.toString();
         jdbcTemplate.execute(sql);
     }

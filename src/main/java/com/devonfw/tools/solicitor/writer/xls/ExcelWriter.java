@@ -48,9 +48,9 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * A {@link Writer} which uses a XLS file as a template to create the report.
  */
 @Component
-public class ExcelSheetWriter implements Writer {
+public class ExcelWriter implements Writer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ExcelSheetWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExcelWriter.class);
 
     @Autowired
     private InputStreamFactory inputStreamFactory;
