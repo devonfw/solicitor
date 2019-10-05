@@ -31,7 +31,7 @@ public class SolicitorApplication {
         if (!clo.help) {
             ApplicationContext context = SpringApplication.run(SolicitorApplication.class, args);
             Solicitor solicitor = context.getBean(Solicitor.class);
-            solicitor.run(clo);
+            solicitor.run(clo, String.join(" ", args));
         }
 
     }

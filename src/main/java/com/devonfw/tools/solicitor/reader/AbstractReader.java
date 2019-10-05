@@ -3,18 +3,24 @@
  */
 package com.devonfw.tools.solicitor.reader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
+import com.devonfw.tools.solicitor.model.masterdata.Application;
 
 /**
  * Abstract base functionality of a
  * {@link com.devonfw.tools.solicitor.reader.Reader}.
  */
 public abstract class AbstractReader implements Reader {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractReader.class);
 
     private ModelFactory modelFactory;
 
@@ -26,6 +32,19 @@ public abstract class AbstractReader implements Reader {
     public boolean accept(String type) {
 
         return getSupportedType().equals(type);
+    }
+
+    /**
+     * Performs logging.
+     * 
+     * @param sourceUrl the URL from where the inventory data was read
+     * @param application the application
+     * @param readComponents number of read ApplicationComponents
+     * @param readLicenses number of read RawLicenses
+     */
+    public void doLogging(String sourceUrl, Application application, int readComponents, int readLicenses) {
+
+        LOG.info(LogMessages.READING_INVENTORY.msg(), readComponents, readLicenses, application.getName(), sourceUrl);
     }
 
     /**

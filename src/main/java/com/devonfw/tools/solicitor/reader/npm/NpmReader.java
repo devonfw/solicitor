@@ -30,7 +30,7 @@ public class NpmReader extends AbstractReader implements Reader {
     /**
      * The supported type of this {@link Reader}.
      */
-    public static final String SUPPORTED_TYPE = "csv";
+    public static final String SUPPORTED_TYPE = "npm";
 
     /** {@inheritDoc} */
     @Override
@@ -43,6 +43,8 @@ public class NpmReader extends AbstractReader implements Reader {
     @Override
     public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
 
+        int components = 0;
+        int licenses = 0;
         InputStream is;
         try {
             is = inputStreamFactory.createInputStreamFor(sourceUrl);
@@ -62,22 +64,26 @@ public class NpmReader extends AbstractReader implements Reader {
                 appComponent.setUsagePattern(usagePattern);
                 appComponent.setGroupId(record.get(4));
                 appComponent.setOssHomepage(record.get(2));
-// merge ApplicationComponentImpl with same key if they appear
-// on
-// subsequent lines (multilicensing)
+                // merge ApplicationComponentImpl with same key if they appear
+                // on
+                // subsequent lines (multilicensing)
                 if (lastAppComponent != null && lastAppComponent.getGroupId().equals(appComponent.getGroupId())
                         && lastAppComponent.getArtifactId().equals(appComponent.getArtifactId())
                         && lastAppComponent.getVersion().equals(appComponent.getVersion())) {
-// same applicationComponent as previous line ->
-// append rawLicense to already existing
-// ApplicationComponent
+                    // same applicationComponent as previous line ->
+                    // append rawLicense to already existing
+                    // ApplicationComponent
                 } else {
-// new ApplicationComponentImpl
+                    // new ApplicationComponentImpl
+                    components++;
                     appComponent.setApplication(application);
                     lastAppComponent = appComponent;
                 }
+                licenses++;
                 addRawLicense(lastAppComponent, record.get(1), record.get(3), sourceUrl);
             }
+            doLogging(sourceUrl, application, components, licenses);
+
         } catch (IOException e) {
             throw new SolicitorRuntimeException("Could not read NPM inventory source +'" + sourceUrl + "'", e);
         }

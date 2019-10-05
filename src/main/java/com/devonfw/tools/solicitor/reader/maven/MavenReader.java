@@ -47,7 +47,8 @@ public class MavenReader extends AbstractReader implements Reader {
     @Override
     public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
 
-        // File file = new File(source);
+        int components = 0;
+        int licenses = 0;
         InputStream is;
         try {
             is = inputStreamFactory.createInputStreamFor(sourceUrl);
@@ -72,15 +73,18 @@ public class MavenReader extends AbstractReader implements Reader {
             appComponent.setArtifactId(dep.getArtifactId());
             appComponent.setVersion(dep.getVersion());
             appComponent.setUsagePattern(usagePattern);
+            components++;
             if (dep.getLicenses().isEmpty()) {
                 // in case no license is found insert an empty entry
                 addRawLicense(appComponent, null, null, sourceUrl);
             } else {
                 for (License lic : dep.getLicenses()) {
+                    licenses++;
                     addRawLicense(appComponent, lic.getName(), lic.getUrl(), sourceUrl);
                 }
             }
         }
+        doLogging(sourceUrl, application, components, licenses);
     }
 
 }
