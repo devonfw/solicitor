@@ -12,6 +12,8 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.LogMessages;
+
 /**
  * Provides a command line interface for configuring the generator.
  */
@@ -23,7 +25,11 @@ public class SolicitorCliProcessor {
     public static class CommandLineOptions {
         public boolean help;
 
-        public boolean userGuide;
+        public boolean extractUserGuide;
+
+        public boolean extractConfig;
+
+        public boolean extractFullConfig;
 
         public boolean save;
 
@@ -60,17 +66,32 @@ public class SolicitorCliProcessor {
         String description = "print this help (no main processing)";
         builder.desc(description);
         Option help = builder.build();
-
         options.addOption(help);
 
-        // option "ug" (store user guide)
-        builder = Option.builder("ug");
-        builder.longOpt("userGuide");
+        // option "eug" (extract user guide)
+        builder = Option.builder("eug");
+        builder.longOpt("extractUserGuide");
         description = "stores a copy of the user guide in the current directory (no main processing)";
         builder.desc(description);
-        Option userGuide = builder.build();
+        Option extractUserGuide = builder.build();
+        options.addOption(extractUserGuide);
 
-        options.addOption(userGuide);
+        // option "ec" (extract config)
+        builder = Option.builder("ec");
+        builder.longOpt("extractConfig");
+        description = "stores a copy of the sample config file in the current directory (no main processing)";
+        builder.desc(description);
+        Option extractConfig = builder.build();
+        options.addOption(extractConfig);
+
+        // option "efc" (extract full config)
+        builder = Option.builder("efc");
+        builder.longOpt("extractFullConfig");
+        description = "stores a copy of the sample config file, the decision tables and the templates"
+                + " in the current directory (no main processing)";
+        builder.desc(description);
+        Option extractFullConfig = builder.build();
+        options.addOption(extractFullConfig);
 
         // option "c" (config)
         builder = Option.builder("c");
@@ -80,7 +101,6 @@ public class SolicitorCliProcessor {
         description = "do main processing using the config referenced by the given URL";
         builder.desc(description);
         Option config = builder.build();
-
         options.addOption(config);
 
         // option "s" (save)
@@ -93,7 +113,6 @@ public class SolicitorCliProcessor {
                 + "if no filename is given a filename will be automatically created";
         builder.desc(description);
         Option save = builder.build();
-
         options.addOption(save);
 
         // option "l" (load)
@@ -106,7 +125,6 @@ public class SolicitorCliProcessor {
                 + "processed model from a previously saved file";
         builder.desc(description);
         Option load = builder.build();
-
         options.addOption(load);
 
         // option "d" (diff)
@@ -118,7 +136,6 @@ public class SolicitorCliProcessor {
         description = "create a diff report to the already processed model given by this filename";
         builder.desc(description);
         Option diff = builder.build();
-
         options.addOption(diff);
 
         // evaluating the arguments
@@ -126,6 +143,9 @@ public class SolicitorCliProcessor {
         CommandLine line;
         CommandLineOptions solClo = new CommandLineOptions();
         try {
+            if (commandLineArgs == null || commandLineArgs.length == 0) {
+                throw new IllegalArgumentException("No command line arguments given");
+            }
             // parse the command line arguments
             line = parser.parse(options, commandLineArgs);
 
@@ -135,9 +155,19 @@ public class SolicitorCliProcessor {
                 solClo.help = true;
             }
 
-            if (line.hasOption("ug")) {
-                solClo.userGuide = true;
-                LOG.debug("userGuide option detected");
+            if (line.hasOption("eug")) {
+                solClo.extractUserGuide = true;
+                LOG.debug("extractUserGuide option detected");
+            }
+
+            if (line.hasOption("ec")) {
+                solClo.extractConfig = true;
+                LOG.debug("extractConfig option detected");
+            }
+
+            if (line.hasOption("efc")) {
+                solClo.extractFullConfig = true;
+                LOG.debug("extractFullConfig option detected");
             }
 
             if (line.hasOption("s")) {
@@ -163,7 +193,7 @@ public class SolicitorCliProcessor {
             }
 
         } catch (Exception exp) {
-            LOG.error("Exception when processing command line arguments", exp);
+            LOG.error(LogMessages.CLI_EXCEPTION.msg(), exp.getMessage());
             printHelp(options);
             return null;
         }

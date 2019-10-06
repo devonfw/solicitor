@@ -28,7 +28,17 @@ public class ResourceToFileCopier {
         /**
          * The User Guide.
          */
-        USERGUIDE
+        USERGUIDE,
+
+        /**
+         * The sample configuration file.
+         */
+        CONFIG_FILE_ONLY,
+
+        /**
+         * All configuration (configuration file, decision tables, templates)
+         */
+        CONFIG_FULL
     }
 
     @Autowired
@@ -46,14 +56,51 @@ public class ResourceToFileCopier {
      * 
      * @param resourceGroup a {@link ResourceGroup} which identifies the files
      *        to copy.
+     * @return some String possible used in subsequent logging - e.g. the name
+     *         of the target resource
      */
-    public void copyReourcesToFile(ResourceGroup resourceGroup) {
+    public String copyReourcesToFile(ResourceGroup resourceGroup) {
+
+        String returnString;
 
         switch (resourceGroup) {
         case USERGUIDE:
             copyResourceToFile("classpath:solicitor_userguide.pdf", "solicitor_userguide.pdf");
+            returnString = "solicitor_userguide.pdf";
             break;
+        case CONFIG_FILE_ONLY:
+            copyResourceToFile("classpath:samples/solicitor_sample.cfg", "solicitor_sample_copy.cfg");
+            returnString = "solicitor_sample_copy.cfg";
+            break;
+        case CONFIG_FULL:
+            copyResourceToFile("classpath:samples/solicitor_sample_filesystem.cfg", "solicitor_sample_copy.cfg");
+            copyResourceToFile("classpath:samples/licenses_devon4j.xml", "licenses_devon4j.xml");
+            copyResourceToFile("classpath:samples/LicenseAssignmentSample.xls",
+                    "sample_configs/LicenseAssignmentSample.xls");
+            copyResourceToFile("classpath:samples/LicenseNameMappingSample.xls",
+                    "sample_configs/LicenseNameMappingSample.xls");
+            copyResourceToFile("classpath:samples/MultiLicenseSelectionSample.xls",
+                    "sample_configs/MultiLicenseSelectionSample.xls");
+            copyResourceToFile("classpath:samples/LicenseSelectionSample.xls",
+                    "sample_configs/LicenseSelectionSample.xls");
+            copyResourceToFile("classpath:samples/LegalPreEvaluationSample.xls",
+                    "sample_configs/LegalPreEvaluationSample.xls");
+            copyResourceToFile("classpath:samples/LegalEvaluationSample.xls",
+                    "sample_configs/LegalEvaluationSample.xls");
+            copyResourceToFile("classpath:samples/Solicitor_Output_Template_Sample.vm",
+                    "sample_configs/Solicitor_Output_Template_Sample.vm");
+            copyResourceToFile("classpath:samples/Solicitor_Output_Template_Sample.xlsx",
+                    "sample_configs/Solicitor_Output_Template_Sample.xlsx");
+            copyResourceToFile("classpath:samples/Solicitor_Diff_Template_Sample.vm",
+                    "sample_configs/Solicitor_Diff_Template_Sample.vm");
+            copyResourceToFile("classpath:samples/readme_solicitor_cfg.txt", "readme_solicitor_cfg.txt");
+            returnString = "readme_solicitor_cfg.txt";
+            break;
+        default:
+            throw new SolicitorRuntimeException("Uuups, this should never happen.");
         }
+
+        return returnString;
     }
 
     /**
@@ -65,7 +112,15 @@ public class ResourceToFileCopier {
     public void copyResourceToFile(String resourceUrl, String fileName) {
 
         File outputFile = new File(fileName);
+        if (outputFile.exists()) {
+            LOG.error(LogMessages.FILE_EXISTS.msg(), fileName);
+            throw new SolicitorRuntimeException("Extracting of files aborted because target already exists");
+        }
         LOG.info(LogMessages.COPYING_RESOURCE.msg(), resourceUrl, fileName);
+        if (outputFile.getParentFile() != null) {
+            // create needed directories if not yet existing
+            outputFile.getParentFile().mkdirs();
+        }
         try (InputStream inputStream = inputStreamFactory.createInputStreamFor(resourceUrl);
                 OutputStream outputStream = new FileOutputStream(outputFile)) {
             byte[] buffer = new byte[1024];
