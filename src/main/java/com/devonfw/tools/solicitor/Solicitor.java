@@ -58,9 +58,27 @@ public class Solicitor {
     /**
      * Copy the user guide to the current working directory.
      */
-    private void externalizeUserguide() {
+    private void extractUserguide() {
 
         resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE);
+    }
+
+    /**
+     * Save a sample configuration file to the working directory.
+     */
+    private void extractConfig() {
+
+        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.CONFIG_FILE_ONLY);
+        LOG.info(LogMessages.CONFIG_EXTRACTED.msg(), location);
+    }
+
+    /**
+     * Save all sample configuration files to the working directory.
+     */
+    private void extractFullConfig() {
+
+        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.CONFIG_FULL);
+        LOG.info(LogMessages.FULL_CONFIG_EXTRACTED.msg(), location);
     }
 
     /**
@@ -118,8 +136,15 @@ public class Solicitor {
         SolicitorVersion sv = solicitorVersion;
         LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
 
-        if (clo.userGuide) {
-            externalizeUserguide();
+        if (clo.extractUserGuide) {
+            extractUserguide();
+            doMainProcessing = false;
+        }
+        if (clo.extractFullConfig) {
+            extractFullConfig();
+            doMainProcessing = false;
+        } else if (clo.extractConfig) {
+            extractConfig();
             doMainProcessing = false;
         }
         if (doMainProcessing) {
