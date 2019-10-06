@@ -2,8 +2,8 @@
 --
 -- generate all ApplicationComponents in denormalized form including all hierachical data (allden -> "all denormalized")
 select 
-    CONCAT(a."applicationName",ac."groupId",ac."artifactId",ac."version") as DIFF_KEY_0,
-    CONCAT(a."applicationName",ac."groupId",ac."artifactId") as DIFF_KEY_1,
+    CONCAT(a."applicationName",ac."groupId",ac."artifactId",ac."version") as CORR_KEY_0,
+    CONCAT(a."applicationName",ac."groupId",ac."artifactId") as CORR_KEY_1,
 	e.*, 
 	a.*, 
 	ac.*
