@@ -2,6 +2,6 @@
 --
 -- get the (only) ModelRoot instance which contains meta information
 select 
-    1 as DIFF_KEY_0,
+    1 as CORR_KEY_0,
     r.*
 from MODELROOT r

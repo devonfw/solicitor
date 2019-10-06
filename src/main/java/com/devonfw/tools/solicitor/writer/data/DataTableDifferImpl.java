@@ -29,10 +29,10 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * <b>Correlating the rows in the newTable with the rows in the oldTable</b>
  * </p>
  * <p>
- * Correlation is done on the basis of columns "DIFF_KEY_X" of the
+ * Correlation is done on the basis of columns "CORR_KEY_X" of the
  * {@link DataTable}s where X is between 0 and 9. These columns need to be
  * defined in the SQL statement which defines the data table and give the values
- * of the correlation keys for each row. DIFF_KEY_0 is the correlation key with
+ * of the correlation keys for each row. CORR_KEY_0 is the correlation key with
  * the highest priority. The algorithm will iterate over all correlation keys
  * (starting with highest priority) and try to match rows in newTable and
  * oldTable with same correlation key value. Matching will be finished, when
@@ -73,7 +73,7 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * which might change even if the object itself has not changed)</li>
  * <li>fields starting with "ID_" (will contain technical primary keys which
  * might change even if the object itself has not changed)</li>
- * <li>fields starting with "DIFF_" (these are the correlation keys)</li>
+ * <li>fields starting with "CORR_" (these are the correlation keys)</li>
  * </ul>
  * </li>
  * </ul>
@@ -148,7 +148,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
         }
         Set<String> keySet = new TreeSet<>(Arrays.asList(newTable.getHeadRow()));
         for (i = 0; i < 10; i++) {
-            String corrKeyName = "DIFF_KEY_" + i;
+            String corrKeyName = "CORR_KEY_" + i;
             if (keySet.contains(corrKeyName)) {
                 boolean completed =
                         assignCorrelatedRows(newTable, newTableIndexToOldTableRowMap, oldTableRowSet, corrKeyName);
@@ -198,7 +198,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
         List<String> fieldsRelevantForDiff = new ArrayList<>();
         for (String fieldname : newTable.getHeadRow()) {
             if (fieldname.startsWith("OBJ_") || fieldname.startsWith("PARENT_") || fieldname.startsWith("ID_")
-                    || fieldname.startsWith("DIFF_") || fieldname.equals("rowCount")) {
+                    || fieldname.startsWith("CORR_") || fieldname.equals("rowCount")) {
                 continue;
             }
             fieldsRelevantForDiff.add(fieldname);
