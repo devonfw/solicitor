@@ -21,13 +21,12 @@ import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
-import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
 import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "LegalEvaluation"
 
 rule "Legal Evaluation @{row.rowNumber}" salience -@{row.rowNumber}
-agenda-group "LegalEvaluation" 
     when
         $e : Engagement( 
         	clientName == "@{clientName}", 

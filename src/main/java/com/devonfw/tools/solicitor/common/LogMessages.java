@@ -22,7 +22,7 @@ public enum LogMessages {
     LOADING_DIFF(9, "Loading old Solicitor data model for performing difference report from '{}'"), //
     SAVING_DATAMODEL(10, "Saving Solicitor data model to '{}'"), //
     READING_INVENTORY(11, "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'"), //
-    LOAD_RULES(12, "Loading Rules of type '{}' from source '{}' with template '{}' for Agenda Group '{}'"), //
+    LOAD_RULES(12, "Loading Rules of type '{}' from source '{}' with template '{}' for Rule Group '{}'"), //
     ADDING_FACTS(13, "{} Facts have been added to the Drools working memory, staring Rule Engine ..."), //
     RULE_ENGINE_FINISHED(14, "Rule Engine processing completed, {} rules have been fired"), //
     PREPARING_FOR_WRITER(15, "Preparing to write report with writer '{}' using template '{}' to file '{}'"), //
@@ -35,7 +35,8 @@ public enum LogMessages {
     CONFIG_EXTRACTED(22,
             "Sample config file saved as '{}'. You might take this as starting point for your customization."), //
     FULL_CONFIG_EXTRACTED(23, "Complete sample configuration extracted. " + "See file '{}' for further information."), //
-    CLI_EXCEPTION(24, "Exception when processing command line arguments: {}");
+    CLI_EXCEPTION(24, "Exception when processing command line arguments: {}"), //
+    RULE_GROUP_FINISHED(25, "Processing of rule group '{}' finished. {} rules fired in {} ms");
 
     private final String completeMessage;
 

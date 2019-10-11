@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.devonfw.tools.solicitor.common;
+package com.devonfw.tools.solicitor.ruleengine.drools;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -65,7 +65,7 @@ public class AuditEntryBuilder implements Cloneable {
     public String build() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("+ Rule: ").append(ruleName);
+        sb.append("+ Rule Group: ").append(ModelHelper.getCurrentRuleGroup()).append("; Rule: ").append(ruleName);
         sb.append("; Matching: ");
         List<String> stringList = new ArrayList<>();
         if (matchings.size() > 0) {

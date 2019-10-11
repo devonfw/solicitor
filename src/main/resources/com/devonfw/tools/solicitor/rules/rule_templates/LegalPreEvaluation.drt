@@ -13,13 +13,12 @@ includeSource
 package com.devonfw.tools.solicitor.rules;
 
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
-import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
 import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "LegalPreEvaluation"
 
 rule "Legal Preevaluation @{row.rowNumber}" salience -@{row.rowNumber}
-agenda-group "LegalPreEvaluation" 
     when
         	$nl : NormalizedLicense(
         	effectiveNormalizedLicenseType == "@{type}", 

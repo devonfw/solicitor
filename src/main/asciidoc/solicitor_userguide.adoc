@@ -287,7 +287,7 @@ Business rules are executed within a https://www.drools.org/[Drools] rule engine
     "type" : "dt", <1>
     "ruleSource" : "classpath:samples/LicenseAssignmentSample.xls", <2>
     "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignment.drt", <3>
-    "agendaGroup" : "LicenseAssignment", <4>
+    "ruleGroup" : "LicenseAssignment", <4>
     "description" : "setting license in case that no one was detected" <5>
   },
   .
@@ -297,17 +297,19 @@ Business rules are executed within a https://www.drools.org/[Drools] rule engine
     "type" : "dt",
     "ruleSource" : "classpath:samples/LegalEvaluationSample.xls",
     "templateSource" : "classpath:com/.../rules/rule_templates/LegalEvaluation.drt",
-    "agendaGroup" : "LegalEvaluation",
+    "ruleGroup" : "LegalEvaluation",
     "decription" : "final legal evaluation based on the rules defined by legal"
   } ],
 
 <1> type of the rule; only possible value: `dt` which stands for "decision table"
 <2> location of the tabular decision table data
 <3> location of the drools rule template to be used to define the rules together with the decision table data
-<4> Drools agenda group; needs to be the same value as used in the corresponding rule template file
+<4> id of the group of rules; used to reference it e.g. when doing logging
 <5> some textual description of the rule group
 
-When running, _Solicitor_ will execute the rules of each AgendaGroup separately. Only if there are no more rules to fire in an AgendaGroup _Solicitor_ will move to the next agenda group and start firing those rules.
+When running, _Solicitor_ will execute the rules of each rule group separately and in the order
+given by the configuration. Only if there are no more rules to fire in a group _Solicitor_ will
+move to the next rule group and start firing those rules.
 
 Normally a project will only customize (part of) the data of the decision tables and thus will only change the `ruleSource` and the data in the XLS. All other configuration (the different templates and processing order) is part of the _Solicitor_ application itself and should not be changed by end users.
 
@@ -525,7 +527,9 @@ When processing, _Solicitor_ will internally use the rule template to create one
 ** The first "empty" row (which does not contain data in any of the defined columns) ends the decision table
 ** Decision tables might use multiple condition columns which define the data that a rule matches. Often such conditions are optional: If left free in the Excel table the condition will be omitted from the rule conditions. This allows to define very specific rules (which only fire on exact data patterns) or quite general rules which get activated on large groups of data. Defining general rules further down in the table (with lower salience/priority) ensures that more specific rules get fired earlier. This even allows to define a default rule at the end of the table which gets fired if no other rule could be applied.
 
-* `AgendaGroups`: Business rules are executed within Drools `AgendaGroups`. All rules resulting from a single decision table are assigned to the same `AgendaGroup`. The order of execution of the `AgendaGroups` is defined by the sequence of declaration in the config file. Processing of the current `AgendaGroup`  will be finished when there are no more rules to fire in that group. Processing of the next `AgendaGroup` will then start. `AgendaGroups` which have been finished processing will not be resumed even if rules within that `AgendaGroup` might have been activated again.
+* `rule groups`: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same `rule group`. The order of execution of the `rule groups` 
+is defined by the sequence of declaration in the config file. Processing of the current group will
+be finished when there are no more rules to fire in that group. Processing of the next group will then start. Rule groups which have been finished processing will not be resumed even if rules within that group might have been activated again due to changes of the facts.
 
 NOTE: A concept for organizing rules into common and project specific rules is not
 yet in place
@@ -536,10 +540,10 @@ The processing of business rules is organized in different phases. Each phase mi
 === Phase 1: Determining assigned Licenses
 In this phase the license data imported via the readers is cleaned and normalized. At the end of this phase the internal data model should clearly represent all components and their assigned licenses in normalized form.
 
-The phase itself consists of two decision tables / AgendaGroups:
+The phase itself consists of two decision tables / rule groups:
 
 ==== Decision Table: Explicitely setting Licenses
-With this decision table is is possible to explicitely assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next `AgendaGroup`.
+With this decision table is is possible to explicitely assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next rule group.
 
 * LHS conditions:
 ** `Engagement.clientName`

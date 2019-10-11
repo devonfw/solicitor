@@ -20,19 +20,19 @@ public class RuleConfig {
     private String templateSource;
 
     @JsonProperty
-    private String agendaGroup;
+    private String ruleGroup;
 
     @JsonProperty
     private String description;
 
     /**
-     * This method gets the field <tt>agendaGroup</tt>.
+     * This method gets the field <tt>ruleGroup</tt>.
      *
-     * @return the field agendaGroup
+     * @return the field ruleGroup
      */
-    public String getAgendaGroup() {
+    public String getRuleGroup() {
 
-        return agendaGroup;
+        return ruleGroup;
     }
 
     /**
@@ -76,13 +76,13 @@ public class RuleConfig {
     }
 
     /**
-     * This method sets the field <tt>agendaGroup</tt>.
+     * This method sets the field <tt>ruleGroup</tt>.
      *
-     * @param agendaGroup the new value of the field agendaGroup
+     * @param ruleGroup the new value of the field ruleGroup
      */
-    public void setAgendaGroup(String agendaGroup) {
+    public void setRuleGroup(String ruleGroup) {
 
-        this.agendaGroup = agendaGroup;
+        this.ruleGroup = ruleGroup;
     }
 
     /**

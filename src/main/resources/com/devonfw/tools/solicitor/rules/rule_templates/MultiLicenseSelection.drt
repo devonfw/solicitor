@@ -16,13 +16,12 @@ import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
-import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
 import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "Multi License Selection"
 
 rule "Multi License Selection @{row.rowNumber}" salience -@{row.rowNumber}
-agenda-group "MultiLicenseSelection" 
     when
         $ac : ApplicationComponent(
         	groupId == "@{groupId}", 
