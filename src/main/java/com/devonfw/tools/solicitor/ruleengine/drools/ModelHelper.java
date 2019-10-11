@@ -26,6 +26,8 @@ public class ModelHelper {
 
     private static ModelFactory modelFactory;
 
+    private static String currentRuleGroup;
+
     /**
      * Adds the given comment to the comments of the given license object.
      *
@@ -148,6 +150,28 @@ public class ModelHelper {
     public void setModelFactory(ModelFactory modelFactory) {
 
         ModelHelper.modelFactory = modelFactory;
+    }
+
+    /**
+     * This method gets the field <tt>currentRuleGroup</tt>. This field contains
+     * the id of the current rule group being processed by the Drools Rule
+     * Engine.
+     *
+     * @return the field currentRuleGroup
+     */
+    public static String getCurrentRuleGroup() {
+
+        return currentRuleGroup;
+    }
+
+    /**
+     * This method sets the field <tt>currentRuleGroup</tt>.
+     *
+     * @param currentRuleGroup the new value of the field currentRuleGroup
+     */
+    public static void setCurrentRuleGroup(String currentRuleGroup) {
+
+        ModelHelper.currentRuleGroup = currentRuleGroup;
     }
 
 }

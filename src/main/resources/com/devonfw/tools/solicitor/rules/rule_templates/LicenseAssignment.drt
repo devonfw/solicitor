@@ -22,14 +22,13 @@ import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
-import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
 import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 
 template "License Assignment"
 
 rule "License Assignment @{row.rowNumber} - mark RawLicense as done by specialHandling" salience -@{row.rowNumber}
-agenda-group "LicenseAssignment" 
     when
     	// make sure that the main conditions given here are the same as in the below rule
         $e : Engagement( 
@@ -57,7 +56,6 @@ agenda-group "LicenseAssignment"
 end
 
 rule "License Assignment @{row.rowNumber} - add given NormalizedLicense" salience -@{row.rowNumber}
-agenda-group "LicenseAssignment" 
     when
         $e : Engagement( 
         	clientName == "@{clientName}", 

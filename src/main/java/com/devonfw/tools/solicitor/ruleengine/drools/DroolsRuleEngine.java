@@ -35,7 +35,6 @@ import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
-import com.google.common.collect.Lists;
 
 /**
  * Implementation of the {@link RuleEngine} interface using the
@@ -56,20 +55,58 @@ public class DroolsRuleEngine implements RuleEngine {
     @Autowired
     private SolicitorSetup setup;
 
-    /** {@inheritDoc} */
+    @Autowired
+    private ModelHelper modelHelper;
+
+    /**
+     * {@inheritDoc}
+     * 
+     * Each set of rules given by a RuleConfig (e.g. a single decision table)
+     * will be executed in a separate Kie session.
+     */
     @Override
     public void executeRules(ModelRoot modelRoot) {
 
-        KieSession ksession = prepareSession();
-
-        if (debugLog != null && !debugLog.isEmpty()) {
-            // Set up listeners.
-            ksession.addEventListener(new DebugAgendaEventListener());
-            ksession.addEventListener(new DebugRuleRuntimeEventListener());
-
-            // Set up a file-based audit logger.
-            KieServices.get().getLoggers().newFileLogger(ksession, debugLog);
+        int rulesFired = 0;
+        for (RuleConfig rc : setup.getRuleSetups()) {
+            rulesFired += executeRuleGroup(modelRoot, rc);
         }
+        LOG.info(LogMessages.RULE_ENGINE_FINISHED.msg(), rulesFired);
+
+    }
+
+    /**
+     * Exceute the rules defined by a single RuleConfig. This includes building
+     * up the {@link KieSession}, adding all rules, adding all facts (the model)
+     * and firing all rules.
+     * 
+     * @param modelRoot the root to the model definin all facts
+     * @param rc the configuration of the rules to execute
+     * @return the number of rules which fired
+     */
+    private int executeRuleGroup(ModelRoot modelRoot, RuleConfig rc) {
+
+        KieSession ksession = prepareSession(rc);
+
+        insertFacts(ksession, modelRoot);
+
+        // Fire the rules.
+        long startTime = System.currentTimeMillis();
+        modelHelper.setCurrentRuleGroup(rc.getRuleGroup());
+        int count = ksession.fireAllRules();
+        long endTime = System.currentTimeMillis();
+        LOG.info(LogMessages.RULE_GROUP_FINISHED.msg(), rc.getRuleGroup(), count, endTime - startTime);
+        ksession.dispose();
+        return count;
+    }
+
+    /**
+     * Inserts all facts to the working memory of the given Drools session.
+     * 
+     * @param ksession the Drools session
+     * @param modelRoot root of the model containing the facts
+     */
+    private void insertFacts(KieSession ksession, ModelRoot modelRoot) {
 
         ksession.insert(modelRoot);
         Engagement engagement = modelRoot.getEngagement();
@@ -87,43 +124,36 @@ public class DroolsRuleEngine implements RuleEngine {
             }
         }
         LOG.info(LogMessages.ADDING_FACTS.msg(), ksession.getFactCount());
-
-        // Fire the rules.
-        int count = ksession.fireAllRules();
-        LOG.info(LogMessages.RULE_ENGINE_FINISHED.msg(), count);
-        ksession.dispose();
     }
 
     /**
-     * Prepare the {@link KieSession} by reading and preprocessing all rules.
+     * Prepare the {@link KieSession} by reading and preprocessing given rules.
      * 
+     * @param rc the configuration of the rules to read
      * @return the prepared {@link KieSession}
      */
-    private KieSession prepareSession() {
+    private synchronized KieSession prepareSession(RuleConfig rc) {
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        ReleaseId rid = ks.newReleaseId("com.devonfw.tools", "solicitor", "0.0.1");
+        ReleaseId rid = ks.newReleaseId("com.devonfw.tools", "solicitor", "0.0.0");
         kfs.generateAndWritePomXML(rid);
 
         KieModuleModel kModuleModel = ks.newKieModuleModel();
-        KieBaseModel baseModel = kModuleModel.newKieBaseModel("ProgrammaticTestBaseModel");
+        KieBaseModel baseModel = kModuleModel.newKieBaseModel("SolicitorBaseModel");
 
         baseModel.addPackage("com.devonfw.tools.solicitor.rules");
 
         List<Resource> resources = new ArrayList<>();
-        List<String> agendaGroups = new ArrayList<>();
 
-        for (RuleConfig rs : setup.getRuleSetups()) {
-            ruleReaderFactory.readerFor(rs.getType()).readRules(rs.getRuleSource(), rs.getTemplateSource(),
-                    rs.getDescription(), baseModel, resources);
-            agendaGroups.add(rs.getAgendaGroup());
-            LOG.info(LogMessages.LOAD_RULES.msg(), rs.getType(), rs.getRuleSource(), rs.getTemplateSource(),
-                    rs.getAgendaGroup());
-        }
+        ruleReaderFactory.readerFor(rc.getType()).readRules(rc.getRuleSource(), rc.getTemplateSource(),
+                rc.getDescription(), baseModel, resources);
+        LOG.info(LogMessages.LOAD_RULES.msg(), rc.getType(), rc.getRuleSource(), rc.getTemplateSource(),
+                rc.getRuleGroup());
 
-        baseModel.newKieSessionModel("LicenseNameMappingKSProgrammatic");
+        String sesionName = "SolitorSessionModel";
+        baseModel.newKieSessionModel(sesionName);
 
         kfs.writeKModuleXML(kModuleModel.toXML());
 
@@ -139,9 +169,15 @@ public class DroolsRuleEngine implements RuleEngine {
 
         KieContainer kContainer = ks.newKieContainer(rid);
 
-        KieSession kSession = kContainer.newKieSession("LicenseNameMappingKSProgrammatic");
-        for (String ag : Lists.reverse(agendaGroups)) {
-            kSession.getAgenda().getAgendaGroup(ag).setFocus();
+        KieSession kSession = kContainer.newKieSession(sesionName);
+
+        if (debugLog != null && !debugLog.isEmpty()) {
+            // Set up listeners.
+            kSession.addEventListener(new DebugAgendaEventListener());
+            kSession.addEventListener(new DebugRuleRuntimeEventListener());
+
+            // Set up a file-based audit logger.
+            KieServices.get().getLoggers().newFileLogger(kSession, debugLog);
         }
 
         return kSession;

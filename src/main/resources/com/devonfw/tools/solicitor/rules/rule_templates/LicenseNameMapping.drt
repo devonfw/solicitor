@@ -9,14 +9,14 @@ normalized
 package com.devonfw.tools.solicitor.rules;
 
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
+import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent
 import com.devonfw.tools.solicitor.model.inventory.RawLicense
-import com.devonfw.tools.solicitor.common.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
 import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "NameNormalizer"
 
 rule "Name Normalization @{row.rowNumber}" salience -@{row.rowNumber}
-agenda-group "LicenseNameMapping"
     when
         $ac : ApplicationComponent()
         $rl : RawLicense(
