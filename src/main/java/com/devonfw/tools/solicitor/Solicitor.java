@@ -14,7 +14,7 @@ import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier.ResourceGroup;
-import com.devonfw.tools.solicitor.config.ConfigReader;
+import com.devonfw.tools.solicitor.config.ConfigFactory;
 import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -38,7 +38,7 @@ public class Solicitor {
     private SolicitorSetup solicitorSetup;
 
     @Autowired
-    private ConfigReader configReader;
+    private ConfigFactory configFactory;
 
     @Autowired
     private ReaderFactory readerFactory;
@@ -88,7 +88,7 @@ public class Solicitor {
      */
     private void mainProcessing(CommandLineOptions clo) {
 
-        ModelRoot modelRoot = configReader.readConfig(clo.configUrl);
+        ModelRoot modelRoot = configFactory.createConfig(clo.configUrl);
         if (clo.load) {
             LOG.info(LogMessages.LOADING_DATAMODEL.msg(), clo.pathForLoad);
             modelRoot = modelImporterExporter.loadModel(clo.pathForLoad);
@@ -135,6 +135,10 @@ public class Solicitor {
         boolean doMainProcessing = true;
         SolicitorVersion sv = solicitorVersion;
         LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
+        if (sv.isExtensionPresent()) {
+            LOG.info(LogMessages.EXTENSION_PRESENT.msg(), sv.getExtensionArtifact(), sv.getExtensionVersion(),
+                    sv.getExtensionGithash(), sv.getExtensionBuilddate());
+        }
 
         if (clo.extractUserGuide) {
             extractUserguide();

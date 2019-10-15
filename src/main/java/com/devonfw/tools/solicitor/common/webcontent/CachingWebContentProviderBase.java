@@ -6,6 +6,7 @@ package com.devonfw.tools.solicitor.common.webcontent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import net.bytebuddy.implementation.Implementation;
 /**
  * Abstract base {@link Implementation} of {@link WebContentProvider}s which
  * first try to load the content from some cache. If they are not able to load
- * the content from the cache they will deletate to some other
+ * the content from the cache they will delegate to some other
  * {@link WebContentProvider} for further handling.
  *
  */
@@ -43,10 +44,10 @@ public abstract class CachingWebContentProviderBase implements WebContentProvide
      * @param key the cache key of the content.
      * @return the URL to take for looking up the content in the cache
      */
-    protected abstract String getCacheUrl(String key);
+    protected abstract Collection<String> getCacheUrls(String key);
 
     /**
-     * Calcutalte the key for the given web content URL.
+     * Calculate the key for the given web content URL.
      *
      * @param url the URL of the web content
      * @return the cache key
@@ -60,25 +61,31 @@ public abstract class CachingWebContentProviderBase implements WebContentProvide
     /**
      * {@inheritDoc}
      *
-     * Tries to load the web content from the resource fpound via the URL
-     * returned by {@link #getCacheUrl(String)}. If this doies not succeed, the
-     * delegate further processing to the
+     * Tries to load the web content from the resource found via the URLs
+     * returned by {@link #getCacheUrls(String)}. First hit will be returned. If
+     * this does not succeed, then delegate further processing to
      * {@link CachingWebContentProviderBase#loadFromNext(String)}.
      */
     @Override
     public String getWebContentForUrl(String url) {
 
         String key = getKey(url);
-        String classPathUrl = getCacheUrl(key);
+        Collection<String> classPathUrls = getCacheUrls(key);
 
-        try (InputStream is = urlInputStreamFactory.createInputStreamFor(classPathUrl); Scanner s = new Scanner(is)) {
-            s.useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            return result;
-        } catch (FileNotFoundException fnfe) {
-            LOG.debug("Content for url '" + url + "' not found here");
-        } catch (IOException e) {
-            LOG.debug("Could not retieve content for url '" + url + "'", e);
+        for (String classPathUrl : classPathUrls) {
+            try (InputStream is = urlInputStreamFactory.createInputStreamFor(classPathUrl);
+                    Scanner s = new Scanner(is)) {
+                s.useDelimiter("\\A");
+                String result = s.hasNext() ? s.next() : "";
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Content for url '" + url + "' found at '" + classPathUrl + "'");
+                }
+                return result;
+            } catch (FileNotFoundException fnfe) {
+                LOG.debug("Content for url '" + url + "' NOT found at '" + classPathUrl + "'");
+            } catch (IOException e) {
+                LOG.debug("Could not retieve content for url '" + url + "' from '" + classPathUrl + "'", e);
+            }
         }
         return loadFromNext(url);
     }

@@ -104,6 +104,10 @@ public class ModelFactoryImpl extends ModelFactory {
         modelRoot.setSolicitorVersion(solicitorVersion.getVersion());
         modelRoot.setSolicitorGitHash(solicitorVersion.getGithash());
         modelRoot.setSolicitorBuilddate(solicitorVersion.getBuilddate());
+        modelRoot.setExtensionArtifactId(solicitorVersion.getExtensionArtifact());
+        modelRoot.setExtensionVersion(solicitorVersion.getExtensionVersion());
+        modelRoot.setExtensionGitHash(solicitorVersion.getExtensionGithash());
+        modelRoot.setExtensionBuilddate(solicitorVersion.getExtensionBuilddate());
         return modelRoot;
     }
 

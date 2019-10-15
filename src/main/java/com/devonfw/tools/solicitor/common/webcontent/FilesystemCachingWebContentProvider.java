@@ -6,12 +6,17 @@ package com.devonfw.tools.solicitor.common.webcontent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.devonfw.tools.solicitor.common.IOHelper;
+import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 
 /**
  * A {@link CachingWebContentProviderBase} which tries to load web content from
@@ -39,9 +44,9 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
      * Points to a subdirectory "licenses" in the current working directory.
      */
     @Override
-    protected String getCacheUrl(String key) {
+    protected Collection<String> getCacheUrls(String key) {
 
-        return "file:licenses/" + key;
+        return Collections.singleton("file:licenses/" + key);
     }
 
     /**
@@ -60,13 +65,9 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
         File file = new File("licenses/" + getKey(url));
         File targetDir = file.getParentFile();
         try {
-            if (!targetDir.exists()) {
-                Files.createDirectories(targetDir.toPath());
-            }
-        } catch (IOException e) {
-            LOG.error(
-                    "Could not create directory '{}' for caching downloaded web resources. Could not write data to file cache.",
-                    targetDir.getAbsolutePath());
+            IOHelper.checkAndCreateLocation(file);
+        } catch (SolicitorRuntimeException e) {
+            LOG.error(LogMessages.COULD_NOT_CREATE_CACHE.msg(), targetDir.getAbsolutePath());
             return result;
         }
         try (FileWriter fw = new FileWriter(file)) {

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -54,11 +55,19 @@ public class ModelImporterExporter {
             String solicitorVersion = root.get("solicitorVersion").asText();
             String solicitorGitHash = root.get("solicitorGitHash").asText();
             String solicitorBuilddate = root.get("solicitorBuilddate").asText();
+            String extensionArtifactId = root.get("extensionArtifactId").asText();
+            String extensionVersion = root.get("extensionVersion").asText();
+            String extensionGitHash = root.get("extensionGitHash").asText();
+            String extensionBuilddate = root.get("extensionBuilddate").asText();
             JsonNode engagementNode = root.get("engagement");
             modelRoot.setExecutionTime(executionTime);
             modelRoot.setSolicitorVersion(solicitorVersion);
             modelRoot.setSolicitorGitHash(solicitorGitHash);
             modelRoot.setSolicitorBuilddate(solicitorBuilddate);
+            modelRoot.setExtensionArtifactId(extensionArtifactId);
+            modelRoot.setExtensionVersion(extensionVersion);
+            modelRoot.setExtensionGitHash(extensionGitHash);
+            modelRoot.setExtensionBuilddate(extensionBuilddate);
             readEngagement(modelRoot, engagementNode);
             return modelRoot;
         } catch (IOException e) {
@@ -247,6 +256,7 @@ public class ModelImporterExporter {
     public void saveModel(ModelRoot modelRoot, String filename) {
 
         String effectiveFilename = (filename != null) ? filename : "solicitor_" + System.currentTimeMillis() + ".json";
+        IOHelper.checkAndCreateLocation(effectiveFilename);
         ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
             objectMapper.writeValue(new File(effectiveFilename), modelRoot);

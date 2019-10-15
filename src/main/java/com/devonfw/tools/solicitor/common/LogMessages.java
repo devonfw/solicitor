@@ -15,7 +15,7 @@ public enum LogMessages {
     COMPLETED(2, "Solicitor processing completed in {} ms"), //
     ABORTED(3, "Solicitor processing aborted"), //
     COPYING_RESOURCE(4, "Copying resource '{}' to file '{}'"), //
-    READING_CONFIG(5, "Reading Solicitor configuration from resource '{}'"), //
+    READING_CONFIG(5, "Reading Solicitor configuration ({}) from resource '{}'"), //
     CREATING_ENGAGEMENT(6, "Defining Engagement '{}' in Solicitor data model"), //
     CREATING_APPLICATION(7, "Defining Application '{}' in Solicitor data model"), //
     LOADING_DATAMODEL(8, "Loading Solicitor data model from '{}' (overwriting any possibly existing data)"), //
@@ -36,7 +36,14 @@ public enum LogMessages {
             "Sample config file saved as '{}'. You might take this as starting point for your customization."), //
     FULL_CONFIG_EXTRACTED(23, "Complete sample configuration extracted. " + "See file '{}' for further information."), //
     CLI_EXCEPTION(24, "Exception when processing command line arguments: {}"), //
-    RULE_GROUP_FINISHED(25, "Processing of rule group '{}' finished. {} rules fired in {} ms");
+    RULE_GROUP_FINISHED(25, "Processing of rule group '{}' finished. {} rules fired in {} ms"), //
+    TAKING_RULE_CONFIG(26, "Merging config: Taking rule config from {}"), //
+    TAKING_WRITER_CONFIG(27, "Merging config: Taking writer config from {}"), //
+    EXTENSION_PRESENT(28, "Solicitor extension present. Artifact:{}, Version:{}, Buildnumber:{}, Builddate:{}"), //
+    PLACEHOLDER_INFO(29, "Placeholder '{}' in configuration will be replaced by '{}'"), //
+    COULD_NOT_CREATE_CACHE(30,
+            "Could not create directory '{}' for caching downloaded web resources. Could not write data to file cache."), //
+    CREATED_DIRECTORY(31, "Created directory '{}' which did not yet exist"); //
 
     private final String completeMessage;
 
