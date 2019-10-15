@@ -35,13 +35,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
 import com.devonfw.tools.solicitor.writer.data.DataTableField;
-import com.devonfw.tools.solicitor.writer.data.DataTableRow;
 import com.devonfw.tools.solicitor.writer.data.DataTableField.FieldDiffStatus;
+import com.devonfw.tools.solicitor.writer.data.DataTableRow;
 import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
 
 /**
@@ -233,6 +234,7 @@ public class ExcelWriter implements Writer {
             }
 
             // Write the output to a file
+            IOHelper.checkAndCreateLocation(target);
             try (OutputStream fileOut = new FileOutputStream(target)) {
                 wb.write(fileOut);
             }

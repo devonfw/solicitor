@@ -3,9 +3,14 @@
  */
 package com.devonfw.tools.solicitor.common.webcontent;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +25,8 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
     @Autowired
     private FilesystemCachingWebContentProvider filesystemCachingWebContentProvider;
 
+    private String[] cachePaths;
+
     /**
      * Constructor.
      */
@@ -30,12 +37,17 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
     /**
      * {@inheritDoc}
      * 
-     * Points to the folder "licenses" in the classpath.
+     * Points to the folders defined via property {@link #cachePaths} in the
+     * classpath.
      */
     @Override
-    protected String getCacheUrl(String key) {
+    protected Collection<String> getCacheUrls(String key) {
 
-        return "classpath:licenses/" + key;
+        List<String> result = new ArrayList<>();
+        for (String base : cachePaths) {
+            result.add(new StringBuilder("classpath:").append(base).append("/").append(key).toString());
+        }
+        return result;
     }
 
     /**
@@ -48,6 +60,18 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
 
         String result = filesystemCachingWebContentProvider.getWebContentForUrl(url);
         return result;
+    }
+
+    /**
+     * This method sets the field <tt>cachePaths</tt>. It defines the base paths
+     * where to look for preconfigured license texts.
+     *
+     * @param cachePaths the new value of the field cachePaths
+     */
+    @Value("${solicitor.classpath-license-cache-locations}")
+    public void setCachePaths(String[] cachePaths) {
+
+        this.cachePaths = cachePaths;
     }
 
 }

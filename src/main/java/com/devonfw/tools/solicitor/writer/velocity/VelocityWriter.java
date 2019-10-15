@@ -80,6 +80,7 @@ public class VelocityWriter implements Writer {
 
         // write output
         File file = new File(target);
+        IOHelper.checkAndCreateLocation(file);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             Velocity.evaluate(context, writer, "solicitor report velocity", templateString);
             writer.flush();

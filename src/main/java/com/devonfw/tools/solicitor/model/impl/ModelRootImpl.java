@@ -25,6 +25,14 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
 
     private String solicitorBuilddate;
 
+    private String extensionArtifactId;
+
+    private String extensionVersion;
+
+    private String extensionGitHash;
+
+    private String extensionBuilddate;
+
     private Engagement engagement;
 
     /**
@@ -42,7 +50,7 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     public String[] getDataElements() {
 
         return new String[] { executionTime, Integer.toString(modelVersion), solicitorVersion, solicitorGitHash,
-        solicitorBuilddate };
+        solicitorBuilddate, extensionArtifactId, extensionVersion, extensionGitHash, extensionBuilddate };
     }
 
     /** {@inheritDoc} */
@@ -64,7 +72,7 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     public String[] getHeadElements() {
 
         return new String[] { "executionTime", "modelVersion", "solicitorVersion", "solicitorGitHash",
-        "solicitorBuilddate" };
+        "solicitorBuilddate", "extensionArtifactId", "extensionVersion", "extensionGitHash", "extensionBuilddate" };
     }
 
     /** {@inheritDoc} */
@@ -93,6 +101,34 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     public String getSolicitorVersion() {
 
         return solicitorVersion;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getExtensionArtifactId() {
+
+        return extensionArtifactId;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getExtensionVersion() {
+
+        return extensionVersion;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getExtensionGitHash() {
+
+        return extensionGitHash;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getExtensionBuilddate() {
+
+        return extensionBuilddate;
     }
 
     /** {@inheritDoc} */
@@ -135,6 +171,34 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     public void setSolicitorVersion(String solicitorVersion) {
 
         this.solicitorVersion = solicitorVersion;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setExtensionArtifactId(String extensionArtifactId) {
+
+        this.extensionArtifactId = extensionArtifactId;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setExtensionVersion(String extensionVersion) {
+
+        this.extensionVersion = extensionVersion;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setExtensionGitHash(String extensionGitHash) {
+
+        this.extensionGitHash = extensionGitHash;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setExtensionBuilddate(String extensionBuilddate) {
+
+        this.extensionBuilddate = extensionBuilddate;
     }
 
 }

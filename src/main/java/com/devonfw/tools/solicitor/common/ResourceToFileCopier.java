@@ -75,23 +75,23 @@ public class ResourceToFileCopier {
         case CONFIG_FULL:
             copyResourceToFile("classpath:samples/solicitor_sample_filesystem.cfg", "solicitor_sample_copy.cfg");
             copyResourceToFile("classpath:samples/licenses_devon4j.xml", "licenses_devon4j.xml");
-            copyResourceToFile("classpath:samples/LicenseAssignmentSample.xls",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/rules/LicenseAssignmentSample.xls",
                     "sample_configs/LicenseAssignmentSample.xls");
-            copyResourceToFile("classpath:samples/LicenseNameMappingSample.xls",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/rules/LicenseNameMappingSample.xls",
                     "sample_configs/LicenseNameMappingSample.xls");
-            copyResourceToFile("classpath:samples/MultiLicenseSelectionSample.xls",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/rules/MultiLicenseSelectionSample.xls",
                     "sample_configs/MultiLicenseSelectionSample.xls");
-            copyResourceToFile("classpath:samples/LicenseSelectionSample.xls",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/rules/LicenseSelectionSample.xls",
                     "sample_configs/LicenseSelectionSample.xls");
-            copyResourceToFile("classpath:samples/LegalPreEvaluationSample.xls",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/rules/LegalPreEvaluationSample.xls",
                     "sample_configs/LegalPreEvaluationSample.xls");
-            copyResourceToFile("classpath:samples/LegalEvaluationSample.xls",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/rules/LegalEvaluationSample.xls",
                     "sample_configs/LegalEvaluationSample.xls");
-            copyResourceToFile("classpath:samples/Solicitor_Output_Template_Sample.vm",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample.vm",
                     "sample_configs/Solicitor_Output_Template_Sample.vm");
-            copyResourceToFile("classpath:samples/Solicitor_Output_Template_Sample.xlsx",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample.xlsx",
                     "sample_configs/Solicitor_Output_Template_Sample.xlsx");
-            copyResourceToFile("classpath:samples/Solicitor_Diff_Template_Sample.vm",
+            copyResourceToFile("classpath:com/devonfw/tools/solicitor/templates/Solicitor_Diff_Template_Sample.vm",
                     "sample_configs/Solicitor_Diff_Template_Sample.vm");
             copyResourceToFile("classpath:samples/readme_solicitor_cfg.txt", "readme_solicitor_cfg.txt");
             returnString = "readme_solicitor_cfg.txt";
