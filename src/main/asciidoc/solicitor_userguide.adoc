@@ -462,7 +462,7 @@ In _Solicitor_ the data is read with the following part of the config
 
 For the export of the licenses from a Gradle based project the Gradle License Plugin is used.
 
-To install the plugin some changes needs to be done in `build.gradle`, like following example
+To install the plugin some changes need to be done in `build.gradle`, like following example
 ----
 buildscript {
   repositories {
