@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorSetup;
+import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.config.RuleConfig;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -53,6 +54,9 @@ public class DroolsRuleEngine implements RuleEngine {
     private DroolsRulesReaderFactory ruleReaderFactory;
 
     @Autowired
+    private InputStreamFactory inputStreamFactory;
+
+    @Autowired
     private SolicitorSetup setup;
 
     @Autowired
@@ -78,13 +82,20 @@ public class DroolsRuleEngine implements RuleEngine {
     /**
      * Exceute the rules defined by a single RuleConfig. This includes building
      * up the {@link KieSession}, adding all rules, adding all facts (the model)
-     * and firing all rules.
+     * and firing all rules. If the RuleConfig defines the rule group as
+     * optional and the rule source does not exist the execution will be
+     * skipped.
      * 
-     * @param modelRoot the root to the model definin all facts
+     * @param modelRoot the root to the model defining all facts
      * @param rc the configuration of the rules to execute
      * @return the number of rules which fired
      */
     private int executeRuleGroup(ModelRoot modelRoot, RuleConfig rc) {
+
+        if (rc.isOptional() && !inputStreamFactory.isExisting(rc.getRuleSource())) {
+            LOG.info(LogMessages.SKIPPING_RULEGROUP.msg(), rc.getRuleGroup(), rc.getRuleSource());
+            return 0;
+        }
 
         KieSession ksession = prepareSession(rc);
 
