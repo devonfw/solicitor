@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 template header
+ruleId
 clientName
 engagementName
 applicationName
@@ -28,7 +29,7 @@ import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "License Assignment"
 
-rule "License Assignment @{row.rowNumber} - mark RawLicense as done by specialHandling" salience -@{row.rowNumber}
+rule "License Assignment @{ruleId} - mark RawLicense as done by specialHandling" salience -@{row.rowNumber}
     when
     	// make sure that the main conditions given here are the same as in the below rule
         $e : Engagement( 
@@ -55,7 +56,7 @@ rule "License Assignment @{row.rowNumber} - mark RawLicense as done by specialHa
        
 end
 
-rule "License Assignment @{row.rowNumber} - add given NormalizedLicense" salience -@{row.rowNumber}
+rule "License Assignment @{ruleId} - add given NormalizedLicense" salience -@{row.rowNumber}
     when
         $e : Engagement( 
         	clientName == "@{clientName}", 
@@ -86,7 +87,7 @@ rule "License Assignment @{row.rowNumber} - add given NormalizedLicense" salienc
         
 		// Create trace entry        
         AuditEntryBuilder aeb = AuditEntryBuilder.instance();
-        aeb.withRuleName("License Assignment @{row.rowNumber} - add given NormalizedLicense")
+        aeb.withRuleId("@{ruleId}")
         .withMatching("clientName", "@{clientName}" ) 
         .withMatching("engagementName", "@{engagementName}" )
         .withMatching("name", "@{applicationName}" ) 
