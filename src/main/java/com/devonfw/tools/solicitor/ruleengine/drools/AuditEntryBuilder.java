@@ -46,7 +46,7 @@ public class AuditEntryBuilder implements Cloneable {
 
     private Map<String, StringPair> settings;
 
-    private String ruleName;
+    private String ruleId;
 
     /**
      * Private Constructor. Use {@link #instance()} to get an instance instead.
@@ -65,7 +65,7 @@ public class AuditEntryBuilder implements Cloneable {
     public String build() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("+ Rule Group: ").append(ModelHelper.getCurrentRuleGroup()).append("; Rule: ").append(ruleName);
+        sb.append("+ Rule Group: ").append(ModelHelper.getCurrentRuleGroup()).append("; RuleId: ").append(ruleId);
         sb.append("; Matching: ");
         List<String> stringList = new ArrayList<>();
         if (matchings.size() > 0) {
@@ -97,7 +97,7 @@ public class AuditEntryBuilder implements Cloneable {
         AuditEntryBuilder clone = new AuditEntryBuilder();
         clone.matchings = new LinkedHashMap<>(matchings);
         clone.settings = new LinkedHashMap<>(settings);
-        clone.ruleName = ruleName;
+        clone.ruleId = ruleId;
         return clone;
     }
 
@@ -125,14 +125,14 @@ public class AuditEntryBuilder implements Cloneable {
     }
 
     /**
-     * Add a rule name.
+     * Add a rule id.
      *
-     * @param name the rule name to use
+     * @param id the rule id to use
      * @return the same builder to allow chaining
      */
-    public AuditEntryBuilder withRuleName(String name) {
+    public AuditEntryBuilder withRuleId(String id) {
 
-        ruleName = name;
+        ruleId = id;
         return this;
     }
 

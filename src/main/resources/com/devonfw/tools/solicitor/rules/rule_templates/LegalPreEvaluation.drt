@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 template header
+ruleId
 type
 spdxid
 legalPreApproved
@@ -18,7 +19,7 @@ import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "LegalPreEvaluation"
 
-rule "Legal Preevaluation @{row.rowNumber}" salience -@{row.rowNumber}
+rule "Legal Preevaluation @{ruleId}" salience -@{row.rowNumber}
     when
         	$nl : NormalizedLicense(
         	effectiveNormalizedLicenseType == "@{type}", 
@@ -34,7 +35,7 @@ rule "Legal Preevaluation @{row.rowNumber}" salience -@{row.rowNumber}
  
 		// Create trace entry        
         AuditEntryBuilder aeb = AuditEntryBuilder.instance();
-        aeb.withRuleName("Legal Preevaluation @{row.rowNumber}")
+        aeb.withRuleId("@{ruleId}")
         .withMatching("effectiveNormalizedLicenseType", "@{type}" )
         .withMatching("effectiveNormalizedLicense", "@{spdxid}" )
         .withSetting("legalPreApproved",  "@{legalPreApproved}" )

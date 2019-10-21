@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 template header
+ruleId
 declared
 url
 type
@@ -16,7 +17,7 @@ import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "NameNormalizer"
 
-rule "Name Normalization @{row.rowNumber}" salience -@{row.rowNumber}
+rule "Name Normalization @{ruleId}" salience -@{row.rowNumber}
     when
         $ac : ApplicationComponent()
         $rl : RawLicense(
@@ -34,7 +35,7 @@ rule "Name Normalization @{row.rowNumber}" salience -@{row.rowNumber}
 
 		// Create trace entry        
         AuditEntryBuilder aeb = AuditEntryBuilder.instance();
-        aeb.withRuleName("Name Normalization @{row.rowNumber}")
+        aeb.withRuleId("@{ruleId}")
         .withMatching("declaredLicense", "@{declared}" )
         .withMatching("licenseUrl", "@{url}" )
         .withSetting("normalizedLicenseType", "@{type}" )

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 template header
+ruleId
 clientName
 engagementName
 applicationName
@@ -26,7 +27,7 @@ import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "LegalEvaluation"
 
-rule "Legal Evaluation @{row.rowNumber}" salience -@{row.rowNumber}
+rule "Legal Evaluation @{ruleId}" salience -@{row.rowNumber}
     when
         $e : Engagement( 
         	clientName == "@{clientName}", 
@@ -53,7 +54,7 @@ rule "Legal Evaluation @{row.rowNumber}" salience -@{row.rowNumber}
 
 		// Create trace entry        
         AuditEntryBuilder aeb = AuditEntryBuilder.instance();
-        aeb.withRuleName("Legal Evaluation @{row.rowNumber}")
+        aeb.withRuleId("@{ruleId}")
         .withMatching("clientName", "@{clientName}" )
 		.withMatching("engagementName", "@{engagementName}" )
         .withMatching("customerProvidesOss", "@{customerProvidesOss}" )

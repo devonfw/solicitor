@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 template header
+ruleId
 groupId
 artifactId
 version
@@ -21,7 +22,7 @@ import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "Multi License Selection"
 
-rule "Multi License Selection @{row.rowNumber}" salience -@{row.rowNumber}
+rule "Multi License Selection @{ruleId}" salience -@{row.rowNumber}
     when
         $ac : ApplicationComponent(
         	groupId == "@{groupId}", 
@@ -39,7 +40,7 @@ rule "Multi License Selection @{row.rowNumber}" salience -@{row.rowNumber}
     then
 		// Prepare trace entry - builder will be cloned, customized and used below        
         AuditEntryBuilder aeb = AuditEntryBuilder.instance();
-        aeb.withRuleName("Multi License Selection @{row.rowNumber}")
+        aeb.withRuleId("@{ruleId}")
         .withMatching("groupId", "@{groupId}" )
         .withMatching("artifactId", "@{artifactId}" )
         .withMatching("version", "@{version}" )
