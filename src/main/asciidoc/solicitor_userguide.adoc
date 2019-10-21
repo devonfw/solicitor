@@ -480,11 +480,11 @@ In _Solicitor_ the data is read with the following part of the config
 ----
 
 
-=== Gradle
+=== Gradle (Windows)
 
 For the export of the licenses from a Gradle based project the Gradle License Plugin is used.
 
-To install the plugin some changes needs to be done in `build.gradle`, like following example
+To install the plugin some changes need to be done in `build.gradle`, like following example
 ----
 buildscript {
   repositories {
@@ -507,8 +507,6 @@ For Windows (Java Application)
 gradlew licenseReport
 ----
 
-TODO: Describe specifics of Android builds
-
 The Export should look like this:
 
 ----
@@ -522,11 +520,60 @@ In _Solicitor_ the data is read with the following part of the config
 
 ----
 "readers" : [ {
-  "type" : "maven",
+  "type" : "gradle",
   "source" : "file:path/to/licenses.json",
   "usagePattern" : "DYNAMIC_LINKING"
 } ]
 ----
+
+=== Gradle (Android)
+For the Export of the the Licenses from a Gradle based Android Projects the Gradle License Plugin is used.
+
+To install the Plugin some changes need to be done in the build.gradle of the Project, like following example
+----
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5'
+  }
+}
+----
+
+Also there is a change in the build.gradle of the App. Add the line in the second line
+---- 
+apply plugin: 'com.android.application'
+----
+
+Afterwards execute the following command in the Terminal of Android studio:
+For Windows(Android Application)
+----
+gradlew licenseDebugReport
+----
+The Export is in the following folder
+----
+$Projectfolder\app\build\reports\licenses
+----
+It should look like this:
+
+----
+include::licenseDebugReport.json[]
+----
+Source: https://github.com/jaredsburrows/gradle-license-plugin
+
+In Solicitor the Data is read with the following part of the config
+
+----
+"readers" : [ {
+      "type" : "gradle",
+      "source" : "file:$/input/licenses.json",
+      "usagePattern" : "DYNAMIC_LINKING"
+   	} ]
+----
+
+
 
 == Working with Decision Tables
 
