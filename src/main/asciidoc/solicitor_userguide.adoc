@@ -214,6 +214,7 @@ The config file has the following skeleton:
 
 [listing]
 {
+  "version" : 1,
   "comment" : "Sample Solicitor configuration file",
   "engagementName" : "DevonFW", <1>
   .
@@ -224,7 +225,7 @@ The config file has the following skeleton:
   "writers" : [ ... ] <4>
 }
 
-<1> The leading data defines the engagement master data, see <<Engagement Master Data>>
+<1> The leading data defines the engagement master data, see <<Header and Engagement Master Data>>
 <2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Readers / Applications>>
 <3> `rules` references the rules to apply to the imported data, see <<Business Rules>>
 <4> `writers` configures how the processed data should be exported, see <<Writers / Reporting>>
@@ -247,27 +248,29 @@ These placeholders are available:
 removing all non-word characters and converting to lowercase).
 * `${cfgdir}` -  If the config file was loaded from the filesystem this denotes the directory where the config file resides, `.`  otherwise. This can be used to reference locations relative to the location of the config file.
 
-==== Engagement Master Data
-The engagement master data is defined in the leading section of the config file.
+==== Header and Engagement Master Data
+The leading section of the config file defines some metadata and the engagement master data.
 
 [listing]
-  "comment" : "Sample Solicitor configuration file", <1>
-  "engagementName" : "DevonFW", <2>
-  "engagementType" : "INTERN", <3>
-  "clientName" : "none", <4>
-  "goToMarketModel" : "LICENSE", <5>
-  "contractAllowsOss" : true, <6>
-  "ossPolicyFollowed" : true, <7>
-  "customerProvidesOss" : false, <8>
+  "version" : 1, <1>
+  "comment" : "Sample Solicitor configuration file", <2>
+  "engagementName" : "DevonFW", <3>
+  "engagementType" : "INTERN", <4>
+  "clientName" : "none", <5>
+  "goToMarketModel" : "LICENSE", <6>
+  "contractAllowsOss" : true, <7>
+  "ossPolicyFollowed" : true, <8>
+  "customerProvidesOss" : false, <9>
 
-<1> is a free text comment (no further function at the moment)
-<2> the engagement name (any string)
-<3> the engagement type; possible values: INTERN, EXTERN
-<4> name of the client (any string)
-<5> the go-to-market-model; possible values: LICENSE
-<6> does the contract explicitely allow OSS? (boolean)
-<7> is the companies OSS policy followed? (boolean)
-<8> does the customer provide the OSS? (boolean)
+<1> version of the config file format (currently needs to be 1)
+<2> is a free text comment (no further function at the moment)
+<3> the engagement name (any string)
+<4> the engagement type; possible values: INTERN, EXTERN
+<5> name of the client (any string)
+<6> the go-to-market-model; possible values: LICENSE
+<7> does the contract explicitely allow OSS? (boolean)
+<8> is the companies OSS policy followed? (boolean)
+<9> does the customer provide the OSS? (boolean)
 
 ==== Applications
 Within this section the different applications (=deliverables) of the engagement are defined. Furtheron for each application at least one reader needs to be defined which imports the component and license information.
@@ -305,16 +308,18 @@ Business rules are executed within a https://www.drools.org/[Drools] rule engine
 [listing]
   "rules" : [ {
     "type" : "dt", <1>
-    "ruleSource" : "classpath:samples/LicenseAssignmentSample.xls", <2> <6>
-    "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignment.drt", <3> <6>
-    "ruleGroup" : "LicenseAssignment", <4>
-    "description" : "setting license in case that no one was detected" <5>
+    "optional" : false, <2>
+    "ruleSource" : "classpath:samples/LicenseAssignmentSample.xls", <3> <7>
+    "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignment.drt", <4> <7>
+    "ruleGroup" : "LicenseAssignment", <5>
+    "description" : "setting license in case that no one was detected" <6>
   },
   .
   .
   .
 ,{
     "type" : "dt",
+    "optional" : false,
     "ruleSource" : "classpath:samples/LegalEvaluationSample.xls",
     "templateSource" : "classpath:com/.../rules/rule_templates/LegalEvaluation.drt",
     "ruleGroup" : "LegalEvaluation",
@@ -322,11 +327,14 @@ Business rules are executed within a https://www.drools.org/[Drools] rule engine
   } ],
 
 <1> type of the rule; only possible value: `dt` which stands for "decision table"
-<2> location of the tabular decision table data
-<3> location of the drools rule template to be used to define the rules together with the decision table data
-<4> id of the group of rules; used to reference it e.g. when doing logging
-<5> some textual description of the rule group
-<6> _placeholder patterns might be used here_
+<2> if set to `true` the processing of this group of rules will be skipped if the XLS with table
+data (given by `ruleSource`) does not exist; if set to `false` a missing XLS table will result
+in program termination
+<3> location of the tabular decision table data
+<4> location of the drools rule template to be used to define the rules together with the decision table data
+<5> id of the group of rules; used to reference it e.g. when doing logging
+<6> some textual description of the rule group
+<7> _placeholder patterns might be used here_
 
 When running, _Solicitor_ will execute the rules of each rule group separately and in the order
 given by the configuration. Only if there are no more rules to fire in a group _Solicitor_ will
@@ -866,7 +874,7 @@ of the _Solicitor_ configuration file which will be used if the project specific
 [source,json]
 .Default Configuration
 ----
-include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=21..98]
+include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=22..147]
 ----
 
 [appendix]

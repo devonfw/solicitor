@@ -36,4 +36,15 @@ public class UrlInputStreamFactory implements InputStreamFactory {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Checks that the referenced resource exists.
+     */
+    @Override
+    public boolean isExisting(String url) {
+
+        return applicationContext.getResource(url).exists();
+    }
+
 }

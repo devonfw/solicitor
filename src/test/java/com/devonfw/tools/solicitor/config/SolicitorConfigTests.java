@@ -54,6 +54,7 @@ public class SolicitorConfigTests {
 
         RuleConfig ruleConfig = new RuleConfig();
         ruleConfig.setType("dt");
+        ruleConfig.setOptional(true);
         ruleConfig.setRuleSource("source_filename");
         ruleConfig.setTemplateSource("template filename");
         ruleConfig.setRuleGroup("theAgendaGroup");

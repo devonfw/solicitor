@@ -4,6 +4,7 @@
 
 package com.devonfw.tools.solicitor.common;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,18 @@ public class FileInputStreamFactory implements InputStreamFactory {
     public InputStream createInputStreamFor(String filename) throws IOException {
 
         return new FileInputStream(filename);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * Checks that the given file exists, is not a directory and can be read..
+     */
+    @Override
+    public boolean isExisting(String stringIdentifier) {
+
+        File fileToTest = new File(stringIdentifier);
+        return fileToTest.exists() && fileToTest.isFile() && fileToTest.canRead();
     }
 
 }

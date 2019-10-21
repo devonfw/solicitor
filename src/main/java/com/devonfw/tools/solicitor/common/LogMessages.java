@@ -23,7 +23,7 @@ public enum LogMessages {
     SAVING_DATAMODEL(10, "Saving Solicitor data model to '{}'"), //
     READING_INVENTORY(11, "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'"), //
     LOAD_RULES(12, "Loading Rules of type '{}' from source '{}' with template '{}' for Rule Group '{}'"), //
-    ADDING_FACTS(13, "{} Facts have been added to the Drools working memory, staring Rule Engine ..."), //
+    ADDING_FACTS(13, "{} Facts have been added to the Drools working memory, starting Rule Engine ..."), //
     RULE_ENGINE_FINISHED(14, "Rule Engine processing completed, {} rules have been fired"), //
     PREPARING_FOR_WRITER(15, "Preparing to write report with writer '{}' using template '{}' to file '{}'"), //
     FINISHED_WRITER(16, "Finished writing report with writer '{}' using template '{}' to file '{}'"), //
@@ -43,7 +43,9 @@ public enum LogMessages {
     PLACEHOLDER_INFO(29, "Placeholder '{}' in configuration will be replaced by '{}'"), //
     COULD_NOT_CREATE_CACHE(30,
             "Could not create directory '{}' for caching downloaded web resources. Could not write data to file cache."), //
-    CREATED_DIRECTORY(31, "Created directory '{}' which did not yet exist"); //
+    CREATED_DIRECTORY(31, "Created directory '{}' which did not yet exist"), //
+    SKIPPING_RULEGROUP(32, "Optional RuleGroup '{}' SKIPPED as there is no rule file '{}'"), //
+    UNSUPPORTED_CONFIG_VERSION(33, "Unsupported config file '{}' format; version needs to be '{}' but is '{}'"); //
 
     private final String completeMessage;
 

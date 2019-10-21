@@ -14,6 +14,9 @@ public class RuleConfig {
     private String type;
 
     @JsonProperty
+    private boolean optional;
+
+    @JsonProperty
     private String ruleSource;
 
     @JsonProperty
@@ -76,6 +79,16 @@ public class RuleConfig {
     }
 
     /**
+     * This method gets the field <tt>optional</tt>.
+     *
+     * @return the field optional
+     */
+    public boolean isOptional() {
+
+        return optional;
+    }
+
+    /**
      * This method sets the field <tt>ruleGroup</tt>.
      *
      * @param ruleGroup the new value of the field ruleGroup
@@ -123,5 +136,15 @@ public class RuleConfig {
     public void setType(String type) {
 
         this.type = type;
+    }
+
+    /**
+     * This method sets the field <tt>optional</tt>.
+     *
+     * @param optional the new value of the field optional
+     */
+    public void setOptional(boolean optional) {
+
+        this.optional = optional;
     }
 }

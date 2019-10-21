@@ -18,6 +18,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SolicitorConfig {
 
     @JsonProperty
+    private int version;
+
+    @JsonProperty
     private String comment;
 
     @JsonProperty
@@ -118,6 +121,16 @@ public class SolicitorConfig {
     public List<RuleConfig> getRules() {
 
         return rules;
+    }
+
+    /**
+     * This method gets the field <tt>version</tt>.
+     *
+     * @return the field version
+     */
+    public int getVersion() {
+
+        return version;
     }
 
     /**
@@ -258,6 +271,16 @@ public class SolicitorConfig {
     public void setRules(List<RuleConfig> rules) {
 
         this.rules = rules;
+    }
+
+    /**
+     * This method sets the field <tt>version</tt>.
+     *
+     * @param version the new value of the field version
+     */
+    public void setVersion(int version) {
+
+        this.version = version;
     }
 
     /**
