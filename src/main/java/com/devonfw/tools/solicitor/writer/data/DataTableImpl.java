@@ -163,4 +163,11 @@ public class DataTableImpl implements DataTable {
         };
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEmpty() {
+
+        return data.isEmpty();
+    }
+
 }

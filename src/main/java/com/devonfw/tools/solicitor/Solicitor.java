@@ -66,10 +66,10 @@ public class Solicitor {
     /**
      * Save a sample configuration file to the working directory.
      */
-    private void extractConfig() {
+    private void wizard() {
 
-        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.CONFIG_FILE_ONLY);
-        LOG.info(LogMessages.CONFIG_EXTRACTED.msg(), location);
+        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.PROJECT_FILES);
+        LOG.info(LogMessages.PROJECT_CREATED.msg(), location);
     }
 
     /**
@@ -147,8 +147,8 @@ public class Solicitor {
         if (clo.extractFullConfig) {
             extractFullConfig();
             doMainProcessing = false;
-        } else if (clo.extractConfig) {
-            extractConfig();
+        } else if (clo.wizard) {
+            wizard();
             doMainProcessing = false;
         }
         if (doMainProcessing) {
