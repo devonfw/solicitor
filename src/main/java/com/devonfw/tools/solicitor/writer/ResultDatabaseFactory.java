@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -130,6 +131,13 @@ public class ResultDatabaseFactory {
         List<Map<String, Object>> rawResult = jdbcTemplate.queryForList(sql);
 
         // put the final data in a result DataTable
+
+        if (rawResult.isEmpty()) {
+            // if no data is returned it is even not possible to extract the
+            // fieldnames; return an empty DataTable in this case
+            LOG.info(LogMessages.SQL_RETURNED_NO_DATA.msg(), sqlResourceUrl);
+            return new DataTableImpl(new String[] {});
+        }
 
         String[] headers = rawResult.get(0).keySet().toArray(new String[0]);
         // create the final header

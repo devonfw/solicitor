@@ -31,9 +31,9 @@ public class ResourceToFileCopier {
         USERGUIDE,
 
         /**
-         * The sample configuration file.
+         * (Full) Configuration structure for new projects.
          */
-        CONFIG_FILE_ONLY,
+        PROJECT_FILES,
 
         /**
          * All configuration (configuration file, decision tables, templates)
@@ -68,9 +68,24 @@ public class ResourceToFileCopier {
             copyResourceToFile("classpath:solicitor_userguide.pdf", "solicitor_userguide.pdf");
             returnString = "solicitor_userguide.pdf";
             break;
-        case CONFIG_FILE_ONLY:
-            copyResourceToFile("classpath:samples/solicitor_sample.cfg", "solicitor_sample_copy.cfg");
-            returnString = "solicitor_sample_copy.cfg";
+        case PROJECT_FILES:
+            copyResourceToFile("classpath:starters/solicitor.cfg", "new_project/solicitor.cfg");
+            copyResourceToFile("classpath:starters/input/licenses_starter.xml",
+                    "new_project/input/licenses_starter.xml");
+            copyResourceToFile("classpath:starters/rules/LegalEvaluationProject.xls",
+                    "new_project/rules/LegalEvaluationProject.xls");
+            copyResourceToFile("classpath:starters/rules/LegalPreEvaluationProject.xls",
+                    "new_project/rules/LegalPreEvaluationProject.xls");
+            copyResourceToFile("classpath:starters/rules/LicenseAssignmentProject.xls",
+                    "new_project/rules/LicenseAssignmentProject.xls");
+            copyResourceToFile("classpath:starters/rules/LicenseNameMappingProject.xls",
+                    "new_project/rules/LicenseNameMappingProject.xls");
+            copyResourceToFile("classpath:starters/rules/LicenseSelectionProject.xls",
+                    "new_project/rules/LicenseSelectionProject.xls");
+            copyResourceToFile("classpath:starters/rules/MultiLicenseSelectionProject.xls",
+                    "new_project/rules/MultiLicenseSelectionProject.xls");
+            copyResourceToFile("classpath:starters/readme.txt", "new_project/readme.txt");
+            returnString = "new_project/readme.txt";
             break;
         case CONFIG_FULL:
             copyResourceToFile("classpath:samples/solicitor_sample_filesystem.cfg", "solicitor_sample_copy.cfg");

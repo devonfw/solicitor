@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 public enum LogMessages {
 
     CALLED(0, "Solicitor called with command line arguments: '{}'"), //
-    STARTING(1, "Solicitor starts, Version:{}, Buildnumber:{},  Builddate:{}"), //
+    STARTING(1, "Solicitor starts, Version:{}, Buildnumber:{}, Builddate:{}"), //
     COMPLETED(2, "Solicitor processing completed in {} ms"), //
     ABORTED(3, "Solicitor processing aborted"), //
     COPYING_RESOURCE(4, "Copying resource '{}' to file '{}'"), //
@@ -32,8 +32,8 @@ public enum LogMessages {
     EXECUTE_SQL(19, "Creating data of result table '{}' by executing SQL statement given in '{}'"), //
     CREATING_DIFF(20, "Calculating DIFF information for result table '{}'"), //
     FILE_EXISTS(21, "The file '{}' already exists and will not be overwritten. Please remove this file and retry."), //
-    CONFIG_EXTRACTED(22,
-            "Sample config file saved as '{}'. You might take this as starting point for your customization."), //
+    PROJECT_CREATED(22,
+            "Project file structure created. See '{}' for details. You might take this as starting point for your project setup."), //
     FULL_CONFIG_EXTRACTED(23, "Complete sample configuration extracted. " + "See file '{}' for further information."), //
     CLI_EXCEPTION(24, "Exception when processing command line arguments: {}"), //
     RULE_GROUP_FINISHED(25, "Processing of rule group '{}' finished. {} rules fired in {} ms"), //
@@ -45,7 +45,9 @@ public enum LogMessages {
             "Could not create directory '{}' for caching downloaded web resources. Could not write data to file cache."), //
     CREATED_DIRECTORY(31, "Created directory '{}' which did not yet exist"), //
     SKIPPING_RULEGROUP(32, "Optional RuleGroup '{}' SKIPPED as there is no rule file '{}'"), //
-    UNSUPPORTED_CONFIG_VERSION(33, "Unsupported config file '{}' format; version needs to be '{}' but is '{}'"); //
+    UNSUPPORTED_CONFIG_VERSION(33, "Unsupported config file '{}' format; version needs to be '{}' but is '{}'"), //
+    SQL_RETURNED_NO_DATA(34,
+            "The SQL statement referenced by '{}' did not return any data. This might cause trouble in reporting if not handled correctly"); //
 
     private final String completeMessage;
 

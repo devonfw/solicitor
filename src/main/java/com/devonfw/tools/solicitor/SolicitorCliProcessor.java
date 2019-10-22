@@ -27,7 +27,7 @@ public class SolicitorCliProcessor {
 
         public boolean extractUserGuide;
 
-        public boolean extractConfig;
+        public boolean wizard;
 
         public boolean extractFullConfig;
 
@@ -76,13 +76,14 @@ public class SolicitorCliProcessor {
         Option extractUserGuide = builder.build();
         options.addOption(extractUserGuide);
 
-        // option "ec" (extract config)
-        builder = Option.builder("ec");
-        builder.longOpt("extractConfig");
-        description = "stores a copy of the sample config file in the current directory (no main processing)";
+        // option "wiz" (wizard)
+        builder = Option.builder("wiz");
+        builder.longOpt("projectWizard");
+        description =
+                "creates configuration for a new Solicitor project in directory \"new_project\" (no main processing)";
         builder.desc(description);
-        Option extractConfig = builder.build();
-        options.addOption(extractConfig);
+        Option wizardConfig = builder.build();
+        options.addOption(wizardConfig);
 
         // option "efc" (extract full config)
         builder = Option.builder("efc");
@@ -160,9 +161,9 @@ public class SolicitorCliProcessor {
                 LOG.debug("extractUserGuide option detected");
             }
 
-            if (line.hasOption("ec")) {
-                solClo.extractConfig = true;
-                LOG.debug("extractConfig option detected");
+            if (line.hasOption("wiz")) {
+                solClo.wizard = true;
+                LOG.debug("wizard option detected");
             }
 
             if (line.hasOption("efc")) {

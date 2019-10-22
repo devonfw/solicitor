@@ -23,4 +23,12 @@ public interface DataTable extends Iterable<DataTableRow> {
      * @return the headline
      */
     String[] getHeadRow();
+
+    /**
+     * Tests if the DataTable contains data. If it does not contain data then
+     * even {@link #getHeadRow()} might not provide any information.
+     * 
+     * @return <code>true</code> if there is no data in the table
+     */
+    boolean isEmpty();
 }
