@@ -60,24 +60,28 @@ public class Solicitor {
      */
     private void extractUserguide() {
 
-        resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE);
+        resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE, ".");
     }
 
     /**
-     * Save a sample configuration file to the working directory.
+     * Create a new basic project configuration.
+     * 
+     * @param targetDir the directory where the userguide should be stored
      */
-    private void wizard() {
+    private void wizard(String targetDir) {
 
-        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.PROJECT_FILES);
+        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.PROJECT_FILES, targetDir);
         LOG.info(LogMessages.PROJECT_CREATED.msg(), location);
     }
 
     /**
      * Save all sample configuration files to the working directory.
+     * 
+     * @param targetDir the directory where the userguide should be stored
      */
-    private void extractFullConfig() {
+    private void extractConfig(String targetDir) {
 
-        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.CONFIG_FULL);
+        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.FULL_BASE_CONFIG, targetDir);
         LOG.info(LogMessages.FULL_CONFIG_EXTRACTED.msg(), location);
     }
 
@@ -144,11 +148,11 @@ public class Solicitor {
             extractUserguide();
             doMainProcessing = false;
         }
-        if (clo.extractFullConfig) {
-            extractFullConfig();
+        if (clo.extractConfig) {
+            extractConfig(clo.targetDir);
             doMainProcessing = false;
         } else if (clo.wizard) {
-            wizard();
+            wizard(clo.targetDir);
             doMainProcessing = false;
         }
         if (doMainProcessing) {

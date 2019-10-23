@@ -4,6 +4,10 @@
 
 package com.devonfw.tools.solicitor.config;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -245,6 +249,63 @@ public class ConfigFactory {
             LOG.info(LogMessages.TAKING_WRITER_CONFIG.msg(), CONFIG_PROJECT);
         }
         return projectConfig;
+    }
+
+    /**
+     * Scans the base config for all classpath resources which are referenced.
+     *
+     * @return a collection of all classpath URLs found; if the base config
+     *         itself is a classpath resource it will be included.
+     */
+    public List<String> findAllClasspathResourcesInBaseConfig() {
+
+        // preserve order and avoid duplicates
+        LinkedHashSet<String> result = new LinkedHashSet<>();
+
+        result.add(baseConfigUrl);
+
+        SolicitorConfig baseConfig = configReader.readConfig(baseConfigUrl);
+        result.addAll(findResourcesInRules(baseConfig.getRules()));
+        result.addAll(findResourcesInWriters(baseConfig.getWriters()));
+
+        for (Iterator<String> i = result.iterator(); i.hasNext();) {
+            if (!i.next().startsWith("classpath:")) {
+                i.remove();
+            }
+        }
+        return new ArrayList<>(result);
+    }
+
+    /**
+     * Returns all resource URLs configured for the rules.
+     * 
+     * @param rules the rules
+     * @return collection of strings representing the URLs
+     */
+    private Collection<String> findResourcesInRules(List<RuleConfig> rules) {
+
+        List<String> result = new ArrayList<>();
+        for (RuleConfig rc : rules) {
+            result.add(rc.getRuleSource());
+            result.add(rc.getTemplateSource());
+        }
+        return result;
+    }
+
+    /**
+     * Returns all resource URLs configured for the writers.
+     * 
+     * @param writers the rules
+     * @return collection of strings representing the URLs
+     */
+    private Collection<String> findResourcesInWriters(List<WriterConfig> writers) {
+
+        List<String> result = new ArrayList<>();
+        for (WriterConfig wc : writers) {
+            result.add(wc.getTemplateSource());
+            result.addAll(wc.getDataTables().values());
+        }
+        return result;
     }
 
 }

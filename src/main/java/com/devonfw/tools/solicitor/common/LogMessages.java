@@ -31,10 +31,11 @@ public enum LogMessages {
     INIT_SQL_OLD(18, "Initializing SQL reporting database with OLD Solicitor model data"), //
     EXECUTE_SQL(19, "Creating data of result table '{}' by executing SQL statement given in '{}'"), //
     CREATING_DIFF(20, "Calculating DIFF information for result table '{}'"), //
-    FILE_EXISTS(21, "The file '{}' already exists and will not be overwritten. Please remove this file and retry."), //
+    FILE_EXISTS(21, "At least '{}' already exists. Please remove existing files and retry."), //
     PROJECT_CREATED(22,
             "Project file structure created. See '{}' for details. You might take this as starting point for your project setup."), //
-    FULL_CONFIG_EXTRACTED(23, "Complete sample configuration extracted. " + "See file '{}' for further information."), //
+    FULL_CONFIG_EXTRACTED(23,
+            "Complete base configuration saved to filesystem. File '{}' is the base configuration file."), //
     CLI_EXCEPTION(24, "Exception when processing command line arguments: {}"), //
     RULE_GROUP_FINISHED(25, "Processing of rule group '{}' finished. {} rules fired in {} ms"), //
     TAKING_RULE_CONFIG(26, "Merging config: Taking rule config from {}"), //

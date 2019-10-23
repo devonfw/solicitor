@@ -17,12 +17,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.config.ConfigFactory;
+
 /**
  * Copies one or more resources to the file system.
  */
 @Component
 public class ResourceToFileCopier {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceToFileCopier.class);
+
+    @Autowired
+    ConfigFactory configFactory;
 
     /**
      * Represents a single copy operation to be performed
@@ -138,6 +143,16 @@ public class ResourceToFileCopier {
         public void execute() {
 
             for (CopyOperation operation : operations) {
+                File targetFile = new File(operation.getTarget());
+                if (targetFile.exists()) {
+                    LOG.error(LogMessages.FILE_EXISTS.msg(), operation.getTarget());
+                    throw new SolicitorRuntimeException(
+                            "Nothing extracted because this would overwrite existing files");
+                }
+
+            }
+
+            for (CopyOperation operation : operations) {
                 copyResourceToFile(operation.getSource(), operation.getTarget());
             }
         }
@@ -160,7 +175,7 @@ public class ResourceToFileCopier {
         /**
          * All configuration (configuration file, decision tables, templates)
          */
-        CONFIG_FULL
+        FULL_BASE_CONFIG
     }
 
     @Autowired
@@ -178,17 +193,20 @@ public class ResourceToFileCopier {
      * 
      * @param resourceGroup a {@link ResourceGroup} which identifies the files
      *        to copy.
+     * @param targetDir the target directory - will be created if it does not
+     *        exist
      * @return some String possible used in subsequent logging - e.g. the name
      *         of the target resource
      */
-    public String copyReourcesToFile(ResourceGroup resourceGroup) {
+    public String copyReourcesToFile(ResourceGroup resourceGroup, String targetDir) {
 
         String returnString;
 
         switch (resourceGroup) {
         case USERGUIDE:
-            new CopySequenceBuilder().withCopyOperation("classpath:solicitor_userguide.pdf", "solicitor_userguide.pdf")
-                    .execute();
+            new CopySequenceBuilder()
+                    .withCopyOperation("classpath:solicitor_userguide.pdf", "target/solicitor_userguide.pdf")
+                    .replaceInTarget("target", targetDir).execute();
             returnString = "solicitor_userguide.pdf";
             break;
         case PROJECT_FILES:
@@ -207,37 +225,19 @@ public class ResourceToFileCopier {
                             "new_project/rules/LicenseSelectionProject.xls")
                     .withCopyOperation("classpath:starters/rules/MultiLicenseSelectionProject.xls",
                             "new_project/rules/MultiLicenseSelectionProject.xls")
-                    .withCopyOperation("classpath:starters/readme.txt", "new_project/readme.txt").execute();
-            returnString = "new_project/readme.txt";
+                    .withCopyOperation("classpath:starters/readme.txt", "new_project/readme.txt")
+                    .replaceInTarget("new_project", targetDir).execute();
+            returnString = targetDir + "/readme.txt";
             break;
-        case CONFIG_FULL:
-            new CopySequenceBuilder()
-                    .withCopyOperation("classpath:samples/solicitor_sample_filesystem.cfg", "solicitor_sample_copy.cfg")
-                    .withCopyOperation("classpath:samples/licenses_devon4j.xml", "licenses_devon4j.xml")
-                    .withCopyOperation("classpath:com/devonfw/tools/solicitor/rules/LicenseAssignmentSample.xls",
-                            "sample_configs/LicenseAssignmentSample.xls")
-                    .withCopyOperation("classpath:com/devonfw/tools/solicitor/rules/LicenseNameMappingSample.xls",
-                            "sample_configs/LicenseNameMappingSample.xls")
-                    .withCopyOperation("classpath:com/devonfw/tools/solicitor/rules/MultiLicenseSelectionSample.xls",
-                            "sample_configs/MultiLicenseSelectionSample.xls")
-                    .withCopyOperation("classpath:com/devonfw/tools/solicitor/rules/LicenseSelectionSample.xls",
-                            "sample_configs/LicenseSelectionSample.xls")
-                    .withCopyOperation("classpath:com/devonfw/tools/solicitor/rules/LegalPreEvaluationSample.xls",
-                            "sample_configs/LegalPreEvaluationSample.xls")
-                    .withCopyOperation("classpath:com/devonfw/tools/solicitor/rules/LegalEvaluationSample.xls",
-                            "sample_configs/LegalEvaluationSample.xls")
-                    .withCopyOperation(
-                            "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample.vm",
-                            "sample_configs/Solicitor_Output_Template_Sample.vm")
-                    .withCopyOperation(
-                            "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample.xlsx",
-                            "sample_configs/Solicitor_Output_Template_Sample.xlsx")
-                    .withCopyOperation(
-                            "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Diff_Template_Sample.vm",
-                            "sample_configs/Solicitor_Diff_Template_Sample.vm")
-                    .withCopyOperation("classpath:samples/readme_solicitor_cfg.txt", "readme_solicitor_cfg.txt")
-                    .execute();
-            returnString = "readme_solicitor_cfg.txt";
+        case FULL_BASE_CONFIG:
+            List<String> urls = configFactory.findAllClasspathResourcesInBaseConfig();
+            CopySequenceBuilder csb = new CopySequenceBuilder();
+            for (String url : urls) {
+                csb.withCopyOperation(url, url);
+            }
+            csb.replaceInTarget("classpath:", targetDir + "/");
+            csb.execute();
+            returnString = urls.get(0).replace("classpath:", targetDir + "/");
             break;
         default:
             throw new SolicitorRuntimeException("Uuups, this should never happen.");

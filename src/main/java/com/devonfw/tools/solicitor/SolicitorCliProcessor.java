@@ -29,7 +29,7 @@ public class SolicitorCliProcessor {
 
         public boolean wizard;
 
-        public boolean extractFullConfig;
+        public boolean extractConfig;
 
         public boolean save;
 
@@ -44,6 +44,8 @@ public class SolicitorCliProcessor {
         public boolean diff;
 
         public String pathForDiff;
+
+        public String targetDir;
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(SolicitorCliProcessor.class);
@@ -79,20 +81,23 @@ public class SolicitorCliProcessor {
         // option "wiz" (wizard)
         builder = Option.builder("wiz");
         builder.longOpt("projectWizard");
-        description =
-                "creates configuration for a new Solicitor project in directory \"new_project\" (no main processing)";
+        builder.hasArg();
+        builder.argName("targetDir");
+        description = "creates configuration for a new Solicitor project in the given directory (no main processing)";
         builder.desc(description);
         Option wizardConfig = builder.build();
         options.addOption(wizardConfig);
 
-        // option "efc" (extract full config)
-        builder = Option.builder("efc");
-        builder.longOpt("extractFullConfig");
-        description = "stores a copy of the sample config file, the decision tables and the templates"
-                + " in the current directory (no main processing)";
+        // option "ec" (extract config)
+        builder = Option.builder("ec");
+        builder.longOpt("extractConfig");
+        builder.hasArg();
+        builder.argName("targetDir");
+        description =
+                "stores a copy of the base config file and all referenced configuration in the given directory (no main processing)";
         builder.desc(description);
-        Option extractFullConfig = builder.build();
-        options.addOption(extractFullConfig);
+        Option extractConfig = builder.build();
+        options.addOption(extractConfig);
 
         // option "c" (config)
         builder = Option.builder("c");
@@ -161,10 +166,12 @@ public class SolicitorCliProcessor {
 
             if (line.hasOption("wiz")) {
                 solClo.wizard = true;
+                solClo.targetDir = line.getOptionValue("wiz");
             }
 
-            if (line.hasOption("efc")) {
-                solClo.extractFullConfig = true;
+            if (line.hasOption("ec")) {
+                solClo.extractConfig = true;
+                solClo.targetDir = line.getOptionValue("ec");
             }
 
             if (line.hasOption("s")) {
