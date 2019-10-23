@@ -12,4 +12,5 @@ Output will be produced in directory "output".
 
 For details on the usage and configuration consult the User Guide or contact your nearest "Solicitor Guru"
 The User Guide might be obtained by calling Solicitor with command line option "-eug".
+The bultin base configuration including all rules and templates can be exported to the filesystem with option "-ec".
 
