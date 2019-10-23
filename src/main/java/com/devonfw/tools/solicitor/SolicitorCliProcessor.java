@@ -152,23 +152,19 @@ public class SolicitorCliProcessor {
 
             if (line.hasOption("h")) {
                 printHelp(options);
-                LOG.debug("Help option detected");
                 solClo.help = true;
             }
 
             if (line.hasOption("eug")) {
                 solClo.extractUserGuide = true;
-                LOG.debug("extractUserGuide option detected");
             }
 
             if (line.hasOption("wiz")) {
                 solClo.wizard = true;
-                LOG.debug("wizard option detected");
             }
 
             if (line.hasOption("efc")) {
                 solClo.extractFullConfig = true;
-                LOG.debug("extractFullConfig option detected");
             }
 
             if (line.hasOption("s")) {
