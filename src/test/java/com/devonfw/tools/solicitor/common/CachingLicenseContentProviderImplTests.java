@@ -6,6 +6,7 @@ package com.devonfw.tools.solicitor.common;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ public class CachingLicenseContentProviderImplTests {
     private static final Logger LOG = LoggerFactory.getLogger(CachingLicenseContentProviderImplTests.class);
 
     @Test
+    @Ignore
     public void readFile() {
 
         DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider();
