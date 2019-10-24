@@ -33,6 +33,12 @@ public class SolicitorVersion {
 
     private String extensionBuilddate;
 
+    private String extensionExpectedSolicitorVersionRange;
+
+    private String extensionMessage1;
+
+    private String extensionMessage2;
+
     /**
      * Constructor.
      */
@@ -198,6 +204,67 @@ public class SolicitorVersion {
     public void setExtensionBuilddate(String extensionBuilddate) {
 
         this.extensionBuilddate = extensionBuilddate;
+    }
+
+    /**
+     * This method gets the field <tt>extensionExpectedSolicitorVersionRange</tt>.
+     *
+     * @return the field extensionExpectedSolicitorVersionRange
+     */
+    public String getExtensionExpectedSolicitorVersionRange() {
+
+        return extensionExpectedSolicitorVersionRange;
+    }
+
+    /**
+     * This method sets the field <tt>extensionExpectedSolicitorVersionRange</tt>.
+     *
+     * @param extensionExpectedSolicitorVersionRange the new value of the field
+     *        extensionExpectedSolicitorVersionRange
+     */
+    public void setExtensionExpectedSolicitorVersionRange(String extensionExpectedSolicitorVersionRange) {
+
+        this.extensionExpectedSolicitorVersionRange = extensionExpectedSolicitorVersionRange;
+    }
+
+    /**
+     * This method gets the field <tt>extensionMessage1</tt>.
+     *
+     * @return the field extensionMessage1
+     */
+    public String getExtensionMessage1() {
+
+        return extensionMessage1;
+    }
+
+    /**
+     * This method sets the field <tt>extensionMessage1</tt>.
+     *
+     * @param extensionMessage1 the new value of the field extensionMessage1
+     */
+    public void setExtensionMessage1(String extensionMessage1) {
+
+        this.extensionMessage1 = extensionMessage1;
+    }
+
+    /**
+     * This method gets the field <tt>extensionMessage2</tt>.
+     *
+     * @return the field extensionMessage2
+     */
+    public String getExtensionMessage2() {
+
+        return extensionMessage2;
+    }
+
+    /**
+     * This method sets the field <tt>extensionMessage2</tt>.
+     *
+     * @param extensionMessage2 the new value of the field extensionMessage2
+     */
+    public void setExtensionMessage2(String extensionMessage2) {
+
+        this.extensionMessage2 = extensionMessage2;
     }
 
     public boolean isExtensionPresent() {

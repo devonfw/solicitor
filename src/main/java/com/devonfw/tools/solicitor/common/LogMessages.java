@@ -48,7 +48,8 @@ public enum LogMessages {
     SKIPPING_RULEGROUP(32, "Optional RuleGroup '{}' SKIPPED as there is no rule file '{}'"), //
     UNSUPPORTED_CONFIG_VERSION(33, "Unsupported config file '{}' format; version needs to be '{}' but is '{}'"), //
     SQL_RETURNED_NO_DATA(34,
-            "The SQL statement referenced by '{}' did not return any data. This might cause trouble in reporting if not handled correctly"); //
+            "The SQL statement referenced by '{}' did not return any data. This might cause trouble in reporting if not handled correctly"), //
+    EXTENSION_EXPECTATION_FAILED(35, "The extension expects Solicitor in version range {} which is not fulfilled"); //
 
     private final String completeMessage;
 

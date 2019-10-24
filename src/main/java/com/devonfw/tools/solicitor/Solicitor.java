@@ -4,6 +4,9 @@
 
 package com.devonfw.tools.solicitor;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier.ResourceGroup;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.config.ConfigFactory;
 import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -140,8 +144,7 @@ public class Solicitor {
         SolicitorVersion sv = solicitorVersion;
         LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
         if (sv.isExtensionPresent()) {
-            LOG.info(LogMessages.EXTENSION_PRESENT.msg(), sv.getExtensionArtifact(), sv.getExtensionVersion(),
-                    sv.getExtensionGithash(), sv.getExtensionBuilddate());
+            activateExtension(sv);
         }
 
         if (clo.extractUserGuide) {
@@ -159,6 +162,54 @@ public class Solicitor {
             mainProcessing(clo);
         }
         LOG.info(LogMessages.COMPLETED.msg(), System.currentTimeMillis() - startTime);
+    }
+
+    /**
+     * Checks the extension and logs info.
+     * 
+     * @param sv the object which holds info about the extension
+     * @throws SolicitorRuntimeException if the extension is incompatible with
+     *         this Solicitor version
+     */
+    private void activateExtension(SolicitorVersion sv) {
+
+        LOG.info(LogMessages.EXTENSION_PRESENT.msg(), sv.getExtensionArtifact(), sv.getExtensionVersion(),
+                sv.getExtensionGithash(), sv.getExtensionBuilddate());
+        checkExtensionVersionRequirements(sv);
+        if (sv.getExtensionMessage1() != null && !sv.getExtensionMessage1().isEmpty()) {
+            LOG.info(sv.getExtensionMessage1());
+        }
+        if (sv.getExtensionMessage2() != null && !sv.getExtensionMessage2().isEmpty()) {
+            LOG.info(sv.getExtensionMessage2());
+        }
+    }
+
+    /**
+     * Checks if Solicitor complies to the version expectations found in the
+     * extension.
+     * 
+     * @param sv the object which holds info about the extension
+     * @throws SolicitorRuntimeException if Solicitor does not comply to the
+     *         version requirements given in the extension
+     */
+    private void checkExtensionVersionRequirements(SolicitorVersion sv) {
+
+        if (sv.getExtensionExpectedSolicitorVersionRange() != null
+                && !sv.getExtensionExpectedSolicitorVersionRange().isEmpty()) {
+            DefaultArtifactVersion solicitorVersion = new DefaultArtifactVersion(sv.getVersion());
+            VersionRange allowedRange;
+            try {
+                allowedRange = VersionRange.createFromVersionSpec(sv.getExtensionExpectedSolicitorVersionRange());
+            } catch (InvalidVersionSpecificationException e) {
+                throw new SolicitorRuntimeException(e);
+            }
+            if (!allowedRange.containsVersion(solicitorVersion)) {
+                LOG.error(LogMessages.EXTENSION_EXPECTATION_FAILED.msg(),
+                        sv.getExtensionExpectedSolicitorVersionRange());
+                throw new SolicitorRuntimeException("Solicitor does not match version requirements of the extension");
+            }
+        }
+
     }
 
 }
