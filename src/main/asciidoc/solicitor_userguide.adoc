@@ -43,6 +43,8 @@ When running _Solicitor_ three subsequent processing steps are executed:
 === Licensing of Solicitor
 The _Solicitor_ source code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw-forge/solicitor are itself licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0).
 
+IMPORTANT: The executable JAR file which is created by the Maven based build process includes numerous other Open Source components which are subject to different Open Source licenses. Any distribution of this needs to comply with the license conditions of all those components.
+
 == Architecture
 The following picture show a business oriented view of _Solicitor_.
 
@@ -194,7 +196,7 @@ _Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for run
 [listing]
 java -jar solicitor.jar -c <configfile>
 
-where `<configfile>` is to be replaced by the location of the <<Basic Configuration File>>.
+where `<configfile>` is to be replaced by the location of the <<Configuration File>>.
 
 To get an overview of the available command line options use
 
