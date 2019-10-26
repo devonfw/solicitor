@@ -29,9 +29,12 @@ import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 
 template "License Assignment"
 
-rule "License Assignment @{ruleId} - mark RawLicense as done by specialHandling" salience -@{row.rowNumber}
+rule "License Assignment @{ruleId} - mark RawLicense as done by specialHandling" salience -10000
     when
     	// make sure that the main conditions given here are the same as in the below rule
+    	// this rule fires at the very end (salience -10000) of the group and
+    	// assures that all records which have been processed by the other rule get
+    	// marked with "specialHandling=true" so they wont be handled again
         $e : Engagement( 
         	clientName == "@{clientName}", 
         	engagementName == "@{engagementName}",
@@ -45,7 +48,7 @@ rule "License Assignment @{ruleId} - mark RawLicense as done by specialHandling"
         	version == "@{version}",
         	application == $a )
         $rl : RawLicense( 
-            specialHandling == false,						// differs from below rule: it should only fire once per RawLicense
+          specialHandling == false,
         	declaredLicense == "@{declaredLicense}",
         	$licUrl : licenseUrl,
         	licenseUrl == "@{url}", 
@@ -71,6 +74,7 @@ rule "License Assignment @{ruleId} - add given NormalizedLicense" salience -@{ro
         	version == "@{version}",
         	application == $a )
         $rl : RawLicense(  
+          specialHandling == false,
         	declaredLicense == "@{declaredLicense}",
         	$licUrl : licenseUrl,
         	licenseUrl == "@{url}", 
