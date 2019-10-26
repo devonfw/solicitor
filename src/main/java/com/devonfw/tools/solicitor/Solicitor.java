@@ -145,6 +145,8 @@ public class Solicitor {
         LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
         if (sv.isExtensionPresent()) {
             activateExtension(sv);
+        } else {
+            LOG.warn(LogMessages.NO_EXTENSION_DISCLAIMER.msg());
         }
 
         if (clo.extractUserGuide) {
@@ -177,10 +179,10 @@ public class Solicitor {
                 sv.getExtensionGithash(), sv.getExtensionBuilddate());
         checkExtensionVersionRequirements(sv);
         if (sv.getExtensionMessage1() != null && !sv.getExtensionMessage1().isEmpty()) {
-            LOG.info(sv.getExtensionMessage1());
+            LOG.info(LogMessages.EXTENSION_BANNER_1.msg(), sv.getExtensionMessage1());
         }
         if (sv.getExtensionMessage2() != null && !sv.getExtensionMessage2().isEmpty()) {
-            LOG.info(sv.getExtensionMessage2());
+            LOG.info(LogMessages.EXTENSION_BANNER_2.msg(), sv.getExtensionMessage2());
         }
     }
 

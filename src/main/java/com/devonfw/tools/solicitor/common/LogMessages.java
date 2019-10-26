@@ -49,7 +49,11 @@ public enum LogMessages {
     UNSUPPORTED_CONFIG_VERSION(33, "Unsupported config file '{}' format; version needs to be '{}' but is '{}'"), //
     SQL_RETURNED_NO_DATA(34,
             "The SQL statement referenced by '{}' did not return any data. This might cause trouble in reporting if not handled correctly"), //
-    EXTENSION_EXPECTATION_FAILED(35, "The extension expects Solicitor in version range {} which is not fulfilled"); //
+    EXTENSION_EXPECTATION_FAILED(35, "The extension expects Solicitor in version range {} which is not fulfilled"), //
+    EXTENSION_BANNER_1(36, "{}"), //
+    EXTENSION_BANNER_2(37, "{}"), //
+    NO_EXTENSION_DISCLAIMER(38,
+            "You are running Solicitor without Extension. Be aware that builtin rulesets are samples only!"); //
 
     private final String completeMessage;
 
