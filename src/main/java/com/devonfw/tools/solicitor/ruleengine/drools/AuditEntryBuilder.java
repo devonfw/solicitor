@@ -10,11 +10,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.devonfw.tools.solicitor.common.LogMessages;
+
 /**
  * A builder for creating and audit/trace entry.
  *
  */
 public class AuditEntryBuilder implements Cloneable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuditEntryBuilder.class);
 
     /**
      * A pair of Strings.
@@ -64,19 +71,18 @@ public class AuditEntryBuilder implements Cloneable {
      */
     public String build() {
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("+ Rule Group: ").append(ModelHelper.getCurrentRuleGroup()).append("; RuleId: ").append(ruleId);
-        sb.append("; Matching: ");
+        StringBuilder detailSb = new StringBuilder();
+        detailSb.append("Matching: ");
         List<String> stringList = new ArrayList<>();
         if (matchings.size() > 0) {
             for (Entry<String, String> e : matchings.entrySet()) {
                 stringList.add(e.getKey() + "==" + e.getValue());
             }
-            sb.append(String.join(", ", stringList));
+            detailSb.append(String.join(", ", stringList));
         } else {
-            sb.append("-default-");
+            detailSb.append("-default-");
         }
-        sb.append("; Setting: ");
+        detailSb.append("; Setting: ");
         stringList.clear();
         for (Entry<String, StringPair> e : settings.entrySet()) {
             String theEntry = e.getKey() + "=" + e.getValue().string1;
@@ -86,7 +92,17 @@ public class AuditEntryBuilder implements Cloneable {
             }
             stringList.add(theEntry);
         }
-        sb.append(String.join(", ", stringList));
+        detailSb.append(String.join(", ", stringList));
+        String detailInfo = detailSb.toString();
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(LogMessages.FIRING_RULE.msg(), ModelHelper.getCurrentRuleGroup(), ruleId, detailInfo);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("+ Rule Group: ").append(ModelHelper.getCurrentRuleGroup()).append("; RuleId: ").append(ruleId)
+                .append("; ").append(detailInfo);
+
         return sb.toString();
     }
 

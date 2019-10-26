@@ -53,7 +53,8 @@ public enum LogMessages {
     EXTENSION_BANNER_1(36, "{}"), //
     EXTENSION_BANNER_2(37, "{}"), //
     NO_EXTENSION_DISCLAIMER(38,
-            "You are running Solicitor without Extension. Be aware that builtin rulesets are samples only!"); //
+            "You are running Solicitor without Extension. Be aware that builtin rulesets are samples only!"), //
+    FIRING_RULE(39, "Firing rule: [RuleGroup:{}],[Rule:{}] - {}"); //
 
     private final String completeMessage;
 
