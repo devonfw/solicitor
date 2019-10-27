@@ -4,9 +4,6 @@
 
 package com.devonfw.tools.solicitor;
 
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
 import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.MavenVersionHelper;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier.ResourceGroup;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
@@ -196,18 +194,12 @@ public class Solicitor {
      */
     private void checkExtensionVersionRequirements(SolicitorVersion sv) {
 
-        if (sv.getExtensionExpectedSolicitorVersionRange() != null
-                && !sv.getExtensionExpectedSolicitorVersionRange().isEmpty()) {
-            DefaultArtifactVersion solicitorVersion = new DefaultArtifactVersion(sv.getVersion());
-            VersionRange allowedRange;
-            try {
-                allowedRange = VersionRange.createFromVersionSpec(sv.getExtensionExpectedSolicitorVersionRange());
-            } catch (InvalidVersionSpecificationException e) {
-                throw new SolicitorRuntimeException(e);
-            }
-            if (!allowedRange.containsVersion(solicitorVersion)) {
-                LOG.error(LogMessages.EXTENSION_EXPECTATION_FAILED.msg(),
-                        sv.getExtensionExpectedSolicitorVersionRange());
+        final String expectedVersionRange = sv.getExtensionExpectedSolicitorVersionRange();
+        if (expectedVersionRange != null && !expectedVersionRange.isEmpty()) {
+            final String version = sv.getVersion();
+            boolean versionOk = MavenVersionHelper.checkVersionRange(version, expectedVersionRange);
+            if (!versionOk) {
+                LOG.error(LogMessages.EXTENSION_EXPECTATION_FAILED.msg(), expectedVersionRange);
                 throw new SolicitorRuntimeException("Solicitor does not match version requirements of the extension");
             }
         }

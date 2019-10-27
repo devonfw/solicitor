@@ -658,9 +658,23 @@ When processing, _Solicitor_ will internally use the rule template to create one
 ** The first "empty" row (which does not contain data in any of the defined columns) ends the decision table
 ** Decision tables might use multiple condition columns which define the data that a rule matches. Often such conditions are optional: If left free in the Excel table the condition will be omitted from the rule conditions. This allows to define very specific rules (which only fire on exact data patterns) or quite general rules which get activated on large groups of data. Defining general rules further down in the table (with lower salience/priority) ensures that more specific rules get fired earlier. This even allows to define a default rule at the end of the table which gets fired if no other rule could be applied.
 
-* `rule groups`: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same `rule group`. The order of execution of the `rule groups` 
+* _rule groups_: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same _rule group_. The order of execution of the _rule groups_ 
 is defined by the sequence of declaration in the config file. Processing of the current group will
 be finished when there are no more rules to fire in that group. Processing of the next group will then start. Rule groups which have been finished processing will not be resumed even if rules within that group might have been activated again due to changes of the facts.
+
+=== Extended comparison syntax
+By default any condtions given in the fields of decision tables are simple textual comparisons: The condition
+is true if the property of the model is identical to the given value in the XLS sheet.
+
+Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:
+
+* If the given value of the XLS field starts with the prefix `REGEX:` then the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expession.
+* If the given value of the XLS field starts with the prefix `RANGE:`  then the remainder of the field defines
+a https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/maven/artifact/versioning/VersionRange.html#createFromVersionSpec(java.lang.String)[Maven Version Range]. Using this makes only sense on the artifact
+version property.
+* If no such prefix is detected, then the behaviour is identical to the normal (verbatim) comparison logic
+
+Fields which are subject to this extended syntact are marked explicitely in the following section.
 
 == Standard Business Rules
 The processing of business rules is organized in different phases. Each phase might consist of multiple decision tables to be processed in order.
@@ -677,11 +691,11 @@ With this decision table is is possible to explicitely assign NormalizedLicenses
 ** `Engagement.clientName`
 ** `Engagement.engagementName`
 ** `Application.applicationName`
-** `ApplicationComponent.groupId`
-** `ApplicationCompomnent.artifactId`
-** `ApplicationComponent.version`
-** `RawLicense.declaredLicense`
-** `RawLicense.url`
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationCompomnent.artifactId` icon:magic[]
+** `ApplicationComponent.version` icon:magic[]
+** `RawLicense.declaredLicense` icon:magic[]
+** `RawLicense.url` icon:magic[]
 
 * RHS result:
 ** `NormalizedLicense.normalizedLicenseType`
@@ -689,18 +703,22 @@ With this decision table is is possible to explicitely assign NormalizedLicenses
 ** `NormalizedLicense.normalizedLicenseUrl`
 ** `NormalizedLicense.comment`
 
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
+
 All RawLicenses which are in scope of fired rules will be marked so that they do not get reprocessed by the following decision table.
 
 ==== Decision Table: Detecting Licenses from Imported Data
 With this decision table the license info from the RawLicense is mapped to the NormalizedLicense. This is based on the name and/or URL of the license as imported via the readers.
 
 * LHS conditions:
-** `RawLicense.declaredLicense`
-** `RawLicense.url`
+** `RawLicense.declaredLicense` icon:magic[]
+** `RawLicense.url` icon:magic[]
 
 * RHS result:
 ** `NormalizedLicense.normalizedLicenseType`
 ** `NormalizedLicense.normalizedLicense`
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
 === Phase 2: Selecting applicable Licenses
 Within this phase the actually applicable licenses will be selected for each component.
@@ -711,9 +729,9 @@ This phase consists of two decision tables.
 This group of rules has the speciality that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as `Ignored`.
 
 * LHS conditions:
-** `ApplicationComponent.groupId`
-** `ApplicationComponent.artifactId`
-** `ApplicationComponent.version`
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[] 
+** `ApplicationComponent.version` icon:magic[]
 ** `NormalizedLicense.normalizedLicense` (licenseToTake; mandatory)
 ** `NormalizedLicense.normalizedLicense` (licenseToIgnore1; mandatory)
 ** `NormalizedLicense.normalizedLicense` (licenseToIgnore2; optional)
@@ -723,6 +741,8 @@ This group of rules has the speciality that it might match to a group of Normali
 ** license matching "licenseToTake" will get this value assigned to `effectiveNormalizedLicense`
 ** licenses matching "licenseToIgnoreN" will get `IGNORED` assigned to `effectiveNormalizedLicenseType` `Ignored` assigned to `effectiveNormalizedLicense`
 
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
+
 It is important to note that the rules only match, if all licenses given in the conditions actually exist and are assigned to the same ApplicationComponent.
 
 ==== Selecting / Overriding applicable License
@@ -730,9 +750,9 @@ It is important to note that the rules only match, if all licenses given in the 
 The second decision table in this group is used to define the `effectiveNormalizedLicense` (if not already handled by the decision table before).
 
 * LHS conditions:
-** `ApplicationComponent.groupId`
-** `ApplicationComponent.artifactId`
-** `ApplicationComponent.version`
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[]
+** `ApplicationComponent.version` icon:magic[]
 ** `NormalizedLicense.normalizedLicenseType`
 ** `NormalizedLicense.normalizedLicense`
 
@@ -740,6 +760,8 @@ The second decision table in this group is used to define the `effectiveNormaliz
 ** `NormalizedLicense.effectiveNormalizedLicenseType` (if empty in the decision table then the value of `normalizedLicenseType` will be taken)
 ** `NormalizedLicense.effectiveNormalizedLicense` (if empty in the decision table then the value of `normalizedLicense` will be taken)
 ** `NormalizedLicense.effectiveNormalizedLicenseUrl` (if empty in the decision table then the value of `normalizedLicenseUrl` will be taken)
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
 === Phase 3: Legal evaluation
 
@@ -769,9 +791,9 @@ to create the result of the legal evaluation. Rules here might be general for al
 ** `Engagement.engagementName`
 ** `Engagement.customerProvidesOss`
 ** `Application.applicationName`
-** `ApplicationComponent.groupId`
-** `ApplicationComponent.artifactId`
-** `ApplicationComponent.version`
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[]
+** `ApplicationComponent.version` icon:magic[]
 ** `ApplicationComponent.usagePattern`
 ** `ApplicationComponent.ossModified`
 ** `NormalizedLicense.effectiveNormalizedLicenseType`
@@ -780,6 +802,8 @@ to create the result of the legal evaluation. Rules here might be general for al
 * RHS result:
 ** `NormalizedLicense.legalApproved`
 ** `NormalizedLicense.legalComments`
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
 === Amending the builtin decision tables with own rules
 

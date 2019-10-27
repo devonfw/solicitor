@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.MavenVersionHelper;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -22,6 +23,16 @@ import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
  */
 @Component
 public class ModelHelper {
+    /**
+     * Prefix which marks a string as defining a regular expression condition.
+     */
+    private static final String REGEX_PREFIX = "REGEX:";
+
+    /**
+     * Prefix which marks a string as defining a maven range condition.
+     */
+    private static final String RANGE_PREFIX = "RANGE:";
+
     private static final Logger LOG = LoggerFactory.getLogger(ModelHelper.class);
 
     private static ModelFactory modelFactory;
@@ -131,6 +142,35 @@ public class ModelHelper {
     public static RawLicense newRawLicense() {
 
         return modelFactory.newRawLicense();
+    }
+
+    /**
+     * Checks if the given first String matches the second String. By default
+     * this is done with simple string comparison. If the second argument starts
+     * with "REGEX:" then the remainder of the second argument will be
+     * interpreted as a Java RegEx and matching will be done against this RegEx
+     * 
+     * @param input the string to test
+     * @param condition the condition to test against
+     * @return <code>true</code> if it matches, <code>false</code> otherwise
+     */
+    public static boolean match(String input, String condition) {
+
+        if (input == null && condition == null) {
+            return true;
+        }
+        if (input != null && condition != null) {
+            if (condition.startsWith(REGEX_PREFIX)) {
+                String pattern = condition.substring(REGEX_PREFIX.length());
+                return input.matches(pattern);
+            }
+            if (condition.startsWith(RANGE_PREFIX)) {
+                String rangeSpec = condition.substring(RANGE_PREFIX.length());
+                return MavenVersionHelper.checkVersionRange(input, rangeSpec);
+            }
+            return input.equals(condition);
+        }
+        return false;
     }
 
     /**

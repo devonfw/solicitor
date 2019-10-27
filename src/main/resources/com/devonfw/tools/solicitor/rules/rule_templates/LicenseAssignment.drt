@@ -43,15 +43,15 @@ rule "License Assignment @{ruleId} - mark RawLicense as done by specialHandling"
         	name == "@{applicationName}", 
         	engagement == $e )
         $ac : ApplicationComponent(
-        	groupId == "@{groupId}", 
-        	artifactId == "@{artifactId}", 
-        	version == "@{version}",
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
         	application == $a )
         $rl : RawLicense( 
           specialHandling == false,
-        	declaredLicense == "@{declaredLicense}",
+        	ModelHelper.match( declaredLicense, "@{declaredLicense}" ),
         	$licUrl : licenseUrl,
-        	licenseUrl == "@{url}", 
+        	ModelHelper.match( licenseUrl, "@{url}" ), 
         	applicationComponent == $ac )
     then
         $rl.setSpecialHandling(true);
@@ -69,15 +69,15 @@ rule "License Assignment @{ruleId} - add given NormalizedLicense" salience -@{ro
         	name == "@{applicationName}", 
         	engagement == $e )
         $ac : ApplicationComponent(
-        	groupId == "@{groupId}", 
-        	artifactId == "@{artifactId}", 
-        	version == "@{version}",
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
         	application == $a )
         $rl : RawLicense(  
           specialHandling == false,
-        	declaredLicense == "@{declaredLicense}",
+        	ModelHelper.match( declaredLicense, "@{declaredLicense}" ),
         	$licUrl : licenseUrl,
-        	licenseUrl == "@{url}", 
+        	ModelHelper.match( licenseUrl, "@{url}" ), 
         	applicationComponent == $ac )
         not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalizedLicense}") )  // differs from above
         	

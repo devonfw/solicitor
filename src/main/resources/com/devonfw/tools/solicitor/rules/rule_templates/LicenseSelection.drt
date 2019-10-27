@@ -27,9 +27,9 @@ template "Effective License Selection"
 rule "License Selection @{ruleId}" salience -@{row.rowNumber}
     when
         $ac : ApplicationComponent(
-        	groupId == "@{groupId}", 
-        	artifactId == "@{artifactId}", 
-        	version == "@{version}",
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
         	$dummyAssignemt : application )
         $li : NormalizedLicense(
         	effectiveNormalizedLicense == null, 

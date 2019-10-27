@@ -25,9 +25,9 @@ template "Multi License Selection"
 rule "Multi License Selection @{ruleId}" salience -@{row.rowNumber}
     when
         $ac : ApplicationComponent(
-        	groupId == "@{groupId}", 
-        	artifactId == "@{artifactId}", 
-        	version == "@{version}",
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
         	$dummyAssignment : application )
         $liActive : NormalizedLicense(
         	effectiveNormalizedLicense == null, 

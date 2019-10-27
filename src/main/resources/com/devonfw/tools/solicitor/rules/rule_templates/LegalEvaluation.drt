@@ -38,9 +38,9 @@ rule "Legal Evaluation @{ruleId}" salience -@{row.rowNumber}
         	name == "@{applicationName}", 
         	engagement == $e )
         $ac : ApplicationComponent(
-        	groupId == "@{groupId}", 
-        	artifactId == "@{artifactId}", 
-        	version == "@{version}",
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
         	usagePattern.name() == "@{usagePattern}",
         	ossModified == @{ossModified},
         	application == $a )

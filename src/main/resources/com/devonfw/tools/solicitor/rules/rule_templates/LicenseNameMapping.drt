@@ -22,8 +22,8 @@ rule "Name Normalization @{ruleId}" salience -@{row.rowNumber}
         $ac : ApplicationComponent()
         $rl : RawLicense(
             specialHandling == false,
-        	declaredLicense == "@{declared}", 
-        	licenseUrl == "@{url}",
+        	ModelHelper.match(declaredLicense, "@{declared}" ), 
+        	ModelHelper.match(licenseUrl, "@{url}" ),
         	$licUrl : licenseUrl,
         	applicationComponent == $ac )
         	not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalized}" ) )
