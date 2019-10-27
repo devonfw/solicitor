@@ -8,5 +8,7 @@ package com.devonfw.tools.solicitor.model.masterdata;
  * The software usage pattern.
  */
 public enum UsagePattern {
-    DYNAMIC_LINKING
+    DYNAMIC_LINKING, //
+    STATIC_LINKING, //
+    STANDALONE_PRODUCT
 }

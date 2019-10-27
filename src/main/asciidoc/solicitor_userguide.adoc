@@ -132,7 +132,7 @@ The internal business data model consists of 6 entities:
 [cols="3,1,6", options="header"]
 |===
 | Property | Type | Description
-| usagePattern | UsagePattern | possible values: DYNAMIC_LINKING
+| usagePattern | UsagePattern | possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
 | ossModified | boolean | is the OSS modified?
 | ossHomepage | String | URL of the OSS homepage
 | groupId | String | component identifier: maven group
@@ -319,7 +319,7 @@ Within this section the different applications (=deliverables) of the engagement
 <5> multiple readers might be defined per application
 <6> the type of reader; possible values: csv, maven, npm, gradle
 <7> location of the source file to read (ResourceLoader-URL)
-<8> usage pattern; possible values: DYNAMIC_LINKING
+<8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
 <9> _placeholder patterns might be used here_
 
 
