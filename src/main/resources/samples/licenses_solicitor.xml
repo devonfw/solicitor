@@ -672,14 +672,6 @@
       </licenses>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.3</version>
-      <licenses>
-        <!--No license information available. -->
-      </licenses>
-    </dependency>
-    <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>3.0.22</version>
@@ -931,28 +923,6 @@
         <license>
           <name>Apache License, Version 2.0</name>
           <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-          <distribution>repo</distribution>
-        </license>
-      </licenses>
-    </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>1.4.01</version>
-      <licenses>
-        <license>
-          <name>The Apache Software License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-          <distribution>repo</distribution>
-        </license>
-        <license>
-          <name>The SAX License</name>
-          <url>http://www.saxproject.org/copying.html</url>
-          <distribution>repo</distribution>
-        </license>
-        <license>
-          <name>The W3C License</name>
-          <url>http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/java-binding.zip</url>
           <distribution>repo</distribution>
         </license>
       </licenses>
@@ -1261,14 +1231,6 @@
 			See the License for the specific language governing permissions and
 			limitations under the License.</comments>
         </license>
-      </licenses>
-    </dependency>
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>1.6.1</version>
-      <licenses>
-        <!--No license information available. -->
       </licenses>
     </dependency>
     <dependency>
