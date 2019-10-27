@@ -4,8 +4,6 @@
         "description": "The Apache Commons Codec package contains simple encoder and decoders for\n     various formats such as Base64 and Hexadecimal.  In addition to these\n     widely used encoders and decoders, the codec package also maintains a\n     collection of phonetic encoding utilities.",
         "version": "1.11",
         "developers": [
-            "Henri Yandell",
-            "Tim OBrien",
 			...
         ],
         "url": "http://commons.apache.org/proper/commons-codec/",
@@ -24,8 +22,6 @@
         "description": "XmlBeans main jar",
         "version": "3.0.2",
         "developers": [
-            "Cezar Andrei",
-            "Radu Preotiuc",
 			...
         ],
         "url": "https://xmlbeans.apache.org/",
