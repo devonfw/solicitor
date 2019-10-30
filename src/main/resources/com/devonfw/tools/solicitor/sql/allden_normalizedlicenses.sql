@@ -4,6 +4,8 @@
 select
     CONCAT(a."applicationName",ac."groupId",ac."artifactId",ac."version",l."normalizedLicense") as CORR_KEY_0,
     CONCAT(a."applicationName",ac."groupId",ac."artifactId",l."normalizedLicense") as CORR_KEY_1,
+    CONCAT(a."applicationName",ac."groupId",ac."artifactId",ac."version") as CORR_KEY_2,
+    CONCAT(a."applicationName",ac."groupId",ac."artifactId") as CORR_KEY_3,
 	e.*,
 	a.*,
 	ac.*,
