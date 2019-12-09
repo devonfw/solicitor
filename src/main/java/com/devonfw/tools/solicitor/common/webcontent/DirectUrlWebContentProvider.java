@@ -11,7 +11,10 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.devonfw.tools.solicitor.common.LogMessages;
 
 /**
  * A {@link WebContentProvider} which tries to load the web content directly via
@@ -21,6 +24,9 @@ import org.springframework.stereotype.Component;
 public class DirectUrlWebContentProvider implements WebContentProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(DirectUrlWebContentProvider.class);
+
+    @Value("${webcontent.skipdownload}")
+    private boolean skipdownload;
 
     /**
      * Constructor.
@@ -39,6 +45,10 @@ public class DirectUrlWebContentProvider implements WebContentProvider {
 
         URL webContentUrl;
         if (url == null) {
+            return null;
+        }
+        if (skipdownload) {
+            LOG.info(LogMessages.SKIP_DOWNLOAD.msg(), url);
             return null;
         }
         try {
