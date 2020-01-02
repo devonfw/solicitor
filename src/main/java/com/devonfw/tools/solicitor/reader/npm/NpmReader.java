@@ -56,13 +56,15 @@ public class NpmReader extends AbstractReader implements Reader {
                 if (record.get(0).contains("module name")) {
                     continue;
                 }
-
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
                 String[] module = record.get(0).split("@");
-                appComponent.setArtifactId(module[module.length - 2]);
+                if(record.get(0).startsWith("@"))
+                	appComponent.setArtifactId("@"+module[module.length - 2]);
+                else
+                	appComponent.setArtifactId(module[module.length - 2]);
                 appComponent.setVersion(module[module.length - 1]);
                 appComponent.setUsagePattern(usagePattern);
-                appComponent.setGroupId(record.get(4));
+                appComponent.setGroupId("");
                 appComponent.setOssHomepage(record.get(2));
                 // merge ApplicationComponentImpl with same key if they appear
                 // on
