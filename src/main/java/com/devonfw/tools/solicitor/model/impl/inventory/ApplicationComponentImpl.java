@@ -35,6 +35,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
     private String version;
 
+    private String repoType;
+
     private List<NormalizedLicense> normalizedLicenses = new ArrayList<>();
 
     private List<RawLicense> rawLicenses = new ArrayList<>();
@@ -79,7 +81,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     @Override
     public String[] getDataElements() {
 
-        return new String[] { groupId, artifactId, version, getOssHomepage(), getUsagePattern().toString(),
+        return new String[] { groupId, artifactId, version, getRepoType(), getOssHomepage(), getUsagePattern().toString(),
         isOssModified() ? "true" : "false" };
     }
 
@@ -94,7 +96,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     @Override
     public String[] getHeadElements() {
 
-        return new String[] { "groupId", "artifactId", "version", "ossHomepage", "usagePattern", "ossModified" };
+        return new String[] { "groupId", "artifactId", "version", "repoType", "ossHomepage", "usagePattern", "ossModified" };
     }
 
     /** {@inheritDoc} */
@@ -131,6 +133,12 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
         return version;
     }
+
+    /** {@inheritDoc} */
+	@Override
+	public String getRepoType() {
+		return repoType;
+	}
 
     /** {@inheritDoc} */
     @Override
@@ -191,5 +199,11 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
         this.version = version;
     }
+
+    /** {@inheritDoc} */
+	@Override
+	public void setRepoType(String repoType) {
+		this.repoType = repoType;
+	}
 
 }

@@ -90,6 +90,13 @@ public interface ApplicationComponent {
     String getVersion();
 
     /**
+     * This method gets the field <tt>repoType</tt>.
+     *
+     * @return the field repoType
+     */
+    String getRepoType();
+
+    /**
      * This method gets the field <tt>ossModified</tt>.
      *
      * @return the field ossModified
@@ -145,5 +152,12 @@ public interface ApplicationComponent {
      * @param version the new value of the field version
      */
     void setVersion(String version);
+
+    /**
+     * This method sets the field <tt>repoType</tt>.
+     *
+     * @param repoType the new value of the field repoType
+     */
+    void setRepoType(String repoType);
 
 }

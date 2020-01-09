@@ -67,7 +67,7 @@ public class Solicitor {
 
     /**
      * Create a new basic project configuration.
-     * 
+     *
      * @param targetDir the directory where the userguide should be stored
      */
     private void wizard(String targetDir) {
@@ -78,7 +78,7 @@ public class Solicitor {
 
     /**
      * Save all sample configuration files to the working directory.
-     * 
+     *
      * @param targetDir the directory where the userguide should be stored
      */
     private void extractConfig(String targetDir) {
@@ -89,7 +89,7 @@ public class Solicitor {
 
     /**
      * Perform the main flow of processing.
-     * 
+     *
      * @param clo the parsed command line options
      */
     private void mainProcessing(CommandLineOptions clo) {
@@ -122,7 +122,7 @@ public class Solicitor {
 
         for (ReaderSetup readerSetup : solicitorSetup.getReaderSetups()) {
             Reader reader = readerFactory.readerFor(readerSetup.getType());
-            reader.readInventory(readerSetup.getSource(), readerSetup.getApplication(), readerSetup.getUsagePattern());
+            reader.readInventory(readerSetup.getSource(), readerSetup.getApplication(), readerSetup.getUsagePattern(), readerSetup.getRepoType());
         }
     }
 
@@ -166,7 +166,7 @@ public class Solicitor {
 
     /**
      * Checks the extension and logs info.
-     * 
+     *
      * @param sv the object which holds info about the extension
      * @throws SolicitorRuntimeException if the extension is incompatible with
      *         this Solicitor version
@@ -187,7 +187,7 @@ public class Solicitor {
     /**
      * Checks if Solicitor complies to the version expectations found in the
      * extension.
-     * 
+     *
      * @param sv the object which holds info about the extension
      * @throws SolicitorRuntimeException if Solicitor does not comply to the
      *         version requirements given in the extension

@@ -41,10 +41,10 @@ When running _Solicitor_ three subsequent processing steps are executed:
 
 WARNING: `Solicitor` comes with a set of *sample* rules for the normalization and evaluation of licenses.
 Even though these included rules are not "intentionally wrong" they are only samples and *you should never rely on these builtin rules without checking and possibly modifying their content and consulting your lawyer*. _Solicitor_ is a tool
-for technically supporting the management of OSS licenses within your project. _Solicitor_ neither gives legal advice nor is a replacement for a lawyer. 
+for technically supporting the management of OSS licenses within your project. _Solicitor_ neither gives legal advice nor is a replacement for a lawyer.
 
 === Licensing of Solicitor
-The _Solicitor_ code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw-forge/solicitor are licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0). 
+The _Solicitor_ code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw-forge/solicitor are licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0).
 
 IMPORTANT: Specifically observe the "Disclaimer of Warranty" and "Limitation of Liability" which are part of the license.
 
@@ -138,6 +138,7 @@ The internal business data model consists of 6 entities:
 | groupId | String | component identifier: maven group
 | artifactId | String | component identifier: maven artifactId
 | version | String | component identifier: Version
+| repoType | String | component identifier: RepoType
 |===
 
 ==== RawLicense
@@ -200,7 +201,7 @@ A "normalized" license id might be either a SPDX-Id or a "pseudo license id" whi
 
 == Usage
 === Executing Solicitor
-_Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java 8 runtime environment. If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw-forge/solicitor . 
+_Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java 8 runtime environment. If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw-forge/solicitor .
 
 _Solicitor_ is executed with the following command:
 
@@ -209,7 +210,7 @@ java -jar solicitor.jar -c <configfile>
 
 where `<configfile>` is to be replaced by the location of the <<Configuration File>>.
 
-To get a first idea on what _Solicitor_ does you might call 
+To get a first idea on what _Solicitor_ does you might call
 
 [listing]
 java -jar solicitor.jar -c classpath:samples/solicitor_sample.cfg
@@ -225,7 +226,7 @@ java -jar solicitor.jar -h
 ****
 For unique adressing of resources *to be read* (configuration files, input data, rule templates and decision tables) _Solicitor_ makes use of the Spring ResourceLoader functionality, see https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#resources-resourceloader . This allows to load from the classpath, the filesystem or even via http get.
 
-If you want to reference a file in the filesystem you need to write it as follows: `file:path/to/file.txt`  
+If you want to reference a file in the filesystem you need to write it as follows: `file:path/to/file.txt`
 
 Note that this only applies to resources being read. Output files are adressed without that prefix.
 ****
@@ -307,8 +308,9 @@ Within this section the different applications (=deliverables) of the engagement
     "programmingEcosystem" : "Java8", <4>
     "readers" : [ { <5>
       "type" : "maven", <6>
-      "source" : "classpath:samples/licenses_devon4j.xml", <7> <9>
+      "source" : "classpath:samples/licenses_devon4j.xml", <7> <10>
       "usagePattern" : "DYNAMIC_LINKING" <8>
+      "repoType" : "maven" <9>
     } ]
   } ],
 
@@ -320,7 +322,8 @@ Within this section the different applications (=deliverables) of the engagement
 <6> the type of reader; possible values: csv, maven, npm, gradle
 <7> location of the source file to read (ResourceLoader-URL)
 <8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
-<9> _placeholder patterns might be used here_
+<9> repoType: Repository to download the sources from: currently possible values: maven, npm
+<10> _placeholder patterns might be used here_
 
 
 The different readers are described in chapter <<Reading License Information with Readers>>
@@ -383,7 +386,7 @@ The writer configuration defines how the processed data will be exported and/or 
     }
   } ]
 
-<1> type of writer to be selected; possible values: `xls`, `velo` 
+<1> type of writer to be selected; possible values: `xls`, `velo`
 <2> path to the template to be used
 <3> location of the output file
 <4> some textual description
@@ -394,14 +397,14 @@ For details on the writer configuration see <<Reporting / Creating output docume
 
 === Starting a new project
 
-To simplify setting up a new project _Solicitor_ provides an option to create a project starter configuration in a given directory. 
+To simplify setting up a new project _Solicitor_ provides an option to create a project starter configuration in a given directory.
 
 [listing]
 java -jar solicitor.jar -wiz some/directory/path
 
 Besides the necessary configuration file this includes also empty XLS files for defining project
 specific rules which amend the builtin rules. Furtheron a sample `license.xml` file is provided to
-directly enable execution of solicitor and check functionality. 
+directly enable execution of solicitor and check functionality.
 
 This configuration then serves as starting point for project specific configuration.
 
@@ -423,7 +426,7 @@ will export all internal configuration to the given directory. This includes:
 * The referenced templates for the <<Velocity Writer>> and <<Excel Writer>>
 
 == Reading License Information with Readers
-Different Readers are available to import raw component / license information for different 
+Different Readers are available to import raw component / license information for different
 technologies. This chapter describes how to setup the different build / dependency management systems to create the required input and how to configure the corresponding reader.
 
 === Maven
@@ -502,7 +505,7 @@ The following 5 columns need to be contained:
 * license name
 * license URL
 
-In case that a component has multiple licenses attached, there needs to be a separate 
+In case that a component has multiple licenses attached, there needs to be a separate
 line in the file for each license.
 
 === NPM
@@ -605,7 +608,7 @@ buildscript {
 ----
 
 Also there is a change in the build.gradle of the App. Add the line in the second line
----- 
+----
 apply plugin: 'com.android.application'
 ----
 
@@ -658,7 +661,7 @@ When processing, _Solicitor_ will internally use the rule template to create one
 ** The first "empty" row (which does not contain data in any of the defined columns) ends the decision table
 ** Decision tables might use multiple condition columns which define the data that a rule matches. Often such conditions are optional: If left free in the Excel table the condition will be omitted from the rule conditions. This allows to define very specific rules (which only fire on exact data patterns) or quite general rules which get activated on large groups of data. Defining general rules further down in the table (with lower salience/priority) ensures that more specific rules get fired earlier. This even allows to define a default rule at the end of the table which gets fired if no other rule could be applied.
 
-* _rule groups_: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same _rule group_. The order of execution of the _rule groups_ 
+* _rule groups_: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same _rule group_. The order of execution of the _rule groups_
 is defined by the sequence of declaration in the config file. Processing of the current group will
 be finished when there are no more rules to fire in that group. Processing of the next group will then start. Rule groups which have been finished processing will not be resumed even if rules within that group might have been activated again due to changes of the facts.
 
@@ -730,7 +733,7 @@ This group of rules has the speciality that it might match to a group of Normali
 
 * LHS conditions:
 ** `ApplicationComponent.groupId` icon:magic[]
-** `ApplicationComponent.artifactId` icon:magic[] 
+** `ApplicationComponent.artifactId` icon:magic[]
 ** `ApplicationComponent.version` icon:magic[]
 ** `NormalizedLicense.normalizedLicense` (licenseToTake; mandatory)
 ** `NormalizedLicense.normalizedLicense` (licenseToIgnore1; mandatory)
@@ -851,7 +854,7 @@ Before the result of the SQL select statement is handed over to the Writer the f
 is done:
 
 * a `rowCount` column is added to the result which gives the position of the entry in the result set (starting with 1).
-* Columns named `ID_<TABLENAME>` are replaced with columns named `OBJ_<TABLENAME>`. The fields of those columns are filled with the corresponding original model objects (java objects). 
+* Columns named `ID_<TABLENAME>` are replaced with columns named `OBJ_<TABLENAME>`. The fields of those columns are filled with the corresponding original model objects (java objects).
 
 WARNING: The result table column `OBJ_<TABLENAME>` gives access to the native Solicitor data model (java objects), e.g. in the Velocity writer. As this breaks the decoupling done via the SQL database using this feature is explicitely discouraged. It should only be used with high caution and in exceptional situations. The feature might be discontinued in future versions without prior notice.
 
@@ -894,10 +897,10 @@ correlations keys.
 
 [source,sql]
 ----
-include::../resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[] 
+include::../resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[]
 ----
 
-NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL 
+NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL
 
 === Writers
 
@@ -934,12 +937,12 @@ Whenever such a string is found in a cell this indicates that this row is a temp
 ===== Attribute replacement
 Within each row which was copied in the previous step the templating logic searches for the string pattern `$someAttributeName$` where `someAttributeName` corresponds to the column names of the reporting table. Any such occurence is replaced with the corresponding data value.
 
-===== Representation of Diff Information 
+===== Representation of Diff Information
 In case that a difference processing (new vs. old model data) was done this will be represented
 as follows when using the XLS templating:
 
 * For rows that are "new" (so no corresponding old row available) an Excel note indicating that this row is new will be attached to the field that contained the `\#...#` placeholder.
-* Fields in non-new rows that have changed their value will be marked with an Excel note indicating the old value. 
+* Fields in non-new rows that have changed their value will be marked with an Excel note indicating the old value.
 
 == Resolving of License URLs
 
@@ -956,7 +959,7 @@ All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are r
 [appendix]
 == Default Base Configuration
 The builtin default base configuration contains settings for the `rules` and `writers` section
-of the _Solicitor_ configuration file which will be used if the project specific config file omits those sections. 
+of the _Solicitor_ configuration file which will be used if the project specific config file omits those sections.
 
 [source,json]
 .Default Configuration
@@ -996,7 +999,7 @@ property values defined within `Solicitor`.
 
 Any other resources (like rule data or templates) which need to be part of the Extension
 can be included in the archive as well - either in the root directory or any subdirectories.
-If the extension is active those resources will be available _on the classpath_ like any 
+If the extension is active those resources will be available _on the classpath_ like any
 resources included in the _Solicitor_ jar.
 
 Overriding / redefining the default base configuration within the Extension enables to
@@ -1007,5 +1010,5 @@ file.
 The Extension will be activated by referencing it as follows when starting _Solicitor_:
 
 [listing]
-java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other arguments> 
+java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other arguments>
 

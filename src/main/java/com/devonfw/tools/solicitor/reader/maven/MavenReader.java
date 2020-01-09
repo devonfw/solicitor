@@ -45,7 +45,7 @@ public class MavenReader extends AbstractReader implements Reader {
 
     /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
+    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType) {
 
         int components = 0;
         int licenses = 0;
@@ -73,6 +73,7 @@ public class MavenReader extends AbstractReader implements Reader {
             appComponent.setArtifactId(dep.getArtifactId());
             appComponent.setVersion(dep.getVersion());
             appComponent.setUsagePattern(usagePattern);
+            appComponent.setRepoType(repoType);
             components++;
             if (dep.getLicenses().isEmpty()) {
                 // in case no license is found insert an empty entry
