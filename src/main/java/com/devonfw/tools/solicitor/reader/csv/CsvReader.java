@@ -49,7 +49,7 @@ public class CsvReader extends AbstractReader implements Reader {
 
     /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
+    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType) {
 
         int components = 0;
         int licenses = 0;
@@ -65,6 +65,7 @@ public class CsvReader extends AbstractReader implements Reader {
                 appComponent.setArtifactId(record.get(1));
                 appComponent.setVersion(record.get(2));
                 appComponent.setUsagePattern(usagePattern);
+                appComponent.setRepoType(repoType);
                 // merge ApplicationComponentImpl with same key if they appear
                 // on
                 // subsequent lines (multilicensing)

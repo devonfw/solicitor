@@ -33,6 +33,8 @@ public class SolicitorSetup {
 
         private UsagePattern usagePattern;
 
+        private String repoType;
+
         /**
          * This method gets the field <tt>application</tt>.
          *
@@ -74,6 +76,15 @@ public class SolicitorSetup {
         }
 
         /**
+         * This method gets the field <tt>repoType</tt>.
+         *
+         * @return the field repoType
+         */
+        public String getRepoType() {
+			return repoType;
+		}
+
+        /**
          * This method sets the field <tt>application</tt>.
          *
          * @param application the new value of the field application
@@ -112,6 +123,15 @@ public class SolicitorSetup {
 
             this.usagePattern = usagePattern;
         }
+
+		/**
+         * This method sets the field <tt>repoType</tt>.
+         *
+         * @param repoType the new value of the field repoType
+         */
+		public void setRepoType(String repoType) {
+			this.repoType = repoType;
+		}
     }
 
     private List<ReaderSetup> readerSetups = new ArrayList<>();

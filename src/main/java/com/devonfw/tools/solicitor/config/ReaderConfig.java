@@ -21,7 +21,19 @@ public class ReaderConfig {
     @JsonProperty
     private UsagePattern usagePattern;
 
+    @JsonProperty
+    private String repoType;
+
     /**
+     * This method gets the field <tt>repoType</tt>.
+     *
+     * @return the field repoType
+     */
+    public String getRepoType() {
+		return repoType;
+	}
+
+	/**
      * This method gets the field <tt>source</tt>.
      *
      * @return the field source
@@ -50,6 +62,15 @@ public class ReaderConfig {
 
         return usagePattern;
     }
+
+    /**
+     * This method sets the field <tt>repoType</tt>.
+     *
+     * @param repoType the new value of the field repoType
+     */
+    public void setRepoType(String repoType) {
+		this.repoType = repoType;
+	}
 
     /**
      * This method sets the field <tt>source</tt>.

@@ -7,11 +7,21 @@
 # Application: $artifact.applicationName -- Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version -- License(s): $artifact.effectiveNormalizedLicense -- includeSource: $artifact.includeSource
 mkdir $artifact.applicationName &> /dev/null
 cd $artifact.applicationName
+#if ( $artifact.repoType == "maven" )
 curl -# https://repo1.maven.org/maven2/$artifact.groupIdT/$artifact.artifactId/$artifact.version/$artifact.artifactId-$artifact.version-sources.jar -o $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar
 unzip -q -t $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar
 if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar--need-to-retrieve-manually
 fi
+#elseif ( $artifact.repoType == "npm" )
+curl -# https://registry.npmjs.org/$artifact.artifactId/-/$artifact.artifactId-${artifact.version}.tgz -o $artifact.artifactId-${artifact.version}.tgz
+tar -xvzf $artifact.artifactId-${artifact.version}.tgz
+if [ $? -ne 0 ]
+then
+  echo "Need to retrieve-manually" > $artifact.groupId--$artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually
+fi
+rm -r package/
+#end
 cd ..
 #end

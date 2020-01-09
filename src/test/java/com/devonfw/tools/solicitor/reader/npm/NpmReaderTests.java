@@ -32,7 +32,7 @@ public class NpmReaderTests {
         NpmReader nr = new NpmReader();
         nr.setModelFactory(modelFactory);
         nr.setInputStreamFactory(new FileInputStreamFactory());
-        nr.readInventory("src/test/resources/npmlicenses.csv", application, UsagePattern.DYNAMIC_LINKING);
+        nr.readInventory("src/test/resources/npmlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "npm");
     }
 
     @Test

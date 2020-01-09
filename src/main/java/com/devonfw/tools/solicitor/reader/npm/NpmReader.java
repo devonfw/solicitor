@@ -41,7 +41,7 @@ public class NpmReader extends AbstractReader implements Reader {
 
     /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern) {
+    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType) {
 
         int components = 0;
         int licenses = 0;
@@ -66,9 +66,9 @@ public class NpmReader extends AbstractReader implements Reader {
                 appComponent.setUsagePattern(usagePattern);
                 appComponent.setGroupId("");
                 appComponent.setOssHomepage(record.get(2));
+                appComponent.setRepoType(repoType);
                 // merge ApplicationComponentImpl with same key if they appear
-                // on
-                // subsequent lines (multilicensing)
+                // on subsequent lines (multilicensing)
                 if (lastAppComponent != null && lastAppComponent.getGroupId().equals(appComponent.getGroupId())
                         && lastAppComponent.getArtifactId().equals(appComponent.getArtifactId())
                         && lastAppComponent.getVersion().equals(appComponent.getVersion())) {

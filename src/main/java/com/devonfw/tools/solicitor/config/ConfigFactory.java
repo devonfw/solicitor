@@ -70,7 +70,7 @@ public class ConfigFactory {
      * <code>"some/path"</code></li>
      * <li><code>"some/path/foo.txt"</code> will return <code>"."</code></li>
      * </ul>
-     * 
+     *
      * @param url the URL to check
      * @return the path contained in the URL, excluding the trailing "/"
      */
@@ -126,6 +126,7 @@ public class ConfigFactory {
                 rs.setType(rc.getType());
                 rs.setSource(rc.getSource());
                 rs.setUsagePattern(rc.getUsagePattern());
+                rs.setRepoType(rc.getRepoType());
                 rs = resolvePlaceholdersInReader(rs, placeHolderMap);
                 solicitorSetup.getReaderSetups().add(rs);
             }
@@ -137,7 +138,7 @@ public class ConfigFactory {
 
     /**
      * Creates the map of placeholders to resolve in the config.
-     * 
+     *
      * @param configUrl the URL of the config
      * @param solicitorConfig the solicitor config
      * @return the map of placeholder patterns and their replacements.
@@ -157,7 +158,7 @@ public class ConfigFactory {
     /**
      * Resolves the placeholder patterns in the reader setup (source file
      * location).
-     * 
+     *
      * @param readerSetup the reader setup to operate on
      * @param placeHolderMap a map giving patterns and values of placeholders
      * @return the modified ReaderSetup
@@ -171,7 +172,7 @@ public class ConfigFactory {
     /**
      * Resolves the placeholders in the rule config (rule source and template
      * source).
-     * 
+     *
      * @param rules the list of rule configs to operate on
      * @param placeHolderMap a map giving patterns and values of placeholders
      * @return the list of modified RuleConfigs
@@ -189,7 +190,7 @@ public class ConfigFactory {
      * Resolves the placeholders in the writer configuration (target,
      * templateSource and location of SQL statemenents) string with the given
      * value.
-     * 
+     *
      * @param writers the list of writers configs to operate on
      * @param placeHolderMap a map giving patterns and values of placeholders
      * @return the list of modified WriterConfigs
@@ -209,7 +210,7 @@ public class ConfigFactory {
 
     /**
      * Resolves the placeholders in the given string.
-     * 
+     *
      * @param origString the original string
      * @param placeHolderMap a map giving patterns and values of placeholders
      * @return the modified string
@@ -228,7 +229,7 @@ public class ConfigFactory {
      * then the rule config from the base config will be taken. The same applies
      * for the writer config. All other config parameters will be taken from the
      * project config in any case.
-     * 
+     *
      * @param projectConfig the project specific configuration
      * @param baseConfig the base configuration
      * @return the resulting/merged config
@@ -278,7 +279,7 @@ public class ConfigFactory {
 
     /**
      * Returns all resource URLs configured for the rules.
-     * 
+     *
      * @param rules the rules
      * @return collection of strings representing the URLs
      */
@@ -294,7 +295,7 @@ public class ConfigFactory {
 
     /**
      * Returns all resource URLs configured for the writers.
-     * 
+     *
      * @param writers the rules
      * @return collection of strings representing the URLs
      */

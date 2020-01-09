@@ -21,7 +21,7 @@ public interface Reader {
     /**
      * Indicates if the given {@link Reader} instance is capable of processing
      * the given input type.
-     * 
+     *
      * @param type s string indicating of which type the input is
      * @return <code>true</code> if this {@link Reader} is capable of processing
      *         the type of data; <code>false</code> otherwise
@@ -30,13 +30,14 @@ public interface Reader {
 
     /**
      * Read the inventory data contained in the given resource.
-     * 
+     *
      * @param sourceUrl a URL of the resource to read the data from
      * @param application all read {@link ApplicationComponent} need to be
      *        linked with this {@link Application}
      * @param usagePattern the {@link UsagePattern} which applies for all read
      *        {@link ApplicationComponent}s
+     * @param repoType the type of Repository to download the sources from
      */
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern);
+    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType);
 
 }

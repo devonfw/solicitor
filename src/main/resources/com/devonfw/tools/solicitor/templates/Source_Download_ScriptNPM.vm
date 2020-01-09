@@ -11,7 +11,7 @@ curl -# https://registry.npmjs.org/$artifact.artifactId/-/$artifact.artifactId-$
 tar -xvzf $artifact.artifactId-${artifact.version}.tgz
 if [ $? -ne 0 ]
 then
-  echo "Need to retrieve-manually" > $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar--need-to-retrieve-manually
+  echo "Need to retrieve-manually" > $artifact.groupId--$artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually
 fi
 rm -r package/
 cd ..
