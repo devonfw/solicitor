@@ -53,7 +53,12 @@ public abstract class CachingWebContentProviderBase implements WebContentProvide
      * @return the cache key
      */
     public String getKey(String url) {
-
+		/**
+    	 * Normalize URL to http
+    	 */
+    	if(url.startsWith("https")) {
+			url = url.replace("https", "http");
+		}
         String result = url.replaceAll("\\W", "_");
         return result;
     }
