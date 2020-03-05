@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents the configuration of a {@link Reader} in JSON format.
  */
 public class ReaderConfig {
+    private static final String DEFAULT_REPO_TYPE = "maven";
+
     @JsonProperty
     private String type;
 
@@ -25,15 +27,25 @@ public class ReaderConfig {
     private String repoType;
 
     /**
+     * Standard constructor. Field {@link #repoType} will be initialized to
+     * "maven" to use this if value is not defined in JSON config.
+     */
+    public ReaderConfig() {
+
+        repoType = DEFAULT_REPO_TYPE;
+    }
+
+    /**
      * This method gets the field <tt>repoType</tt>.
      *
      * @return the field repoType
      */
     public String getRepoType() {
-		return repoType;
-	}
 
-	/**
+        return repoType;
+    }
+
+    /**
      * This method gets the field <tt>source</tt>.
      *
      * @return the field source
@@ -69,8 +81,9 @@ public class ReaderConfig {
      * @param repoType the new value of the field repoType
      */
     public void setRepoType(String repoType) {
-		this.repoType = repoType;
-	}
+
+        this.repoType = repoType;
+    }
 
     /**
      * This method sets the field <tt>source</tt>.
