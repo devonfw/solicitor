@@ -964,7 +964,7 @@ of the _Solicitor_ configuration file which will be used if the project specific
 [source,json]
 .Default Configuration
 ----
-include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=22..147]
+include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..159]
 ----
 
 [appendix]
