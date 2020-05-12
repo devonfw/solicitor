@@ -14,8 +14,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.writer.data.DataTableField.FieldDiffStatus;
 import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
 
@@ -84,6 +87,8 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  */
 @Component
 public class DataTableDifferImpl implements DataTableDiffer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DataTableDifferImpl.class);
 
     /**
      * The Constructor.
@@ -230,7 +235,12 @@ public class DataTableDifferImpl implements DataTableDiffer {
      */
     private String extractKey(DataTableRow tableRow, String corrKeyColumn) {
 
-        return tableRow.get(corrKeyColumn).toString();
+        String corrKey = tableRow.get(corrKeyColumn).toString();
+        if (corrKey == null) {
+            LOG.error(LogMessages.CORRELATION_KEY_NULL.msg(), corrKeyColumn);
+            throw new NullPointerException();
+        }
+        return corrKey;
     }
 
     /**

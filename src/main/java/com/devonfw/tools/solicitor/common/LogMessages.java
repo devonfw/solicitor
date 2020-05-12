@@ -55,7 +55,8 @@ public enum LogMessages {
     NO_EXTENSION_DISCLAIMER(38,
             "You are running Solicitor without Extension. Be aware that builtin rulesets are samples only!"), //
     FIRING_RULE(39, "Firing rule: [RuleGroup:{}],[Rule:{}] - {}"), //
-    SKIP_DOWNLOAD(40, "Downloading resources is disabled, content of url '{}' will be empty."); //
+    SKIP_DOWNLOAD(40, "Downloading resources is disabled, content of url '{}' will be empty."), //
+    CORRELATION_KEY_NULL(41, "Correlation Key '{}' is NULL; Make sure that correlations keys are never NULL.");//
 
     private final String completeMessage;
 
