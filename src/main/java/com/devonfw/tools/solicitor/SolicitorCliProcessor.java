@@ -216,7 +216,7 @@ public class SolicitorCliProcessor {
         HelpFormatter formatter = new HelpFormatter();
 
         formatter.printHelp(120, "java -jar solicitor.jar", "", options,
-                "DevonFW Solicitor - visit https://github.com/devonfw-forge/solicitor", true);
+                "DevonFW Solicitor - visit https://github.com/devonfw/solicitor", true);
     }
 
 }
