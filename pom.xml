@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.devonfw.tools</groupId>
 	<artifactId>solicitor</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.4</version>
 	<name>Solicitor</name>
 	<description>A tool for rule based checking of license conditions in software projects.</description>
 	<parent>
