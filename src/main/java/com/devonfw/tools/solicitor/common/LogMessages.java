@@ -58,7 +58,7 @@ public enum LogMessages {
     SKIP_DOWNLOAD(40, "Downloading resources is disabled, content of url '{}' will be empty."), //
     CORRELATION_KEY_NULL(41, "Correlation Key '{}' is NULL; Make sure that correlations keys are never NULL."), //
     DEPRECATIONS_ACTIVE(42,
-            "Deprecated features are available. ({}) Please check if this is necessary. Look for message code '{}' to check for actually used deprecated features."), //
+            "Deprecated features are available ({}). Please check if this is necessary. Look for message code '{}' to check for actually used deprecated features."), //
     UNAVAILABLE_DEPRECATED_FEATURE(43,
             "This featue is deprecated. Details: {}. For backward compatibility you might temporary activate it by setting '{}'."), //
     USING_DEPRECATED_FEATURE(44,

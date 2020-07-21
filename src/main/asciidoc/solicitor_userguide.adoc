@@ -231,8 +231,8 @@ If you want to reference a file in the filesystem you need to write it as follow
 Note that this only applies to resources being read. Output files are adressed without that prefix.
 ****
 
-=== Configuration File
-The main configuration of _Solicitor_ is done via a configuration file in
+=== Project Configuration File
+The project configuration of _Solicitor_ is done via a configuration file in
 JSON format. This configuration file defines the engagements and applications master data, configures the readers for importing component and license information, references the business rules to be applied and defines the exports to be done.
 
 The config file has the following skeleton:
@@ -425,6 +425,18 @@ will export all internal configuration to the given directory. This includes:
 * The SQL statements which are used for <<SQL transformation and filtering>>
 * The referenced templates for the <<Velocity Writer>> and <<Excel Writer>>
 
+=== Configuration of Technical Properties
+Besides the project configuration done via the above described file there are a set of technical settings in _Solicitor_ which are done via properties. _Solicitor_ is implemented as a https://spring.io/projects/spring-boot[Spring Boot Application] and makes use
+of the https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config[standard configuration mechanism provided by the Spring Boot Platform] which provides several ways to define/override properties.
+
+The default property values are given in <<Built in Default Properties>>.
+
+In case that a property shall be overridden when executing _Solicitor_ this can easiest be done via the command line when executing
+_Solicitor_:
+
+[listing]
+java -Dsome.property.name1=value -Dsome.property.name2=another_value -jar solicitor.jar <any other arguments>
+
 == Reading License Information with Readers
 Different Readers are available to import raw component / license information for different
 technologies. This chapter describes how to setup the different build / dependency management systems to create the required input and how to configure the corresponding reader.
@@ -585,11 +597,13 @@ In _Solicitor_ the data is read with the following part of the config
 
 ----
 "readers" : [ {
-  "type" : "gradle",
+  "type" : "gradle2",
   "source" : "file:path/to/licenses.json",
   "usagePattern" : "DYNAMIC_LINKING"
 } ]
 ----
+
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>. 
 
 === Gradle (Android)
 For the Export of the the Licenses from a Gradle based Android Projects the Gradle License Plugin is used.
@@ -632,12 +646,13 @@ In Solicitor the Data is read with the following part of the config
 
 ----
 "readers" : [ {
-      "type" : "gradle",
+      "type" : "gradle2",
       "source" : "file:$/input/licenses.json",
       "usagePattern" : "DYNAMIC_LINKING"
    	} ]
 ----
 
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>. 
 
 
 == Working with Decision Tables
@@ -956,6 +971,27 @@ When creating the resource or filename for given URLs in the above steps the fol
 
 All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
 
+== Feature Deprecation
+Within the lifecycle of the _Solicitor_ development features might be discontinued due
+to various reasons. In case that such discontinuation is expected to break existing projects
+a deprecation mechanism might be used:
+When such a deprecated feature is used _Solicitor_ by default will terminate with an error
+message giving information about the deprecation.
+
+By setting the property `solicitor.deprecated-features-allowed` to `true`
+(e.g. via the command line, see <<Configuration of Technical Properties>>), the feature
+will still be available and only a warning will be logged. The project setup should in any
+case ASAP be changed to no longer use the feature as it might soon be removed without further
+notice.
+
+IMPORTANT: Enabling the use of deprecated feature via the above property should only be
+a temporary workaround and not a standard setting.
+
+=== List of Deprecated Features
+The following features are deprecated via the above mechanism:
+
+* Reader of type "gradle"  (use Reader of type "gradle2" instead); from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58 
+
 [appendix]
 == Default Base Configuration
 The builtin default base configuration contains settings for the `rules` and `writers` section
@@ -966,6 +1002,17 @@ of the _Solicitor_ configuration file which will be used if the project specific
 ----
 include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..159]
 ----
+
+[appendix]
+== Built in Default Properties
+The following lists the default settings of technical properties as given by the built in `application.properties` file.
+
+[source,properties]
+.application.properties
+----
+include::../resources/application.properties[]
+----
+
 
 [appendix]
 == Extending Solicitor
@@ -983,7 +1030,7 @@ command line when starting `Solicitor`.
 This facilitates configuration management, distribution and deployment of such extensions.
 
 === Format of the extension file
-The extensions might be provides as JAR file or even as a simple ZIP file. There is only
+The extensions might be provided as JAR file or even as a simple ZIP file. There is only
 one mandatory file which contains (at least metadata) about the extension and which needs
 to be included in this archive _in the root folder_.
 
@@ -1011,4 +1058,5 @@ The Extension will be activated by referencing it as follows when starting _Soli
 
 [listing]
 java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other arguments>
+
 
