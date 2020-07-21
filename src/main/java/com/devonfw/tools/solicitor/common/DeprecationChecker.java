@@ -19,13 +19,13 @@ public class DeprecationChecker {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeprecationChecker.class);
 
-    private boolean depreactedFeaturesAllowed = false;
+    private boolean deprecatedFeaturesAllowed = false;
 
     @Value("${solicitor.deprecated-features-allowed}")
-    public void depreactedFeaturesAllowed(boolean depreactedFeaturesAllowed) {
+    public void setDeprecatedFeaturesAllowed(boolean deprecatedFeaturesAllowed) {
 
-        this.depreactedFeaturesAllowed = depreactedFeaturesAllowed;
-        if (this.depreactedFeaturesAllowed) {
+        this.deprecatedFeaturesAllowed = deprecatedFeaturesAllowed;
+        if (this.deprecatedFeaturesAllowed) {
             LOG.info(LogMessages.DEPRECATIONS_ACTIVE.msg(), configProperty,
                     LogMessages.USING_DEPRECATED_FEATURE.label());
         }
@@ -43,7 +43,7 @@ public class DeprecationChecker {
      */
     public void check(String detailsString) {
 
-        if (depreactedFeaturesAllowed) {
+        if (deprecatedFeaturesAllowed) {
             LOG.warn(LogMessages.USING_DEPRECATED_FEATURE.msg(), detailsString);
         } else {
             LOG.error(LogMessages.UNAVAILABLE_DEPRECATED_FEATURE.msg(), detailsString, configProperty);
