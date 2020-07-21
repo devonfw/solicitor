@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.FileInputStreamFactory;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
@@ -20,25 +19,17 @@ import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
-public class GradleReaderTests {
-    private static final Logger LOG = LoggerFactory.getLogger(GradleReaderTests.class);
+public class GradleReader2Tests {
+    private static final Logger LOG = LoggerFactory.getLogger(GradleReader2Tests.class);
 
     Application application;
 
-    public GradleReaderTests() {
+    public GradleReader2Tests() {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
         application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
-        GradleReader gr = new GradleReader();
-        gr.setDeprecationChecker(new DeprecationChecker() {
-
-            @Override
-            public void check(String detailsString) {
-
-                // do nothing...
-            }
-        });
+        GradleReader2 gr = new GradleReader2();
         gr.setModelFactory(modelFactory);
         gr.setInputStreamFactory(new FileInputStreamFactory());
         gr.readInventory("src/test/resources/licenseReport.json", application, UsagePattern.DYNAMIC_LINKING, "maven");
@@ -51,7 +42,9 @@ public class GradleReaderTests {
         List<ApplicationComponent> lapc = application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("org.apache.xmlbeans:xmlbeans:3.0.2")) {
+            if (ap.getGroupId().equals("org.apache.xmlbeans") && //
+                    ap.getArtifactId().equals("xmlbeans") && //
+                    ap.getVersion().equals("3.0.2")) {
                 found = true;
                 break;
             }
@@ -71,8 +64,8 @@ public class GradleReaderTests {
         List<ApplicationComponent> lapc = application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("io.vavr:vavr-jackson:0.9.3") && ap.getRawLicenses().get(0)
-                    .getDeclaredLicense().equals("The Apache Software License, Version 2.0")) {
+            if (ap.getArtifactId().equals("vavr-jackson") && ap.getRawLicenses().get(0).getDeclaredLicense()
+                    .equals("The Apache Software License, Version 2.0")) {
                 found = true;
                 break;
             }
@@ -86,7 +79,7 @@ public class GradleReaderTests {
         List<ApplicationComponent> lapc = application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("com.github.virtuald:curvesapi:1.05")
+            if (ap.getArtifactId().equals("curvesapi")
                     && ap.getRawLicenses().get(0).getDeclaredLicense().equals("BSD License")) {
                 found = true;
                 break;
@@ -101,9 +94,8 @@ public class GradleReaderTests {
         List<ApplicationComponent> lapc = application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("com.fasterxml.jackson.core:jackson-core:2.9.4")
-                    && ap.getVersion().equals("2.9.4") && ap.getRawLicenses().get(0).getDeclaredLicense()
-                            .equals("The Apache Software License, Version 2.0")) {
+            if (ap.getArtifactId().equals("jackson-core") && ap.getVersion().equals("2.9.4") && ap.getRawLicenses()
+                    .get(0).getDeclaredLicense().equals("The Apache Software License, Version 2.0")) {
                 found = true;
                 break;
             }
