@@ -56,9 +56,17 @@ public enum LogMessages {
             "You are running Solicitor without Extension. Be aware that builtin rulesets are samples only!"), //
     FIRING_RULE(39, "Firing rule: [RuleGroup:{}],[Rule:{}] - {}"), //
     SKIP_DOWNLOAD(40, "Downloading resources is disabled, content of url '{}' will be empty."), //
-    CORRELATION_KEY_NULL(41, "Correlation Key '{}' is NULL; Make sure that correlations keys are never NULL.");//
+    CORRELATION_KEY_NULL(41, "Correlation Key '{}' is NULL; Make sure that correlations keys are never NULL."), //
+    DEPRECATIONS_ACTIVE(42,
+            "Deprecated features are available. ({}) Please check if this is necessary. Look for message code '{}' to check for actually used deprecated features."), //
+    UNAVAILABLE_DEPRECATED_FEATURE(43,
+            "This featue is deprecated. Details: {}. For backward compatibility you might temporary activate it by setting '{}'."), //
+    USING_DEPRECATED_FEATURE(44,
+            "Using deprecated feature. You should ASAP migrate your project as this might be unavailable in future versions. Details: {}.");
 
-    private final String completeMessage;
+    private final String message;
+
+    private final String label;
 
     /**
      * Private constructor.
@@ -69,7 +77,8 @@ public enum LogMessages {
      */
     private LogMessages(int code, String message) {
 
-        completeMessage = "[SOLI-" + (new DecimalFormat("000")).format(code) + "] " + message;
+        this.label = "[SOLI-" + (new DecimalFormat("000")).format(code) + "]";
+        this.message = message;
     }
 
     /**
@@ -79,7 +88,16 @@ public enum LogMessages {
      */
     public String msg() {
 
-        return completeMessage;
+        return label + " " + message;
     }
 
+    /**
+     * Gets the message label.
+     * 
+     * @return the message label
+     */
+    public String label() {
+
+        return label;
+    }
 }
