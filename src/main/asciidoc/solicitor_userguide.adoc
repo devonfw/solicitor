@@ -686,13 +686,13 @@ is true if the property of the model is identical to the given value in the XLS 
 
 Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:
 
-* If the given value of the XLS field starts with the prefix `REGEX:` then the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expession.
-* If the given value of the XLS field starts with the prefix `RANGE:`  then the remainder of the field defines
-a https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/maven/artifact/versioning/VersionRange.html#createFromVersionSpec(java.lang.String)[Maven Version Range]. Using this makes only sense on the artifact
-version property.
-* If no such prefix is detected, then the behaviour is identical to the normal (verbatim) comparison logic
+* If the given value of the XLS field starts with the prefix `NOT:` then the outcome of the remaining condition is logically negated, i.e. this field condition is  `true` if the rest of the condition is NOT fulfilled.
+* A prefix of `REGEX:` indicates that the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expression.
+* The prefix `RANGE:` indicates that the remainder of the field defines
+a https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/maven/artifact/versioning/VersionRange.html#createFromVersionSpec(java.lang.String)[Maven Version Range]. Using this makes only sense on the artifact version property.
+* If no such prefix is detected, then the behavior is identical to the normal (verbatim) comparison logic
 
-Fields which are subject to this extended syntact are marked explicitely in the following section.
+Fields which are subject to this extended syntax are marked explicitly in the following section.
 
 == Standard Business Rules
 The processing of business rules is organized in different phases. Each phase might consist of multiple decision tables to be processed in order.

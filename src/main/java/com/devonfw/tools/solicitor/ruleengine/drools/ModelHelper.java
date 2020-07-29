@@ -33,6 +33,11 @@ public class ModelHelper {
      */
     private static final String RANGE_PREFIX = "RANGE:";
 
+    /**
+     * Prefix which marks a logical negation on the rest of the condition.
+     */
+    private static final String NOT_PREFIX = "NOT:";
+
     private static final Logger LOG = LoggerFactory.getLogger(ModelHelper.class);
 
     private static ModelFactory modelFactory;
@@ -146,9 +151,12 @@ public class ModelHelper {
 
     /**
      * Checks if the given first String matches the second String. By default
-     * this is done with simple string comparison. If the second argument starts
-     * with "REGEX:" then the remainder of the second argument will be
-     * interpreted as a Java RegEx and matching will be done against this RegEx
+     * this is done with simple string comparison. There are some keywords which
+     * allow for advanced logic. If the seconds argument starts with "NOT:" then
+     * the rest of the condition is inverted. The prefix "REGEX:" indicates that
+     * the remainder should be interpreted as a Java RegEx and matching will be
+     * done against this RegEx. "RANGE:" indicates that the following should be
+     * interpreted as a Maven version range expression.
      * 
      * @param input the string to test
      * @param condition the condition to test against
@@ -158,6 +166,12 @@ public class ModelHelper {
 
         if (input == null && condition == null) {
             return true;
+        }
+        if (condition != null) {
+            if (condition.startsWith(NOT_PREFIX)) {
+                String negatedCondition = condition.substring(NOT_PREFIX.length());
+                return !match(input, negatedCondition);
+            }
         }
         if (input != null && condition != null) {
             if (condition.startsWith(REGEX_PREFIX)) {

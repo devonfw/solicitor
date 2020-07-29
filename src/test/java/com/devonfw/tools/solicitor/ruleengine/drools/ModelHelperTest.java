@@ -37,6 +37,15 @@ public class ModelHelperTest {
         assertTrue(ModelHelper.match("1.0.1", "RANGE:[1.0,1.1)"));
         assertFalse(ModelHelper.match("1.1", "RANGE:[1.0,1.1)"));
 
+        assertTrue(ModelHelper.match(null, "NOT:"));
+        assertFalse(ModelHelper.match("", "NOT:"));
+        assertFalse(ModelHelper.match("abc", "NOT:abc"));
+        assertFalse(ModelHelper.match("abc", "NOT:REGEX:abc"));
+        assertTrue(ModelHelper.match("abc", "NOT:REGEX:a."));
+
+        assertFalse(ModelHelper.match("1.0", "NOT:RANGE:1.0"));
+        assertTrue(ModelHelper.match("1.0.1", "NOT:RANGE:[1.0]"));
+
     }
 
 }
