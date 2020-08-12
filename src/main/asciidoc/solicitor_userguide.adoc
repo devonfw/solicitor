@@ -443,33 +443,12 @@ technologies. This chapter describes how to setup the different build / dependen
 
 === Maven
 
-For the export of the licenses from a maven based project the license-maven-plugin is used.
-To configure the plugin some changes needs to be done in the pom.xml, like in the
-following example
-----
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.codehaus.mojo</groupId>
-      <artifactId>license-maven-plugin</artifactId>
-      <version>1.14</version>
-      <configuration>
-        <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-        <sortArtifactByName>true</sortArtifactByName>
-        <includeTransitiveDependencies>true</includeTransitiveDependencies>
-        <failOnMissing>false</failOnMissing>
-        <encoding>utf-8</encoding>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
-----
+For the export of the licenses from a maven based project the license-maven-plugin is used, which can directly be called without the need to change anything in the pom.xml.
 
-To generate the input file required for _Solicitor_ the License Plugin needs to be executed
-with the following command:
+To generate the input file required for _Solicitor_ the License Plugin needs to be executed with the following command:
 
 ----
-mvn license:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
+mvn org.codehaus.mojo:license-maven-plugin:1.14:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
 ----
 
 The generated output file named `licenses.xml` (in the directory specified in the
