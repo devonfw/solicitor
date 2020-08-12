@@ -24,4 +24,5 @@ order by
 	UPPER("groupId"), 
 	UPPER("artifactId"),
 	UPPER("version"),
-	UPPER("effectiveNormalizedLicense")
+	UPPER("effectiveNormalizedLicense"),
+	UPPER("normalizedLicense")
