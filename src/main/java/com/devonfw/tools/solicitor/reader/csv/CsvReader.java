@@ -86,7 +86,7 @@ public class CsvReader extends AbstractReader implements Reader {
             }
             doLogging(sourceUrl, application, components, licenses);
         } catch (IOException e1) {
-            throw new SolicitorRuntimeException("Could not read CSV inventory source +'" + sourceUrl + "'", e1);
+            throw new SolicitorRuntimeException("Could not read CSV inventory source '" + sourceUrl + "'", e1);
         }
 
     }

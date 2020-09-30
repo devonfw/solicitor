@@ -4,9 +4,12 @@
 
 package com.devonfw.tools.solicitor;
 
+import java.io.FileNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
@@ -20,6 +23,7 @@ import com.devonfw.tools.solicitor.config.ConfigFactory;
 import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
+import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.ReaderFactory;
 import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
@@ -32,6 +36,8 @@ import com.devonfw.tools.solicitor.writer.WriterFacade;
 public class Solicitor {
 
     private static final Logger LOG = LoggerFactory.getLogger(Solicitor.class);
+
+    private static final String INPUT_DATA_MISSING = " (INPUT DATA MISSING!)";
 
     @Autowired
     private SolicitorVersion solicitorVersion;
@@ -56,6 +62,14 @@ public class Solicitor {
 
     @Autowired
     private ModelImporterExporter modelImporterExporter;
+
+    private boolean tolerateMissingInput = false;
+
+    @Value("${solicitor.tolerate-missing-input}")
+    public void setTolerateMissingInput(boolean tolerateMissingInput) {
+
+        this.tolerateMissingInput = tolerateMissingInput;
+    }
 
     /**
      * Copy the user guide to the current working directory.
@@ -122,8 +136,31 @@ public class Solicitor {
 
         for (ReaderSetup readerSetup : solicitorSetup.getReaderSetups()) {
             Reader reader = readerFactory.readerFor(readerSetup.getType());
-            reader.readInventory(readerSetup.getSource(), readerSetup.getApplication(), readerSetup.getUsagePattern(), readerSetup.getRepoType());
+            try {
+                reader.readInventory(readerSetup.getSource(), readerSetup.getApplication(),
+                        readerSetup.getUsagePattern(), readerSetup.getRepoType());
+            } catch (SolicitorRuntimeException sre) {
+                if (tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
+                    Application app = readerSetup.getApplication();
+                    LOG.warn(LogMessages.MISSING_INVENTORY_INPUT_FILE.msg(), readerSetup.getSource(), app.getName());
+                    markApplicationMissingData(app);
+                } else {
+                    throw sre;
+                }
+            }
         }
+    }
+
+    private void markApplicationMissingData(Application app) {
+
+        String appName = app.getName();
+        if (!appName.endsWith(INPUT_DATA_MISSING)) {
+            app.setName(appName + INPUT_DATA_MISSING);
+        }
+        app.setProgrammingEcosystem(INPUT_DATA_MISSING);
+        app.setReleaseDate(INPUT_DATA_MISSING);
+        app.setReleaseId(INPUT_DATA_MISSING);
+        app.setSourceRepo(INPUT_DATA_MISSING);
     }
 
     /**

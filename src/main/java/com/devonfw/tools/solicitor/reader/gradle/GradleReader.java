@@ -96,7 +96,7 @@ public class GradleReader extends AbstractReader implements Reader {
             doLogging(sourceUrl, application, components, licenses);
 
         } catch (IOException e) {
-            throw new SolicitorRuntimeException("Could not read Gradle inventory source +'" + sourceUrl + "'", e);
+            throw new SolicitorRuntimeException("Could not read Gradle inventory source '" + sourceUrl + "'", e);
         }
 
         for (Dependency dep : ls.getDependencies()) {

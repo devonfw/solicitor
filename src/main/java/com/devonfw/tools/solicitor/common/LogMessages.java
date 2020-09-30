@@ -62,7 +62,9 @@ public enum LogMessages {
     UNAVAILABLE_DEPRECATED_FEATURE(43,
             "This featue is deprecated. Details: {}. For backward compatibility you might temporary activate it by setting '{}'."), //
     USING_DEPRECATED_FEATURE(44,
-            "Using deprecated feature. You should ASAP migrate your project as this might be unavailable in future versions. Details: {}.");
+            "Using deprecated feature. You should ASAP migrate your project as this might be unavailable in future versions. Details: {}."), //
+    MISSING_INVENTORY_INPUT_FILE(45,
+            "Input file {} for Application {} not accessible, continuing anyway. (Property solicitor.tolerate-missing-input=true)");
 
     private final String message;
 

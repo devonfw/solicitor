@@ -53,7 +53,7 @@ public class MavenReader extends AbstractReader implements Reader {
         try {
             is = inputStreamFactory.createInputStreamFor(sourceUrl);
         } catch (IOException e1) {
-            throw new SolicitorRuntimeException("Could not open inventory source +'" + sourceUrl + "' for reading", e1);
+            throw new SolicitorRuntimeException("Could not open inventory source '" + sourceUrl + "' for reading", e1);
         }
         LicenseSummary ls;
 

@@ -58,10 +58,11 @@ public class NpmReader extends AbstractReader implements Reader {
                 }
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
                 String[] module = record.get(0).split("@");
-                if(record.get(0).startsWith("@"))
-                	appComponent.setArtifactId("@"+module[module.length - 2]);
-                else
-                	appComponent.setArtifactId(module[module.length - 2]);
+                if (record.get(0).startsWith("@")) {
+                    appComponent.setArtifactId("@" + module[module.length - 2]);
+                } else {
+                    appComponent.setArtifactId(module[module.length - 2]);
+                }
                 appComponent.setVersion(module[module.length - 1]);
                 appComponent.setUsagePattern(usagePattern);
                 appComponent.setGroupId("");
@@ -87,7 +88,7 @@ public class NpmReader extends AbstractReader implements Reader {
             doLogging(sourceUrl, application, components, licenses);
 
         } catch (IOException e) {
-            throw new SolicitorRuntimeException("Could not read NPM inventory source +'" + sourceUrl + "'", e);
+            throw new SolicitorRuntimeException("Could not read NPM inventory source '" + sourceUrl + "'", e);
         }
     }
 

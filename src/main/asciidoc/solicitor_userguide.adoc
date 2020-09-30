@@ -986,6 +986,12 @@ include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[line
 == Built in Default Properties
 The following lists the default settings of technical properties as given by the built in `application.properties` file.
 
+If required these values might be overridden on the command line when starting `Solicitor`:
+
+[listing]
+java -Dpropertyname1=value1 -Dpropertyname2=value2 -jar solicitor.jar <any other arguments>
+
+
 [source,properties]
 .application.properties
 ----
@@ -1039,3 +1045,11 @@ The Extension will be activated by referencing it as follows when starting _Soli
 java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other arguments>
 
 
+[appendix]
+== Release Notes
+
+Changes in 1.0.7::
+* https://github.com/devonfw/solicitor/issues/56: Enable continuing analysis in 
+multiapplication projects even is some license files are unavailable.
+* Described simplified usage of license-maven-plugin without need to change pom.xml. (Documentation only)
+* Ensure consistent sorting even in case that multiple "Ignored" licenses exist for a component
