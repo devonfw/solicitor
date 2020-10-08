@@ -10,141 +10,141 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents a single rule configuration section in JSON format.
  */
 public class RuleConfig {
-    @JsonProperty
-    private String type;
+  @JsonProperty
+  private String type;
 
-    @JsonProperty
-    private boolean optional;
+  @JsonProperty
+  private boolean optional;
 
-    @JsonProperty
-    private String ruleSource;
+  @JsonProperty
+  private String ruleSource;
 
-    @JsonProperty
-    private String templateSource;
+  @JsonProperty
+  private String templateSource;
 
-    @JsonProperty
-    private String ruleGroup;
+  @JsonProperty
+  private String ruleGroup;
 
-    @JsonProperty
-    private String description;
+  @JsonProperty
+  private String description;
 
-    /**
-     * This method gets the field <tt>ruleGroup</tt>.
-     *
-     * @return the field ruleGroup
-     */
-    public String getRuleGroup() {
+  /**
+   * This method gets the field <code>ruleGroup</code>.
+   *
+   * @return the field ruleGroup
+   */
+  public String getRuleGroup() {
 
-        return ruleGroup;
-    }
+    return this.ruleGroup;
+  }
 
-    /**
-     * This method gets the field <tt>description</tt>.
-     *
-     * @return the field description
-     */
-    public String getDescription() {
+  /**
+   * This method gets the field <code>description</code>.
+   *
+   * @return the field description
+   */
+  public String getDescription() {
 
-        return description;
-    }
+    return this.description;
+  }
 
-    /**
-     * This method gets the field <tt>ruleSource</tt>.
-     *
-     * @return the field ruleSource
-     */
-    public String getRuleSource() {
+  /**
+   * This method gets the field <code>ruleSource</code>.
+   *
+   * @return the field ruleSource
+   */
+  public String getRuleSource() {
 
-        return ruleSource;
-    }
+    return this.ruleSource;
+  }
 
-    /**
-     * This method gets the field <tt>templateSource</tt>.
-     *
-     * @return the field templateSource
-     */
-    public String getTemplateSource() {
+  /**
+   * This method gets the field <code>templateSource</code>.
+   *
+   * @return the field templateSource
+   */
+  public String getTemplateSource() {
 
-        return templateSource;
-    }
+    return this.templateSource;
+  }
 
-    /**
-     * This method gets the field <tt>type</tt>.
-     *
-     * @return the field type
-     */
-    public String getType() {
+  /**
+   * This method gets the field <code>type</code>.
+   *
+   * @return the field type
+   */
+  public String getType() {
 
-        return type;
-    }
+    return this.type;
+  }
 
-    /**
-     * This method gets the field <tt>optional</tt>.
-     *
-     * @return the field optional
-     */
-    public boolean isOptional() {
+  /**
+   * This method gets the field <code>optional</code>.
+   *
+   * @return the field optional
+   */
+  public boolean isOptional() {
 
-        return optional;
-    }
+    return this.optional;
+  }
 
-    /**
-     * This method sets the field <tt>ruleGroup</tt>.
-     *
-     * @param ruleGroup the new value of the field ruleGroup
-     */
-    public void setRuleGroup(String ruleGroup) {
+  /**
+   * This method sets the field <code>ruleGroup</code>.
+   *
+   * @param ruleGroup the new value of the field ruleGroup
+   */
+  public void setRuleGroup(String ruleGroup) {
 
-        this.ruleGroup = ruleGroup;
-    }
+    this.ruleGroup = ruleGroup;
+  }
 
-    /**
-     * This method sets the field <tt>description</tt>.
-     *
-     * @param description the new value of the field description
-     */
-    public void setDescription(String description) {
+  /**
+   * This method sets the field <code>description</code>.
+   *
+   * @param description the new value of the field description
+   */
+  public void setDescription(String description) {
 
-        this.description = description;
-    }
+    this.description = description;
+  }
 
-    /**
-     * This method sets the field <tt>ruleSource</tt>.
-     *
-     * @param ruleSource the new value of the field ruleSource
-     */
-    public void setRuleSource(String ruleSource) {
+  /**
+   * This method sets the field <code>ruleSource</code>.
+   *
+   * @param ruleSource the new value of the field ruleSource
+   */
+  public void setRuleSource(String ruleSource) {
 
-        this.ruleSource = ruleSource;
-    }
+    this.ruleSource = ruleSource;
+  }
 
-    /**
-     * This method sets the field <tt>templateSource</tt>.
-     *
-     * @param templateSource the new value of the field templateSource
-     */
-    public void setTemplateSource(String templateSource) {
+  /**
+   * This method sets the field <code>templateSource</code>.
+   *
+   * @param templateSource the new value of the field templateSource
+   */
+  public void setTemplateSource(String templateSource) {
 
-        this.templateSource = templateSource;
-    }
+    this.templateSource = templateSource;
+  }
 
-    /**
-     * This method sets the field <tt>type</tt>.
-     *
-     * @param type the new value of the field type
-     */
-    public void setType(String type) {
+  /**
+   * This method sets the field <code>type</code>.
+   *
+   * @param type the new value of the field type
+   */
+  public void setType(String type) {
 
-        this.type = type;
-    }
+    this.type = type;
+  }
 
-    /**
-     * This method sets the field <tt>optional</tt>.
-     *
-     * @param optional the new value of the field optional
-     */
-    public void setOptional(boolean optional) {
+  /**
+   * This method sets the field <code>optional</code>.
+   *
+   * @param optional the new value of the field optional
+   */
+  public void setOptional(boolean optional) {
 
-        this.optional = optional;
-    }
+    this.optional = optional;
+  }
 }

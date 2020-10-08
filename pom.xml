@@ -21,7 +21,7 @@
 	</scm>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 		<asciidoctor.maven.plugin.version>1.5.7.1</asciidoctor.maven.plugin.version>
 		<asciidoctorj.pdf.version>1.5.0-alpha.16</asciidoctorj.pdf.version>
 		<asciidoctorj.version>1.5.8.1</asciidoctorj.version>
@@ -106,6 +106,23 @@
 		    <artifactId>maven-artifact</artifactId>
 		    <version>3.6.2</version>
 		</dependency>
+
+<!--     <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.0</version>
+    </dependency> -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <version>2.3.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+
 	</dependencies>
 
 	<build>

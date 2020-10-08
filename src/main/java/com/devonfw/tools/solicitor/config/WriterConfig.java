@@ -11,142 +11,140 @@ import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents the configuration of a
- * {@link com.devonfw.tools.solicitor.writer.Writer} in JSON format.
+ * Represents the configuration of a {@link com.devonfw.tools.solicitor.writer.Writer} in JSON format.
  */
 public class WriterConfig {
 
-    @JsonProperty
-    private String type;
+  @JsonProperty
+  private String type;
 
-    @JsonProperty
-    private String templateSource;
+  @JsonProperty
+  private String templateSource;
 
-    @JsonProperty
-    private String target;
+  @JsonProperty
+  private String target;
 
-    @JsonProperty
-    private String description;
+  @JsonProperty
+  private String description;
 
-    @JsonProperty
-    private Map<String, String> dataTables;
+  @JsonProperty
+  private Map<String, String> dataTables;
 
-    /**
-     * Constructor.
-     */
-    public WriterConfig() {
+  /**
+   * Constructor.
+   */
+  public WriterConfig() {
 
-    }
+  }
 
-    /**
-     * Constructor for WriterConfig to be used when deserializing JSON.
-     * 
-     * @param dataTables a map of the resources which define the SQLs to create
-     *        the reporting data tables.
-     */
-    @JsonCreator(mode = Mode.PROPERTIES)
-    public WriterConfig(@JsonProperty("dataTables") Map<String, String> dataTables) {
+  /**
+   * Constructor for WriterConfig to be used when deserializing JSON.
+   *
+   * @param dataTables a map of the resources which define the SQLs to create the reporting data tables.
+   */
+  @JsonCreator(mode = Mode.PROPERTIES)
+  public WriterConfig(@JsonProperty("dataTables") Map<String, String> dataTables) {
 
-        this.dataTables = dataTables;
-    }
+    this.dataTables = dataTables;
+  }
 
-    /**
-     * This method gets the field <tt>dataTables</tt>.
-     *
-     * @return the field dataTables
-     */
-    public Map<String, String> getDataTables() {
+  /**
+   * This method gets the field <code>dataTables</code>.
+   *
+   * @return the field dataTables
+   */
+  public Map<String, String> getDataTables() {
 
-        return dataTables;
-    }
+    return this.dataTables;
+  }
 
-    /**
-     * This method gets the field <tt>description</tt>.
-     *
-     * @return the field description
-     */
-    public String getDescription() {
+  /**
+   * This method gets the field <code>description</code>.
+   *
+   * @return the field description
+   */
+  public String getDescription() {
 
-        return description;
-    }
+    return this.description;
+  }
 
-    /**
-     * This method gets the field <tt>target</tt>.
-     *
-     * @return the field target
-     */
-    public String getTarget() {
+  /**
+   * This method gets the field <code>target</code>.
+   *
+   * @return the field target
+   */
+  public String getTarget() {
 
-        return target;
-    }
+    return this.target;
+  }
 
-    /**
-     * This method gets the field <tt>templateSource</tt>.
-     *
-     * @return the field templateSource
-     */
-    public String getTemplateSource() {
+  /**
+   * This method gets the field <code>templateSource</code>.
+   *
+   * @return the field templateSource
+   */
+  public String getTemplateSource() {
 
-        return templateSource;
-    }
+    return this.templateSource;
+  }
 
-    /**
-     * This method gets the field <tt>type</tt>.
-     *
-     * @return the field type
-     */
-    public String getType() {
+  /**
+   * This method gets the field <code>type</code>.
+   *
+   * @return the field type
+   */
+  public String getType() {
 
-        return type;
-    }
+    return this.type;
+  }
 
-    /**
-     * This method sets the field <tt>dataTables</tt>.
-     *
-     * @param dataTables the new value of the field dataTables
-     */
-    public void setDataTables(Map<String, String> dataTables) {
+  /**
+   * This method sets the field <code>dataTables</code>.
+   *
+   * @param dataTables the new value of the field dataTables
+   */
+  public void setDataTables(Map<String, String> dataTables) {
 
-        this.dataTables = dataTables;
-    }
+    this.dataTables = dataTables;
+  }
 
-    /**
-     * This method sets the field <tt>description</tt>.
-     *
-     * @param description the new value of the field description
-     */
-    public void setDescription(String description) {
+  /**
+   * This method sets the field <code>description</code>.
+   *
+   * @param description the new value of the field description
+   */
+  public void setDescription(String description) {
 
-        this.description = description;
-    }
+    this.description = description;
+  }
 
-    /**
-     * This method sets the field <tt>target</tt>.
-     *
-     * @param target the new value of the field target
-     */
-    public void setTarget(String target) {
+  /**
+   * This method sets the field <code>target</code>.
+   *
+   * @param target the new value of the field target
+   */
+  public void setTarget(String target) {
 
-        this.target = target;
-    }
+    this.target = target;
+  }
 
-    /**
-     * This method sets the field <tt>templateSource</tt>.
-     *
-     * @param templateSource the new value of the field templateSource
-     */
-    public void setTemplateSource(String templateSource) {
+  /**
+   * This method sets the field <code>templateSource</code>.
+   *
+   * @param templateSource the new value of the field templateSource
+   */
+  public void setTemplateSource(String templateSource) {
 
-        this.templateSource = templateSource;
-    }
+    this.templateSource = templateSource;
+  }
 
-    /**
-     * This method sets the field <tt>type</tt>.
-     *
-     * @param type the new value of the field type
-     */
-    public void setType(String type) {
+  /**
+   * This method sets the field <code>type</code>.
+   *
+   * @param type the new value of the field type
+   */
+  public void setType(String type) {
 
-        this.type = type;
-    }
+    this.type = type;
+  }
 }

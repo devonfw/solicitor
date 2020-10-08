@@ -13,284 +13,284 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents the complete Solicitor JSON configuration file.
- * 
+ *
  */
 public class SolicitorConfig {
 
-    @JsonProperty
-    private int version;
+  @JsonProperty
+  private int version;
 
-    @JsonProperty
-    private String comment;
+  @JsonProperty
+  private String comment;
 
-    @JsonProperty
-    private String engagementName;
+  @JsonProperty
+  private String engagementName;
 
-    @JsonProperty
-    private EngagementType engagementType;
+  @JsonProperty
+  private EngagementType engagementType;
 
-    @JsonProperty
-    private String clientName;
+  @JsonProperty
+  private String clientName;
 
-    @JsonProperty
-    private GoToMarketModel goToMarketModel;
+  @JsonProperty
+  private GoToMarketModel goToMarketModel;
 
-    @JsonProperty
-    private boolean contractAllowsOss;
+  @JsonProperty
+  private boolean contractAllowsOss;
 
-    @JsonProperty
-    private boolean ossPolicyFollowed;
+  @JsonProperty
+  private boolean ossPolicyFollowed;
 
-    @JsonProperty
-    private boolean customerProvidesOss;
+  @JsonProperty
+  private boolean customerProvidesOss;
 
-    @JsonProperty
-    private List<ApplicationConfig> applications = new ArrayList<>();
+  @JsonProperty
+  private List<ApplicationConfig> applications = new ArrayList<>();
 
-    @JsonProperty
-    private List<RuleConfig> rules = new ArrayList<>();
+  @JsonProperty
+  private List<RuleConfig> rules = new ArrayList<>();
 
-    @JsonProperty
-    private List<WriterConfig> writers = new ArrayList<>();
+  @JsonProperty
+  private List<WriterConfig> writers = new ArrayList<>();
 
-    /**
-     * This method gets the field <tt>applications</tt>.
-     *
-     * @return the field applications
-     */
-    public List<ApplicationConfig> getApplications() {
+  /**
+   * This method gets the field <code>applications</code>.
+   *
+   * @return the field applications
+   */
+  public List<ApplicationConfig> getApplications() {
 
-        return applications;
-    }
+    return this.applications;
+  }
 
-    /**
-     * This method gets the field <tt>clientName</tt>.
-     *
-     * @return the field clientName
-     */
-    public String getClientName() {
+  /**
+   * This method gets the field <code>clientName</code>.
+   *
+   * @return the field clientName
+   */
+  public String getClientName() {
 
-        return clientName;
-    }
+    return this.clientName;
+  }
 
-    /**
-     * This method gets the field <tt>comment</tt>.
-     *
-     * @return the field comment
-     */
-    public String getComment() {
+  /**
+   * This method gets the field <code>comment</code>.
+   *
+   * @return the field comment
+   */
+  public String getComment() {
 
-        return comment;
-    }
+    return this.comment;
+  }
 
-    /**
-     * This method gets the field <tt>engagementName</tt>.
-     *
-     * @return the field engagementName
-     */
-    public String getEngagementName() {
+  /**
+   * This method gets the field <code>engagementName</code>.
+   *
+   * @return the field engagementName
+   */
+  public String getEngagementName() {
 
-        return engagementName;
-    }
+    return this.engagementName;
+  }
 
-    /**
-     * This method gets the field <tt>engagementType</tt>.
-     *
-     * @return the field engagementType
-     */
-    public EngagementType getEngagementType() {
+  /**
+   * This method gets the field <code>engagementType</code>.
+   *
+   * @return the field engagementType
+   */
+  public EngagementType getEngagementType() {
 
-        return engagementType;
-    }
+    return this.engagementType;
+  }
 
-    /**
-     * This method gets the field <tt>goToMarketModel</tt>.
-     *
-     * @return the field goToMarketModel
-     */
-    public GoToMarketModel getGoToMarketModel() {
+  /**
+   * This method gets the field <code>goToMarketModel</code>.
+   *
+   * @return the field goToMarketModel
+   */
+  public GoToMarketModel getGoToMarketModel() {
 
-        return goToMarketModel;
-    }
+    return this.goToMarketModel;
+  }
 
-    /**
-     * This method gets the field <tt>rules</tt>.
-     *
-     * @return the field rules
-     */
-    public List<RuleConfig> getRules() {
+  /**
+   * This method gets the field <code>rules</code>.
+   *
+   * @return the field rules
+   */
+  public List<RuleConfig> getRules() {
 
-        return rules;
-    }
+    return this.rules;
+  }
 
-    /**
-     * This method gets the field <tt>version</tt>.
-     *
-     * @return the field version
-     */
-    public int getVersion() {
+  /**
+   * This method gets the field <code>version</code>.
+   *
+   * @return the field version
+   */
+  public int getVersion() {
 
-        return version;
-    }
+    return this.version;
+  }
 
-    /**
-     * This method gets the field <tt>writers</tt>.
-     *
-     * @return the field writers
-     */
-    public List<WriterConfig> getWriters() {
+  /**
+   * This method gets the field <code>writers</code>.
+   *
+   * @return the field writers
+   */
+  public List<WriterConfig> getWriters() {
 
-        return writers;
-    }
+    return this.writers;
+  }
 
-    /**
-     * This method gets the field <tt>contractAllowsOss</tt>.
-     *
-     * @return the field contractAllowsOss
-     */
-    public boolean isContractAllowsOss() {
+  /**
+   * This method gets the field <code>contractAllowsOss</code>.
+   *
+   * @return the field contractAllowsOss
+   */
+  public boolean isContractAllowsOss() {
 
-        return contractAllowsOss;
-    }
+    return this.contractAllowsOss;
+  }
 
-    /**
-     * This method gets the field <tt>customerProvidesOss</tt>.
-     *
-     * @return the field customerProvidesOss
-     */
-    public boolean isCustomerProvidesOss() {
+  /**
+   * This method gets the field <code>customerProvidesOss</code>.
+   *
+   * @return the field customerProvidesOss
+   */
+  public boolean isCustomerProvidesOss() {
 
-        return customerProvidesOss;
-    }
+    return this.customerProvidesOss;
+  }
 
-    /**
-     * This method gets the field <tt>ossPolicyFollowed</tt>.
-     *
-     * @return the field ossPolicyFollowed
-     */
-    public boolean isOssPolicyFollowed() {
+  /**
+   * This method gets the field <code>ossPolicyFollowed</code>.
+   *
+   * @return the field ossPolicyFollowed
+   */
+  public boolean isOssPolicyFollowed() {
 
-        return ossPolicyFollowed;
-    }
+    return this.ossPolicyFollowed;
+  }
 
-    /**
-     * This method sets the field <tt>applications</tt>.
-     *
-     * @param applications the new value of the field applications
-     */
-    public void setApplications(List<ApplicationConfig> applications) {
+  /**
+   * This method sets the field <code>applications</code>.
+   *
+   * @param applications the new value of the field applications
+   */
+  public void setApplications(List<ApplicationConfig> applications) {
 
-        this.applications = applications;
-    }
+    this.applications = applications;
+  }
 
-    /**
-     * This method sets the field <tt>clientName</tt>.
-     *
-     * @param clientName the new value of the field clientName
-     */
-    public void setClientName(String clientName) {
+  /**
+   * This method sets the field <code>clientName</code>.
+   *
+   * @param clientName the new value of the field clientName
+   */
+  public void setClientName(String clientName) {
 
-        this.clientName = clientName;
-    }
+    this.clientName = clientName;
+  }
 
-    /**
-     * This method sets the field <tt>comment</tt>.
-     *
-     * @param comment the new value of the field comment
-     */
-    public void setComment(String comment) {
+  /**
+   * This method sets the field <code>comment</code>.
+   *
+   * @param comment the new value of the field comment
+   */
+  public void setComment(String comment) {
 
-        this.comment = comment;
-    }
+    this.comment = comment;
+  }
 
-    /**
-     * This method sets the field <tt>contractAllowsOss</tt>.
-     *
-     * @param contractAllowsOss the new value of the field contractAllowsOss
-     */
-    public void setContractAllowsOss(boolean contractAllowsOss) {
+  /**
+   * This method sets the field <code>contractAllowsOss</code>.
+   *
+   * @param contractAllowsOss the new value of the field contractAllowsOss
+   */
+  public void setContractAllowsOss(boolean contractAllowsOss) {
 
-        this.contractAllowsOss = contractAllowsOss;
-    }
+    this.contractAllowsOss = contractAllowsOss;
+  }
 
-    /**
-     * This method sets the field <tt>customerProvidesOss</tt>.
-     *
-     * @param customerProvidesOss the new value of the field customerProvidesOss
-     */
-    public void setCustomerProvidesOss(boolean customerProvidesOss) {
+  /**
+   * This method sets the field <code>customerProvidesOss</code>.
+   *
+   * @param customerProvidesOss the new value of the field customerProvidesOss
+   */
+  public void setCustomerProvidesOss(boolean customerProvidesOss) {
 
-        this.customerProvidesOss = customerProvidesOss;
-    }
+    this.customerProvidesOss = customerProvidesOss;
+  }
 
-    /**
-     * This method sets the field <tt>engagementName</tt>.
-     *
-     * @param engagementName the new value of the field engagementName
-     */
-    public void setEngagementName(String engagementName) {
+  /**
+   * This method sets the field <code>engagementName</code>.
+   *
+   * @param engagementName the new value of the field engagementName
+   */
+  public void setEngagementName(String engagementName) {
 
-        this.engagementName = engagementName;
-    }
+    this.engagementName = engagementName;
+  }
 
-    /**
-     * This method sets the field <tt>engagementType</tt>.
-     *
-     * @param engagementType the new value of the field engagementType
-     */
-    public void setEngagementType(EngagementType engagementType) {
+  /**
+   * This method sets the field <code>engagementType</code>.
+   *
+   * @param engagementType the new value of the field engagementType
+   */
+  public void setEngagementType(EngagementType engagementType) {
 
-        this.engagementType = engagementType;
-    }
+    this.engagementType = engagementType;
+  }
 
-    /**
-     * This method sets the field <tt>goToMarketModel</tt>.
-     *
-     * @param goToMarketModel the new value of the field goToMarketModel
-     */
-    public void setGoToMarketModel(GoToMarketModel goToMarketModel) {
+  /**
+   * This method sets the field <code>goToMarketModel</code>.
+   *
+   * @param goToMarketModel the new value of the field goToMarketModel
+   */
+  public void setGoToMarketModel(GoToMarketModel goToMarketModel) {
 
-        this.goToMarketModel = goToMarketModel;
-    }
+    this.goToMarketModel = goToMarketModel;
+  }
 
-    /**
-     * This method sets the field <tt>ossPolicyFollowed</tt>.
-     *
-     * @param ossPolicyFollowed the new value of the field ossPolicyFollowed
-     */
-    public void setOssPolicyFollowed(boolean ossPolicyFollowed) {
+  /**
+   * This method sets the field <code>ossPolicyFollowed</code>.
+   *
+   * @param ossPolicyFollowed the new value of the field ossPolicyFollowed
+   */
+  public void setOssPolicyFollowed(boolean ossPolicyFollowed) {
 
-        this.ossPolicyFollowed = ossPolicyFollowed;
-    }
+    this.ossPolicyFollowed = ossPolicyFollowed;
+  }
 
-    /**
-     * This method sets the field <tt>rules</tt>.
-     *
-     * @param rules the new value of the field rules
-     */
-    public void setRules(List<RuleConfig> rules) {
+  /**
+   * This method sets the field <code>rules</code>.
+   *
+   * @param rules the new value of the field rules
+   */
+  public void setRules(List<RuleConfig> rules) {
 
-        this.rules = rules;
-    }
+    this.rules = rules;
+  }
 
-    /**
-     * This method sets the field <tt>version</tt>.
-     *
-     * @param version the new value of the field version
-     */
-    public void setVersion(int version) {
+  /**
+   * This method sets the field <code>version</code>.
+   *
+   * @param version the new value of the field version
+   */
+  public void setVersion(int version) {
 
-        this.version = version;
-    }
+    this.version = version;
+  }
 
-    /**
-     * This method sets the field <tt>writers</tt>.
-     *
-     * @param writers the new value of the field writers
-     */
-    public void setWriters(List<WriterConfig> writers) {
+  /**
+   * This method sets the field <code>writers</code>.
+   *
+   * @param writers the new value of the field writers
+   */
+  public void setWriters(List<WriterConfig> writers) {
 
-        this.writers = writers;
-    }
+    this.writers = writers;
+  }
 
 }
