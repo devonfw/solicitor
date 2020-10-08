@@ -14,73 +14,73 @@ import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class License {
-  @XmlElement(name = "name")
-  private String name;
+    @XmlElement(name = "name")
+    private String name;
 
-  @XmlElement(name = "url")
-  private String url;
+    @XmlElement(name = "url")
+    private String url;
 
-  @XmlElement(name = "distribution")
-  private String distribution;
+    @XmlElement(name = "distribution")
+    private String distribution;
 
-  /**
-   * This method gets the field <code>distribution</code>.
-   *
-   * @return the field distribution
-   */
-  public String getDistribution() {
+    /**
+     * This method gets the field <code>distribution</code>.
+     *
+     * @return the field distribution
+     */
+    public String getDistribution() {
 
-    return this.distribution;
-  }
+        return this.distribution;
+    }
 
-  /**
-   * This method gets the field <code>name</code>.
-   *
-   * @return the field name
-   */
-  public String getName() {
+    /**
+     * This method gets the field <code>name</code>.
+     *
+     * @return the field name
+     */
+    public String getName() {
 
-    return this.name;
-  }
+        return this.name;
+    }
 
-  /**
-   * This method gets the field <code>url</code>.
-   *
-   * @return the field url
-   */
-  public String getUrl() {
+    /**
+     * This method gets the field <code>url</code>.
+     *
+     * @return the field url
+     */
+    public String getUrl() {
 
-    return this.url;
-  }
+        return this.url;
+    }
 
-  /**
-   * This method sets the field <code>distribution</code>.
-   *
-   * @param distribution the new value of the field distribution
-   */
-  public void setDistribution(String distribution) {
+    /**
+     * This method sets the field <code>distribution</code>.
+     *
+     * @param distribution the new value of the field distribution
+     */
+    public void setDistribution(String distribution) {
 
-    this.distribution = distribution;
-  }
+        this.distribution = distribution;
+    }
 
-  /**
-   * This method sets the field <code>name</code>.
-   *
-   * @param name the new value of the field name
-   */
-  public void setName(String name) {
+    /**
+     * This method sets the field <code>name</code>.
+     *
+     * @param name the new value of the field name
+     */
+    public void setName(String name) {
 
-    this.name = name;
-  }
+        this.name = name;
+    }
 
-  /**
-   * This method sets the field <code>url</code>.
-   *
-   * @param url the new value of the field url
-   */
-  public void setUrl(String url) {
+    /**
+     * This method sets the field <code>url</code>.
+     *
+     * @param url the new value of the field url
+     */
+    public void setUrl(String url) {
 
-    this.url = url;
-  }
+        this.url = url;
+    }
 
 }
