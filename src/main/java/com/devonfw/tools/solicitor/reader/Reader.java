@@ -31,6 +31,7 @@ public interface Reader {
     /**
      * Read the inventory data contained in the given resource.
      *
+     * @param type the input type, same as in {@link #accept(String)}.
      * @param sourceUrl a URL of the resource to read the data from
      * @param application all read {@link ApplicationComponent} need to be
      *        linked with this {@link Application}
@@ -38,6 +39,7 @@ public interface Reader {
      *        {@link ApplicationComponent}s
      * @param repoType the type of Repository to download the sources from
      */
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType);
+    public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
+            String repoType);
 
 }

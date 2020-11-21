@@ -6,6 +6,8 @@ package com.devonfw.tools.solicitor.reader.maven;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -38,14 +40,15 @@ public class MavenReader extends AbstractReader implements Reader {
 
     /** {@inheritDoc} */
     @Override
-    public String getSupportedType() {
+    public Set<String> getSupportedTypes() {
 
-        return SUPPORTED_TYPE;
+        return Collections.singleton(SUPPORTED_TYPE);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType) {
+    public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
+            String repoType) {
 
         int components = 0;
         int licenses = 0;

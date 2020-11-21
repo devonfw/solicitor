@@ -3,6 +3,8 @@
  */
 package com.devonfw.tools.solicitor.reader;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public abstract class AbstractReader implements Reader {
     @Override
     public boolean accept(String type) {
 
-        return getSupportedType().equals(type);
+        return getSupportedTypes().contains(type);
     }
 
     /**
@@ -67,10 +69,10 @@ public abstract class AbstractReader implements Reader {
         mlic.setLicenseUrl(url);
         String trace;
         if (name == null && url == null) {
-            trace = "+ Component info (without license) read in '" + getSupportedType() + "' format from '" + path
+            trace = "+ Component info (without license) read in '" + getSupportedTypes() + "' format from '" + path
                     + "'";
         } else {
-            trace = "+ Component/License info read in '" + getSupportedType() + "' format from '" + path + "'";
+            trace = "+ Component/License info read in '" + getSupportedTypes() + "' format from '" + path + "'";
 
         }
         mlic.setTrace(trace);
@@ -87,11 +89,12 @@ public abstract class AbstractReader implements Reader {
     }
 
     /**
-     * Returns the supported type.
+     * Returns the supported types. Concrete {@link Reader}s need to override
+     * this to specify which types they are able to handle.
      *
      * @return the supported type
      */
-    public abstract String getSupportedType();
+    public abstract Set<String> getSupportedTypes();
 
     /**
      * This method sets the field <tt>inputStreamFactory</tt>.

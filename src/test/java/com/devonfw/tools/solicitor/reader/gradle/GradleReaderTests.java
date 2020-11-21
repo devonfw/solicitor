@@ -34,14 +34,15 @@ public class GradleReaderTests {
         gr.setDeprecationChecker(new DeprecationChecker() {
 
             @Override
-            public void check(String detailsString) {
+            public void check(boolean warnOnly, String detailsString) {
 
                 // do nothing...
             }
         });
         gr.setModelFactory(modelFactory);
         gr.setInputStreamFactory(new FileInputStreamFactory());
-        gr.readInventory("src/test/resources/licenseReport.json", application, UsagePattern.DYNAMIC_LINKING, "maven");
+        gr.readInventory("gradle", "src/test/resources/licenseReport.json", application, UsagePattern.DYNAMIC_LINKING,
+                "maven");
 
     }
 

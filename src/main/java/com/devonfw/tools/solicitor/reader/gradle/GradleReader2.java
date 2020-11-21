@@ -5,9 +5,11 @@
 package com.devonfw.tools.solicitor.reader.gradle;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -38,14 +40,15 @@ public class GradleReader2 extends AbstractReader implements Reader {
 
     /** {@inheritDoc} */
     @Override
-    public String getSupportedType() {
+    public Set<String> getSupportedTypes() {
 
-        return SUPPORTED_TYPE;
+        return Collections.singleton(SUPPORTED_TYPE);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType) {
+    public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
+            String repoType) {
 
         int components = 0;
         int licenses = 0;

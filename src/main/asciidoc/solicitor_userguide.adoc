@@ -309,7 +309,7 @@ Within this section the different applications (=deliverables) of the engagement
     "readers" : [ { <5>
       "type" : "maven", <6>
       "source" : "classpath:samples/licenses_devon4j.xml", <7> <10>
-      "usagePattern" : "DYNAMIC_LINKING" <8>
+      "usagePattern" : "DYNAMIC_LINKING", <8>
       "repoType" : "maven" <9>
     } ]
   } ],
@@ -319,7 +319,7 @@ Within this section the different applications (=deliverables) of the engagement
 <3> URL of the source repo of the application (string; should be an URL)
 <4> programming ecosystem (any string; e.g. Java8; Android/Java, iOS / Objective C)
 <5> multiple readers might be defined per application
-<6> the type of reader; possible values: csv, maven, npm, gradle
+<6> the type of reader; for possible values see <<Reading License Information with Readers>>
 <7> location of the source file to read (ResourceLoader-URL)
 <8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
 <9> repoType: Repository to download the sources from: currently possible values: maven, npm; if omitted then "maven" will be taken as default
@@ -501,8 +501,11 @@ line in the file for each license.
 
 === NPM
 
-For the export of the the licenses from a NPM based Project the NPM License Crawler is used.
-To install the crawler the following command needs to be executed.
+For NPM based projects either the NPM License Crawler (https://www.npmjs.com/package/npm-license-crawler) or the NPM License Checker (https://www.npmjs.com/package/license-checker) might be used. The NPM License Crawler can process several node packages in one run. 
+
+==== NPM License Crawler
+
+To install the NPM License Crawler the following command needs to be executed.
 
 ----
 npm i npm-license-crawler -g
@@ -529,9 +532,46 @@ In _Solicitor_ the data is read with the following part of the config
 
 ----
 "readers" : [ {
-  "type" : "npm",
+  "type" : "npm-license-crawler-csv",
   "source" : "file:path/to/licenses.csv",
-  "usagePattern" : "DYNAMIC_LINKING"
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "npm"
+} ]
+----
+
+==== NPM License Checker
+
+To install the NPM License Checker the following command needs to be executed.
+
+----
+npm i license-checker -g
+----
+
+To get the licenses, the checker needs to be executed like the following example (we require JSON output here)
+
+----
+license-checker --json > /path/to/licenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::licensesNpmLicenseChecker.json[]
+
+----
+
+
+Source: https://www.npmjs.com/package/license-checker
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm-license-checker",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "npm"
 } ]
 ----
 
@@ -953,23 +993,30 @@ All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are r
 == Feature Deprecation
 Within the lifecycle of the _Solicitor_ development features might be discontinued due
 to various reasons. In case that such discontinuation is expected to break existing projects
-a deprecation mechanism might be used:
-When such a deprecated feature is used _Solicitor_ by default will terminate with an error
+a two stage deprecation mechanism is used:
+
+* Stage 1: Usage of a deprecated feature will produce a _warning only_ giving details on 
+what needs to be changed.
+* Stage 2: When a deprecated feature is used _Solicitor_ by default will terminate with an error
 message giving information about the deprecation.
 
 By setting the property `solicitor.deprecated-features-allowed` to `true`
-(e.g. via the command line, see <<Configuration of Technical Properties>>), the feature
-will still be available and only a warning will be logged. The project setup should in any
+(e.g. via the command line, see <<Configuration of Technical Properties>>), even in second stage
+the feature will still be available and only a warning will be logged. The project setup should in any
 case ASAP be changed to no longer use the feature as it might soon be removed without further
 notice.
 
 IMPORTANT: Enabling the use of deprecated feature via the above property should only be
 a temporary workaround and not a standard setting.
 
+NOTE: If usage of a feature should be discontinued immediately (e.g. because it might lead to
+wrong/misleading output) the first stage of deprecation will be skipped. 
+
 === List of Deprecated Features
 The following features are deprecated via the above mechanism:
 
-* Reader of type "gradle"  (use Reader of type "gradle2" instead); from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58 
+* Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58 
+* Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
 
 [appendix]
 == Default Base Configuration
@@ -1047,6 +1094,13 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 
 [appendix]
 == Release Notes
+
+Changes in 1.0.8::
+* https://github.com/devonfw/solicitor/issues/62: New Reader of type `npm-license-checker`
+for reading component/license data collected by NPM License Checker (https://www.npmjs.com/package/license-checker).
+The type of the existing Reader for reading CSV data from the NPM License Crawler has been changed from `npm`
+to `npm-license-crawler-csv`. (`npm` is still available but deprecated.) Projects should adopt their Reader 
+configuration and replace type `npm` by `npm-license-crawler-csv`. 
 
 Changes in 1.0.7::
 * https://github.com/devonfw/solicitor/issues/56: Enable continuing analysis in 

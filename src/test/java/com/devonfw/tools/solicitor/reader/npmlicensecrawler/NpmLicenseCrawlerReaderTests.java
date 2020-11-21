@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.devonfw.tools.solicitor.reader.npm;
+package com.devonfw.tools.solicitor.reader.npmlicensecrawler;
 
 import static org.junit.Assert.assertTrue;
 
@@ -12,27 +12,37 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.FileInputStreamFactory;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.devonfw.tools.solicitor.reader.npmlicensecrawler.NpmLicenseCrawlerReader;
 
-public class NpmReaderTests {
+public class NpmLicenseCrawlerReaderTests {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NpmReaderTests.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NpmLicenseCrawlerReaderTests.class);
 
     private Application application;
 
-    public NpmReaderTests() {
+    public NpmLicenseCrawlerReaderTests() {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
         application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
-        NpmReader nr = new NpmReader();
+        NpmLicenseCrawlerReader nr = new NpmLicenseCrawlerReader();
+        nr.setDeprecationChecker(new DeprecationChecker() {
+
+            @Override
+            public void check(boolean warnOnly, String detailsString) {
+
+                // do nothing...
+            }
+        });
         nr.setModelFactory(modelFactory);
         nr.setInputStreamFactory(new FileInputStreamFactory());
-        nr.readInventory("src/test/resources/npmlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "npm");
+        nr.readInventory("npm", "src/test/resources/npmlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "npm");
     }
 
     @Test

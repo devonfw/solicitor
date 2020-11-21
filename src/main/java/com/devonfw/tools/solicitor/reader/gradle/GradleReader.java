@@ -5,9 +5,11 @@
 package com.devonfw.tools.solicitor.reader.gradle;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,16 +54,17 @@ public class GradleReader extends AbstractReader implements Reader {
 
     /** {@inheritDoc} */
     @Override
-    public String getSupportedType() {
+    public Set<String> getSupportedTypes() {
 
-        return SUPPORTED_TYPE;
+        return Collections.singleton(SUPPORTED_TYPE);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType) {
+    public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
+            String repoType) {
 
-        deprecationChecker.check(
+        deprecationChecker.check(false,
                 "Use of Reader of type 'gradle' is deprecated, use 'gradle2' instead. See https://github.com/devonfw/solicitor/issues/58");
         int components = 0;
         int licenses = 0;
