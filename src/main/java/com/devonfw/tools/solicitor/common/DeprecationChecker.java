@@ -27,7 +27,7 @@ public class DeprecationChecker {
         this.deprecatedFeaturesAllowed = deprecatedFeaturesAllowed;
         if (this.deprecatedFeaturesAllowed) {
             LOG.info(LogMessages.DEPRECATIONS_ACTIVE.msg(), configProperty,
-                    LogMessages.USING_DEPRECATED_FEATURE.label());
+                    LogMessages.USING_DEPRECATED_FEATURE_FORCED.label());
         }
     }
 
@@ -36,18 +36,26 @@ public class DeprecationChecker {
      * will be logged. If deprecated features are not activated then an
      * Exception will be thrown.
      * 
+     * @param warnOnly if set to <code>true</code> then there will be only a
+     *        warning logged independently of whether deprecated features are
+     *        activated or not. This is the first step when deprecating a
+     *        feature.
      * @param detailsString Details of the deprecated feature to be included in
      *        the log message
      * @throws SolicitorRuntimeException if deprecated features are not
      *         activated
      */
-    public void check(String detailsString) {
+    public void check(boolean warnOnly, String detailsString) {
 
-        if (deprecatedFeaturesAllowed) {
+        if (warnOnly) {
             LOG.warn(LogMessages.USING_DEPRECATED_FEATURE.msg(), detailsString);
         } else {
-            LOG.error(LogMessages.UNAVAILABLE_DEPRECATED_FEATURE.msg(), detailsString, configProperty);
-            throw new SolicitorRuntimeException("Deprecated feature unavailable");
+            if (deprecatedFeaturesAllowed) {
+                LOG.warn(LogMessages.USING_DEPRECATED_FEATURE_FORCED.msg(), configProperty, detailsString);
+            } else {
+                LOG.error(LogMessages.UNAVAILABLE_DEPRECATED_FEATURE.msg(), detailsString, configProperty);
+                throw new SolicitorRuntimeException("Deprecated feature unavailable");
+            }
         }
     }
 

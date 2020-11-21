@@ -2,16 +2,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.devonfw.tools.solicitor.reader.npm;
+package com.devonfw.tools.solicitor.reader.npmlicensecrawler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -25,24 +30,42 @@ import com.devonfw.tools.solicitor.reader.Reader;
  * Crawler</a>.
  */
 @Component
-public class NpmReader extends AbstractReader implements Reader {
+public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
+
+    /**
+     * The supported type (deprecated) of this {@link Reader}.
+     */
+    public static final String SUPPORTED_TYPE_DEPRECATED = "npm";
 
     /**
      * The supported type of this {@link Reader}.
      */
-    public static final String SUPPORTED_TYPE = "npm";
+    public static final String SUPPORTED_TYPE = "npm-license-crawler-csv";
 
-    /** {@inheritDoc} */
-    @Override
-    public String getSupportedType() {
+    private DeprecationChecker deprecationChecker;
 
-        return SUPPORTED_TYPE;
+    @Autowired
+    public void setDeprecationChecker(DeprecationChecker deprecationChecker) {
+
+        this.deprecationChecker = deprecationChecker;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void readInventory(String sourceUrl, Application application, UsagePattern usagePattern, String repoType) {
+    public Set<String> getSupportedTypes() {
 
+        return new HashSet<>(Arrays.asList(SUPPORTED_TYPE, SUPPORTED_TYPE_DEPRECATED));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
+            String repoType) {
+
+        if (SUPPORTED_TYPE_DEPRECATED.equals(type)) {
+            deprecationChecker.check(true, "Use of type 'npm' is deprecated. Change type in config to '"
+                    + SUPPORTED_TYPE + "'. See https://github.com/devonfw/solicitor/issues/62");
+        }
         int components = 0;
         int licenses = 0;
         InputStream is;
