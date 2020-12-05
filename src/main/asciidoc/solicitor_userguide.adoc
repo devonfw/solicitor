@@ -49,6 +49,7 @@ The _Solicitor_ code and accompanying resources (including this userguide) as st
 IMPORTANT: Specifically observe the "Disclaimer of Warranty" and "Limitation of Liability" which are part of the license.
 
 IMPORTANT: The executable JAR file which is created by the Maven based build process includes numerous other Open Source components which are subject to different Open Source licenses. Any distribution of the _Solicitor_ executable JAR file needs to comply with the license conditions of all those components.
+If you are running _Solicitor_ from the executable JAR you might use the `-eug` option to store detailed license information as file `solicitor_licenseinfo.html` in your current working directory (together with a copy of this user guide). 
 
 == Architecture
 The following picture show a business oriented view of _Solicitor_.
@@ -1096,6 +1097,9 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.0.9::
+* https://github.com/devonfw/solicitor/issues/67: Inclusion of detailed license information for the
+  dependencies included in the executable JAR. Use the '-eug' command line option to store this file
+  (together with a copy of the user guide) in the current work directory.
 * Additional rules for license name mappings in decision table LicenseNameMappingSample.xls.
 * https://github.com/devonfw/solicitor/pull/61: Solicitor can now run with Java 8 or Java 11.
 

@@ -84,7 +84,7 @@
 			<artifactId>velocity-tools</artifactId>
 			<version>2.0</version>
 			<exclusions>
-				<!-- omit this as functionality is not required and license is unclear-->
+				<!-- omit this as functionality is not required and license is unclear -->
 				<exclusion>
 					<groupId>javax.servlet</groupId>
 					<artifactId>servlet-api</artifactId>
@@ -102,9 +102,9 @@
 			<version>1.4</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.maven</groupId>
-		    <artifactId>maven-artifact</artifactId>
-		    <version>3.6.2</version>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>3.6.2</version>
 		</dependency>
 
 <!--     <dependency>
@@ -147,6 +147,22 @@
 				<filtering>false</filtering>
 			</resource>
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>ownlicenseinfo/solicitor_own.cfg</exclude>
+				</excludes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>ownlicenseinfo/solicitor_own.cfg</include>
+				</includes>
+			</testResource>
+		</testResources>
 
 		<plugins>
 			<plugin>
@@ -163,7 +179,7 @@
 				</executions>
 				<configuration>
 					<shortRevisionLength>7</shortRevisionLength>
-					<timestampFormat>{0, date, yyyy-MM-dd HH:mm:ss}</timestampFormat>
+					<timestampFormat>{0, date, yyyy-MM-dd HH:mm:ss Z}</timestampFormat>
 				</configuration>
 			</plugin>
 
@@ -171,19 +187,27 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-        			<layout>ZIP</layout>
-    			</configuration>
+					<layout>ZIP</layout>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<version>1.14</version>
-
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>aggregate-download-licenses</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
 					<sortArtifactByName>true</sortArtifactByName>
 					<includeTransitiveDependencies>true</includeTransitiveDependencies>
 					<failOnMissing>false</failOnMissing>
+					<excludedScopes>test,provided</excludedScopes>
 					<encoding>utf-8</encoding>
 				</configuration>
 			</plugin>
@@ -197,14 +221,14 @@
 						<artifactId>asciidoctorj-pdf</artifactId>
 						<version>${asciidoctorj.pdf.version}</version>
 					</dependency>
-					<!-- Comment this section to use the default jruby artifact provided
+					<!-- Comment this section to use the default jruby artifact provided 
 						by the plugin -->
 					<dependency>
 						<groupId>org.jruby</groupId>
 						<artifactId>jruby-complete</artifactId>
 						<version>${jruby.version}</version>
 					</dependency>
-					<!-- Comment this section to use the default AsciidoctorJ artifact provided
+					<!-- Comment this section to use the default AsciidoctorJ artifact provided 
 						by the plugin -->
 					<dependency>
 						<groupId>org.asciidoctor</groupId>
@@ -255,28 +279,53 @@
 				</executions>
 			</plugin>
 			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-javadoc-plugin</artifactId>
-<!--         		<version>3.1.1</version>  -->
-       			  <executions>
-	                <execution>
-	                    <goals>
-	                        <goal>javadoc</goal>
-	                    </goals>
-	                    <id>default_javadoc</id>
-	                    <phase>package</phase>
-	                </execution>
-           		 </executions>
-        		<configuration>
-        			<show>private</show>
-        			<force>true</force>
-        			<fixTags>param,return,throws,link</fixTags>
-        		</configuration>
-      		</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<!-- <version>3.1.1</version> -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<id>default_javadoc</id>
+						<phase>package</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<show>private</show>
+					<force>true</force>
+					<fixTags>param,return,throws,link</fixTags>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-license-resources</id>
+						<!-- here the phase you need -->
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>output</directory>
+									<includes>
+										<include>solicitor_licenseinfo.html</include>
+									</includes>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
