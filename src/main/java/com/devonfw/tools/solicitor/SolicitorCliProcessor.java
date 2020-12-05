@@ -73,7 +73,8 @@ public class SolicitorCliProcessor {
         // option "eug" (extract user guide)
         builder = Option.builder("eug");
         builder.longOpt("extractUserGuide");
-        description = "stores a copy of the user guide in the current directory (no main processing)";
+        description =
+                "stores a copy of the user guide and the license info file in the current directory (no main processing)";
         builder.desc(description);
         Option extractUserGuide = builder.build();
         options.addOption(extractUserGuide);
@@ -216,7 +217,8 @@ public class SolicitorCliProcessor {
         HelpFormatter formatter = new HelpFormatter();
 
         formatter.printHelp(120, "java -jar solicitor.jar", "", options,
-                "DevonFW Solicitor - visit https://github.com/devonfw/solicitor", true);
+                "DevonFW Solicitor - visit https://github.com/devonfw/solicitor - use '-eug' to get user guide and licensing info",
+                true);
     }
 
 }

@@ -206,6 +206,7 @@ public class ResourceToFileCopier {
         case USERGUIDE:
             new CopySequenceBuilder()
                     .withCopyOperation("classpath:solicitor_userguide.pdf", "target/solicitor_userguide.pdf")
+                    .withCopyOperation("classpath:solicitor_licenseinfo.html", "target/solicitor_licenseinfo.html")
                     .replaceInTarget("target", targetDir).execute();
             returnString = "solicitor_userguide.pdf";
             break;
