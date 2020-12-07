@@ -63,16 +63,16 @@ public abstract class AbstractReader implements Reader {
      */
     public void addRawLicense(ApplicationComponent appComponent, String name, String url, String path) {
 
-      RawLicense mlic = modelFactory.newRawLicense();
-      mlic.setApplicationComponent(appComponent);
-      mlic.setDeclaredLicense(name);
-      mlic.setLicenseUrl(url);
-      String trace;
-      if (name == null && url == null) {
-        trace = "+ Component info (without license) read in '" + getSupportedTypes() + "' format from '" + path
-               + "'";
-      } else {
-        trace = "+ Component/License info read in '" + getSupportedTypes() + "' format from '" + path + "'";
+        RawLicense mlic = modelFactory.newRawLicense();
+        mlic.setApplicationComponent(appComponent);
+        mlic.setDeclaredLicense(name);
+        mlic.setLicenseUrl(url);
+        String trace;
+        if (name == null && url == null) {
+            trace = "+ Component info (without license) read in '" + getSupportedTypes() + "' format from '" + path
+                    + "'";
+        } else {
+            trace = "+ Component/License info read in '" + getSupportedTypes() + "' format from '" + path + "'";
 
         }
         mlic.setTrace(trace);
