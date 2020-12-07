@@ -201,7 +201,7 @@ A "normalized" license id might be either a SPDX-Id or a "pseudo license id" whi
 
 == Usage
 === Executing Solicitor
-_Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java 8 runtime environment. If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw/solicitor .
+_Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java 8 or 11 runtime environment. If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw/solicitor .
 
 _Solicitor_ is executed with the following command:
 
@@ -1094,6 +1094,9 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 
 [appendix]
 == Release Notes
+
+Changes in 1.0.9::
+* https://github.com/devonfw/solicitor/pull/61: Solicitor can now run with Java 8 or Java 11.
 
 Changes in 1.0.8::
 * https://github.com/devonfw/solicitor/issues/62: New Reader of type `npm-license-checker`
