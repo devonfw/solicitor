@@ -17,119 +17,120 @@ public interface Engagement {
     void addApplication(Application application);
 
     /**
-     * This method gets an unmodifiable copy of the field <tt>applications</tt>.
+     * This method gets an unmodifiable copy of the field
+     * <code>applications</code>.
      *
      * @return the field applications
      */
     List<Application> getApplications();
 
     /**
-     * This method gets the field <tt>clientName</tt>.
+     * This method gets the field <code>clientName</code>.
      *
      * @return the field clientName
      */
     String getClientName();
 
     /**
-     * This method gets the field <tt>engagementName</tt>.
+     * This method gets the field <code>engagementName</code>.
      *
      * @return the field engagementName
      */
     String getEngagementName();
 
     /**
-     * This method gets the field <tt>engagementType</tt>.
+     * This method gets the field <code>engagementType</code>.
      *
      * @return the field engagementType
      */
     EngagementType getEngagementType();
 
     /**
-     * This method gets the field <tt>goToMarketModel</tt>.
+     * This method gets the field <code>goToMarketModel</code>.
      *
      * @return the field goToMarketModel
      */
     GoToMarketModel getGoToMarketModel();
 
     /**
-     * This method gets the value of the field <tt>modelRoot</tt>.
+     * This method gets the value of the field <code>modelRoot</code>.
      *
      * @return the field modelRoot
      */
     ModelRoot getModelRoot();
 
     /**
-     * This method gets the field <tt>contractAllowsOss</tt>.
+     * This method gets the field <code>contractAllowsOss</code>.
      *
      * @return the field contractAllowsOss
      */
     boolean isContractAllowsOss();
 
     /**
-     * This method gets the field <tt>customerProvidesOss</tt>.
+     * This method gets the field <code>customerProvidesOss</code>.
      *
      * @return the field customerProvidesOss
      */
     boolean isCustomerProvidesOss();
 
     /**
-     * This method gets the field <tt>ossPolicyFollowed</tt>.
+     * This method gets the field <code>ossPolicyFollowed</code>.
      *
      * @return the field ossPolicyFollowed
      */
     boolean isOssPolicyFollowed();
 
     /**
-     * This method sets the field <tt>clientName</tt>.
+     * This method sets the field <code>clientName</code>.
      *
      * @param clientName the new value of the field clientName
      */
     void setClientName(String clientName);
 
     /**
-     * This method sets the field <tt>contractAllowsOss</tt>.
+     * This method sets the field <code>contractAllowsOss</code>.
      *
      * @param contractAllowsOss the new value of the field contractAllowsOss
      */
     void setContractAllowsOss(boolean contractAllowsOss);
 
     /**
-     * This method sets the field <tt>customerProvidesOss</tt>.
+     * This method sets the field <code>customerProvidesOss</code>.
      *
      * @param customerProvidesOss the new value of the field customerProvidesOss
      */
     void setCustomerProvidesOss(boolean customerProvidesOss);
 
     /**
-     * This method sets the field <tt>engagementName</tt>.
+     * This method sets the field <code>engagementName</code>.
      *
      * @param engagementName the new value of the field engagementName
      */
     void setEngagementName(String engagementName);
 
     /**
-     * This method sets the field <tt>engagementType</tt>.
+     * This method sets the field <code>engagementType</code>.
      *
      * @param engagementType the new value of the field engagementType
      */
     void setEngagementType(EngagementType engagementType);
 
     /**
-     * This method sets the field <tt>goToMarketModel</tt>.
+     * This method sets the field <code>goToMarketModel</code>.
      *
      * @param goToMarketModel the new value of the field goToMarketModel
      */
     void setGoToMarketModel(GoToMarketModel goToMarketModel);
 
     /**
-     * Sets the field <tt>modelRoot</tt>.
+     * Sets the field <code>modelRoot</code>.
      *
      * @param modelRoot the new value of the field modelRoot
      */
     void setModelRoot(ModelRoot modelRoot);
 
     /**
-     * This method sets the field <tt>ossPolicyFollowed</tt>.
+     * This method sets the field <code>ossPolicyFollowed</code>.
      *
      * @param ossPolicyFollowed the new value of the field ossPolicyFollowed
      */

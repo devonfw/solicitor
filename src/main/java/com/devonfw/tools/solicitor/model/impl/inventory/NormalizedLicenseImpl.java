@@ -88,7 +88,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     protected ApplicationComponent doGetParent() {
 
-        return applicationComponent;
+        return this.applicationComponent;
     }
 
     /** {@inheritDoc} */
@@ -96,39 +96,40 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public ApplicationComponent getApplicationComponent() {
 
-        return applicationComponent;
+        return this.applicationComponent;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getComments() {
 
-        return comments;
+        return this.comments;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getCopyLeft() {
 
-        return copyLeft;
+        return this.copyLeft;
     }
 
     /** {@inheritDoc} */
     @Override
     public String[] getDataElements() {
 
-        return new String[] { declaredLicense, licenseUrl, getDeclaredLicenseContent(), normalizedLicenseType,
-        normalizedLicense, normalizedLicenseUrl, effectiveNormalizedLicenseType, effectiveNormalizedLicense,
-        effectiveNormalizedLicenseUrl, getEffectiveNormalizedLicenseContent(), legalPreApproved, copyLeft,
-        licenseCompliance, licenseRefUrl, getLicenseRefContent(), includeLicense, includeSource, reviewedForRelease,
-        comments, legalApproved, legalComments, trace };
+        return new String[] { this.declaredLicense, this.licenseUrl, getDeclaredLicenseContent(),
+        this.normalizedLicenseType, this.normalizedLicense, this.normalizedLicenseUrl,
+        this.effectiveNormalizedLicenseType, this.effectiveNormalizedLicense, this.effectiveNormalizedLicenseUrl,
+        getEffectiveNormalizedLicenseContent(), this.legalPreApproved, this.copyLeft, this.licenseCompliance,
+        this.licenseRefUrl, getLicenseRefContent(), this.includeLicense, this.includeSource, this.reviewedForRelease,
+        this.comments, this.legalApproved, this.legalComments, this.trace };
     }
 
     /** {@inheritDoc} */
     @Override
     public String getDeclaredLicense() {
 
-        return declaredLicense;
+        return this.declaredLicense;
     }
 
     /** {@inheritDoc} */
@@ -136,14 +137,14 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getDeclaredLicenseContent() {
 
-        return licenseContentProvider.getWebContentForUrl(this.licenseUrl);
+        return this.licenseContentProvider.getWebContentForUrl(this.licenseUrl);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getEffectiveNormalizedLicense() {
 
-        return effectiveNormalizedLicense;
+        return this.effectiveNormalizedLicense;
     }
 
     /** {@inheritDoc} */
@@ -151,21 +152,21 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getEffectiveNormalizedLicenseContent() {
 
-        return licenseContentProvider.getWebContentForUrl(this.effectiveNormalizedLicenseUrl);
+        return this.licenseContentProvider.getWebContentForUrl(this.effectiveNormalizedLicenseUrl);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getEffectiveNormalizedLicenseType() {
 
-        return effectiveNormalizedLicenseType;
+        return this.effectiveNormalizedLicenseType;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getEffectiveNormalizedLicenseUrl() {
 
-        return effectiveNormalizedLicenseUrl;
+        return this.effectiveNormalizedLicenseUrl;
     }
 
     /** {@inheritDoc} */
@@ -183,53 +184,53 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     public String getIncludeLicense() {
 
-        return includeLicense;
+        return this.includeLicense;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getIncludeSource() {
 
-        return includeSource;
+        return this.includeSource;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getLegalApproved() {
 
-        return legalApproved;
+        return this.legalApproved;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getLegalComments() {
 
-        return legalComments;
+        return this.legalComments;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getLegalPreApproved() {
 
-        return legalPreApproved;
+        return this.legalPreApproved;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getLicenseCompliance() {
 
-        return licenseCompliance;
+        return this.licenseCompliance;
     }
 
     /**
-     * This method gets the field <tt>licenseContentProvider</tt>.
+     * This method gets the field <code>licenseContentProvider</code>.
      *
      * @return the field licenseContentProvider
      */
     @JsonIgnore
     public WebContentProvider getLicenseContentProvider() {
 
-        return licenseContentProvider;
+        return this.licenseContentProvider;
     }
 
     /** {@inheritDoc} */
@@ -237,56 +238,56 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getLicenseRefContent() {
 
-        return licenseContentProvider.getWebContentForUrl(this.licenseRefUrl);
+        return this.licenseContentProvider.getWebContentForUrl(this.licenseRefUrl);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getLicenseRefUrl() {
 
-        return licenseRefUrl;
+        return this.licenseRefUrl;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getLicenseUrl() {
 
-        return licenseUrl;
+        return this.licenseUrl;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getNormalizedLicense() {
 
-        return normalizedLicense;
+        return this.normalizedLicense;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getNormalizedLicenseType() {
 
-        return normalizedLicenseType;
+        return this.normalizedLicenseType;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getNormalizedLicenseUrl() {
 
-        return normalizedLicenseUrl;
+        return this.normalizedLicenseUrl;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getReviewedForRelease() {
 
-        return reviewedForRelease;
+        return this.reviewedForRelease;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getTrace() {
 
-        return trace;
+        return this.trace;
     }
 
     /** {@inheritDoc} */
@@ -385,7 +386,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     }
 
     /**
-     * This method sets the field <tt>licenseContentProvider</tt>.
+     * This method sets the field <code>licenseContentProvider</code>.
      *
      * @param licenseContentProvider the new value of the field
      *        licenseContentProvider

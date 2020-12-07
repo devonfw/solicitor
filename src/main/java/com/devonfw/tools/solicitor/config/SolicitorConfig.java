@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents the complete Solicitor JSON configuration file.
- * 
+ *
  */
 public class SolicitorConfig {
 
@@ -54,127 +54,127 @@ public class SolicitorConfig {
     private List<WriterConfig> writers = new ArrayList<>();
 
     /**
-     * This method gets the field <tt>applications</tt>.
+     * This method gets the field <code>applications</code>.
      *
      * @return the field applications
      */
     public List<ApplicationConfig> getApplications() {
 
-        return applications;
+        return this.applications;
     }
 
     /**
-     * This method gets the field <tt>clientName</tt>.
+     * This method gets the field <code>clientName</code>.
      *
      * @return the field clientName
      */
     public String getClientName() {
 
-        return clientName;
+        return this.clientName;
     }
 
     /**
-     * This method gets the field <tt>comment</tt>.
+     * This method gets the field <code>comment</code>.
      *
      * @return the field comment
      */
     public String getComment() {
 
-        return comment;
+        return this.comment;
     }
 
     /**
-     * This method gets the field <tt>engagementName</tt>.
+     * This method gets the field <code>engagementName</code>.
      *
      * @return the field engagementName
      */
     public String getEngagementName() {
 
-        return engagementName;
+        return this.engagementName;
     }
 
     /**
-     * This method gets the field <tt>engagementType</tt>.
+     * This method gets the field <code>engagementType</code>.
      *
      * @return the field engagementType
      */
     public EngagementType getEngagementType() {
 
-        return engagementType;
+        return this.engagementType;
     }
 
     /**
-     * This method gets the field <tt>goToMarketModel</tt>.
+     * This method gets the field <code>goToMarketModel</code>.
      *
      * @return the field goToMarketModel
      */
     public GoToMarketModel getGoToMarketModel() {
 
-        return goToMarketModel;
+        return this.goToMarketModel;
     }
 
     /**
-     * This method gets the field <tt>rules</tt>.
+     * This method gets the field <code>rules</code>.
      *
      * @return the field rules
      */
     public List<RuleConfig> getRules() {
 
-        return rules;
+        return this.rules;
     }
 
     /**
-     * This method gets the field <tt>version</tt>.
+     * This method gets the field <code>version</code>.
      *
      * @return the field version
      */
     public int getVersion() {
 
-        return version;
+        return this.version;
     }
 
     /**
-     * This method gets the field <tt>writers</tt>.
+     * This method gets the field <code>writers</code>.
      *
      * @return the field writers
      */
     public List<WriterConfig> getWriters() {
 
-        return writers;
+        return this.writers;
     }
 
     /**
-     * This method gets the field <tt>contractAllowsOss</tt>.
+     * This method gets the field <code>contractAllowsOss</code>.
      *
      * @return the field contractAllowsOss
      */
     public boolean isContractAllowsOss() {
 
-        return contractAllowsOss;
+        return this.contractAllowsOss;
     }
 
     /**
-     * This method gets the field <tt>customerProvidesOss</tt>.
+     * This method gets the field <code>customerProvidesOss</code>.
      *
      * @return the field customerProvidesOss
      */
     public boolean isCustomerProvidesOss() {
 
-        return customerProvidesOss;
+        return this.customerProvidesOss;
     }
 
     /**
-     * This method gets the field <tt>ossPolicyFollowed</tt>.
+     * This method gets the field <code>ossPolicyFollowed</code>.
      *
      * @return the field ossPolicyFollowed
      */
     public boolean isOssPolicyFollowed() {
 
-        return ossPolicyFollowed;
+        return this.ossPolicyFollowed;
     }
 
     /**
-     * This method sets the field <tt>applications</tt>.
+     * This method sets the field <code>applications</code>.
      *
      * @param applications the new value of the field applications
      */
@@ -184,7 +184,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>clientName</tt>.
+     * This method sets the field <code>clientName</code>.
      *
      * @param clientName the new value of the field clientName
      */
@@ -194,7 +194,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>comment</tt>.
+     * This method sets the field <code>comment</code>.
      *
      * @param comment the new value of the field comment
      */
@@ -204,7 +204,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>contractAllowsOss</tt>.
+     * This method sets the field <code>contractAllowsOss</code>.
      *
      * @param contractAllowsOss the new value of the field contractAllowsOss
      */
@@ -214,7 +214,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>customerProvidesOss</tt>.
+     * This method sets the field <code>customerProvidesOss</code>.
      *
      * @param customerProvidesOss the new value of the field customerProvidesOss
      */
@@ -224,7 +224,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>engagementName</tt>.
+     * This method sets the field <code>engagementName</code>.
      *
      * @param engagementName the new value of the field engagementName
      */
@@ -234,7 +234,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>engagementType</tt>.
+     * This method sets the field <code>engagementType</code>.
      *
      * @param engagementType the new value of the field engagementType
      */
@@ -244,7 +244,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>goToMarketModel</tt>.
+     * This method sets the field <code>goToMarketModel</code>.
      *
      * @param goToMarketModel the new value of the field goToMarketModel
      */
@@ -254,7 +254,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>ossPolicyFollowed</tt>.
+     * This method sets the field <code>ossPolicyFollowed</code>.
      *
      * @param ossPolicyFollowed the new value of the field ossPolicyFollowed
      */
@@ -264,7 +264,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>rules</tt>.
+     * This method sets the field <code>rules</code>.
      *
      * @param rules the new value of the field rules
      */
@@ -274,7 +274,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>version</tt>.
+     * This method sets the field <code>version</code>.
      *
      * @param version the new value of the field version
      */
@@ -284,7 +284,7 @@ public class SolicitorConfig {
     }
 
     /**
-     * This method sets the field <tt>writers</tt>.
+     * This method sets the field <code>writers</code>.
      *
      * @param writers the new value of the field writers
      */

@@ -36,56 +36,57 @@ public class SolicitorSetup {
         private String repoType;
 
         /**
-         * This method gets the field <tt>application</tt>.
+         * This method gets the field <code>application</code>.
          *
          * @return the field application
          */
         public Application getApplication() {
 
-            return application;
+            return this.application;
         }
 
         /**
-         * This method gets the field <tt>source</tt>.
+         * This method gets the field <code>source</code>.
          *
          * @return the field source
          */
         public String getSource() {
 
-            return source;
+            return this.source;
         }
 
         /**
-         * This method gets the field <tt>type</tt>.
+         * This method gets the field <code>type</code>.
          *
          * @return the field type
          */
         public String getType() {
 
-            return type;
+            return this.type;
         }
 
         /**
-         * This method gets the field <tt>usagePattern</tt>.
+         * This method gets the field <code>usagePattern</code>.
          *
          * @return the field usagePattern
          */
         public UsagePattern getUsagePattern() {
 
-            return usagePattern;
+            return this.usagePattern;
         }
 
         /**
-         * This method gets the field <tt>repoType</tt>.
+         * This method gets the field <code>repoType</code>.
          *
          * @return the field repoType
          */
         public String getRepoType() {
-			return repoType;
-		}
+
+            return this.repoType;
+        }
 
         /**
-         * This method sets the field <tt>application</tt>.
+         * This method sets the field <code>application</code>.
          *
          * @param application the new value of the field application
          */
@@ -95,7 +96,7 @@ public class SolicitorSetup {
         }
 
         /**
-         * This method sets the field <tt>source</tt>.
+         * This method sets the field <code>source</code>.
          *
          * @param source the new value of the field source
          */
@@ -105,7 +106,7 @@ public class SolicitorSetup {
         }
 
         /**
-         * This method sets the field <tt>type</tt>.
+         * This method sets the field <code>type</code>.
          *
          * @param type the new value of the field type
          */
@@ -115,7 +116,7 @@ public class SolicitorSetup {
         }
 
         /**
-         * This method sets the field <tt>usagePattern</tt>.
+         * This method sets the field <code>usagePattern</code>.
          *
          * @param usagePattern the new value of the field usagePattern
          */
@@ -124,14 +125,15 @@ public class SolicitorSetup {
             this.usagePattern = usagePattern;
         }
 
-		/**
-         * This method sets the field <tt>repoType</tt>.
+        /**
+         * This method sets the field <code>repoType</code>.
          *
          * @param repoType the new value of the field repoType
          */
-		public void setRepoType(String repoType) {
-			this.repoType = repoType;
-		}
+        public void setRepoType(String repoType) {
+
+            this.repoType = repoType;
+        }
     }
 
     private List<ReaderSetup> readerSetups = new ArrayList<>();
@@ -141,37 +143,37 @@ public class SolicitorSetup {
     private List<WriterConfig> writerSetups = new ArrayList<>();
 
     /**
-     * This method gets the field <tt>readerSetups</tt>.
+     * This method gets the field <code>readerSetups</code>.
      *
      * @return the field readerSetups
      */
     public List<ReaderSetup> getReaderSetups() {
 
-        return readerSetups;
+        return this.readerSetups;
     }
 
     /**
-     * This method gets the field <tt>ruleSetups</tt>.
+     * This method gets the field <code>ruleSetups</code>.
      *
      * @return the field ruleSetups
      */
     public List<RuleConfig> getRuleSetups() {
 
-        return ruleSetups;
+        return this.ruleSetups;
     }
 
     /**
-     * This method gets the field <tt>writerSetups</tt>.
+     * This method gets the field <code>writerSetups</code>.
      *
      * @return the field writerSetups
      */
     public List<WriterConfig> getWriterSetups() {
 
-        return writerSetups;
+        return this.writerSetups;
     }
 
     /**
-     * This method sets the field <tt>readerSetups</tt>.
+     * This method sets the field <code>readerSetups</code>.
      *
      * @param readerSetups the new value of the field readerSetups
      */
@@ -181,7 +183,7 @@ public class SolicitorSetup {
     }
 
     /**
-     * This method sets the field <tt>ruleSetups</tt>.
+     * This method sets the field <code>ruleSetups</code>.
      *
      * @param ruleSetups the new value of the field ruleSetups
      */
@@ -191,7 +193,7 @@ public class SolicitorSetup {
     }
 
     /**
-     * This method sets the field <tt>writerSetups</tt>.
+     * This method sets the field <code>writerSetups</code>.
      *
      * @param writerSetups the new value of the field writerSetups
      */

@@ -64,7 +64,7 @@ public class DroolsRuleEngine implements RuleEngine {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Each set of rules given by a RuleConfig (e.g. a single decision table)
      * will be executed in a separate Kie session.
      */
@@ -72,7 +72,7 @@ public class DroolsRuleEngine implements RuleEngine {
     public void executeRules(ModelRoot modelRoot) {
 
         int rulesFired = 0;
-        for (RuleConfig rc : setup.getRuleSetups()) {
+        for (RuleConfig rc : this.setup.getRuleSetups()) {
             rulesFired += executeRuleGroup(modelRoot, rc);
         }
         LOG.info(LogMessages.RULE_ENGINE_FINISHED.msg(), rulesFired);
@@ -85,14 +85,14 @@ public class DroolsRuleEngine implements RuleEngine {
      * and firing all rules. If the RuleConfig defines the rule group as
      * optional and the rule source does not exist the execution will be
      * skipped.
-     * 
+     *
      * @param modelRoot the root to the model defining all facts
      * @param rc the configuration of the rules to execute
      * @return the number of rules which fired
      */
     private int executeRuleGroup(ModelRoot modelRoot, RuleConfig rc) {
 
-        if (rc.isOptional() && !inputStreamFactory.isExisting(rc.getRuleSource())) {
+        if (rc.isOptional() && !this.inputStreamFactory.isExisting(rc.getRuleSource())) {
             LOG.info(LogMessages.SKIPPING_RULEGROUP.msg(), rc.getRuleGroup(), rc.getRuleSource());
             return 0;
         }
@@ -103,7 +103,7 @@ public class DroolsRuleEngine implements RuleEngine {
 
         // Fire the rules.
         long startTime = System.currentTimeMillis();
-        modelHelper.setCurrentRuleGroup(rc.getRuleGroup());
+        ModelHelper.setCurrentRuleGroup(rc.getRuleGroup());
         int count = ksession.fireAllRules();
         long endTime = System.currentTimeMillis();
         LOG.info(LogMessages.RULE_GROUP_FINISHED.msg(), rc.getRuleGroup(), count, endTime - startTime);
@@ -113,7 +113,7 @@ public class DroolsRuleEngine implements RuleEngine {
 
     /**
      * Inserts all facts to the working memory of the given Drools session.
-     * 
+     *
      * @param ksession the Drools session
      * @param modelRoot root of the model containing the facts
      */
@@ -139,7 +139,7 @@ public class DroolsRuleEngine implements RuleEngine {
 
     /**
      * Prepare the {@link KieSession} by reading and preprocessing given rules.
-     * 
+     *
      * @param rc the configuration of the rules to read
      * @return the prepared {@link KieSession}
      */
@@ -158,7 +158,7 @@ public class DroolsRuleEngine implements RuleEngine {
 
         List<Resource> resources = new ArrayList<>();
 
-        ruleReaderFactory.readerFor(rc.getType()).readRules(rc.getRuleSource(), rc.getTemplateSource(),
+        this.ruleReaderFactory.readerFor(rc.getType()).readRules(rc.getRuleSource(), rc.getTemplateSource(),
                 rc.getDescription(), baseModel, resources);
         LOG.info(LogMessages.LOAD_RULES.msg(), rc.getType(), rc.getRuleSource(), rc.getTemplateSource(),
                 rc.getRuleGroup());
@@ -182,13 +182,13 @@ public class DroolsRuleEngine implements RuleEngine {
 
         KieSession kSession = kContainer.newKieSession(sesionName);
 
-        if (debugLog != null && !debugLog.isEmpty()) {
+        if (this.debugLog != null && !this.debugLog.isEmpty()) {
             // Set up listeners.
             kSession.addEventListener(new DebugAgendaEventListener());
             kSession.addEventListener(new DebugRuleRuntimeEventListener());
 
             // Set up a file-based audit logger.
-            KieServices.get().getLoggers().newFileLogger(kSession, debugLog);
+            KieServices.get().getLoggers().newFileLogger(kSession, this.debugLog);
         }
 
         return kSession;

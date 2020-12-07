@@ -157,7 +157,7 @@ public class ModelHelper {
      * the remainder should be interpreted as a Java RegEx and matching will be
      * done against this RegEx. "RANGE:" indicates that the following should be
      * interpreted as a Maven version range expression.
-     * 
+     *
      * @param input the string to test
      * @param condition the condition to test against
      * @return <code>true</code> if it matches, <code>false</code> otherwise
@@ -207,9 +207,9 @@ public class ModelHelper {
     }
 
     /**
-     * This method gets the field <tt>currentRuleGroup</tt>. This field contains
-     * the id of the current rule group being processed by the Drools Rule
-     * Engine.
+     * This method gets the field <code>currentRuleGroup</code>. This field
+     * contains the id of the current rule group being processed by the Drools
+     * Rule Engine.
      *
      * @return the field currentRuleGroup
      */
@@ -219,7 +219,7 @@ public class ModelHelper {
     }
 
     /**
-     * This method sets the field <tt>currentRuleGroup</tt>.
+     * This method sets the field <code>currentRuleGroup</code>.
      *
      * @param currentRuleGroup the new value of the field currentRuleGroup
      */

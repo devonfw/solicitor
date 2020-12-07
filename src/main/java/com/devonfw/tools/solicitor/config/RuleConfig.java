@@ -29,67 +29,67 @@ public class RuleConfig {
     private String description;
 
     /**
-     * This method gets the field <tt>ruleGroup</tt>.
+     * This method gets the field <code>ruleGroup</code>.
      *
      * @return the field ruleGroup
      */
     public String getRuleGroup() {
 
-        return ruleGroup;
+        return this.ruleGroup;
     }
 
     /**
-     * This method gets the field <tt>description</tt>.
+     * This method gets the field <code>description</code>.
      *
      * @return the field description
      */
     public String getDescription() {
 
-        return description;
+        return this.description;
     }
 
     /**
-     * This method gets the field <tt>ruleSource</tt>.
+     * This method gets the field <code>ruleSource</code>.
      *
      * @return the field ruleSource
      */
     public String getRuleSource() {
 
-        return ruleSource;
+        return this.ruleSource;
     }
 
     /**
-     * This method gets the field <tt>templateSource</tt>.
+     * This method gets the field <code>templateSource</code>.
      *
      * @return the field templateSource
      */
     public String getTemplateSource() {
 
-        return templateSource;
+        return this.templateSource;
     }
 
     /**
-     * This method gets the field <tt>type</tt>.
+     * This method gets the field <code>type</code>.
      *
      * @return the field type
      */
     public String getType() {
 
-        return type;
+        return this.type;
     }
 
     /**
-     * This method gets the field <tt>optional</tt>.
+     * This method gets the field <code>optional</code>.
      *
      * @return the field optional
      */
     public boolean isOptional() {
 
-        return optional;
+        return this.optional;
     }
 
     /**
-     * This method sets the field <tt>ruleGroup</tt>.
+     * This method sets the field <code>ruleGroup</code>.
      *
      * @param ruleGroup the new value of the field ruleGroup
      */
@@ -99,7 +99,7 @@ public class RuleConfig {
     }
 
     /**
-     * This method sets the field <tt>description</tt>.
+     * This method sets the field <code>description</code>.
      *
      * @param description the new value of the field description
      */
@@ -109,7 +109,7 @@ public class RuleConfig {
     }
 
     /**
-     * This method sets the field <tt>ruleSource</tt>.
+     * This method sets the field <code>ruleSource</code>.
      *
      * @param ruleSource the new value of the field ruleSource
      */
@@ -119,7 +119,7 @@ public class RuleConfig {
     }
 
     /**
-     * This method sets the field <tt>templateSource</tt>.
+     * This method sets the field <code>templateSource</code>.
      *
      * @param templateSource the new value of the field templateSource
      */
@@ -129,7 +129,7 @@ public class RuleConfig {
     }
 
     /**
-     * This method sets the field <tt>type</tt>.
+     * This method sets the field <code>type</code>.
      *
      * @param type the new value of the field type
      */
@@ -139,7 +139,7 @@ public class RuleConfig {
     }
 
     /**
-     * This method sets the field <tt>optional</tt>.
+     * This method sets the field <code>optional</code>.
      *
      * @param optional the new value of the field optional
      */

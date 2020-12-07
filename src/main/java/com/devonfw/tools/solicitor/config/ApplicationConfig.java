@@ -30,57 +30,57 @@ public class ApplicationConfig {
     private List<ReaderConfig> readers = new ArrayList<>();
 
     /**
-     * This method gets the field <tt>name</tt>.
+     * This method gets the field <code>name</code>.
      *
      * @return the field name
      */
     public String getName() {
 
-        return name;
+        return this.name;
     }
 
     /**
-     * This method gets the field <tt>programmingEcosystem</tt>.
+     * This method gets the field <code>programmingEcosystem</code>.
      *
      * @return the field programmingEcosystem
      */
     public String getProgrammingEcosystem() {
 
-        return programmingEcosystem;
+        return this.programmingEcosystem;
     }
 
     /**
-     * This method gets the field <tt>readers</tt>.
+     * This method gets the field <code>readers</code>.
      *
      * @return the field readers
      */
     public List<ReaderConfig> getReaders() {
 
-        return readers;
+        return this.readers;
     }
 
     /**
-     * This method gets the field <tt>releaseId</tt>.
+     * This method gets the field <code>releaseId</code>.
      *
      * @return the field releaseId
      */
     public String getReleaseId() {
 
-        return releaseId;
+        return this.releaseId;
     }
 
     /**
-     * This method gets the field <tt>sourceRepo</tt>.
+     * This method gets the field <code>sourceRepo</code>.
      *
      * @return the field sourceRepo
      */
     public String getSourceRepo() {
 
-        return sourceRepo;
+        return this.sourceRepo;
     }
 
     /**
-     * This method sets the field <tt>name</tt>.
+     * This method sets the field <code>name</code>.
      *
      * @param name the new value of the field name
      */
@@ -90,7 +90,7 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method sets the field <tt>programmingEcosystem</tt>.
+     * This method sets the field <code>programmingEcosystem</code>.
      *
      * @param programmingEcosystem the new value of the field
      *        programmingEcosystem
@@ -101,7 +101,7 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method sets the field <tt>readers</tt>.
+     * This method sets the field <code>readers</code>.
      *
      * @param readers the new value of the field readers
      */
@@ -111,7 +111,7 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method sets the field <tt>releaseId</tt>.
+     * This method sets the field <code>releaseId</code>.
      *
      * @param releaseId the new value of the field releaseId
      */
@@ -121,7 +121,7 @@ public class ApplicationConfig {
     }
 
     /**
-     * This method sets the field <tt>sourceRepo</tt>.
+     * This method sets the field <code>sourceRepo</code>.
      *
      * @param sourceRepo the new value of the field sourceRepo
      */

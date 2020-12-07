@@ -14,17 +14,17 @@ public class LicenseSummary {
     private List<Dependency> dependencies;
 
     /**
-     * This method gets the field <tt>dependencies</tt>.
+     * This method gets the field <code>dependencies</code>.
      *
      * @return the field dependencies
      */
     public List<Dependency> getDependencies() {
 
-        return dependencies;
+        return this.dependencies;
     }
 
     /**
-     * This method sets the field <tt>dependencies</tt>.
+     * This method sets the field <code>dependencies</code>.
      *
      * @param dependencies the new value of the field dependencies
      */
@@ -38,7 +38,7 @@ public class LicenseSummary {
     public String toString() {
 
         String ld = "";
-        for (Dependency d : dependencies) {
+        for (Dependency d : this.dependencies) {
             ld += d + "\n";
         }
         return ld;

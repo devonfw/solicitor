@@ -47,47 +47,47 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>artifact</tt>.
+     * This method gets the field <code>artifact</code>.
      *
      * @return the field artifact
      */
     public String getArtifact() {
 
-        return artifact;
+        return this.artifact;
     }
 
     /**
-     * This method gets the field <tt>builddate</tt>.
+     * This method gets the field <code>builddate</code>.
      *
      * @return the field builddate
      */
     public String getBuilddate() {
 
-        return builddate;
+        return this.builddate;
     }
 
     /**
-     * This method gets the field <tt>githash</tt>.
+     * This method gets the field <code>githash</code>.
      *
      * @return the field githash
      */
     public String getGithash() {
 
-        return githash;
+        return this.githash;
     }
 
     /**
-     * This method gets the field <tt>version</tt>.
+     * This method gets the field <code>version</code>.
      *
      * @return the field version
      */
     public String getVersion() {
 
-        return version;
+        return this.version;
     }
 
     /**
-     * This method sets the field <tt>artifact</tt>.
+     * This method sets the field <code>artifact</code>.
      *
      * @param artifact the new value of the field artifact
      */
@@ -97,7 +97,7 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method sets the field <tt>builddate</tt>.
+     * This method sets the field <code>builddate</code>.
      *
      * @param builddate the new value of the field builddate
      */
@@ -107,7 +107,7 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method sets the field <tt>githash</tt>.
+     * This method sets the field <code>githash</code>.
      *
      * @param githash the new value of the field githash
      */
@@ -117,7 +117,7 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method sets the field <tt>version</tt>.
+     * This method sets the field <code>version</code>.
      *
      * @param version the new value of the field version
      */
@@ -127,17 +127,17 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>extensionArtifact</tt>.
+     * This method gets the field <code>extensionArtifact</code>.
      *
      * @return the field extensionArtifact
      */
     public String getExtensionArtifact() {
 
-        return extensionArtifact;
+        return this.extensionArtifact;
     }
 
     /**
-     * This method sets the field <tt>extensionArtifact</tt>.
+     * This method sets the field <code>extensionArtifact</code>.
      *
      * @param extensionArtifact the new value of the field extensionArtifact
      */
@@ -147,17 +147,17 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>extensionVersion</tt>.
+     * This method gets the field <code>extensionVersion</code>.
      *
      * @return the field extensionVersion
      */
     public String getExtensionVersion() {
 
-        return extensionVersion;
+        return this.extensionVersion;
     }
 
     /**
-     * This method sets the field <tt>extensionVersion</tt>.
+     * This method sets the field <code>extensionVersion</code>.
      *
      * @param extensionVersion the new value of the field extensionVersion
      */
@@ -167,17 +167,17 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>extensionGithash</tt>.
+     * This method gets the field <code>extensionGithash</code>.
      *
      * @return the field extensionGithash
      */
     public String getExtensionGithash() {
 
-        return extensionGithash;
+        return this.extensionGithash;
     }
 
     /**
-     * This method sets the field <tt>extensionGithash</tt>.
+     * This method sets the field <code>extensionGithash</code>.
      *
      * @param extensionGithash the new value of the field extensionGithash
      */
@@ -187,17 +187,17 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>extensionBuilddate</tt>.
+     * This method gets the field <code>extensionBuilddate</code>.
      *
      * @return the field extensionBuilddate
      */
     public String getExtensionBuilddate() {
 
-        return extensionBuilddate;
+        return this.extensionBuilddate;
     }
 
     /**
-     * This method sets the field <tt>extensionBuilddate</tt>.
+     * This method sets the field <code>extensionBuilddate</code>.
      *
      * @param extensionBuilddate the new value of the field extensionBuilddate
      */
@@ -207,17 +207,19 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>extensionExpectedSolicitorVersionRange</tt>.
+     * This method gets the field
+     * <code>extensionExpectedSolicitorVersionRange</code>.
      *
      * @return the field extensionExpectedSolicitorVersionRange
      */
     public String getExtensionExpectedSolicitorVersionRange() {
 
-        return extensionExpectedSolicitorVersionRange;
+        return this.extensionExpectedSolicitorVersionRange;
     }
 
     /**
-     * This method sets the field <tt>extensionExpectedSolicitorVersionRange</tt>.
+     * This method sets the field
+     * <code>extensionExpectedSolicitorVersionRange</code>.
      *
      * @param extensionExpectedSolicitorVersionRange the new value of the field
      *        extensionExpectedSolicitorVersionRange
@@ -228,17 +230,17 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>extensionMessage1</tt>.
+     * This method gets the field <code>extensionMessage1</code>.
      *
      * @return the field extensionMessage1
      */
     public String getExtensionMessage1() {
 
-        return extensionMessage1;
+        return this.extensionMessage1;
     }
 
     /**
-     * This method sets the field <tt>extensionMessage1</tt>.
+     * This method sets the field <code>extensionMessage1</code>.
      *
      * @param extensionMessage1 the new value of the field extensionMessage1
      */
@@ -248,17 +250,17 @@ public class SolicitorVersion {
     }
 
     /**
-     * This method gets the field <tt>extensionMessage2</tt>.
+     * This method gets the field <code>extensionMessage2</code>.
      *
      * @return the field extensionMessage2
      */
     public String getExtensionMessage2() {
 
-        return extensionMessage2;
+        return this.extensionMessage2;
     }
 
     /**
-     * This method sets the field <tt>extensionMessage2</tt>.
+     * This method sets the field <code>extensionMessage2</code>.
      *
      * @param extensionMessage2 the new value of the field extensionMessage2
      */

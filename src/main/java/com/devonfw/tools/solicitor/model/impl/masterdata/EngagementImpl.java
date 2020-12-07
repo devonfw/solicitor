@@ -41,7 +41,7 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
 
     /**
      * Constructor.
-     * 
+     *
      * @param engagementName the name of the engagement
      * @param engagementType the type of engagement
      * @param clientName name of the client
@@ -61,58 +61,58 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
     @Override
     public void addApplication(Application application) {
 
-        applications.add(application);
+        this.applications.add(application);
     }
 
     /** {@inheritDoc} */
     @Override
     protected ModelRoot doGetParent() {
 
-        return modelRoot;
+        return this.modelRoot;
     }
 
     /** {@inheritDoc} */
     @Override
     public List<Application> getApplications() {
 
-        return Collections.unmodifiableList(applications);
+        return Collections.unmodifiableList(this.applications);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getClientName() {
 
-        return clientName;
+        return this.clientName;
     }
 
     /** {@inheritDoc} */
     @Override
     public String[] getDataElements() {
 
-        return new String[] { engagementName, engagementType.toString(), clientName, goToMarketModel.toString(),
-        contractAllowsOss ? "true" : "false", ossPolicyFollowed ? "true" : "false",
-        customerProvidesOss ? "true" : "false" };
+        return new String[] { this.engagementName, this.engagementType.toString(), this.clientName,
+        this.goToMarketModel.toString(), this.contractAllowsOss ? "true" : "false",
+        this.ossPolicyFollowed ? "true" : "false", this.customerProvidesOss ? "true" : "false" };
     }
 
     /** {@inheritDoc} */
     @Override
     public String getEngagementName() {
 
-        return engagementName;
+        return this.engagementName;
     }
 
     /** {@inheritDoc} */
     @Override
     public EngagementType getEngagementType() {
 
-        return engagementType;
+        return this.engagementType;
     }
 
     /** {@inheritDoc} */
     @Override
     public GoToMarketModel getGoToMarketModel() {
 
-        return goToMarketModel;
+        return this.goToMarketModel;
     }
 
     /** {@inheritDoc} */
@@ -126,34 +126,34 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
     /**
      * {@inheritDoc}
      *
-     * This method gets the field <tt>modelRoot</tt>.
+     * This method gets the field <code>modelRoot</code>.
      */
     @Override
     @JsonIgnore
     public ModelRoot getModelRoot() {
 
-        return modelRoot;
+        return this.modelRoot;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isContractAllowsOss() {
 
-        return contractAllowsOss;
+        return this.contractAllowsOss;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isCustomerProvidesOss() {
 
-        return customerProvidesOss;
+        return this.customerProvidesOss;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isOssPolicyFollowed() {
 
-        return ossPolicyFollowed;
+        return this.ossPolicyFollowed;
     }
 
     /** {@inheritDoc} */
@@ -201,7 +201,7 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
     /**
      * {@inheritDoc}
      *
-     * This method sets the field <tt>modelRoot</tt>.
+     * This method sets the field <code>modelRoot</code>.
      */
     @Override
     public void setModelRoot(ModelRoot modelRoot) {

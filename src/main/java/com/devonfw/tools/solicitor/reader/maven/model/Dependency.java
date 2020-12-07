@@ -31,47 +31,47 @@ public class Dependency {
     private ArrayList<License> licenses;
 
     /**
-     * This method gets the field <tt>artifactId</tt>.
+     * This method gets the field <code>artifactId</code>.
      *
      * @return the field artifactId
      */
     public String getArtifactId() {
 
-        return artifactId;
+        return this.artifactId;
     }
 
     /**
-     * This method gets the field <tt>groupId</tt>.
+     * This method gets the field <code>groupId</code>.
      *
      * @return the field groupId
      */
     public String getGroupId() {
 
-        return groupId;
+        return this.groupId;
     }
 
     /**
-     * This method gets the field <tt>licenses</tt>.
+     * This method gets the field <code>licenses</code>.
      *
      * @return the field licenses
      */
     public ArrayList<License> getLicenses() {
 
-        return licenses;
+        return this.licenses;
     }
 
     /**
-     * This method gets the field <tt>version</tt>.
+     * This method gets the field <code>version</code>.
      *
      * @return the field version
      */
     public String getVersion() {
 
-        return version;
+        return this.version;
     }
 
     /**
-     * This method sets the field <tt>artifactId</tt>.
+     * This method sets the field <code>artifactId</code>.
      *
      * @param artifactId the new value of the field artifactId
      */
@@ -81,7 +81,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>groupId</tt>.
+     * This method sets the field <code>groupId</code>.
      *
      * @param groupId the new value of the field groupId
      */
@@ -91,7 +91,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>licenses</tt>.
+     * This method sets the field <code>licenses</code>.
      *
      * @param licenses the new value of the field licenses
      */
@@ -101,7 +101,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>version</tt>.
+     * This method sets the field <code>version</code>.
      *
      * @param version the new value of the field version
      */

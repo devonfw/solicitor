@@ -24,17 +24,17 @@ public class LicenseSummary {
     private ArrayList<Dependency> dependencies;
 
     /**
-     * This method gets the field <tt>dependencies</tt>.
+     * This method gets the field <code>dependencies</code>.
      *
      * @return the field dependencies
      */
     public ArrayList<Dependency> getDependencies() {
 
-        return dependencies;
+        return this.dependencies;
     }
 
     /**
-     * This method sets the field <tt>dependencies</tt>.
+     * This method sets the field <code>dependencies</code>.
      *
      * @param dependencies the new value of the field dependencies
      */

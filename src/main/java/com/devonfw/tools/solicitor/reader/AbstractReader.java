@@ -38,7 +38,7 @@ public abstract class AbstractReader implements Reader {
 
     /**
      * Performs logging.
-     * 
+     *
      * @param sourceUrl the URL from where the inventory data was read
      * @param application the application
      * @param readComponents number of read ApplicationComponents
@@ -79,13 +79,13 @@ public abstract class AbstractReader implements Reader {
     }
 
     /**
-     * This method gets the field <tt>modelFactory</tt>.
+     * This method gets the field <code>modelFactory</code>.
      *
      * @return the field modelFactory
      */
     public ModelFactory getModelFactory() {
 
-        return modelFactory;
+        return this.modelFactory;
     }
 
     /**
@@ -97,7 +97,7 @@ public abstract class AbstractReader implements Reader {
     public abstract Set<String> getSupportedTypes();
 
     /**
-     * This method sets the field <tt>inputStreamFactory</tt>.
+     * This method sets the field <code>inputStreamFactory</code>.
      *
      * @param inputStreamFactory the new value of the field inputStreamFactory
      */
@@ -107,7 +107,7 @@ public abstract class AbstractReader implements Reader {
     }
 
     /**
-     * This method sets the field <tt>modelFactory</tt>.
+     * This method sets the field <code>modelFactory</code>.
      *
      * @param modelFactory the new value of the field modelFactory
      */

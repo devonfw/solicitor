@@ -39,7 +39,7 @@ public class ResourceToFileCopier {
 
         /**
          * The Constructor.
-         * 
+         *
          * @param source the URL of the source to copy from
          * @param target the target (filename)
          */
@@ -50,17 +50,17 @@ public class ResourceToFileCopier {
         }
 
         /**
-         * This method gets the field <tt>source</tt>.
+         * This method gets the field <code>source</code>.
          *
          * @return the field source
          */
         public String getSource() {
 
-            return source;
+            return this.source;
         }
 
         /**
-         * This method sets the field <tt>source</tt>.
+         * This method sets the field <code>source</code>.
          *
          * @param source the new value of the field source
          */
@@ -70,17 +70,17 @@ public class ResourceToFileCopier {
         }
 
         /**
-         * This method gets the field <tt>target</tt>.
+         * This method gets the field <code>target</code>.
          *
          * @return the field target
          */
         public String getTarget() {
 
-            return target;
+            return this.target;
         }
 
         /**
-         * This method sets the field <tt>target</tt>.
+         * This method sets the field <code>target</code>.
          *
          * @param target the new value of the field target
          */
@@ -102,26 +102,26 @@ public class ResourceToFileCopier {
          */
         public CopySequenceBuilder() {
 
-            operations = new ArrayList<>();
+            this.operations = new ArrayList<>();
         }
 
         /**
          * Schedule a copy operation.
-         * 
+         *
          * @param source the source to copy from (URL)
          * @param target the target to copy to (filename)
          * @return the builder (to allow method chaining)
          */
         public CopySequenceBuilder withCopyOperation(String source, String target) {
 
-            operations.add(new CopyOperation(source, target));
+            this.operations.add(new CopyOperation(source, target));
             return this;
         }
 
         /**
          * Execute pattern replacement in all target filenames of the scheduled
          * copy operations. This uses {@link String#replaceAll(String, String)}.
-         * 
+         *
          * @param pattern the pattern to replace (regex)
          * @param replacement the replacement for the pattern; observe that some
          *        characters have special meaning due to regex functionality
@@ -131,7 +131,7 @@ public class ResourceToFileCopier {
          */
         public CopySequenceBuilder replaceInTarget(String pattern, String replacement) {
 
-            for (CopyOperation operation : operations) {
+            for (CopyOperation operation : this.operations) {
                 operation.setTarget(operation.getTarget().replaceAll(pattern, replacement));
             }
             return this;
@@ -142,7 +142,7 @@ public class ResourceToFileCopier {
          */
         public void execute() {
 
-            for (CopyOperation operation : operations) {
+            for (CopyOperation operation : this.operations) {
                 File targetFile = new File(operation.getTarget());
                 if (targetFile.exists()) {
                     LOG.error(LogMessages.FILE_EXISTS.msg(), operation.getTarget());
@@ -152,7 +152,7 @@ public class ResourceToFileCopier {
 
             }
 
-            for (CopyOperation operation : operations) {
+            for (CopyOperation operation : this.operations) {
                 copyResourceToFile(operation.getSource(), operation.getTarget());
             }
         }
@@ -190,7 +190,7 @@ public class ResourceToFileCopier {
 
     /**
      * Copies all resources of the given group to the filesystem.
-     * 
+     *
      * @param resourceGroup a {@link ResourceGroup} which identifies the files
      *        to copy.
      * @param targetDir the target directory - will be created if it does not
@@ -230,7 +230,7 @@ public class ResourceToFileCopier {
             returnString = targetDir + "/readme.txt";
             break;
         case FULL_BASE_CONFIG:
-            List<String> urls = configFactory.findAllClasspathResourcesInBaseConfig();
+            List<String> urls = this.configFactory.findAllClasspathResourcesInBaseConfig();
             CopySequenceBuilder csb = new CopySequenceBuilder();
             for (String url : urls) {
                 csb.withCopyOperation(url, url);
@@ -264,7 +264,7 @@ public class ResourceToFileCopier {
             // create needed directories if not yet existing
             outputFile.getParentFile().mkdirs();
         }
-        try (InputStream inputStream = inputStreamFactory.createInputStreamFor(resourceUrl);
+        try (InputStream inputStream = this.inputStreamFactory.createInputStreamFor(resourceUrl);
                 OutputStream outputStream = new FileOutputStream(outputFile)) {
             byte[] buffer = new byte[1024];
             int length;

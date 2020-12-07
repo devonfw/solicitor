@@ -16,37 +16,37 @@ public class License {
     private String distribution;
 
     /**
-     * This method gets the field <tt>distribution</tt>.
+     * This method gets the field <code>distribution</code>.
      *
      * @return the field distribution
      */
     public String getDistribution() {
 
-        return distribution;
+        return this.distribution;
     }
 
     /**
-     * This method gets the field <tt>license</tt>.
+     * This method gets the field <code>license</code>.
      *
      * @return the field license
      */
     public String getLicense() {
 
-        return license;
+        return this.license;
     }
 
     /**
-     * This method gets the field <tt>license_url</tt>.
+     * This method gets the field <code>license_url</code>.
      *
      * @return the field license_url
      */
     public String getLicense_url() {
 
-        return license_url;
+        return this.license_url;
     }
 
     /**
-     * This method sets the field <tt>distribution</tt>.
+     * This method sets the field <code>distribution</code>.
      *
      * @param distribution the new value of the field distribution
      */
@@ -56,7 +56,7 @@ public class License {
     }
 
     /**
-     * This method sets the field <tt>license</tt>.
+     * This method sets the field <code>license</code>.
      *
      * @param license the new value of the field license
      */
@@ -66,7 +66,7 @@ public class License {
     }
 
     /**
-     * This method sets the field <tt>license_url</tt>.
+     * This method sets the field <code>license_url</code>.
      *
      * @param license_url the new value of the field license_url
      */

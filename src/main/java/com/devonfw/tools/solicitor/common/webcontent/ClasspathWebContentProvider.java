@@ -36,7 +36,7 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Points to the folders defined via property {@link #cachePaths} in the
      * classpath.
      */
@@ -44,7 +44,7 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
     protected Collection<String> getCacheUrls(String key) {
 
         List<String> result = new ArrayList<>();
-        for (String base : cachePaths) {
+        for (String base : this.cachePaths) {
             result.add(new StringBuilder("classpath:").append(base).append("/").append(key).toString());
         }
         return result;
@@ -52,19 +52,19 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Delegates next to the {@link FilesystemCachingWebContentProvider}.
      */
     @Override
     public String loadFromNext(String url) {
 
-        String result = filesystemCachingWebContentProvider.getWebContentForUrl(url);
+        String result = this.filesystemCachingWebContentProvider.getWebContentForUrl(url);
         return result;
     }
 
     /**
-     * This method sets the field <tt>cachePaths</tt>. It defines the base paths
-     * where to look for preconfigured license texts.
+     * This method sets the field <code>cachePaths</code>. It defines the base
+     * paths where to look for preconfigured license texts.
      *
      * @param cachePaths the new value of the field cachePaths
      */

@@ -40,7 +40,7 @@ public class WriterConfig {
 
     /**
      * Constructor for WriterConfig to be used when deserializing JSON.
-     * 
+     *
      * @param dataTables a map of the resources which define the SQLs to create
      *        the reporting data tables.
      */
@@ -51,57 +51,57 @@ public class WriterConfig {
     }
 
     /**
-     * This method gets the field <tt>dataTables</tt>.
+     * This method gets the field <code>dataTables</code>.
      *
      * @return the field dataTables
      */
     public Map<String, String> getDataTables() {
 
-        return dataTables;
+        return this.dataTables;
     }
 
     /**
-     * This method gets the field <tt>description</tt>.
+     * This method gets the field <code>description</code>.
      *
      * @return the field description
      */
     public String getDescription() {
 
-        return description;
+        return this.description;
     }
 
     /**
-     * This method gets the field <tt>target</tt>.
+     * This method gets the field <code>target</code>.
      *
      * @return the field target
      */
     public String getTarget() {
 
-        return target;
+        return this.target;
     }
 
     /**
-     * This method gets the field <tt>templateSource</tt>.
+     * This method gets the field <code>templateSource</code>.
      *
      * @return the field templateSource
      */
     public String getTemplateSource() {
 
-        return templateSource;
+        return this.templateSource;
     }
 
     /**
-     * This method gets the field <tt>type</tt>.
+     * This method gets the field <code>type</code>.
      *
      * @return the field type
      */
     public String getType() {
 
-        return type;
+        return this.type;
     }
 
     /**
-     * This method sets the field <tt>dataTables</tt>.
+     * This method sets the field <code>dataTables</code>.
      *
      * @param dataTables the new value of the field dataTables
      */
@@ -111,7 +111,7 @@ public class WriterConfig {
     }
 
     /**
-     * This method sets the field <tt>description</tt>.
+     * This method sets the field <code>description</code>.
      *
      * @param description the new value of the field description
      */
@@ -121,7 +121,7 @@ public class WriterConfig {
     }
 
     /**
-     * This method sets the field <tt>target</tt>.
+     * This method sets the field <code>target</code>.
      *
      * @param target the new value of the field target
      */
@@ -131,7 +131,7 @@ public class WriterConfig {
     }
 
     /**
-     * This method sets the field <tt>templateSource</tt>.
+     * This method sets the field <code>templateSource</code>.
      *
      * @param templateSource the new value of the field templateSource
      */
@@ -141,7 +141,7 @@ public class WriterConfig {
     }
 
     /**
-     * This method sets the field <tt>type</tt>.
+     * This method sets the field <code>type</code>.
      *
      * @param type the new value of the field type
      */

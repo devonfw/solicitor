@@ -32,51 +32,51 @@ public class ReaderConfig {
      */
     public ReaderConfig() {
 
-        repoType = DEFAULT_REPO_TYPE;
+        this.repoType = DEFAULT_REPO_TYPE;
     }
 
     /**
-     * This method gets the field <tt>repoType</tt>.
+     * This method gets the field <code>repoType</code>.
      *
      * @return the field repoType
      */
     public String getRepoType() {
 
-        return repoType;
+        return this.repoType;
     }
 
     /**
-     * This method gets the field <tt>source</tt>.
+     * This method gets the field <code>source</code>.
      *
      * @return the field source
      */
     public String getSource() {
 
-        return source;
+        return this.source;
     }
 
     /**
-     * This method gets the field <tt>type</tt>.
+     * This method gets the field <code>type</code>.
      *
      * @return the field type
      */
     public String getType() {
 
-        return type;
+        return this.type;
     }
 
     /**
-     * This method gets the field <tt>usagePattern</tt>.
+     * This method gets the field <code>usagePattern</code>.
      *
      * @return the field usagePattern
      */
     public UsagePattern getUsagePattern() {
 
-        return usagePattern;
+        return this.usagePattern;
     }
 
     /**
-     * This method sets the field <tt>repoType</tt>.
+     * This method sets the field <code>repoType</code>.
      *
      * @param repoType the new value of the field repoType
      */
@@ -86,7 +86,7 @@ public class ReaderConfig {
     }
 
     /**
-     * This method sets the field <tt>source</tt>.
+     * This method sets the field <code>source</code>.
      *
      * @param source the new value of the field source
      */
@@ -96,7 +96,7 @@ public class ReaderConfig {
     }
 
     /**
-     * This method sets the field <tt>type</tt>.
+     * This method sets the field <code>type</code>.
      *
      * @param type the new value of the field type
      */
@@ -106,7 +106,7 @@ public class ReaderConfig {
     }
 
     /**
-     * This method sets the field <tt>usagePattern</tt>.
+     * This method sets the field <code>usagePattern</code>.
      *
      * @param usagePattern the new value of the field usagePattern
      */

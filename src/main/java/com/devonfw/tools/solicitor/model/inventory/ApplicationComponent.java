@@ -33,21 +33,21 @@ public interface ApplicationComponent {
     void addRawLicense(RawLicense rawLicense);
 
     /**
-     * This method gets the field <tt>application</tt>.
+     * This method gets the field <code>application</code>.
      *
      * @return the field application
      */
     Application getApplication();
 
     /**
-     * This method gets the field <tt>artifactId</tt>.
+     * This method gets the field <code>artifactId</code>.
      *
      * @return the field artifactId
      */
     String getArtifactId();
 
     /**
-     * This method gets the field <tt>groupId</tt>.
+     * This method gets the field <code>groupId</code>.
      *
      * @return the field groupId
      */
@@ -55,49 +55,50 @@ public interface ApplicationComponent {
 
     /**
      * This method gets an unmodifiable copy of the field
-     * <tt>normalizedLicenses</tt>.
+     * <code>normalizedLicenses</code>.
      *
      * @return the field normalizedLicenses
      */
     List<NormalizedLicense> getNormalizedLicenses();
 
     /**
-     * This method gets the field <tt>ossHomepage</tt>.
+     * This method gets the field <code>ossHomepage</code>.
      *
      * @return the field ossHomepage
      */
     String getOssHomepage();
 
     /**
-     * This method gets an unmodifiable copy of the field <tt>rawLicenses</tt>.
+     * This method gets an unmodifiable copy of the field
+     * <code>rawLicenses</code>.
      *
      * @return the field rawLicenses
      */
     List<RawLicense> getRawLicenses();
 
     /**
-     * This method gets the field <tt>usagePattern</tt>.
+     * This method gets the field <code>usagePattern</code>.
      *
      * @return the field usagePattern
      */
     UsagePattern getUsagePattern();
 
     /**
-     * This method gets the field <tt>version</tt>.
+     * This method gets the field <code>version</code>.
      *
      * @return the field version
      */
     String getVersion();
 
     /**
-     * This method gets the field <tt>repoType</tt>.
+     * This method gets the field <code>repoType</code>.
      *
      * @return the field repoType
      */
     String getRepoType();
 
     /**
-     * This method gets the field <tt>ossModified</tt>.
+     * This method gets the field <code>ossModified</code>.
      *
      * @return the field ossModified
      */
@@ -112,49 +113,49 @@ public interface ApplicationComponent {
     void setApplication(Application application);
 
     /**
-     * This method sets the field <tt>artifactId</tt>.
+     * This method sets the field <code>artifactId</code>.
      *
      * @param artifactId the new value of the field artifactId
      */
     void setArtifactId(String artifactId);
 
     /**
-     * This method sets the field <tt>groupId</tt>.
+     * This method sets the field <code>groupId</code>.
      *
      * @param groupId the new value of the field groupId
      */
     void setGroupId(String groupId);
 
     /**
-     * This method sets the field <tt>ossHomepage</tt>.
+     * This method sets the field <code>ossHomepage</code>.
      *
      * @param ossHomepage the new value of the field ossHomepage
      */
     void setOssHomepage(String ossHomepage);
 
     /**
-     * This method sets the field <tt>ossModified</tt>.
+     * This method sets the field <code>ossModified</code>.
      *
      * @param ossModified the new value of the field ossModified
      */
     void setOssModified(boolean ossModified);
 
     /**
-     * This method sets the field <tt>usagePattern</tt>.
+     * This method sets the field <code>usagePattern</code>.
      *
      * @param usagePattern the new value of the field usagePattern
      */
     void setUsagePattern(UsagePattern usagePattern);
 
     /**
-     * This method sets the field <tt>version</tt>.
+     * This method sets the field <code>version</code>.
      *
      * @param version the new value of the field version
      */
     void setVersion(String version);
 
     /**
-     * This method sets the field <tt>repoType</tt>.
+     * This method sets the field <code>repoType</code>.
      *
      * @param repoType the new value of the field repoType
      */

@@ -6,35 +6,35 @@ package com.devonfw.tools.solicitor.model.inventory;
 public interface RawLicense {
 
     /**
-     * This method gets the field <tt>applicationComponent</tt>.
+     * This method gets the field <code>applicationComponent</code>.
      *
      * @return the field applicationComponent
      */
     ApplicationComponent getApplicationComponent();
 
     /**
-     * This method gets the field <tt>declaredLicense</tt>.
+     * This method gets the field <code>declaredLicense</code>.
      *
      * @return the field declaredLicense
      */
     String getDeclaredLicense();
 
     /**
-     * This method gets the field <tt>licenseUrl</tt>.
+     * This method gets the field <code>licenseUrl</code>.
      *
      * @return the field licenseUrl
      */
     String getLicenseUrl();
 
     /**
-     * This method gets the field <tt>trace</tt>.
+     * This method gets the field <code>trace</code>.
      *
      * @return the field trace
      */
     String getTrace();
 
     /**
-     * This method gets the field <tt>specialHandling</tt>.
+     * This method gets the field <code>specialHandling</code>.
      *
      * @return the field specialHandling
      */
@@ -49,28 +49,28 @@ public interface RawLicense {
     void setApplicationComponent(ApplicationComponent applicationComponent);
 
     /**
-     * This method sets the field <tt>declaredLicense</tt>.
+     * This method sets the field <code>declaredLicense</code>.
      *
      * @param declaredLicense the new value of the field declaredLicense
      */
     void setDeclaredLicense(String declaredLicense);
 
     /**
-     * This method sets the field <tt>licenseUrl</tt>.
+     * This method sets the field <code>licenseUrl</code>.
      *
      * @param licenseUrl the new value of the field licenseUrl
      */
     void setLicenseUrl(String licenseUrl);
 
     /**
-     * This method sets the field <tt>specialHandling</tt>.
+     * This method sets the field <code>specialHandling</code>.
      *
      * @param specialHandling the new value of the field specialHandling
      */
     void setSpecialHandling(boolean specialHandling);
 
     /**
-     * This method sets the field <tt>trace</tt>.
+     * This method sets the field <code>trace</code>.
      *
      * @param trace the new value of the field trace
      */

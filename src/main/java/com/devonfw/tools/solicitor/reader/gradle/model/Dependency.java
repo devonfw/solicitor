@@ -25,77 +25,77 @@ public class Dependency {
     private List<License> licenses;
 
     /**
-     * This method gets the field <tt>dependency</tt>.
+     * This method gets the field <code>dependency</code>.
      *
      * @return the field dependency
      */
     public String getDependency() {
 
-        return dependency;
+        return this.dependency;
     }
 
     /**
-     * This method gets the field <tt>licenses</tt>.
+     * This method gets the field <code>licenses</code>.
      *
      * @return the field licenses
      */
     public List<License> getLicenses() {
 
-        return licenses;
+        return this.licenses;
     }
 
     /**
-     * This method gets the field <tt>name</tt>.
+     * This method gets the field <code>name</code>.
      *
      * @return the field name
      */
     public String getName() {
 
-        return name;
+        return this.name;
     }
 
     /**
-     * This method gets the field <tt>project</tt>.
+     * This method gets the field <code>project</code>.
      *
      * @return the field project
      */
     public String getProject() {
 
-        return project;
+        return this.project;
     }
 
     /**
-     * This method gets the field <tt>url</tt>.
+     * This method gets the field <code>url</code>.
      *
      * @return the field url
      */
     public String getUrl() {
 
-        return url;
+        return this.url;
     }
 
     /**
-     * This method gets the field <tt>version</tt>.
+     * This method gets the field <code>version</code>.
      *
      * @return the field version
      */
     public String getVersion() {
 
-        return version;
+        return this.version;
     }
 
     /**
-     * This method gets the field <tt>year</tt>.
+     * This method gets the field <code>year</code>.
      *
      * @return the field year
      */
     public String getYear() {
 
-        return year;
+        return this.year;
     }
 
     /**
-     * This method sets the field <tt>dependency</tt>.
+     * This method sets the field <code>dependency</code>.
      *
      * @param dependency the new value of the field dependency
      */
@@ -105,7 +105,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>licenses</tt>.
+     * This method sets the field <code>licenses</code>.
      *
      * @param licenses the new value of the field licenses
      */
@@ -115,7 +115,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>name</tt>.
+     * This method sets the field <code>name</code>.
      *
      * @param name the new value of the field name
      */
@@ -125,7 +125,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>project</tt>.
+     * This method sets the field <code>project</code>.
      *
      * @param project the new value of the field project
      */
@@ -135,7 +135,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>url</tt>.
+     * This method sets the field <code>url</code>.
      *
      * @param url the new value of the field url
      */
@@ -145,7 +145,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>version</tt>.
+     * This method sets the field <code>version</code>.
      *
      * @param version the new value of the field version
      */
@@ -155,7 +155,7 @@ public class Dependency {
     }
 
     /**
-     * This method sets the field <tt>year</tt>.
+     * This method sets the field <code>year</code>.
      *
      * @param year the new value of the field year
      */
@@ -169,7 +169,7 @@ public class Dependency {
     public String toString() {
 
         String licensestring = "";
-        for (License l : licenses) {
+        for (License l : this.licenses) {
             licensestring += l + "\n";
         }
         return "";
