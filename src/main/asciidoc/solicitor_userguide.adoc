@@ -1096,7 +1096,7 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 [appendix]
 == Release Notes
 
-Changes in 1.0.9::
+Changes in 1.1.0::
 * https://github.com/devonfw/solicitor/issues/67: Inclusion of detailed license information for the
   dependencies included in the executable JAR. Use the '-eug' command line option to store this file
   (together with a copy of the user guide) in the current work directory.
