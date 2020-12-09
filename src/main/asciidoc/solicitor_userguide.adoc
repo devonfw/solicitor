@@ -1096,6 +1096,10 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 [appendix]
 == Release Notes
 
+Changes in 1.1.1::
+* Corrected order of license name mapping which prevented Unlicense, The W3C License, WTFPL, Zlib and
+  Zope Public License 2.1 to be mapped.
+
 Changes in 1.1.0::
 * https://github.com/devonfw/solicitor/issues/67: Inclusion of detailed license information for the
   dependencies included in the executable JAR. Use the '-eug' command line option to store this file
