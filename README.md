@@ -39,7 +39,7 @@ After building Solicitor via `mvn clean install` you might execute it with `java
 This will use some prepackaged internal sample data (taken from Devon4J) and sample rulesets and generates sample reports in the current directory. 
 
 ### User Guide
-See the [User Guide](src/main/asciidoc/solicitor_userguide.adoc) for further information about usage and configuration. The User Guide is also contained in the executable jar. Calling Solicitor via `java -jar target/solicitor.jar -eug` will store the User Guide in PDF format in the current working directory.
+See the [User Guide](documentation/solicitor_userguide.adoc) for further information about usage and configuration. The User Guide is also contained in the executable jar. Calling Solicitor via `java -jar target/solicitor.jar -eug` will store the User Guide in PDF format in the current working directory.
 
 ## Tutorials
 On the [devonFW Youtube Channel](https://www.youtube.com/channel/UCtb1p-24jus-QoXy49t9Xzg) you will find video tutorials on the usage of Solicitor:
