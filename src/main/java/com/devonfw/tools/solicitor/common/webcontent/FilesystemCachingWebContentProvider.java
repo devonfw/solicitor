@@ -61,13 +61,19 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
     public String loadFromNext(String url) {
     	//TODO here we can see how to trace into a file 
         String result = strategyWebContentProvider.getWebContentForUrl(url);
-
+        String trace = strategyWebContentProvider.getTrace();
+        strategyWebContentProvider.clearTrace();
+        
         File file = new File("licenses/" + getKey(url));
+        File traceFile = new File("licenses/trace/trace_" + getKey(url));
         File targetDir = file.getParentFile();
+        File targetDirTrace = file.getParentFile();
         try {
             IOHelper.checkAndCreateLocation(file);
+            IOHelper.checkAndCreateLocation(traceFile);
         } catch (SolicitorRuntimeException e) {
             LOG.error(LogMessages.COULD_NOT_CREATE_CACHE.msg(), targetDir.getAbsolutePath());
+            LOG.error(LogMessages.COULD_NOT_CREATE_CACHE.msg(), targetDirTrace.getAbsolutePath());
             return result;
         }
         try (FileWriter fw = new FileWriter(file)) {
@@ -76,6 +82,13 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
             }
         } catch (IOException e) {
             LOG.error("Could not write data to file cache.");
+        }
+        try (FileWriter fwt = new FileWriter(traceFile)) {
+            if (trace != null) {
+                fwt.append(trace);
+            }
+        } catch (IOException e) {
+            LOG.error("Could not write data to file trace cache.");
         }
 
         return result;

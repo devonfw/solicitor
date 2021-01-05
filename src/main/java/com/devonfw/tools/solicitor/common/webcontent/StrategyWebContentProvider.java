@@ -26,6 +26,8 @@ public class StrategyWebContentProvider implements WebContentProvider {
 	
     private static final Logger LOG = LoggerFactory.getLogger(StrategyWebContentProvider.class);
  
+    private String trace ="";
+    
     @Autowired
     private DirectUrlWebContentProvider directWebContentProvider;
  
@@ -51,6 +53,18 @@ public class StrategyWebContentProvider implements WebContentProvider {
     	return false;
     }
     
+    public void clearTrace() {
+    	this.trace="";
+    }
+    
+	public String getTrace() {
+		return trace;
+	}
+
+	public void setTrace(String trace) {
+		this.trace = this.trace.concat(trace + "\n");
+	}
+
 	//helper method that normalizes a github url and retrieves the raw link to a given license
     private String normalizeGitURL(String url) {
     	String oldURL = url;
@@ -58,11 +72,13 @@ public class StrategyWebContentProvider implements WebContentProvider {
     		//case that declared license points to old raw link github license file; change it to new
     		url = url.replace("github.com","raw.githubusercontent.com");
     		url = url.replace("raw/","");
+    		this.setTrace("github old raw link to new raw link");
     		return url;
     	}else if(url.contains("github.com") && url.contains("blob/")) {
     		//case that declared license points to github non raw license file; change it to raw
     		url = url.replace("github.com","raw.githubusercontent.com");
     		url = url.replace("blob/","");
+    		this.setTrace("github license to raw license");
     		return url;
     	} else if(url.contains("github.com") && !(url.contains("blob/"))){
     		//case that declared license points to main github page but not file
