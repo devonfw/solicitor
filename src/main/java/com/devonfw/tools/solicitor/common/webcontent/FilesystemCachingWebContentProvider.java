@@ -29,7 +29,7 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
     private static final Logger LOG = LoggerFactory.getLogger(FilesystemCachingWebContentProvider.class);
 
     @Autowired
-    private DirectUrlWebContentProvider httpWebContentProvider;
+    private StrategyWebContentProvider strategyWebContentProvider;
 
     /**
      * Constructor.
@@ -59,8 +59,8 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
      */
     @Override
     public String loadFromNext(String url) {
-
-        String result = httpWebContentProvider.getWebContentForUrl(url);
+    	//TODO here we can see how to trace into a file 
+        String result = strategyWebContentProvider.getWebContentForUrl(url);
 
         File file = new File("licenses/" + getKey(url));
         File targetDir = file.getParentFile();
