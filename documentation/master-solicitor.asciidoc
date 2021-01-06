@@ -209,7 +209,7 @@ _Solicitor_ is executed with the following command:
 [listing]
 java -jar solicitor.jar -c <configfile>
 
-where `<configfile>` is to be replaced by the location of the <<Configuration File>>.
+where `<configfile>` is to be replaced by the location of the <<Project Configuration File>>.
 
 To get a first idea on what _Solicitor_ does you might call
 
@@ -252,7 +252,7 @@ The config file has the following skeleton:
 }
 
 <1> The leading data defines the engagement master data, see <<Header and Engagement Master Data>>
-<2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Readers / Applications>>
+<2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Applications>>
 <3> `rules` references the rules to apply to the imported data, see <<Business Rules>>
 <4> `writers` configures how the processed data should be exported, see <<Writers / Reporting>>
 
@@ -420,9 +420,9 @@ java -jar solicitor.jar -ec some/directory/path
 
 will export all internal configuration to the given directory. This includes:
 
-* The base configuration file, see <<Configuration File>>
+* The base configuration file, which defines standard settings inherited by the <<Project Configuration File>>
 * The Drools Rule Templates
-* The the builtin decision tables which are referenced in the base configuration, see <<Standard Business Rules>>
+* The builtin decision tables which are referenced in the base configuration, see <<Standard Business Rules>>
 * The SQL statements which are used for <<SQL transformation and filtering>>
 * The referenced templates for the <<Velocity Writer>> and <<Excel Writer>>
 
@@ -846,12 +846,11 @@ icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 === Amending the builtin decision tables with own rules
 
 The standard process as described before consists of 6 decision tables / rule
-groups to be processed in sequence. When using the builtin base configuration all those decision tables use the internal sample data / rules as contained in _Solicitor_.
+groups to be processed in sequence. When using the builtin default base configuration all those decision tables use the internal sample data / rules as contained in _Solicitor_.
 
 To use your own rule data there are three approaches:
 
-* Include your own `rules` section in the project configuration file (so not inheriting from
-the builtin base configuration file) and reference your own decision tables there.
+* Include your own `rules` section in the project configuration file (so not inheriting from the builtin base configuration file) and reference your own decision tables there.
 * Create your own "Solicitor Extension" which might completely redefine/replace the buitin `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
 * Make use of the optional project specific decision tables which are defined in the default base configuration: For every builtin decision table there is an optional external decision table (expected in the filesystem) which will be checked for existence. If such external decision table exists it will be processed first - before processing the builtin decision table. Thus is it possible to amend / override the builtin rules by project specific rules. When you create the starter configuration of your project as described in <<Starting a new project>>, those project specific decision tables are automatically created.
 
@@ -932,7 +931,7 @@ correlations keys.
 
 [source,sql]
 ----
-include::../resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[]
+include::../src/main/resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[]
 ----
 
 NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL
@@ -1027,7 +1026,7 @@ of the _Solicitor_ configuration file which will be used if the project specific
 [source,json]
 .Default Configuration
 ----
-include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..159]
+include::../src/main/resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..159]
 ----
 
 [appendix]
@@ -1043,7 +1042,7 @@ java -Dpropertyname1=value1 -Dpropertyname2=value2 -jar solicitor.jar <any other
 [source,properties]
 .application.properties
 ----
-include::../resources/application.properties[]
+include::../src/main/resources/application.properties[]
 ----
 
 
@@ -1070,7 +1069,7 @@ to be included in this archive _in the root folder_.
 [source,properties]
 .application-extension.properties
 ----
-include::../resources/samples/application-extension.properties[]
+include::../src/main/resources/samples/application-extension.properties[]
 ----
 
 This file is included via the standard Spring Boot profile mechanism. Besides containing
