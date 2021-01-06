@@ -72,13 +72,13 @@ public class StrategyWebContentProvider implements WebContentProvider {
     		//case that declared license points to old raw link github license file; change it to new
     		url = url.replace("github.com","raw.githubusercontent.com");
     		url = url.replace("raw/","");
-    		this.setTrace("github old raw link to new raw link");
+    		this.setTrace("URL changed from " + oldURL + " to " + url);
     		return url;
     	}else if(url.contains("github.com") && url.contains("blob/")) {
     		//case that declared license points to github non raw license file; change it to raw
     		url = url.replace("github.com","raw.githubusercontent.com");
     		url = url.replace("blob/","");
-    		this.setTrace("github license to raw license");
+    		this.setTrace("URL changed from " + oldURL + " to " + url);
     		return url;
     	} else if(url.contains("github.com") && !(url.contains("blob/"))){
     		//case that declared license points to main github page but not file
@@ -88,6 +88,7 @@ public class StrategyWebContentProvider implements WebContentProvider {
     		for (String name : licensefilenames) {
     			String testURL = url.concat("/master/"+name);
         		if(pingURL(testURL)==true) {
+        			this.setTrace("URL changed from " + oldURL + " to " + testURL);
         			return normalizeGitURL(testURL);
         		}
     		}
