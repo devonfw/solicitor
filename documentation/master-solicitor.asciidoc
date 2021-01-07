@@ -61,11 +61,16 @@ Raw data about the components and attached licenses within an application is gat
 
 The _import_ step reads this data and transforms it into a common technology independent internal format.
 
-In the _normalization_ step the license information is completed and unified. Information not contained in the raw data is added. Where possible the applicable licenses are expressed by https://spdx.org/[SPDX-IDs].
+In the _normalization_ step the license information is completed and unified.
+Information not contained in the raw data is added.
+Where possible the applicable licenses are expressed by https://spdx.org/[SPDX-IDs].
 
-Many open source compontents are available via multi licensing models. Within _qualification_ the finally applicable licenses are selected.
+Many open source compontents are available via multi licensing models.
+Within _qualification_ the finally applicable licenses are selected.
 
-In the _legal assessment_ the compliance of applicable licenses will be checked based on generic rules defined in company wide policies and possibly project specific project specific extensions. Defining those rules is considered as "legal advice" and possibly needs to be done by lawyers which are authorized to do so. For this step _Solicitor_ only provides a framework / tool to support the process here but does not deliver any predefined rules.
+In the _legal assessment_ the compliance of applicable licenses will be checked based on generic rules defined in company wide policies and possibly project specific project specific extensions.
+Defining those rules is considered as "legal advice" and possibly needs to be done by lawyers which are authorized to do so.
+For this step _Solicitor_ only provides a framework / tool to support the process here but does not deliver any predefined rules.
 
 The final _export_ step produces documents based on the internal data model. This might be the list of licenses to be forwarded to the customer or a license compliance report. Data might also be fed into other systems.
 
