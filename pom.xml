@@ -237,6 +237,8 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<sourceDirectory>${basedir}/documentation</sourceDirectory>
+					<outputFile>solicitor_userguide.html</outputFile>
 					<backend>html</backend>
 					<doctype>article</doctype>
 
@@ -265,6 +267,7 @@
 							<goal>process-asciidoc</goal>
 						</goals>
 						<configuration>
+							<outputFile>solicitor_userguide.pdf</outputFile>
 							<backend>pdf</backend>
 							<sourceHighlighter>coderay</sourceHighlighter>
 							<attributes>
