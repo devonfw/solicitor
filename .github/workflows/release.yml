@@ -9,6 +9,7 @@ name: Release Solicitor
 jobs:
   build:
     name: Upload Release Asset
+    if: ${{github.repository == 'devonfw/solicitor'}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
