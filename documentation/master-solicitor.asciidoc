@@ -40,8 +40,9 @@ When running _Solicitor_ three subsequent processing steps are executed:
 * Generation of output documents
 
 WARNING: `Solicitor` comes with a set of *sample* rules for the normalization and evaluation of licenses.
-Even though these included rules are not "intentionally wrong" they are only samples and *you should never rely on these builtin rules without checking and possibly modifying their content and consulting your lawyer*. _Solicitor_ is a tool
-for technically supporting the management of OSS licenses within your project. _Solicitor_ neither gives legal advice nor is a replacement for a lawyer.
+Even though these included rules are not "intentionally wrong" they are only samples and *you should never rely on these builtin rules without checking and possibly modifying their content and consulting your lawyer*.
+_Solicitor_ is a tool for technically supporting the management of OSS licenses within your project.
+_Solicitor_ neither gives legal advice nor is a replacement for a lawyer.
 
 === Licensing of Solicitor
 The _Solicitor_ code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw/solicitor are licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0).
