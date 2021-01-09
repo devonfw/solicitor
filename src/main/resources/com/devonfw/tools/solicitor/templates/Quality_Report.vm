@@ -1,0 +1,116 @@
+## SPDX-License-Identifier: Apache-2.0
+
+## template
+
+ <!DOCTYPE html>
+<html>
+<body>
+
+## styling (table)
+
+<style>
+
+table {
+  width:auto;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+tr:nth-child(even) {
+  background-color: #eee;
+}
+tr:nth-child(odd) {
+ background-color: #fff;
+}
+th {
+  background-color: lightblue;
+  color: black;
+}
+.replacable-license-text {
+	color: #CC0000;
+}
+
+.replacable-license-text p var {
+	color: #CC0000;
+}
+
+.optional-license-text {
+	color: #0000cc;
+}
+
+.optional-license-text p var {
+	color: #0000cc;
+}
+
+tr.new-row  {
+	background-color: yellow;
+}
+
+td.changed  {
+	background-color: cyan;
+}
+
+ul, ol, li {
+	margin: 10px 0 10px 0;
+}
+</style>
+
+<h1>Quality Report</h1>
+
+<p>Project: $ENGAGEMENT.getDataRow(0).engagementName</p>
+<p>generated: $MODELROOT.getDataRow(0).executionTime</p>
+
+<h2>Components with multiple effective licenses</h2>
+Hint: If components have multiple effective licenses this might be caused by missing selection of the appropriate license in case of dual-/multilicensing
+(SPDX "OR" operation of licenses). It might on the other side be OK, if those licenses all need to be observed (SPDX "AND" operation).  
+
+<table>
+	## head row
+  <tr>
+		<th>Application</th>
+		<th>OSS Name / Product</th>
+		<th>OSS Artifact Id</th>
+		<th>OSS Version</th>
+		<th>Effective Normalized Licenses</th>
+		<th>License Count</th>
+  </tr>
+	## content
+
+#macro( tableValue $field )
+#if ($field.diffStatus=="CHANGED")
+			<td class="changed" title="previous: $field.oldValue">
+#else
+			<td>
+#end
+#if( $field.value )
+				$field.value</td>
+#else
+				</td>
+#end				
+#end
+
+	#foreach ($component in $MULTIPLE_EFFECTIVE_LICENSES)
+#if ($component.rowDiffStatus=="NEW")
+			<tr class="new-row">
+#else
+			<tr>
+#end
+
+#tableValue($component.applicationName)
+#tableValue($component.groupId)
+#tableValue($component.artifactId)
+#tableValue($component.version)
+#tableValue($component.effectiveNormalizedLicenses)
+#tableValue($component.licenseCount)
+			</tr>
+	#end
+
+</table>
+
+</body>
+</html>

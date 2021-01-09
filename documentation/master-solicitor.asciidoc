@@ -1032,7 +1032,7 @@ of the _Solicitor_ configuration file which will be used if the project specific
 [source,json]
 .Default Configuration
 ----
-include::../src/main/resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..159]
+include::../src/main/resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..169]
 ----
 
 [appendix]
@@ -1100,6 +1100,12 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 
 [appendix]
 == Release Notes
+
+Changes in 1.2.0::
+* https://github.com/devonfw/solicitor/issues/71: 
+  New "Quality Report" which might be helpful in validating the outcome of the _Solicitor_ run.
+  Currently this report contains a list of all application components which have more than one effective license attached.
+  This might be helpful for spotting cases where appropriate rules for selecting the applicable license in case of dual-/multilicensing is missing.
 
 Changes in 1.1.1::
 * Corrected order of license name mapping which prevented Unlicense, The W3C License, WTFPL, Zlib and
