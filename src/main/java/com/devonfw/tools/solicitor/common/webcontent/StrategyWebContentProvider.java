@@ -27,7 +27,7 @@ public class StrategyWebContentProvider implements WebContentProvider {
     private static final Logger LOG = LoggerFactory.getLogger(StrategyWebContentProvider.class);
  
     private String trace ="";
-    
+        
     @Autowired
     private DirectUrlWebContentProvider directWebContentProvider;
  
@@ -39,8 +39,10 @@ public class StrategyWebContentProvider implements WebContentProvider {
     		HttpURLConnection pingConnection = (HttpURLConnection)testURL.openConnection();
     		pingConnection.setRequestMethod("HEAD");
     		if(pingConnection.getResponseCode() == 200) {
+    			this.setTrace("Found license." + "\n");
     			return true;
     		} else if(pingConnection.getResponseCode() == 404) {
+    			this.setTrace("404 Error" + "\n");
     			return false;
     		}
     	} catch (MalformedURLException e) {
@@ -87,6 +89,7 @@ public class StrategyWebContentProvider implements WebContentProvider {
 			url = url.replace("github.com","raw.githubusercontent.com");
     		for (String name : licensefilenames) {
     			String testURL = url.concat("/master/"+name);
+    			this.setTrace("Searching for license: testing with " + testURL);
         		if(pingURL(testURL)==true) {
         			this.setTrace("URL changed from " + oldURL + " to " + testURL);
         			return normalizeGitURL(testURL);
@@ -107,14 +110,18 @@ public class StrategyWebContentProvider implements WebContentProvider {
     }
 	
 	@Override
-	public String getWebContentForUrl(String url) {
-		url = normalizeGitURL(url);
-    	String result = directWebContentProvider.getWebContentForUrl(url);        	//checks if a readme url contains the keyword "license" and cuts out overhead
-        if(url.contains("README.md")) {
+	public WebContentObject getWebContentForUrl(WebContentObject webObj) {
+		String url = webObj.getUrl();
+		webObj.setEffectiveURL(normalizeGitURL(url));
+    	WebContentObject copyObj = directWebContentProvider.getWebContentForUrl(webObj); 
+    	webObj.setContent(copyObj.getContent());
+        //checks if a readme url contains the keyword "license" and cuts out overhead
+        if(webObj.getEffectiveURL().contains("README.md")) {
         	//checks if a readme url contains the keyword "license" and cuts out overhead
-    		return normalizeReadMe(result);
+    		webObj.setContent(normalizeReadMe(webObj.getContent()));
     	}
-		return result;		
+        webObj.setTrace(trace);
+		return webObj;
 	}
 
 }

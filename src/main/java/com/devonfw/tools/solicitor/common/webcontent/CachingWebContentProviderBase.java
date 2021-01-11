@@ -70,11 +70,12 @@ public abstract class CachingWebContentProviderBase implements WebContentProvide
      * Tries to load the web content from the resource found via the URLs
      * returned by {@link #getCacheUrls(String)}. First hit will be returned. If
      * this does not succeed, then delegate further processing to
-     * {@link CachingWebContentProviderBase#loadFromNext(String)}.
+     * {@link CachingWebContentProviderBase#loadFromNext(WebContentObject)}.
      */
     @Override
-    public String getWebContentForUrl(String url) {
-
+    public WebContentObject getWebContentForUrl(WebContentObject webObj) {
+    	String url = webObj.getUrl();
+    	
         String key = getKey(url);
         Collection<String> classPathUrls = getCacheUrls(key);
 
@@ -86,23 +87,28 @@ public abstract class CachingWebContentProviderBase implements WebContentProvide
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Content for url '" + url + "' found at '" + classPathUrl + "'");
                 }
-                return result;
+                webObj.setContent(result);
+                return webObj;
             } catch (FileNotFoundException fnfe) {
                 LOG.debug("Content for url '" + url + "' NOT found at '" + classPathUrl + "'");
             } catch (IOException e) {
                 LOG.debug("Could not retieve content for url '" + url + "' from '" + classPathUrl + "'", e);
             }
         }
-        return loadFromNext(url);
+        WebContentObject copyObj = loadFromNext(webObj);	// TODO here also deep copy? why does this work?
+        webObj.setContent(copyObj.getContent());
+        webObj.setEffectiveURL(copyObj.getEffectiveURL());
+        webObj.setTrace(copyObj.getTrace());
+        return webObj;
     }
 
     /**
      * Method for loading the requested web content from the next new
      * {@link WebContentProvider} defined in the chain.
      *
-     * @param url the URL of the requests web content
+     * @param webObj the URL of the requests web content
      * @return the content of the web content given by the URL
      */
-    protected abstract String loadFromNext(String url);
+    protected abstract WebContentObject loadFromNext(WebContentObject webObj);
 
 }

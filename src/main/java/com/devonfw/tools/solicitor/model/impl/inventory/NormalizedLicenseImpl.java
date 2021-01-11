@@ -7,6 +7,7 @@ package com.devonfw.tools.solicitor.model.impl.inventory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.webcontent.WebContentObject;
 import com.devonfw.tools.solicitor.common.webcontent.WebContentProvider;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -136,8 +137,9 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     @JsonIgnore
     public String getDeclaredLicenseContent() {
-
-        return this.licenseContentProvider.getWebContentForUrl(this.licenseUrl);
+        WebContentObject webObj = new WebContentObject();
+    	webObj.setUrl(this.licenseUrl);
+        return this.licenseContentProvider.getWebContentForUrl(webObj).getContent();
     }
 
     /** {@inheritDoc} */
@@ -151,8 +153,9 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     @JsonIgnore
     public String getEffectiveNormalizedLicenseContent() {
-
-        return this.licenseContentProvider.getWebContentForUrl(this.effectiveNormalizedLicenseUrl);
+        WebContentObject webObj = new WebContentObject();
+    	webObj.setUrl(this.effectiveNormalizedLicenseUrl);
+        return this.licenseContentProvider.getWebContentForUrl(webObj).getContent();
     }
 
     /** {@inheritDoc} */
@@ -237,8 +240,9 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     @JsonIgnore
     public String getLicenseRefContent() {
-
-        return this.licenseContentProvider.getWebContentForUrl(this.licenseRefUrl);
+        WebContentObject webObj = new WebContentObject();
+    	webObj.setUrl(this.licenseRefUrl);
+        return this.licenseContentProvider.getWebContentForUrl(webObj).getContent();
     }
 
     /** {@inheritDoc} */

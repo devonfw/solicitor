@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.devonfw.tools.solicitor.common.webcontent.DirectUrlWebContentProvider;
+import com.devonfw.tools.solicitor.common.webcontent.WebContentObject;
 
 public class CachingLicenseContentProviderImplTests {
 
@@ -23,7 +24,9 @@ public class CachingLicenseContentProviderImplTests {
 
         DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider();
 
-        String result = licenseContentProvider.getWebContentForUrl("http://www.apache.org/licenses/LICENSE-2.0.txt");
+        WebContentObject webObj = new WebContentObject();
+        webObj.setUrl("http://www.apache.org/licenses/LICENSE-2.0.txt");
+        String result = licenseContentProvider.getWebContentForUrl(webObj).getContent();
         LOG.debug(result);
         assertNotNull(result);
     }

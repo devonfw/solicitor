@@ -3,11 +3,18 @@
  */
 package com.devonfw.tools.solicitor.common.webcontent;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.devonfw.tools.solicitor.common.IOHelper;
+import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 
 /**
  * A {@link WebContentProvider} which tries to lookup web content in a local in
@@ -18,6 +25,8 @@ public class InMemoryMapWebContentProvider implements WebContentProvider {
 
     @Autowired
     private ClasspathWebContentProvider classPathWebContentProvider;
+    
+    int counter = 0;
 
     Map<String, String> contentMap = new TreeMap<>();
 
@@ -36,20 +45,44 @@ public class InMemoryMapWebContentProvider implements WebContentProvider {
      * stored in the in Memory map for further calls to the same URL.
      */
     @Override
-    public String getWebContentForUrl(String url) {
-
+    public WebContentObject getWebContentForUrl(WebContentObject webObj) {
+    	//TODO object in höhere Ebene erstellen statt nur URL
+    	String url = webObj.getUrl();
         if (url == null) {
-            return null;
+            return webObj;
         }
 
-        String result;
         if (contentMap.containsKey(url)) {
-            result = contentMap.get(url);
+        	webObj.setContent(contentMap.get(url));
         } else {
-            result = classPathWebContentProvider.getWebContentForUrl(url);
-            contentMap.put(url, result);
+            WebContentObject copyObj = classPathWebContentProvider.getWebContentForUrl(webObj);
+            webObj.setContent(copyObj.getContent());
+            webObj.setEffectiveURL(copyObj.getEffectiveURL());
+            webObj.setTrace(copyObj.getTrace());
+            writeTest(webObj);
+            contentMap.put(url, webObj.getContent());
         }
-        return result;
+        return webObj;
     }
 
+    private void writeTest(WebContentObject webObj) {
+	        File traceFile = new File("licenses/test/test_" + counter);
+	        counter++;
+	        File targetDirTrace = traceFile.getParentFile();
+	   
+	        try {
+	        	IOHelper.checkAndCreateLocation(traceFile);
+	        } catch(SolicitorRuntimeException e) {
+	        	
+	        }
+	        try (FileWriter fwt = new FileWriter(traceFile)) {
+	                fwt.append(webObj.getContent() + webObj.getEffectiveURL() + webObj.getTrace() + webObj.getUrl());
+
+
+	            
+	        } catch (IOException e) {
+	        	
+	        }
+        }
+    
 }

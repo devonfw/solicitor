@@ -12,9 +12,9 @@ public interface WebContentProvider {
     /**
      * Gets the content of the resource given by the URL.
      *
-     * @param url the URL of the resource.
+     * @param webObj including the URL of the resource.
      * @return the content of the resource
      */
-    String getWebContentForUrl(String url);
+    WebContentObject getWebContentForUrl(WebContentObject webObj);
 
 }

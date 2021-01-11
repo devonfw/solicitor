@@ -28,7 +28,7 @@ public class DirectUrlWebContentProvider implements WebContentProvider {
 
     @Value("${webcontent.skipdownload}")
     private boolean skipdownload;
-
+    
     /**
      * Constructor.
      */
@@ -42,31 +42,32 @@ public class DirectUrlWebContentProvider implements WebContentProvider {
      * Directly tries to access the given URL via the web.
      */
     @Override
-    public String getWebContentForUrl(String url) {
-    	
+    public WebContentObject getWebContentForUrl(WebContentObject webObj) {
+    	String url = webObj.getEffectiveURL();
         URL webContentUrl;
         if (url == null) {
-            return null;
+            return webObj;
         }
         if (skipdownload) {
             LOG.info(LogMessages.SKIP_DOWNLOAD.msg(), url);
-            return null;
+            return webObj;
         }
         try {
             webContentUrl = new URL(url);
         } catch (MalformedURLException e) {
             LOG.warn("Invalid URL syntax '" + url + "'", e);
-            return null;
+            return webObj;
         }
 
         try (InputStream is = webContentUrl.openConnection().getInputStream(); Scanner s = new Scanner(is)) {
             s.useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
-            return result;
+            webObj.setContent(result);
+            return webObj;
         } catch (IOException e) {
             LOG.warn("Could not retieve content for url '" + url + "'", e);
         }
-        return null;
+        return webObj;
     }
 
 }

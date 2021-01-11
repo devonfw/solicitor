@@ -58,17 +58,21 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
      * subsequent attempts to load the same web content again.
      */
     @Override
-    public String loadFromNext(String url) {
-        String result = strategyWebContentProvider.getWebContentForUrl(url);
-        writeTrace(url);
-        File file = new File("licenses/" + getKey(url));
+    public WebContentObject loadFromNext(WebContentObject webObj) {
+    	WebContentObject copyObj = strategyWebContentProvider.getWebContentForUrl(webObj);
+    	webObj.setContent(copyObj.getContent());
+        webObj.setEffectiveURL(copyObj.getEffectiveURL());
+        webObj.setTrace(copyObj.getTrace());
+        String result = webObj.getContent();
+        writeTrace(webObj);
+        File file = new File("licenses/" + getKey(webObj.getUrl()));
         File targetDir = file.getParentFile();
         
         try {
             IOHelper.checkAndCreateLocation(file);
         } catch (SolicitorRuntimeException e) {
             LOG.error(LogMessages.COULD_NOT_CREATE_CACHE.msg(), targetDir.getAbsolutePath());
-            return result;
+            return webObj;
         }
         try (FileWriter fw = new FileWriter(file)) {
             if (result != null) {
@@ -79,14 +83,14 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
         }
         
 
-        return result;
+        return webObj;
     }
     
-    private void writeTrace(String url) {
-        String trace = strategyWebContentProvider.getTrace();
+    private void writeTrace(WebContentObject webObj) {
+        String trace = webObj.getTrace();
         if(!trace.isEmpty()) {
 	        strategyWebContentProvider.clearTrace();
-	        File traceFile = new File("licenses/trace/trace_" + getKey(url));
+	        File traceFile = new File("licenses/trace/trace_" + getKey(webObj.getUrl()));
 	        File targetDirTrace = traceFile.getParentFile();
 	        
 	        try {

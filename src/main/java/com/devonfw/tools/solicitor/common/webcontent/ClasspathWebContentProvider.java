@@ -56,10 +56,12 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
      * Delegates next to the {@link FilesystemCachingWebContentProvider}.
      */
     @Override
-    public String loadFromNext(String url) {
-
-        String result = this.filesystemCachingWebContentProvider.getWebContentForUrl(url);
-        return result;
+    public WebContentObject loadFromNext(WebContentObject webObj) {
+        WebContentObject copyObj = this.filesystemCachingWebContentProvider.getWebContentForUrl(webObj);
+        webObj.setContent(copyObj.getContent());
+        webObj.setEffectiveURL(copyObj.getEffectiveURL());
+        webObj.setTrace(copyObj.getTrace());
+        return webObj;
     }
 
     /**
