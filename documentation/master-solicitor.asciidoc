@@ -984,7 +984,7 @@ as follows when using the XLS templating:
 Resolving of the content of license texts which are referenced by the URLs given in `NormalizedLicense` is done in the following way:
 
 * If the content is found as a resource in the classpath under `licenses` this will be taken. (The _Solicitor_ application might include a set of often used license texts and thus it is not necessary to fetch those via the net.) If the classpath does not contain the content of the URL the next step is taken.
-* If the content is found as a file in subdirectory `licenses` of the current working directory this is taken. If no such file exists the content is fetched via the net. The result will be written to the file directory, so any content will only be fetched once. (The user might alter the files in that directory to change/correct its content.) A file of length zero indicates that no content could be fetched.
+* If the content is found as a file in subdirectory `licenses` of the current working directory this is taken. If no such file exists the content is fetched via the net. The result will be written to the file directory, so any content will only be fetched once. (The user might alter the files in that directory to change/correct its content.) A file of length zero indicates that no content could be fetched. In addition, any URL from github.com will be normalized to ensure a clean license text. The normalization process is documented in a trace file inside the "trace" subdirectory next to the license files.
 
 === Encoding of URLs
 When creating the resource or filename for given URLs in the above steps the following encoding scheme will be applied to ensure that always a valid name can be created:
