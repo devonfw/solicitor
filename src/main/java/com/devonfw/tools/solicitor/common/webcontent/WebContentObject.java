@@ -1,5 +1,8 @@
 package com.devonfw.tools.solicitor.common.webcontent;
 
+/*
+ * Class that contains information about retrieved web content.
+ */
 public class WebContentObject {
 
 	private String content = "";

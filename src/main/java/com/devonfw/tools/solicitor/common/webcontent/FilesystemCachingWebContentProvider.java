@@ -52,10 +52,11 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
     /**
      * {@inheritDoc}
      * 
-     * Delegates to {@link DirectUrlWebContentProvider}. The result returned
+     * Delegates to {@link DirectUrlWebContentProvider}. The content returned
      * will be stored in the file system in the subdirectory "licenses" of the
      * current working directory so that it will be taken from there in
-     * subsequent attempts to load the same web content again.
+     * subsequent attempts to load the same web content again. On top of that
+     * a subdirectory "trace" will be created with information about the effective URLs.
      */
     @Override
     public WebContentObject loadFromNext(WebContentObject webObj) {
@@ -86,6 +87,7 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
         return webObj;
     }
     
+    //helper method to write a trace file with information about the effectiveURL
     private void writeTrace(WebContentObject webObj) {
         String trace = webObj.getTrace();
         if(!trace.isEmpty()) {

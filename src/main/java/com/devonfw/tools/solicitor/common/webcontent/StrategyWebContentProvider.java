@@ -115,9 +115,8 @@ public class StrategyWebContentProvider implements WebContentProvider {
 		webObj.setEffectiveURL(normalizeGitURL(url));
     	WebContentObject copyObj = directWebContentProvider.getWebContentForUrl(webObj); 
     	webObj.setContent(copyObj.getContent());
-        //checks if a readme url contains the keyword "license" and cuts out overhead
+    	//checks if a readme url contains the keyword "license" and cuts out overhead
         if(webObj.getEffectiveURL().contains("README.md")) {
-        	//checks if a readme url contains the keyword "license" and cuts out overhead
     		webObj.setContent(normalizeReadMe(webObj.getContent()));
     	}
         webObj.setTrace(trace);

@@ -63,6 +63,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     private ApplicationComponent applicationComponent;
 
     private WebContentProvider licenseContentProvider;
+    
 
     /**
      * Creates a new instance.

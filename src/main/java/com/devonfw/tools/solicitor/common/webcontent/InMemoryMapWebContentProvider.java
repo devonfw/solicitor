@@ -26,8 +26,6 @@ public class InMemoryMapWebContentProvider implements WebContentProvider {
     @Autowired
     private ClasspathWebContentProvider classPathWebContentProvider;
     
-    int counter = 0;
-
     Map<String, String> contentMap = new TreeMap<>();
 
     /**
@@ -46,7 +44,6 @@ public class InMemoryMapWebContentProvider implements WebContentProvider {
      */
     @Override
     public WebContentObject getWebContentForUrl(WebContentObject webObj) {
-    	//TODO object in höhere Ebene erstellen statt nur URL
     	String url = webObj.getUrl();
         if (url == null) {
             return webObj;
@@ -59,30 +56,9 @@ public class InMemoryMapWebContentProvider implements WebContentProvider {
             webObj.setContent(copyObj.getContent());
             webObj.setEffectiveURL(copyObj.getEffectiveURL());
             webObj.setTrace(copyObj.getTrace());
-            writeTest(webObj);
             contentMap.put(url, webObj.getContent());
         }
         return webObj;
     }
 
-    private void writeTest(WebContentObject webObj) {
-	        File traceFile = new File("licenses/test/test_" + counter);
-	        counter++;
-	        File targetDirTrace = traceFile.getParentFile();
-	   
-	        try {
-	        	IOHelper.checkAndCreateLocation(traceFile);
-	        } catch(SolicitorRuntimeException e) {
-	        	
-	        }
-	        try (FileWriter fwt = new FileWriter(traceFile)) {
-	                fwt.append(webObj.getContent() + webObj.getEffectiveURL() + webObj.getTrace() + webObj.getUrl());
-
-
-	            
-	        } catch (IOException e) {
-	        	
-	        }
-        }
-    
 }
