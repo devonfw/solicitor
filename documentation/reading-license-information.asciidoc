@@ -1,0 +1,235 @@
+:toc: macro
+toc::[]
+
+Different Readers are available to import raw component / license information for different
+technologies. This chapter describes how to setup the different build / dependency management systems to create the required input and how to configure the corresponding reader.
+
+=== Maven
+
+For the export of the licenses from a maven based project the license-maven-plugin is used, which can directly be called without the need to change anything in the pom.xml.
+
+To generate the input file required for _Solicitor_ the License Plugin needs to be executed with the following command:
+
+----
+mvn org.codehaus.mojo:license-maven-plugin:1.14:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
+----
+
+The generated output file named `licenses.xml` (in the directory specified in the
+plugin config) should look like the following:
+
+----
+include::licenses.xml[]
+----
+
+In _Solicitor_ the data is read with the following reader config:
+
+----
+"readers" : [ {
+  "type" : "maven",
+  "source" : "file:target/generated-resouces/licenses.xml",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+(the above assumes that _Solicitor_ is executed in the maven projects main directory)
+
+=== CSV
+The CSV input is normally manually generated and should look like this (The csv File is ";" separated):
+
+[source]
+----
+include::csvlicenses.csv[]
+----
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+The following 5 columns need to be contained:
+
+* groupId
+* artifactId
+* version
+* license name
+* license URL
+
+In case that a component has multiple licenses attached, there needs to be a separate
+line in the file for each license.
+
+=== NPM
+
+For NPM based projects either the NPM License Crawler (https://www.npmjs.com/package/npm-license-crawler) or the NPM License Checker (https://www.npmjs.com/package/license-checker) might be used. The NPM License Crawler can process several node packages in one run. 
+
+==== NPM License Crawler
+
+To install the NPM License Crawler the following command needs to be executed.
+
+----
+npm i npm-license-crawler -g
+----
+
+To get the licenses, the crawler needs to be executed like the following example
+
+----
+npm-license-crawler --dependencies --csv licenses.csv
+----
+
+The export should look like the following (The csv file is "," separated)
+
+[source]
+----
+include::licenses.csv[]
+----
+
+
+Source: https://www.npmjs.com/package/npm-license-crawler
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm-license-crawler-csv",
+  "source" : "file:path/to/licenses.csv",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "npm"
+} ]
+----
+
+==== NPM License Checker
+
+To install the NPM License Checker the following command needs to be executed.
+
+----
+npm i license-checker -g
+----
+
+To get the licenses, the checker needs to be executed like the following example (we require JSON output here)
+
+----
+license-checker --json > /path/to/licenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::licensesNpmLicenseChecker.json[]
+----
+
+
+Source: https://www.npmjs.com/package/license-checker
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm-license-checker",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "npm"
+} ]
+----
+
+
+=== Gradle (Windows)
+
+For the export of the licenses from a Gradle based project the Gradle License Plugin is used.
+
+To install the plugin some changes need to be done in `build.gradle`, like following example
+----
+buildscript {
+  repositories {
+    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+  }
+
+  dependencies {
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5-SNAPSHOT'
+  }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'com.jaredsburrows.license'
+----
+
+Afterwards execute the following command in the console:
+
+For Windows (Java Application)
+----
+gradlew licenseReport
+----
+
+The Export should look like this:
+
+----
+include::licenses.json[]
+----
+
+
+Source: https://github.com/jaredsburrows/gradle-license-plugin
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "gradle2",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>. 
+
+=== Gradle (Android)
+For the Export of the the Licenses from a Gradle based Android Projects the Gradle License Plugin is used.
+
+To install the Plugin some changes need to be done in the build.gradle of the Project, like following example
+----
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5'
+  }
+}
+----
+
+Also there is a change in the build.gradle of the App. Add the line in the second line
+----
+apply plugin: 'com.android.application'
+----
+
+Afterwards execute the following command in the Terminal of Android studio:
+For Windows(Android Application)
+----
+gradlew licenseDebugReport
+----
+The Export is in the following folder
+----
+$Projectfolder\app\build\reports\licenses
+----
+It should look like this:
+
+----
+include::licenseDebugReport.json[]
+----
+Source: https://github.com/jaredsburrows/gradle-license-plugin
+
+In Solicitor the Data is read with the following part of the config
+
+----
+"readers" : [ {
+      "type" : "gradle2",
+      "source" : "file:$/input/licenses.json",
+      "usagePattern" : "DYNAMIC_LINKING"
+    } ]
+----
+
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>. 

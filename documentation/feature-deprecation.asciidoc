@@ -1,0 +1,29 @@
+:toc: macro
+toc::[]
+
+Within the lifecycle of the _Solicitor_ development features might be discontinued due
+to various reasons. In case that such discontinuation is expected to break existing projects
+a two stage deprecation mechanism is used:
+
+* Stage 1: Usage of a deprecated feature will produce a _warning only_ giving details on 
+what needs to be changed.
+* Stage 2: When a deprecated feature is used _Solicitor_ by default will terminate with an error
+message giving information about the deprecation.
+
+By setting the property `solicitor.deprecated-features-allowed` to `true`
+(e.g. via the command line, see <<Configuration of Technical Properties>>), even in second stage
+the feature will still be available and only a warning will be logged. The project setup should in any
+case ASAP be changed to no longer use the feature as it might soon be removed without further
+notice.
+
+IMPORTANT: Enabling the use of deprecated feature via the above property should only be
+a temporary workaround and not a standard setting.
+
+NOTE: If usage of a feature should be discontinued immediately (e.g. because it might lead to
+wrong/misleading output) the first stage of deprecation will be skipped. 
+
+=== List of Deprecated Features
+The following features are deprecated via the above mechanism: 
+
+* Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58 
+* Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62

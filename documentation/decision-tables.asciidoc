@@ -1,0 +1,39 @@
+:toc: macro
+toc::[]
+
+Solicitor uses the Drools rule engine to execute business rules. Business rules are
+defined as "extended" decision tables. Each such decision table consists of two artifacts:
+
+* A rule template file in specific drools template format
+* An Excel (XLSX) table which defines the decision table data
+
+When processing, _Solicitor_ will internally use the rule template to create one or multiple rules for every record found in the Excel sheet. The following points are important here:
+
+* Rule templates:
+** Rule templates should be regarded as part of the _Solicitor_ implementation and should not be changed on an engagement level.
+* Excel decision table data
+** The Excel tables might be extended or changed on a per project level.
+** The rules defined by the tabular data will have decreasing "salience" (priority) from top to bottom
+** In general multiple rules defined within a table might fire for the same data to be processed; the definition of the rules within the rule template will normally ensure that once a rule from the decision table was processed no other rule from that table will be processed for the same data
+** The excel tables contain header information in the first row which is only there for documentation purposes; the first row is completely ignored when creating rules from the xls
+** The rows starting from the second row contain decision table data
+** The first "empty" row (which does not contain data in any of the defined columns) ends the decision table
+** Decision tables might use multiple condition columns which define the data that a rule matches. Often such conditions are optional: If left free in the Excel table the condition will be omitted from the rule conditions. This allows to define very specific rules (which only fire on exact data patterns) or quite general rules which get activated on large groups of data. Defining general rules further down in the table (with lower salience/priority) ensures that more specific rules get fired earlier. This even allows to define a default rule at the end of the table which gets fired if no other rule could be applied.
+
+* _rule groups_: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same _rule group_. The order of execution of the _rule groups_
+is defined by the sequence of declaration in the config file. Processing of the current group will
+be finished when there are no more rules to fire in that group. Processing of the next group will then start. Rule groups which have been finished processing will not be resumed even if rules within that group might have been activated again due to changes of the facts.
+
+=== Extended comparison syntax
+By default any condtions given in the fields of decision tables are simple textual comparisons: The condition
+is true if the property of the model is identical to the given value in the XLS sheet.
+
+Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:
+
+* If the given value of the XLS field starts with the prefix `NOT:` then the outcome of the remaining condition is logically negated, i.e. this field condition is  `true` if the rest of the condition is NOT fulfilled.
+* A prefix of `REGEX:` indicates that the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expression.
+* The prefix `RANGE:` indicates that the remainder of the field defines
+a https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/maven/artifact/versioning/VersionRange.html#createFromVersionSpec(java.lang.String)[Maven Version Range]. Using this makes only sense on the artifact version property.
+* If no such prefix is detected, then the behavior is identical to the normal (verbatim) comparison logic
+
+Fields which are subject to this extended syntax are marked explicitly in the following section.

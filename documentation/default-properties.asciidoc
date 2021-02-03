@@ -1,0 +1,16 @@
+:toc: macro
+toc::[]
+
+The following lists the default settings of technical properties as given by the built in `application.properties` file.
+
+If required these values might be overridden on the command line when starting `Solicitor`:
+
+[listing]
+java -Dpropertyname1=value1 -Dpropertyname2=value2 -jar solicitor.jar <any other arguments>
+
+
+[source,properties]
+.application.properties
+----
+include::files/application.properties[]
+----

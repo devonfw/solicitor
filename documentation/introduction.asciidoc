@@ -1,0 +1,45 @@
+:toc: macro
+toc::[]
+
+Todays software projects often make use of large amounts of Open Source software. Being
+compliant with the license obligations of the used software components is a prerequisite for every such project. This results in different requirements that the project might need to fulfill. Those requirements can be grouped into two main categories:
+
+* Things that need to be done to actually fulfill license obligations
+* Things that need to be done to monitor / report fulfillment of license obligations
+
+Most of the above activities share common points:
+
+* The need to have an inventory of used (open source) components and their licenses
+* Some rule based evaluation and reporting based on this inventory
+
+In practice these easy looking tasks might get complex due to various aspects:
+
+* The number of open source components might be quite large (>> 100 for a typical webapplication based on state of the art programming frameworks)
+* Agile development and rapid changes of used components result in frequent changes of the inventory
+* Open Source usage scenarios and license obligations might be OK in one context (e.g. in the relation between a software developer and his client) but might be completely inacceptable in another context (e.g. when the client distributes the same software to end customers)
+* Legal interpretation of license conditions often differ from organisation to organisation and result in different compliance rules to be respected.
+* License information for components is often not available in a standardized form which would allow automatic processing
+* Tools for supporting the license management processes are often specific to a technology or build tool and do not support all aspects of OSS license management.
+
+Of course there are specific commercial tool suites which address the IP rights and license domain. But due to high complexity and license costs those tools are out of reach for most projects - at least for permanent use.
+
+_Solicitor_ tries to address some of the issues hightlighted above. In its initial version it is a tool for programmatically executing a process which was originally defined as an Excel-supported manual process.
+
+When running _Solicitor_ three subsequent processing steps are executed:
+
+* Creating an initial component and license inventory based on technology specific input files
+* Rule based normalization and evaluation of licenses
+* Generation of output documents
+
+WARNING: `Solicitor` comes with a set of *sample* rules for the normalization and evaluation of licenses.
+Even though these included rules are not "intentionally wrong" they are only samples and *you should never rely on these builtin rules without checking and possibly modifying their content and consulting your lawyer*.
+_Solicitor_ is a tool for technically supporting the management of OSS licenses within your project.
+_Solicitor_ neither gives legal advice nor is a replacement for a lawyer.
+
+=== Licensing of Solicitor
+The _Solicitor_ code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw/solicitor are licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0).
+
+IMPORTANT: Specifically observe the "Disclaimer of Warranty" and "Limitation of Liability" which are part of the license.
+
+IMPORTANT: The executable JAR file which is created by the Maven based build process includes numerous other Open Source components which are subject to different Open Source licenses. Any distribution of the _Solicitor_ executable JAR file needs to comply with the license conditions of all those components.
+If you are running _Solicitor_ from the executable JAR you might use the `-eug` option to store detailed license information as file `solicitor_licenseinfo.html` in your current working directory (together with a copy of this user guide). 
