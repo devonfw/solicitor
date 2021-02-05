@@ -2,6 +2,7 @@
 toc::[]
 
 Changes in 1.2.0::
+* Added some license name mapping rules in LicenseNameMappingSample.xls
 * https://github.com/devonfw/solicitor/issues/71: 
   New "Quality Report" which might be helpful in validating the outcome of the _Solicitor_ run.
   Currently this report contains a list of all application components which have more than one effective license attached.
