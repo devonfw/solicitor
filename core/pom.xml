@@ -137,7 +137,7 @@
 				</includes>
 			</resource>
 			<resource>
-				<directory>target/generated-docs</directory>
+				<directory>${maven.multiModuleProjectDirectory}/documentation/target/generated-docs</directory>
 				<filtering>false</filtering>
 			</resource>
 		</resources>

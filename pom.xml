@@ -21,8 +21,8 @@
 	</scm>
   
   <modules>
-    <module>core</module>
     <module>documentation</module>
+    <module>core</module>
   </modules>
 
 	<properties>
