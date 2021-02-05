@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.devonfw.tools</groupId>
-    <artifactId>devonfw-docgen-pdf</artifactId>
+    <artifactId>devonfw-docgen-all</artifactId>
     <version>5.0.3-SNAPSHOT</version>
     <relativePath></relativePath>
   </parent>

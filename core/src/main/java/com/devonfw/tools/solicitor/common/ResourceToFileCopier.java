@@ -205,10 +205,10 @@ public class ResourceToFileCopier {
         switch (resourceGroup) {
         case USERGUIDE:
             new CopySequenceBuilder()
-                    .withCopyOperation("classpath:solicitor_userguide.pdf", "target/solicitor_userguide.pdf")
+                    .withCopyOperation("classpath:master-solicitor.pdf", "target/master-solicitor.pdf")
                     .withCopyOperation("classpath:solicitor_licenseinfo.html", "target/solicitor_licenseinfo.html")
                     .replaceInTarget("target", targetDir).execute();
-            returnString = "solicitor_userguide.pdf";
+            returnString = "master-solicitor.pdf";
             break;
         case PROJECT_FILES:
             new CopySequenceBuilder().withCopyOperation("classpath:starters/solicitor.cfg", "new_project/solicitor.cfg")
