@@ -4,7 +4,6 @@
 :toclevels: 3
 :sectnums:
 :sectnumlevels: 3
-:imagesdir: images
 
 SPDX-License-Identifier: Apache-2.0
 
