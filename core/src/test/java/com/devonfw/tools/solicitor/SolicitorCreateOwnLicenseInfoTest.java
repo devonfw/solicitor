@@ -17,7 +17,7 @@ import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
  * target/generated-resources). This creates the solicitor_licenseinfo.html file
  * which is included in the distribution.
  */
-@SpringBootTest(properties = { "webcontent.skipdownload=true" })
+@SpringBootTest(properties = { "webcontent.skipdownload=false" })
 @RunWith(SpringRunner.class)
 public class SolicitorCreateOwnLicenseInfoTest {
 
