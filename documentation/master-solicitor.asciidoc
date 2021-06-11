@@ -248,7 +248,7 @@ The config file has the following skeleton:
 {
   "version" : 1,
   "comment" : "Sample Solicitor configuration file",
-  "engagementName" : "DevonFW", <1>
+  "engagementName" : "devonfw", <1>
   .
   .
   .
@@ -286,7 +286,7 @@ The leading section of the config file defines some metadata and the engagement 
 [listing]
   "version" : 1, <1>
   "comment" : "Sample Solicitor configuration file", <2>
-  "engagementName" : "DevonFW", <3>
+  "engagementName" : "devonfw", <3>
   "engagementType" : "INTERN", <4>
   "clientName" : "none", <5>
   "goToMarketModel" : "LICENSE", <6>
@@ -385,7 +385,7 @@ The writer configuration defines how the processed data will be exported and/or 
   "writers" : [ {
     "type" : "xls", <1>
     "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <6>
-    "target" : "OSS-Inventory-DevonFW.xlsx", <3> <6>
+    "target" : "OSS-Inventory-devonfw.xlsx", <3> <6>
     "description" : "The XLS OSS-Inventory document", <4>
     "dataTables" : { <5>
       "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
