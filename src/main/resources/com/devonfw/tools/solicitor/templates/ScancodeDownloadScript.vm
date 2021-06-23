@@ -1,0 +1,7 @@
+SET beginning=%CD%
+cd SourceDownload
+SET dir=%CD% 
+cd ../../../scancode/scancode-toolkit-21.3.31
+scancode -c -n 16 --json-pp scancodeOutput.json %dir%
+
+move "scancodeOutput.json" "%beginning%"
