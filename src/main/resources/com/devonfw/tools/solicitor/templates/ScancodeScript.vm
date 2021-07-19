@@ -36,4 +36,5 @@ cd SourceDownload
 	fi
 #end
 
+cd ..
 start scancodeDownload.cmd
