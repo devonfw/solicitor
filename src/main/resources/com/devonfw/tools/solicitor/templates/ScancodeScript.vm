@@ -7,33 +7,32 @@ mkdir SourceDownload &> /dev/null
 cd SourceDownload
 #foreach ($artifact in $ARTIFACTS)
 # Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version -- License(s): $artifact.effectiveNormalizedLicense -- includeSource: $artifact.includeSource
-	if [[ ! $artifact.artifactId == *"/"* ]]
+	cutArtifact='${artifact.artifactId}'
+
+	if [[ ! -d "#[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version" ]]
 	then
-		if [[ ! -d "$artifact.artifactId-$artifact.version" ]]
-		then
-			mkdir $artifact.artifactId-$artifact.version &> /dev/null
-			cd $artifact.artifactId-$artifact.version
-			#if ( $artifact.repoType == "maven" )
-				curl -# https://repo1.maven.org/maven2/$artifact.groupIdT/$artifact.artifactId/$artifact.version/$artifact.artifactId-$artifact.version-sources.jar -o $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar
-				unzip -q $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar
-					if [ $? -ne 0 ]
-					then
-					  echo "Need to retrieve-manually" > $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar--need-to-retrieve-manually-maven
-					fi
-				cd ..
-			#elseif ( $artifact.repoType == "npm" )
-				curl -# https://registry.npmjs.org/$artifact.artifactId/-/$artifact.artifactId-${artifact.version}.tgz -o $artifact.artifactId-${artifact.version}.tgz
-				tar -xvzf $artifact.artifactId-${artifact.version}.tgz
-					if [ $? -ne 0 ]
-					then
-					  echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually-npm
-					fi
-				cd ..
-			#else
-				echo "Need to retrieve-manually (unknown repoType)" > $artifact.groupId--$artifact.artifactId-${artifact.version}--need-to-retrieve-manually
-			#end
-		fi
-	fi
+		mkdir #[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version &> /dev/null
+		cd #[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version
+		#if ( $artifact.repoType == "maven" )
+			curl -# https://repo1.maven.org/maven2/$artifact.groupIdT/#[[${cutArtifact#*/}]]#/$artifact.version/#[[${cutArtifact#*/}]]#-$artifact.version-sources.jar -o $artifact.groupId--#[[${cutArtifact#*/}]]#-$artifact.version-sources.jar
+			unzip -q $artifact.groupId--#[[${cutArtifact#*/}]]#-$artifact.version-sources.jar
+				if [ $? -ne 0 ]
+				then
+				  echo "Need to retrieve-manually" > $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar--need-to-retrieve-manually-maven
+				fi
+			cd ..
+		#elseif ( $artifact.repoType == "npm" )
+			curl -# https://registry.npmjs.org/$artifact.artifactId/-/#[[${cutArtifact#*/}]]#-${artifact.version}.tgz -o #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
+			tar -xvzf #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
+				if [ $? -ne 0 ]
+				then
+				  echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually-npm
+				fi
+			cd ..
+		#else
+			echo "Need to retrieve-manually (unknown repoType)" > $artifact.groupId--$artifact.artifactId-${artifact.version}--need-to-retrieve-manually
+		#end
+	fi	
 #end
 
 cd ..

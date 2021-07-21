@@ -5,7 +5,11 @@ SET dir=%CD%
 
 cd ../../../scancode/scancode-toolkit-21.3.31
 #foreach ($artifact in $ARTIFACTS)
-		call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/$artifact.artifactId-$artifact.version).json --only-findings %dir%/$artifact.artifactId-$artifact.version
+
+SET art=$artifact.artifactId
+
+#[[SET cutArt=%art:/=+%]]#
+		call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/%cutArt%-$artifact.version).json --only-findings %dir%/%cutArt%-$artifact.version
 #end
 
 cd %beginning%/scancodeOutput
