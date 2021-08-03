@@ -5,11 +5,11 @@
 #
 mkdir SourceDownload &> /dev/null
 cd SourceDownload
+
 #foreach ($artifact in $ARTIFACTS)
 # Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version -- License(s): $artifact.effectiveNormalizedLicense -- includeSource: $artifact.includeSource
 
-	if [[ $artifact.artifactId == *"/"* ]]
-	then
+	#if ( $artifact.artifactId.toString().contains("/") )
 		cutArtifact='${artifact.artifactId}'
 
 		if [[ ! -d "#[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version" ]]
@@ -36,9 +36,8 @@ cd SourceDownload
 				echo "Need to retrieve-manually (unknown repoType)" > $artifact.groupId--$artifact.artifactId-${artifact.version}--need-to-retrieve-manually
 			#end
 		fi	
-	else
-	if [[ ! -d "$artifact.artifactId-$artifact.version" ]]
-		then
+	#else
+		if [[ ! -d "$artifact.artifactId-$artifact.version" ]]
 			mkdir $artifact.artifactId-$artifact.version &> /dev/null
 			cd $artifact.artifactId-$artifact.version
 			#if ( $artifact.repoType == "maven" )
@@ -61,7 +60,7 @@ cd SourceDownload
 				echo "Need to retrieve-manually (unknown repoType)" > $artifact.groupId--$artifact.artifactId-${artifact.version}--need-to-retrieve-manually
 			#end
 		fi
-	fi
+	#end
 #end
 
 cd ..
