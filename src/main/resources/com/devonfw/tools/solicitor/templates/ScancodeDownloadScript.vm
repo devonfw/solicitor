@@ -1,21 +1,33 @@
 SET beginning=%CD%
 mkdir scancodeOutput
-cd SourceDownload
-SET dir=%CD%
+SET so=%CD%\scancodeOutput
+echo {"artifacts": [ > scancodeOutput/scancodeOutput.json
+SET dir=%CD%\SourceDownload
+cd ../../scancode/scancode-toolkit-21.3.31
+SET scan=%CD%
 
-cd ../../../scancode/scancode-toolkit-21.3.31
 #foreach ($artifact in $ARTIFACTS)
-
-	SET art=$artifact.artifactId-$artifact.version
+cd %scan%
+	#if ( $artifact.artifactId.toString().contains("/") )
+		SET art=$artifact.artifactId-$artifact.version
+		#[[SET cutArt=%art:/=+%]]#
+		if not exist %beginning%/scancodeOutput/%cutArt%.json ( 
+			start /wait cmd /c "call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/%cutArt%.json --only-findings %dir%/%cutArt%"
+		)
+		cd %so%
+		type %cutArt%.json >> scancodeOutput.json
+	#else
 	
-	#[[SET cutArt=%art:/=+%]]#
-	if not exist %beginning%/scancodeOutput/%cutArt%.json ( 
-	 start /wait cmd /c "call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/%cutArt%.json --only-findings %dir%/%cutArt%"
-	 )
+		if not exist %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json ( 
+			start /wait cmd /c "call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json --only-findings %dir%/$artifact.artifactId-$artifact.version"
+		)
+		cd %so%
+		type $artifact.artifactId-${artifact.version}.json >> scancodeOutput.json
 	#end
+echo , >> scancodeOutput.json
+#end
 
-cd %beginning%/scancodeOutput
-copy *.json scancodeOutput.json 
-
+cd %so%
+echo {}]}>> scancodeOutput.json
 move scancodeOutput.json %beginning%
 
