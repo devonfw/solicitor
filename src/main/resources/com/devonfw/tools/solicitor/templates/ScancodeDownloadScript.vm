@@ -2,7 +2,7 @@ SET beginning=%CD%
 mkdir scancodeOutput
 SET so=%CD%\scancodeOutput
 echo {"artifacts": [ > scancodeOutput/scancodeOutput.json
-SET dir=%CD%\SourceDownload
+SET dir=%CD%\Source
 cd ../../scancode/scancode-toolkit-21.3.31
 SET scan=%CD%
 
