@@ -1,7 +1,7 @@
 SET beginning=%CD%
 mkdir scancodeOutput
 SET so=%CD%\scancodeOutput
-echo {"artifacts": [ > scancodeOutput/scancodeOutput.json
+echo {"artifacts": [ > scancodeOutput/scancodeOut.json
 SET dir=%CD%\Source
 cd ../../scancode/scancode-toolkit-21.3.31
 SET scan=%CD%
@@ -15,19 +15,22 @@ cd %scan%
 			start /wait cmd /c "call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/%cutArt%.json --only-findings %dir%/%cutArt%"
 		)
 		cd %so%
-		type %cutArt%.json >> scancodeOutput.json
+		type %cutArt%.json >> scancodeOut.json
 	#else
 	
 		if not exist %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json ( 
 			start /wait cmd /c "call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json --only-findings %dir%/$artifact.artifactId-$artifact.version"
 		)
 		cd %so%
-		type $artifact.artifactId-${artifact.version}.json >> scancodeOutput.json
+		type $artifact.artifactId-${artifact.version}.json >> scancodeOut.json
 	#end
-echo , >> scancodeOutput.json
+<NUL set /p =",">> scancodeOut.json
 #end
-
+<NUL set /p ="END">> scancodeOut.json
+FINDSTR /V ",END" scancodeOut.json>scancodeOutput.json
+echo } >> scancodeOutput.json
+del scancodeOut.json
 cd %so%
-echo {}]}>> scancodeOutput.json
+echo ]}>> scancodeOutput.json
 move scancodeOutput.json %beginning%
 
