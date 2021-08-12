@@ -16,6 +16,9 @@ cd %scan%
 		)
 		cd %so%
 		type %cutArt%.json >> scancodeOut.json
+		if exist %beginning%/scancodeOutput/%cutArt%.json (
+		<NUL set /p =",">> scancodeOut.json
+		)
 	#else
 	
 		if not exist %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json ( 
@@ -23,8 +26,10 @@ cd %scan%
 		)
 		cd %so%
 		type $artifact.artifactId-${artifact.version}.json >> scancodeOut.json
+		if exist %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json (
+		<NUL set /p =",">> scancodeOut.json
+		)
 	#end
-<NUL set /p =",">> scancodeOut.json
 #end
 <NUL set /p ="END">> scancodeOut.json
 FINDSTR /V ",END" scancodeOut.json>scancodeOutput.json
