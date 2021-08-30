@@ -20,7 +20,7 @@ Most of the above activities share common points:
 * The need to have an inventory of used (open source) components and their licenses
 * Some rule based evaluation and reporting based on this inventory
 
-In practice these easy looking tasks might get complex due to various aspects:
+While working on these easy looking tasks, they might get complex due to various aspects:
 
 * The number of open source components might be quite large (>> 100 for a typical webapplication based on state of the art programming frameworks)
 * Agile development and rapid changes of used components result in frequent changes of the inventory
@@ -248,7 +248,7 @@ The config file has the following skeleton:
 {
   "version" : 1,
   "comment" : "Sample Solicitor configuration file",
-  "engagementName" : "DevonFW", <1>
+  "engagementName" : "devonfw", <1>
   .
   .
   .
@@ -286,7 +286,7 @@ The leading section of the config file defines some metadata and the engagement 
 [listing]
   "version" : 1, <1>
   "comment" : "Sample Solicitor configuration file", <2>
-  "engagementName" : "DevonFW", <3>
+  "engagementName" : "devonfw", <3>
   "engagementType" : "INTERN", <4>
   "clientName" : "none", <5>
   "goToMarketModel" : "LICENSE", <6>
@@ -385,7 +385,7 @@ The writer configuration defines how the processed data will be exported and/or 
   "writers" : [ {
     "type" : "xls", <1>
     "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <6>
-    "target" : "OSS-Inventory-DevonFW.xlsx", <3> <6>
+    "target" : "OSS-Inventory-devonfw.xlsx", <3> <6>
     "description" : "The XLS OSS-Inventory document", <4>
     "dataTables" : { <5>
       "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
