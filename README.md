@@ -42,7 +42,7 @@ This will use some prepackaged internal sample data (taken from Devon4J) and sam
 See the [User Guide](documentation/master-solicitor.adoc) for further information about usage and configuration. The User Guide is also contained in the executable jar. Calling Solicitor via `java -jar target/solicitor.jar -eug` will store the User Guide in PDF format in the current working directory.
 
 ## Tutorials
-On the [devonFW Youtube Channel](https://www.youtube.com/channel/UCtb1p-24jus-QoXy49t9Xzg) you will find video tutorials on the usage of Solicitor:
+On the [devonfw Youtube Channel](https://www.youtube.com/channel/UCtb1p-24jus-QoXy49t9Xzg) you will find video tutorials on the usage of Solicitor:
 * [Part 1: Quick Start](https://www.youtube.com/watch?v=cGZWR_KDdZo)
 * [Part 2: Working with Projects - Basics](https://www.youtube.com/watch?v=jN7zaPrc3UM&)
 * [Part 3: Working with Projects - Advanced](https://www.youtube.com/watch?v=BF7plNnPb44)
