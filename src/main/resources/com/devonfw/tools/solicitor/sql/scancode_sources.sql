@@ -2,7 +2,6 @@
 --
 -- returns data needed to create script for downloading all sources which need to be included in the distribution
 select distinct
-	REGEXP_REPLACE(a."applicationName",'\s','') as "applicationName",
 	NVL(ac."groupId", 'NA') as "groupId",
 	NVL(ac."artifactId", 'NA') as "artifactId",
 	NVL(ac."version", 'NA' ) as "version",
@@ -16,16 +15,13 @@ from
 	NORMALIZEDLICENSE l
 where
 	a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT AND
-	ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE AND
-	l."includeSource" != 'no'
+	ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE
 group by
-	"applicationName",
 	"groupId",
 	"artifactId",
 	"version",
 	"repoType"
 order by
-	"applicationName",
 	"groupId",
 	"artifactId",
 	"version"

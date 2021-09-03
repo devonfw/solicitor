@@ -20,7 +20,7 @@ Most of the above activities share common points:
 * The need to have an inventory of used (open source) components and their licenses
 * Some rule based evaluation and reporting based on this inventory
 
-In practice these easy looking tasks might get complex due to various aspects:
+While working on these easy looking tasks, they might get complex due to various aspects:
 
 * The number of open source components might be quite large (>> 100 for a typical webapplication based on state of the art programming frameworks)
 * Agile development and rapid changes of used components result in frequent changes of the inventory
@@ -248,7 +248,7 @@ The config file has the following skeleton:
 {
   "version" : 1,
   "comment" : "Sample Solicitor configuration file",
-  "engagementName" : "DevonFW", <1>
+  "engagementName" : "devonfw", <1>
   .
   .
   .
@@ -286,7 +286,7 @@ The leading section of the config file defines some metadata and the engagement 
 [listing]
   "version" : 1, <1>
   "comment" : "Sample Solicitor configuration file", <2>
-  "engagementName" : "DevonFW", <3>
+  "engagementName" : "devonfw", <3>
   "engagementType" : "INTERN", <4>
   "clientName" : "none", <5>
   "goToMarketModel" : "LICENSE", <6>
@@ -385,7 +385,7 @@ The writer configuration defines how the processed data will be exported and/or 
   "writers" : [ {
     "type" : "xls", <1>
     "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <6>
-    "target" : "OSS-Inventory-DevonFW.xlsx", <3> <6>
+    "target" : "OSS-Inventory-devonfw.xlsx", <3> <6>
     "description" : "The XLS OSS-Inventory document", <4>
     "dataTables" : { <5>
       "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
@@ -1051,7 +1051,43 @@ java -Dpropertyname1=value1 -Dpropertyname2=value2 -jar solicitor.jar <any other
 include::../src/main/resources/application.properties[]
 ----
 
+[appendix]
+== Reporting Templates
 
+ 
+
+There are different templates that can be used for reporting. For usage, the templates have to be specified in the “writers” section of the solicitor configuration file (see <<Writers / Reporting>>).
+In the default solicitor configuration all templates are specified. (see <<Appendix A: Default Base Configuration>>)
+
+ 
+
+==== Solicitor_Output_Template_Sample.xlsx 
+With this template a report in Excel format can be created. The spreadsheet contains data from the internal database (see <<Database Structure>>) which can be fetched by specifying the path to the SQL statements files in the solicitor configuration file.
+
+ 
+
+==== Solicitor_Diff_Template_Sample.vm
+This template creates a HTML document which has a table containing the relevant data from the internal database. Cells that have been changed, compared to a previous solicitor run, are marked in a different color. For usage, the option -d <filename> needs to be appended with filename being saved_latest_model.json.
+
+ 
+
+==== Solicitor_Output_Template_Sample.vm
+This template creates an HTML document which has an overview of OSS components used in the project. The data is displayed in a table with the columns:
+Name, GroupId, Version, Application, License, LicenseUrl.
+
+ 
+
+==== Quality_Report.vm
+This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:
+Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized Licenses, License Count.
+
+==== ScancodeDownloadScript.vm
+This template creates a script file for using https://github.com/nexB/scancode-toolkit[ScanCode] to create a JSON document which contains copyright information (statements, holders, authors) about each artifact within a project. Copyright information
+is displayed on file level. The output format being a JSON allows for further usage and processing as we store it in a valid syntax with an array of artifacts that contain all infos. 
+The copyright scanner used for this report is scancode-toolkit-21.8.4. Usage information can be found in the created scancode_project.sh script after running solicitor.
+
+NOTE: This report is an experimental feature and might be changed or removed in future versions without any notice.
+ 
 [appendix]
 == Extending Solicitor
 `Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
@@ -1102,6 +1138,7 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.3.0::
+* New report _ScancodeDownloadScript.vm_ to compile copyright information using https://github.com/nexB/scancode-toolkit[ScanCode]
 
 Changes in 1.2.0::
 * Added some license name mapping rules in LicenseNameMappingSample.xls
