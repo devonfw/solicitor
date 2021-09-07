@@ -3,8 +3,8 @@ mkdir scancodeOutput
 SET so=%CD%\scancodeOutput
 echo {"artifacts": [ > scancodeOutput/scancodeOut.json
 SET dir=%CD%\Source
-cd ../../scancode/scancode-toolkit-21.8.4
-SET scan=%CD%
+SET /p scan=Enter scancode path: 
+
 
 #foreach ($artifact in $ARTIFACTS)
 cd %scan%
