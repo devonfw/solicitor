@@ -8,6 +8,7 @@ matrix:
   dictionary:
     wordlists:
     - en-devonfw.dict
+    - solicitor.dict
     output: solicitor.dic
   pipeline:
   - pyspelling.filters.url:
