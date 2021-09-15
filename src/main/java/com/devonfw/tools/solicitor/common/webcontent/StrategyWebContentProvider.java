@@ -66,7 +66,8 @@ public class StrategyWebContentProvider implements WebContentProvider {
 	public void setTrace(String trace) {
 		this.trace = this.trace.concat(trace + "\n");
 	}
-
+	// https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat
+	// https://raw.githubusercontent.com/nodelib/nodelib/master/packages/fs/fs.stat/README.md
 	//helper method that normalizes a github url and retrieves the raw link to a given license
     private String normalizeGitURL(String url) {
     	String oldURL = url;
@@ -82,13 +83,24 @@ public class StrategyWebContentProvider implements WebContentProvider {
     		url = url.replace("blob/","");
     		this.setTrace("URL changed from " + oldURL + " to " + url);
     		return url;
-    	} else if(url.contains("github.com") && !(url.contains("blob/"))){
+    	}else if(url.contains("github.com") && url.contains("tree/")) {
+    		//case that declared license points to github non raw license file; change it to raw
+    		url = url.replace("tree/","");
+    		this.setTrace("URL changed from " + oldURL + " to " + url);
+    		return normalizeGitURL(url);
+    	} else if(url.contains("github.com") && !(url.contains("blob/")) && !(url.contains("tree/"))){
     		//case that declared license points to main github page but not file
     		//try different variations of license names in the mainfolder / take readme if non existent
-    		String[] licensefilenames = {"LICENSE","License","license","LICENSE.md","LICENSE.txt","license.html","license.txt","COPYING","LICENSE-MIT","LICENSE-MIT.txt","README.md","Readme.md","readme.md"};
+    		String[] licensefilenames = {"LICENSE","License","license","LICENSE.md","LICENSE.txt","license.html","license.txt","COPYING","LICENSE-MIT","LICENSE-MIT.txt","README.md","Readme.md","readme.md", "README.markdown"};
 			url = url.replace("github.com","raw.githubusercontent.com");
     		for (String name : licensefilenames) {
-    			String testURL = url.concat("/master/"+name);
+    			String testURL;
+    			if(!url.contains("/master/")) {
+    				testURL = url.concat("/master/"+name);
+    			}
+    			else {
+    				testURL = url.concat("/"+name);
+    			}
     			this.setTrace("Searching for license: testing with " + testURL);
         		if(pingURL(testURL)==true) {
         			this.setTrace("URL changed from " + oldURL + " to " + testURL);
@@ -101,7 +113,7 @@ public class StrategyWebContentProvider implements WebContentProvider {
 	
     //helper method that normalizes a readme file; cuts off overhead and preserves license text
     private String normalizeReadMe(String readme) {
-    	int licenseIndex = readme.toLowerCase().indexOf("license");
+    	int licenseIndex = readme.toLowerCase().indexOf("License");
         if(licenseIndex != -1) {
         	return readme.substring(licenseIndex);	     
         } else {
