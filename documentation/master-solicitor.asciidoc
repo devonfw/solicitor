@@ -20,7 +20,7 @@ Most of the above activities share common points:
 * The need to have an inventory of used (open source) components and their licenses
 * Some rule based evaluation and reporting based on this inventory
 
-In practice these easy looking tasks might get complex due to various aspects:
+While working on these easy looking tasks, they might get complex due to various aspects:
 
 * The number of open source components might be quite large (>> 100 for a typical webapplication based on state of the art programming frameworks)
 * Agile development and rapid changes of used components result in frequent changes of the inventory
@@ -40,8 +40,9 @@ When running _Solicitor_ three subsequent processing steps are executed:
 * Generation of output documents
 
 WARNING: `Solicitor` comes with a set of *sample* rules for the normalization and evaluation of licenses.
-Even though these included rules are not "intentionally wrong" they are only samples and *you should never rely on these builtin rules without checking and possibly modifying their content and consulting your lawyer*. _Solicitor_ is a tool
-for technically supporting the management of OSS licenses within your project. _Solicitor_ neither gives legal advice nor is a replacement for a lawyer.
+Even though these included rules are not "intentionally wrong" they are only samples and *you should never rely on these builtin rules without checking and possibly modifying their content and consulting your lawyer*.
+_Solicitor_ is a tool for technically supporting the management of OSS licenses within your project.
+_Solicitor_ neither gives legal advice nor is a replacement for a lawyer.
 
 === Licensing of Solicitor
 The _Solicitor_ code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw/solicitor are licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0).
@@ -60,11 +61,16 @@ Raw data about the components and attached licenses within an application is gat
 
 The _import_ step reads this data and transforms it into a common technology independent internal format.
 
-In the _normalization_ step the license information is completed and unified. Information not contained in the raw data is added. Where possible the applicable licenses are expressed by https://spdx.org/[SPDX-IDs].
+In the _normalization_ step the license information is completed and unified.
+Information not contained in the raw data is added.
+Where possible the applicable licenses are expressed by https://spdx.org/[SPDX-IDs].
 
-Many open source compontents are available via multi licensing models. Within _qualification_ the finally applicable licenses are selected.
+Many open source compontents are available via multi licensing models.
+Within _qualification_ the finally applicable licenses are selected.
 
-In the _legal assessment_ the compliance of applicable licenses will be checked based on generic rules defined in company wide policies and possibly project specific project specific extensions. Defining those rules is considered as "legal advice" and possibly needs to be done by lawyers which are authorized to do so. For this step _Solicitor_ only provides a framework / tool to support the process here but does not deliver any predefined rules.
+In the _legal assessment_ the compliance of applicable licenses will be checked based on generic rules defined in company wide policies and possibly project specific project specific extensions.
+Defining those rules is considered as "legal advice" and possibly needs to be done by lawyers which are authorized to do so.
+For this step _Solicitor_ only provides a framework / tool to support the process here but does not deliver any predefined rules.
 
 The final _export_ step produces documents based on the internal data model. This might be the list of licenses to be forwarded to the customer or a license compliance report. Data might also be fed into other systems.
 
@@ -209,7 +215,7 @@ _Solicitor_ is executed with the following command:
 [listing]
 java -jar solicitor.jar -c <configfile>
 
-where `<configfile>` is to be replaced by the location of the <<Configuration File>>.
+where `<configfile>` is to be replaced by the location of the <<Project Configuration File>>.
 
 To get a first idea on what _Solicitor_ does you might call
 
@@ -242,7 +248,7 @@ The config file has the following skeleton:
 {
   "version" : 1,
   "comment" : "Sample Solicitor configuration file",
-  "engagementName" : "DevonFW", <1>
+  "engagementName" : "devonfw", <1>
   .
   .
   .
@@ -252,7 +258,7 @@ The config file has the following skeleton:
 }
 
 <1> The leading data defines the engagement master data, see <<Header and Engagement Master Data>>
-<2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Readers / Applications>>
+<2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Applications>>
 <3> `rules` references the rules to apply to the imported data, see <<Business Rules>>
 <4> `writers` configures how the processed data should be exported, see <<Writers / Reporting>>
 
@@ -280,7 +286,7 @@ The leading section of the config file defines some metadata and the engagement 
 [listing]
   "version" : 1, <1>
   "comment" : "Sample Solicitor configuration file", <2>
-  "engagementName" : "DevonFW", <3>
+  "engagementName" : "devonfw", <3>
   "engagementType" : "INTERN", <4>
   "clientName" : "none", <5>
   "goToMarketModel" : "LICENSE", <6>
@@ -379,7 +385,7 @@ The writer configuration defines how the processed data will be exported and/or 
   "writers" : [ {
     "type" : "xls", <1>
     "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <6>
-    "target" : "OSS-Inventory-DevonFW.xlsx", <3> <6>
+    "target" : "OSS-Inventory-devonfw.xlsx", <3> <6>
     "description" : "The XLS OSS-Inventory document", <4>
     "dataTables" : { <5>
       "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
@@ -420,9 +426,9 @@ java -jar solicitor.jar -ec some/directory/path
 
 will export all internal configuration to the given directory. This includes:
 
-* The base configuration file, see <<Configuration File>>
+* The base configuration file, which defines standard settings inherited by the <<Project Configuration File>>
 * The Drools Rule Templates
-* The the builtin decision tables which are referenced in the base configuration, see <<Standard Business Rules>>
+* The builtin decision tables which are referenced in the base configuration, see <<Standard Business Rules>>
 * The SQL statements which are used for <<SQL transformation and filtering>>
 * The referenced templates for the <<Velocity Writer>> and <<Excel Writer>>
 
@@ -846,12 +852,11 @@ icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 === Amending the builtin decision tables with own rules
 
 The standard process as described before consists of 6 decision tables / rule
-groups to be processed in sequence. When using the builtin base configuration all those decision tables use the internal sample data / rules as contained in _Solicitor_.
+groups to be processed in sequence. When using the builtin default base configuration all those decision tables use the internal sample data / rules as contained in _Solicitor_.
 
 To use your own rule data there are three approaches:
 
-* Include your own `rules` section in the project configuration file (so not inheriting from
-the builtin base configuration file) and reference your own decision tables there.
+* Include your own `rules` section in the project configuration file (so not inheriting from the builtin base configuration file) and reference your own decision tables there.
 * Create your own "Solicitor Extension" which might completely redefine/replace the buitin `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
 * Make use of the optional project specific decision tables which are defined in the default base configuration: For every builtin decision table there is an optional external decision table (expected in the filesystem) which will be checked for existence. If such external decision table exists it will be processed first - before processing the builtin decision table. Thus is it possible to amend / override the builtin rules by project specific rules. When you create the starter configuration of your project as described in <<Starting a new project>>, those project specific decision tables are automatically created.
 
@@ -932,7 +937,7 @@ correlations keys.
 
 [source,sql]
 ----
-include::../resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[]
+include::../src/main/resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[]
 ----
 
 NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL
@@ -1027,7 +1032,7 @@ of the _Solicitor_ configuration file which will be used if the project specific
 [source,json]
 .Default Configuration
 ----
-include::../resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..159]
+include::../src/main/resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..169]
 ----
 
 [appendix]
@@ -1043,10 +1048,46 @@ java -Dpropertyname1=value1 -Dpropertyname2=value2 -jar solicitor.jar <any other
 [source,properties]
 .application.properties
 ----
-include::../resources/application.properties[]
+include::../src/main/resources/application.properties[]
 ----
 
+[appendix]
+== Reporting Templates
 
+ 
+
+There are different templates that can be used for reporting. For usage, the templates have to be specified in the “writers” section of the solicitor configuration file (see <<Writers / Reporting>>).
+In the default solicitor configuration all templates are specified. (see <<Appendix A: Default Base Configuration>>)
+
+ 
+
+==== Solicitor_Output_Template_Sample.xlsx 
+With this template a report in Excel format can be created. The spreadsheet contains data from the internal database (see <<Database Structure>>) which can be fetched by specifying the path to the SQL statements files in the solicitor configuration file.
+
+ 
+
+==== Solicitor_Diff_Template_Sample.vm
+This template creates a HTML document which has a table containing the relevant data from the internal database. Cells that have been changed, compared to a previous solicitor run, are marked in a different color. For usage, the option -d <filename> needs to be appended with filename being saved_latest_model.json.
+
+ 
+
+==== Solicitor_Output_Template_Sample.vm
+This template creates an HTML document which has an overview of OSS components used in the project. The data is displayed in a table with the columns:
+Name, GroupId, Version, Application, License, LicenseUrl.
+
+ 
+
+==== Quality_Report.vm
+This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:
+Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized Licenses, License Count.
+
+==== ScancodeDownloadScript.vm
+This template creates a script file for using https://github.com/nexB/scancode-toolkit[ScanCode] to create a JSON document which contains copyright information (statements, holders, authors) about each artifact within a project. Copyright information
+is displayed on file level. The output format being a JSON allows for further usage and processing as we store it in a valid syntax with an array of artifacts that contain all infos. 
+The copyright scanner used for this report is scancode-toolkit-21.8.4. Usage information can be found in the created scancode_project.sh script after running solicitor.
+
+NOTE: This report is an experimental feature and might be changed or removed in future versions without any notice.
+ 
 [appendix]
 == Extending Solicitor
 `Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
@@ -1070,7 +1111,7 @@ to be included in this archive _in the root folder_.
 [source,properties]
 .application-extension.properties
 ----
-include::../resources/samples/application-extension.properties[]
+include::../src/main/resources/samples/application-extension.properties[]
 ----
 
 This file is included via the standard Spring Boot profile mechanism. Besides containing
@@ -1095,6 +1136,16 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 
 [appendix]
 == Release Notes
+
+Changes in 1.3.0::
+* New report _ScancodeDownloadScript.vm_ to compile copyright information using https://github.com/nexB/scancode-toolkit[ScanCode]
+
+Changes in 1.2.0::
+* Added some license name mapping rules in LicenseNameMappingSample.xls
+* https://github.com/devonfw/solicitor/issues/71: 
+  New "Quality Report" which might be helpful in validating the outcome of the _Solicitor_ run.
+  Currently this report contains a list of all application components which have more than one effective license attached.
+  This might be helpful for spotting cases where appropriate rules for selecting the applicable license in case of dual-/multilicensing is missing.
 
 Changes in 1.1.1::
 * Corrected order of license name mapping which prevented Unlicense, The W3C License, WTFPL, Zlib and
