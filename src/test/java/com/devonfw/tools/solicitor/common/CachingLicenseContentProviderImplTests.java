@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.devonfw.tools.solicitor.common.webcontent.DirectUrlWebContentProvider;
+import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 
 public class CachingLicenseContentProviderImplTests {
 

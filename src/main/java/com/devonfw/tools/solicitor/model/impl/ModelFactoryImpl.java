@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorVersion;
-import com.devonfw.tools.solicitor.common.webcontent.InMemoryMapContentProvider;
-import com.devonfw.tools.solicitor.common.webcontent.WebContent;
+import com.devonfw.tools.solicitor.common.content.InMemoryMapContentProvider;
+import com.devonfw.tools.solicitor.common.content.web.WebContent;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.impl.inventory.ApplicationComponentImpl;

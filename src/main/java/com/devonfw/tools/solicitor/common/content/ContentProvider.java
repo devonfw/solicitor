@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.devonfw.tools.solicitor.common.webcontent;
+package com.devonfw.tools.solicitor.common.content;
 
 /**
  * Provides access to a {@link Content} objects based on a given URI.

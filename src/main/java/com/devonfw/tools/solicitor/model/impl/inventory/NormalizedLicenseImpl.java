@@ -7,8 +7,8 @@ package com.devonfw.tools.solicitor.model.impl.inventory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.devonfw.tools.solicitor.common.webcontent.ContentProvider;
-import com.devonfw.tools.solicitor.common.webcontent.WebContent;
+import com.devonfw.tools.solicitor.common.content.ContentProvider;
+import com.devonfw.tools.solicitor.common.content.web.WebContent;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;

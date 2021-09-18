@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.devonfw.tools.solicitor.common.webcontent;
+package com.devonfw.tools.solicitor.common.content.web;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.content.ContentProvider;
 
 /**
  * A {@link ContentProvider} which tries to load the {@link WebContent} directly

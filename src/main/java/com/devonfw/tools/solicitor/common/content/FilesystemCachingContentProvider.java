@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.devonfw.tools.solicitor.common.webcontent;
+package com.devonfw.tools.solicitor.common.content;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 
 /**
  * A {@link CachingContentProviderBase} which tries to load web content from the

@@ -1,7 +1,9 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.devonfw.tools.solicitor.common.webcontent;
+package com.devonfw.tools.solicitor.common.content.web;
+
+import com.devonfw.tools.solicitor.common.content.Content;
 
 /**
  * A {@link Content} which represents a web resource, e.g. a license text which
