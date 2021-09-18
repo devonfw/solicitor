@@ -9,28 +9,29 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
- * A {@link CachingWebContentProviderBase} which tries to load web content from
- * a (possible static) cache in the classpath.
+ * A {@link CachingContentProviderBase} which tries to load web content from a
+ * (possible static) cache in the classpath.
  */
-@Component
-public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
+public class ClasspathContentProvider<C extends Content> extends CachingContentProviderBase<C> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClasspathWebContentProvider.class);
-
-    @Autowired
-    private FilesystemCachingWebContentProvider filesystemCachingWebContentProvider;
+    private static final Logger LOG = LoggerFactory.getLogger(ClasspathContentProvider.class);
 
     private String[] cachePaths;
 
     /**
      * Constructor.
+     *
+     * @param cachePaths the base paths where to look for preconfigured license
+     *        texts
      */
-    public ClasspathWebContentProvider() {
+    public ClasspathContentProvider(ContentFactory<C> contentFactory, ContentProvider<C> nextContentProvider,
+            String[] cachePaths) {
+
+        super(contentFactory, nextContentProvider);
+        this.cachePaths = cachePaths;
 
     }
 
@@ -47,18 +48,6 @@ public class ClasspathWebContentProvider extends CachingWebContentProviderBase {
         for (String base : this.cachePaths) {
             result.add(new StringBuilder("classpath:").append(base).append("/").append(key).toString());
         }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Delegates next to the {@link FilesystemCachingWebContentProvider}.
-     */
-    @Override
-    public String loadFromNext(String url) {
-
-        String result = this.filesystemCachingWebContentProvider.getWebContentForUrl(url);
         return result;
     }
 

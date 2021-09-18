@@ -7,7 +7,8 @@ package com.devonfw.tools.solicitor.model.impl.inventory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.devonfw.tools.solicitor.common.webcontent.WebContentProvider;
+import com.devonfw.tools.solicitor.common.webcontent.ContentProvider;
+import com.devonfw.tools.solicitor.common.webcontent.WebContent;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -61,7 +62,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
     private ApplicationComponent applicationComponent;
 
-    private WebContentProvider licenseContentProvider;
+    private ContentProvider<WebContent> licenseContentProvider;
 
     /**
      * Creates a new instance.
@@ -137,7 +138,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getDeclaredLicenseContent() {
 
-        return this.licenseContentProvider.getWebContentForUrl(this.licenseUrl);
+        return this.licenseContentProvider.getContentForUri(this.licenseUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -152,7 +153,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getEffectiveNormalizedLicenseContent() {
 
-        return this.licenseContentProvider.getWebContentForUrl(this.effectiveNormalizedLicenseUrl);
+        return this.licenseContentProvider.getContentForUri(this.effectiveNormalizedLicenseUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -228,7 +229,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
      * @return the field licenseContentProvider
      */
     @JsonIgnore
-    public WebContentProvider getLicenseContentProvider() {
+    public ContentProvider<WebContent> getLicenseContentProvider() {
 
         return this.licenseContentProvider;
     }
@@ -238,7 +239,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getLicenseRefContent() {
 
-        return this.licenseContentProvider.getWebContentForUrl(this.licenseRefUrl);
+        return this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -391,7 +392,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
      * @param licenseContentProvider the new value of the field
      *        licenseContentProvider
      */
-    public void setLicenseContentProvider(WebContentProvider licenseContentProvider) {
+    public void setLicenseContentProvider(ContentProvider<WebContent> licenseContentProvider) {
 
         this.licenseContentProvider = licenseContentProvider;
     }

@@ -21,9 +21,10 @@ public class CachingLicenseContentProviderImplTests {
     @Ignore
     public void readFile() {
 
-        DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider();
+        DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider(false);
 
-        String result = licenseContentProvider.getWebContentForUrl("http://www.apache.org/licenses/LICENSE-2.0.txt");
+        String result =
+                licenseContentProvider.getContentForUri("http://www.apache.org/licenses/LICENSE-2.0.txt").getContent();
         LOG.debug(result);
         assertNotNull(result);
     }

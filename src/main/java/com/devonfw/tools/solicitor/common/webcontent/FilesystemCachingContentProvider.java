@@ -11,58 +11,58 @@ import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 
 /**
- * A {@link CachingWebContentProviderBase} which tries to load web content from
- * the file system.
+ * A {@link CachingContentProviderBase} which tries to load web content from the
+ * file system.
  *
  */
-@Component
-public class FilesystemCachingWebContentProvider extends CachingWebContentProviderBase {
+public class FilesystemCachingContentProvider<C extends Content> extends CachingContentProviderBase<C> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FilesystemCachingWebContentProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FilesystemCachingContentProvider.class);
 
-    @Autowired
-    private DirectUrlWebContentProvider httpWebContentProvider;
+    private String resourceDirectory;
 
     /**
      * Constructor.
      */
-    public FilesystemCachingWebContentProvider() {
+    public FilesystemCachingContentProvider(ContentFactory<C> contentFactory, ContentProvider<C> nextContentProvider,
+            String resourceDirectory) {
+
+        super(contentFactory, nextContentProvider);
+        this.resourceDirectory = resourceDirectory;
 
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Points to a subdirectory "licenses" in the current working directory.
      */
     @Override
     protected Collection<String> getCacheUrls(String key) {
 
-        return Collections.singleton("file:licenses/" + key);
+        return Collections.singleton("file:" + this.resourceDirectory + "/" + key);
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Delegates to {@link DirectUrlWebContentProvider}. The result returned
      * will be stored in the file system in the subdirectory "licenses" of the
      * current working directory so that it will be taken from there in
      * subsequent attempts to load the same web content again.
      */
     @Override
-    public String loadFromNext(String url) {
+    public C loadFromNext(String url) {
 
-        String result = httpWebContentProvider.getWebContentForUrl(url);
+        C result = super.loadFromNext(url);
 
-        File file = new File("licenses/" + getKey(url));
+        File file = new File(this.resourceDirectory + "/" + getKey(url));
         File targetDir = file.getParentFile();
         try {
             IOHelper.checkAndCreateLocation(file);
@@ -72,7 +72,7 @@ public class FilesystemCachingWebContentProvider extends CachingWebContentProvid
         }
         try (FileWriter fw = new FileWriter(file)) {
             if (result != null) {
-                fw.append(result);
+                fw.append(result.getContent());
             }
         } catch (IOException e) {
             LOG.error("Could not write data to file cache.");

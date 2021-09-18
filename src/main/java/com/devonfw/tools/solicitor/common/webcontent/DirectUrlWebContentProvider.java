@@ -11,27 +11,25 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 
 /**
- * A {@link WebContentProvider} which tries to load the web content directly via
- * the given URL.
+ * A {@link ContentProvider<WebContent>} which tries to load the web content
+ * directly via the given URL.
  */
-@Component
-public class DirectUrlWebContentProvider implements WebContentProvider {
+public class DirectUrlWebContentProvider implements ContentProvider<WebContent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DirectUrlWebContentProvider.class);
 
-    @Value("${webcontent.skipdownload}")
     private boolean skipdownload;
 
     /**
      * Constructor.
      */
-    public DirectUrlWebContentProvider() {
+    public DirectUrlWebContentProvider(boolean skipdownload) {
+
+        this.skipdownload = skipdownload;
 
     }
 
@@ -41,13 +39,13 @@ public class DirectUrlWebContentProvider implements WebContentProvider {
      * Directly tries to access the given URL via the web.
      */
     @Override
-    public String getWebContentForUrl(String url) {
+    public WebContent getContentForUri(String url) {
 
         URL webContentUrl;
         if (url == null) {
             return null;
         }
-        if (skipdownload) {
+        if (this.skipdownload) {
             LOG.info(LogMessages.SKIP_DOWNLOAD.msg(), url);
             return null;
         }
@@ -61,7 +59,7 @@ public class DirectUrlWebContentProvider implements WebContentProvider {
         try (InputStream is = webContentUrl.openConnection().getInputStream(); Scanner s = new Scanner(is)) {
             s.useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
-            return result;
+            return new WebContent(result);
         } catch (IOException e) {
             LOG.warn("Could not retieve content for url '" + url + "'", e);
         }
