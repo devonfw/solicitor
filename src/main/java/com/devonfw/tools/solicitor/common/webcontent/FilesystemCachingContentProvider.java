@@ -29,6 +29,11 @@ public class FilesystemCachingContentProvider<C extends Content> extends Caching
 
     /**
      * Constructor.
+     *
+     * @param contentFactory factory for creating instances of C
+     * @param nextContentProvider the next {@link ContentProvider} in the chain
+     *        which will be used if the was no cache hit
+     * @param resourceDirectory the directory where the content is stored
      */
     public FilesystemCachingContentProvider(ContentFactory<C> contentFactory, ContentProvider<C> nextContentProvider,
             String resourceDirectory) {
@@ -41,7 +46,7 @@ public class FilesystemCachingContentProvider<C extends Content> extends Caching
     /**
      * {@inheritDoc}
      *
-     * Points to a subdirectory "licenses" in the current working directory.
+     * Points to a the resourceDirectory in the current working directory.
      */
     @Override
     protected Collection<String> getCacheUrls(String key) {

@@ -9,8 +9,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Scanner;
 
-import net.bytebuddy.implementation.Implementation;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +16,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.devonfw.tools.solicitor.common.UrlInputStreamFactory;
 
 /**
- * Abstract base {@link Implementation} of {@link ContentProvider}s which first
- * try to load the content from some cache. If they are not able to load the
- * content from the cache they will delegate to some other
- * {@link ContentProvider} for further handling.
+ * Abstract base implementation of {@link ContentProvider}s which first try to
+ * load the content from some cache. If they are not able to load the content
+ * from the cache they will delegate to some other {@link ContentProvider} for
+ * further handling.
  *
  */
-public abstract class CachingContentProviderBase<C extends Content> implements ContentProvider<C> {
+public abstract class CachingContentProviderBase<C extends Content> extends AbstractContentProvider<C> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CachingContentProviderBase.class);
 
     @Autowired
     private UrlInputStreamFactory urlInputStreamFactory;
 
-    private ContentFactory<C> contentFactory;
-
     private ContentProvider<C> nextContentProvider;
 
     /**
-     * Constructor.
+     * The Constructor.
+     *
+     * @param contentFactory factory for creating instances of C
+     * @param nextContentProvider the next {@link ContentProvider} in the chain
+     *        which will be used if the was no cache hit
      */
     public CachingContentProviderBase(ContentFactory<C> contentFactory, ContentProvider<C> nextContentProvider) {
 
-        this.contentFactory = contentFactory;
-        this.nextContentProvider = this.nextContentProvider;
+        super(contentFactory);
+        this.nextContentProvider = nextContentProvider;
 
     }
 
@@ -93,7 +93,7 @@ public abstract class CachingContentProviderBase<C extends Content> implements C
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Content for url '" + url + "' found at '" + classPathUrl + "'");
                 }
-                return this.contentFactory.fromString(result);
+                return createContentFromString(result);
             } catch (FileNotFoundException fnfe) {
                 LOG.debug("Content for url '" + url + "' NOT found at '" + classPathUrl + "'");
             } catch (IOException e) {

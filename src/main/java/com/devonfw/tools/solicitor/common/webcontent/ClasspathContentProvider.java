@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * A {@link CachingContentProviderBase} which tries to load web content from a
@@ -24,8 +23,11 @@ public class ClasspathContentProvider<C extends Content> extends CachingContentP
     /**
      * Constructor.
      *
-     * @param cachePaths the base paths where to look for preconfigured license
-     *        texts
+     * @param contentFactory factory for creating instances of C
+     * @param nextContentProvider the next {@link ContentProvider} in the chain
+     *        which will be used if the was no cache hit
+     * @param cachePaths the base paths where to look for preconfigured content
+     *        (e.g. license texts)
      */
     public ClasspathContentProvider(ContentFactory<C> contentFactory, ContentProvider<C> nextContentProvider,
             String[] cachePaths) {
@@ -49,18 +51,6 @@ public class ClasspathContentProvider<C extends Content> extends CachingContentP
             result.add(new StringBuilder("classpath:").append(base).append("/").append(key).toString());
         }
         return result;
-    }
-
-    /**
-     * This method sets the field <code>cachePaths</code>. It defines the base
-     * paths where to look for preconfigured license texts.
-     *
-     * @param cachePaths the new value of the field cachePaths
-     */
-    @Value("${solicitor.classpath-license-cache-locations}")
-    public void setCachePaths(String[] cachePaths) {
-
-        this.cachePaths = cachePaths;
     }
 
 }

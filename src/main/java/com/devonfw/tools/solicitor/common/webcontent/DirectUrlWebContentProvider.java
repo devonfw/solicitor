@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
 
 /**
- * A {@link ContentProvider<WebContent>} which tries to load the web content
- * directly via the given URL.
+ * A {@link ContentProvider} which tries to load the {@link WebContent} directly
+ * via the given URL.
  */
 public class DirectUrlWebContentProvider implements ContentProvider<WebContent> {
 
@@ -26,6 +26,8 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
 
     /**
      * Constructor.
+     *
+     * @param skipdownload if set to true, then no download will be performed
      */
     public DirectUrlWebContentProvider(boolean skipdownload) {
 
@@ -43,17 +45,17 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
 
         URL webContentUrl;
         if (url == null) {
-            return null;
+            return new WebContent(null);
         }
         if (this.skipdownload) {
             LOG.info(LogMessages.SKIP_DOWNLOAD.msg(), url);
-            return null;
+            return new WebContent(null);
         }
         try {
             webContentUrl = new URL(url);
         } catch (MalformedURLException e) {
             LOG.warn("Invalid URL syntax '" + url + "'", e);
-            return null;
+            return new WebContent(null);
         }
 
         try (InputStream is = webContentUrl.openConnection().getInputStream(); Scanner s = new Scanner(is)) {
@@ -63,7 +65,7 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
         } catch (IOException e) {
             LOG.warn("Could not retieve content for url '" + url + "'", e);
         }
-        return null;
+        return new WebContent(null);
     }
 
 }

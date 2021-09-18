@@ -8,10 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * TODO ohecker: This type ...
- *
- * @author <a href="TODO@sdm.de">TODO</a>
- * @version $Revision$
+ * Java Spring configuration for the beans in the area of the
+ * {@link ContentProvider} for {@link WebContent}.
  */
 @Configuration
 public class WebContentConfiguration {
@@ -31,7 +29,7 @@ public class WebContentConfiguration {
     @Bean
     public InMemoryMapContentProvider<WebContent> inMemoryMapWebContentProvider() {
 
-        return new InMemoryMapContentProvider<>(classpathWebContentProvider());
+        return new InMemoryMapContentProvider<>(webContentFactory(), classpathWebContentProvider());
 
     }
 

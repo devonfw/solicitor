@@ -4,10 +4,7 @@
 package com.devonfw.tools.solicitor.common.webcontent;
 
 /**
- * TODO ohecker: This type ...
- *
- * @author <a href="TODO@sdm.de">TODO</a>
- * @version $Revision$
+ * A {@link ContentFactory} for {@link WebContent}.
  */
 public class WebContentFactory implements ContentFactory<WebContent> {
 

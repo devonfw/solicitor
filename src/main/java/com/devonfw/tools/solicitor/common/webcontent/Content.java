@@ -4,12 +4,14 @@
 package com.devonfw.tools.solicitor.common.webcontent;
 
 /**
- * TODO ohecker: This type ...
- *
- * @author <a href="TODO@sdm.de">TODO</a>
- * @version $Revision$
+ * Base type of any content handled.
  */
 public interface Content {
 
+    /**
+     * Gets a string represantation of the content.
+     *
+     * @return Content as String
+     */
     String getContent();
 }

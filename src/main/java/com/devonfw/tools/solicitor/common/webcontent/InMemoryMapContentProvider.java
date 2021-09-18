@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * A {@link ContentProvider} which tries to lookup web content in a local in
+ * A {@link ContentProvider} which tries to lookup {@link Content} in a local in
  * memory cache.
  */
-public class InMemoryMapContentProvider<C extends Content> implements ContentProvider<C> {
+public class InMemoryMapContentProvider<C extends Content> extends AbstractContentProvider<C> {
 
     private ContentProvider<C> nextContentProvider;;
 
@@ -18,8 +18,14 @@ public class InMemoryMapContentProvider<C extends Content> implements ContentPro
 
     /**
      * Constructor.
+     *
+     * @param contentFactory factory for creating instances of C
+     * @param nextContentProvider the next {@link ContentProvider} in the chain
+     *        which will be used if the was no cache hit
      */
-    public InMemoryMapContentProvider(ContentProvider<C> nextContentProvider) {
+    public InMemoryMapContentProvider(ContentFactory<C> contentFactory, ContentProvider<C> nextContentProvider) {
+
+        super(contentFactory);
 
         this.nextContentProvider = nextContentProvider;
     }
@@ -35,7 +41,7 @@ public class InMemoryMapContentProvider<C extends Content> implements ContentPro
     public C getContentForUri(String url) {
 
         if (url == null) {
-            return null;
+            return createContentFromString(null);
         }
 
         C result;

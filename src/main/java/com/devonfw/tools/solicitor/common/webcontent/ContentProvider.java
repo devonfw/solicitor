@@ -4,11 +4,9 @@
 package com.devonfw.tools.solicitor.common.webcontent;
 
 /**
- * TODO ohecker: This type ...
+ * Provides access to a {@link Content} objects based on a given URI.
  *
- * @author <a href="TODO@sdm.de">TODO</a>
- * @version $Revision$
- * @param <C>
+ * @param <C> the type of {@link Content}
  */
 public interface ContentProvider<C extends Content> {
 
