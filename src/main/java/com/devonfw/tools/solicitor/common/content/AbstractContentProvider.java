@@ -34,4 +34,13 @@ public abstract class AbstractContentProvider<C extends Content> implements Cont
         return this.contentFactory.fromString(string);
     }
 
+    /**
+     * Creates an empty instance of C.
+     *
+     * @return an empty instance of C
+     */
+    public C createEmptyContent() {
+
+        return this.contentFactory.emptyContent();
+    }
 }

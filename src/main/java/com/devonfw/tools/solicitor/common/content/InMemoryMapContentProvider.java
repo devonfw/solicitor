@@ -40,8 +40,8 @@ public class InMemoryMapContentProvider<C extends Content> extends AbstractConte
     @Override
     public C getContentForUri(String url) {
 
-        if (url == null) {
-            return createContentFromString(null);
+        if (url == null || url.isEmpty()) {
+            return createEmptyContent();
         }
 
         C result;

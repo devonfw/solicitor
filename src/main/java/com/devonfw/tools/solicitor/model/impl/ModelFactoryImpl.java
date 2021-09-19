@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.SolicitorVersion;
 import com.devonfw.tools.solicitor.common.content.InMemoryMapContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
+import com.devonfw.tools.solicitor.licensetexts.GuessedLicenseUrlContent;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.impl.inventory.ApplicationComponentImpl;
@@ -41,6 +42,9 @@ public class ModelFactoryImpl extends ModelFactory {
 
     @Autowired
     private InMemoryMapContentProvider<WebContent> licenseContentProvider;
+
+    @Autowired
+    private InMemoryMapContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser;
 
     @Autowired
     private SolicitorVersion solicitorVersion;
@@ -118,6 +122,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
         NormalizedLicenseImpl result = new NormalizedLicenseImpl();
         result.setLicenseContentProvider(this.licenseContentProvider);
+        result.setLicenseUrlGuesser(this.licenseUrlGuesser);
         return result;
     }
 
@@ -127,6 +132,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
         NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
         result.setLicenseContentProvider(this.licenseContentProvider);
+        result.setLicenseUrlGuesser(this.licenseUrlGuesser);
         return result;
     }
 

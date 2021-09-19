@@ -16,4 +16,10 @@ public interface ContentFactory<C extends Content> {
      */
     C fromString(String string);
 
+    /**
+     * Create an empty content object.
+     *
+     * @return the empty content object
+     */
+    C emptyContent();
 }

@@ -19,4 +19,13 @@ public class WebContentFactory implements ContentFactory<WebContent> {
         return new WebContent(string);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public WebContent emptyContent() {
+
+        return new WebContent(null);
+    }
+
 }

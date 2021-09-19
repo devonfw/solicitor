@@ -162,6 +162,27 @@ public interface NormalizedLicense {
     String getReviewedForRelease();
 
     /**
+     * This method gets the field <code>guessedLicenseUrl</code>.
+     *
+     * @return the field guessedLicenseUrl
+     */
+    String getGuessedLicenseUrl();
+
+    /**
+     * This method gets the field <code>guessedLicenseUrlAuditInfos</code>.
+     *
+     * @return the field guessedLicenseUrlAuditInfo
+     */
+    String getGuessedLicenseUrlAuditInfo();
+
+    /**
+     * This method gets the field <code>guessedLicenseContent</code>.
+     *
+     * @return the field guessedLicenseContent
+     */
+    String getGuessedLicenseContent();
+
+    /**
      * This method gets the field <code>trace</code>.
      *
      * @return the field trace
