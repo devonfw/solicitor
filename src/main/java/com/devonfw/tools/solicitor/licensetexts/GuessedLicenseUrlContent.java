@@ -29,7 +29,7 @@ public class GuessedLicenseUrlContent implements Content {
      * {@inheritDoc}
      */
     @Override
-    public String getContent() {
+    public String asString() {
 
         if (this.guessedUrl == null && this.auditInfo == null) {
             return null;

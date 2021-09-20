@@ -8,10 +8,11 @@ package com.devonfw.tools.solicitor.common.content;
  */
 public interface Content {
 
-    /**
-     * Gets a string represantation of the content.
-     *
-     * @return Content as String
-     */
-    String getContent();
+  /**
+   * Gets a string representation of the content. To be used for serrialization. This needs to be the inverse operation
+   * of {@link ContentFactory#fromString(String)}.
+   *
+   * @return Content as String
+   */
+  String asString();
 }

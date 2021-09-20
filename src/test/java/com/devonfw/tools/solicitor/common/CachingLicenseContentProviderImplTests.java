@@ -15,18 +15,18 @@ import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvide
 
 public class CachingLicenseContentProviderImplTests {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CachingLicenseContentProviderImplTests.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CachingLicenseContentProviderImplTests.class);
 
-    @Test
-    @Ignore
-    public void readFile() {
+  @Test
+  @Ignore
+  public void readFile() {
 
-        DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider(false);
+    DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider(false);
 
-        String result =
-                licenseContentProvider.getContentForUri("http://www.apache.org/licenses/LICENSE-2.0.txt").getContent();
-        LOG.debug(result);
-        assertNotNull(result);
-    }
+    String result = licenseContentProvider.getContentForUri("http://www.apache.org/licenses/LICENSE-2.0.txt")
+        .getContent();
+    LOG.debug(result);
+    assertNotNull(result);
+  }
 
 }
