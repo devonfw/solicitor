@@ -336,6 +336,21 @@ public interface NormalizedLicense {
     void setTrace(String trace);
 
     /**
+     * This method sets the field <code>guessedLicenseUrl</code>
+     *
+     * @param guessedLicenseUrl the new value of the field guessedLicenseUrl
+     */
+    void setGuessedLicenseUrl(String guessedLicenseUrl);
+
+    /**
+     * This method sets the field <code>guessedLicenseUrlAuditInfo</code>
+     *
+     * @param guessedLicenseUrlAuditInfo the new value of the field
+     *        guessedLicenseUrlAuditInfo
+     */
+    void setGuessedLicenseUrlAuditInfo(String guessedLicenseUrlAuditInfo);
+
+    /**
      * Complete the data of this object by setting members which are derived
      * from other members.
      */

@@ -61,6 +61,10 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
     private String trace;
 
+    private String guessedLicenseUrl;
+
+    private String guessedLicenseUrlAuditInfo;
+
     private ApplicationComponent applicationComponent;
 
     private ContentProvider<WebContent> licenseContentProvider;
@@ -126,8 +130,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
         this.effectiveNormalizedLicenseType, this.effectiveNormalizedLicense, this.effectiveNormalizedLicenseUrl,
         getEffectiveNormalizedLicenseContent(), this.legalPreApproved, this.copyLeft, this.licenseCompliance,
         this.licenseRefUrl, getLicenseRefContent(), this.includeLicense, this.includeSource, this.reviewedForRelease,
-        this.comments, this.legalApproved, this.legalComments, this.trace, getGuessedLicenseUrl(),
-        getGuessedLicenseUrlAuditInfo(), getGuessedLicenseContent() };
+        this.comments, this.legalApproved, this.legalComments, this.trace, this.guessedLicenseUrl,
+        this.guessedLicenseUrlAuditInfo, getGuessedLicenseContent() };
     }
 
     /** {@inheritDoc} */
@@ -302,7 +306,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     public String getGuessedLicenseUrl() {
 
-        return this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl).getGuessedUrl();
+        return this.guessedLicenseUrl;
     }
 
     /**
@@ -311,7 +315,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     public String getGuessedLicenseUrlAuditInfo() {
 
-        return this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl).getAuditInfo();
+        return this.guessedLicenseUrlAuditInfo;
 
     }
 
@@ -319,10 +323,10 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
      * {@inheritDoc}
      */
     @Override
+    @JsonIgnore
     public String getGuessedLicenseContent() {
 
-        String guessedUrl = getGuessedLicenseUrl();
-        return this.licenseContentProvider.getContentForUri(guessedUrl).getContent();
+        return this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -492,7 +496,27 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
     /** {@inheritDoc} */
     @Override
+    public void setGuessedLicenseUrl(String guessedLicenseUrl) {
+
+        this.guessedLicenseUrl = guessedLicenseUrl;
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setGuessedLicenseUrlAuditInfo(String guessedLicenseUrlAuditInfo) {
+
+        this.guessedLicenseUrlAuditInfo = guessedLicenseUrlAuditInfo;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void completeData() {
+
+        this.guessedLicenseUrl =
+                this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl).getGuessedUrl();
+        this.guessedLicenseUrlAuditInfo =
+                this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl).getAuditInfo();
 
     }
 
