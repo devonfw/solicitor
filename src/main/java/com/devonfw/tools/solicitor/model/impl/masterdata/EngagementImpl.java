@@ -220,4 +220,13 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
         this.ossPolicyFollowed = ossPolicyFollowed;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void completeData() {
+
+        for (Application application : this.applications) {
+            application.completeData();
+        }
+    }
+
 }

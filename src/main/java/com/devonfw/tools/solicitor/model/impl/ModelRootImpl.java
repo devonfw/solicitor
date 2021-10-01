@@ -41,30 +41,31 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     public ModelRootImpl() {
 
         super();
-        modelVersion = DEFAULT_MODEL_VERSION;
-        executionTime = (new Date()).toString();
+        this.modelVersion = DEFAULT_MODEL_VERSION;
+        this.executionTime = (new Date()).toString();
     }
 
     /** {@inheritDoc} */
     @Override
     public String[] getDataElements() {
 
-        return new String[] { executionTime, Integer.toString(modelVersion), solicitorVersion, solicitorGitHash,
-        solicitorBuilddate, extensionArtifactId, extensionVersion, extensionGitHash, extensionBuilddate };
+        return new String[] { this.executionTime, Integer.toString(this.modelVersion), this.solicitorVersion,
+        this.solicitorGitHash, this.solicitorBuilddate, this.extensionArtifactId, this.extensionVersion,
+        this.extensionGitHash, this.extensionBuilddate };
     }
 
     /** {@inheritDoc} */
     @Override
     public Engagement getEngagement() {
 
-        return engagement;
+        return this.engagement;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getExecutionTime() {
 
-        return executionTime;
+        return this.executionTime;
     }
 
     /** {@inheritDoc} */
@@ -79,56 +80,56 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     @Override
     public int getModelVersion() {
 
-        return modelVersion;
+        return this.modelVersion;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getSolicitorBuilddate() {
 
-        return solicitorBuilddate;
+        return this.solicitorBuilddate;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getSolicitorGitHash() {
 
-        return solicitorGitHash;
+        return this.solicitorGitHash;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getSolicitorVersion() {
 
-        return solicitorVersion;
+        return this.solicitorVersion;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getExtensionArtifactId() {
 
-        return extensionArtifactId;
+        return this.extensionArtifactId;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getExtensionVersion() {
 
-        return extensionVersion;
+        return this.extensionVersion;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getExtensionGitHash() {
 
-        return extensionGitHash;
+        return this.extensionGitHash;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getExtensionBuilddate() {
 
-        return extensionBuilddate;
+        return this.extensionBuilddate;
     }
 
     /** {@inheritDoc} */
@@ -199,6 +200,12 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     public void setExtensionBuilddate(String extensionBuilddate) {
 
         this.extensionBuilddate = extensionBuilddate;
+    }
+
+    @Override
+    public void completeData() {
+
+        this.engagement.completeData();
     }
 
 }

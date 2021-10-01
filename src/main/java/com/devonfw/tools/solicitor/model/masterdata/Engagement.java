@@ -136,4 +136,9 @@ public interface Engagement {
      */
     void setOssPolicyFollowed(boolean ossPolicyFollowed);
 
+    /**
+     * Complete the data of this object by setting members which are derived
+     * from other members.
+     */
+    public void completeData();
 }

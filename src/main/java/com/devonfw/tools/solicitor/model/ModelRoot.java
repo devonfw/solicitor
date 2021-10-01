@@ -151,4 +151,10 @@ public interface ModelRoot {
      */
     public void setExtensionBuilddate(String extensionBuilddate);
 
+    /**
+     * Complete the data of this object by setting members which are derived
+     * from other members.
+     */
+    public void completeData();
+
 }

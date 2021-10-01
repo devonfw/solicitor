@@ -28,7 +28,7 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
     @Override
     protected ApplicationComponent doGetParent() {
 
-        return applicationComponent;
+        return this.applicationComponent;
     }
 
     /** {@inheritDoc} */
@@ -36,21 +36,21 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
     @JsonIgnore
     public ApplicationComponent getApplicationComponent() {
 
-        return applicationComponent;
+        return this.applicationComponent;
     }
 
     /** {@inheritDoc} */
     @Override
     public String[] getDataElements() {
 
-        return new String[] { declaredLicense, licenseUrl, trace };
+        return new String[] { this.declaredLicense, this.licenseUrl, this.trace };
     }
 
     /** {@inheritDoc} */
     @Override
     public String getDeclaredLicense() {
 
-        return declaredLicense;
+        return this.declaredLicense;
     }
 
     /** {@inheritDoc} */
@@ -64,21 +64,21 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
     @Override
     public String getLicenseUrl() {
 
-        return licenseUrl;
+        return this.licenseUrl;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getTrace() {
 
-        return trace;
+        return this.trace;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isSpecialHandling() {
 
-        return specialHandling;
+        return this.specialHandling;
     }
 
     /** {@inheritDoc} */
@@ -118,6 +118,12 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
     public void setTrace(String trace) {
 
         this.trace = trace;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void completeData() {
+
     }
 
 }
