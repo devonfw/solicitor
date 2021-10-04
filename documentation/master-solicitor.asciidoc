@@ -184,10 +184,15 @@ The internal business data model consists of 6 entities:
 | legalApproved | String | indicates whether this usage is legally approved
 | legalComments | String | comments from legal, possibly indicating additional conditions to be fulfilled
 | trace | String | detail info of history of this data record (rule executions)
+| guessedLicensedUrl | String | guessed (possibly improved) URL of the effective normalized license
+| guessedLicenseUrlAuditInfo | String | audit info which documents how the guessedLicenseUrl was guessed
+| guessedLicenseContent | String | resolved content of guessedLicenseUrl
 |===
 
 For the mechanism how _Solicitor_ resolves the content of URLs and how the result
-might be influenced see <<Resolving of License URLs>>
+might be influenced see <<Resolving of License URLs>>.
+
+For a description of the URL guessing mechanism see <<Guessing of license URLs>>.
 
 ===== License types
 Defines the type of license
@@ -995,6 +1000,8 @@ Resolving of the content of license texts which are referenced by the URLs given
 When creating the resource or filename for given URLs in the above steps the following encoding scheme will be applied to ensure that always a valid name can be created:
 
 All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
+
+== Guessing of license URLs
 
 == Feature Deprecation
 Within the lifecycle of the _Solicitor_ development features might be discontinued due
