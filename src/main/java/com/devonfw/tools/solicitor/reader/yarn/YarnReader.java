@@ -4,6 +4,10 @@
 
 package com.devonfw.tools.solicitor.reader.yarn;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +52,10 @@ public class YarnReader extends AbstractReader implements Reader {
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType) {
 
+    		//TODO implement an easy check whether the file has been fixed already
+        	cutSourceJson(sourceUrl);
+
+    	
         int componentCount = 0;
         int licenseCount = 0;
 
@@ -55,19 +63,28 @@ public class YarnReader extends AbstractReader implements Reader {
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
         	//TODO in yarn are only arrays so work with lists 
-            Map l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), Map.class);
-            for (Object key : l.keySet()) {
-                String name = (String) key;
-                Map attributes = (Map) l.get(key);
-                String repo = (String) attributes.get("repository");
-                String path = (String) attributes.get("path");
-                String licenseFile = (String) attributes.get("licenseFile");
-                String licenseUrl = estimateLicenseUrl(repo, path, licenseFile);
-                String homePage = (String) attributes.get("url");
-                if (homePage == null || homePage.isEmpty()) {
-                    homePage = repo;
-                }
+        	
+        	List l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
+            List body = (List) l.get(0);
+        	for (int i = 0; i<l.size(); i++) {
+                List attributes = (List) l.get(i);
+                //Array contents: ["Name","Version","License","URL","VendorUrl","VendorName"]
+                String name = (String) attributes.get(0);
+                String version = (String) attributes.get(1);
+                String repo = (String) attributes.get(4);
+                //TODO we dont have a licenseFile or path with yarn
 
+                //String path = (String) attributes.get("LicenseFile");
+                //String licenseFile = (String) attributes.get("LicenseFile");
+                //String licenseUrl = estimateLicenseUrl(repo, path, licenseFile);
+                
+                String licenseUrl = repo;
+                String homePage = (String) attributes.get(5);
+
+                //TODO yarn only has single licenses 
+                String license = (String) attributes.get(3);
+                
+                /*
                 Object lic = attributes.get("licenses");
                 List<String> licenseList;
                 if (lic != null) {
@@ -83,7 +100,7 @@ public class YarnReader extends AbstractReader implements Reader {
                 } else {
                     licenseList = Collections.emptyList();
                 }
-
+*/
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
                 appComponent.setApplication(application);
                 componentCount++;
@@ -98,6 +115,9 @@ public class YarnReader extends AbstractReader implements Reader {
                 appComponent.setGroupId("");
                 appComponent.setOssHomepage(homePage);
                 appComponent.setRepoType(repoType);
+                
+                //TODO only needed in case of multiple licenses
+                /*
                 if (licenseList.isEmpty()) {
                     // add empty raw license if no license info attached
                     addRawLicense(appComponent, null, null, sourceUrl);
@@ -107,19 +127,46 @@ public class YarnReader extends AbstractReader implements Reader {
                         addRawLicense(appComponent, cl, licenseUrl, sourceUrl);
                     }
                 }
-
+                 */
             }
             doLogging(sourceUrl, application, componentCount, licenseCount);
         } catch (IOException e) {
             throw new SolicitorRuntimeException(
-                    "Could not read npm-license-checker inventory source '" + sourceUrl + "'", e);
+                    "Could not read yarn inventory source '" + sourceUrl + "'", e);
         }
 
     }
 
-    private String cutSourceJson(String sourceURL) {
-    	//TODO cut last line of json for yarn
-    	return sourceURL;
+    //helper method that transforms the .json created by yarn licenses into a correct form
+    private void cutSourceJson(String sourceURL) {
+    	sourceURL = sourceURL.replaceAll("file:", "");
+    	File input = new File(sourceURL);
+    	try {
+	    	BufferedReader reader = new BufferedReader(new FileReader(input));
+	    	String content ="";
+	    	String line = reader.readLine();
+	
+	    	while (line != null)
+	    		{
+	    	        content = content + line + System.lineSeparator();			
+	    		}
+    	    	
+    		content = content.split("\\\"body\\\":")[1];
+    		content = content.replace("}", "");
+    		content = "[" + content + "]";
+    		System.out.println("This is the cutted json: " + content);
+    	
+    		FileWriter writer;
+			writer = new FileWriter(input);
+			
+			writer.write(content);
+			
+	    	writer.close();
+	    	reader.close();
+    	} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     private String estimateLicenseUrl(String repo, String path, String licenseFile) {
