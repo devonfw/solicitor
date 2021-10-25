@@ -66,8 +66,8 @@ public class YarnReader extends AbstractReader implements Reader {
         	
         	List l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
             List body = (List) l.get(0);
-        	for (int i = 0; i<l.size(); i++) {
-                List attributes = (List) l.get(i);
+        	for (int i = 0; i<body.size(); i++) {
+                List<String> attributes = (List) body.get(i);
                 //Array contents: ["Name","Version","License","URL","VendorUrl","VendorName"]
                 String name = (String) attributes.get(0);
                 String version = (String) attributes.get(1);
@@ -104,13 +104,15 @@ public class YarnReader extends AbstractReader implements Reader {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
                 appComponent.setApplication(application);
                 componentCount++;
-                String[] module = name.split("@");
+              /*  String[] module = name.split("@");
                 if (name.startsWith("@")) {
                     appComponent.setArtifactId("@" + module[module.length - 2]);
                 } else {
                     appComponent.setArtifactId(module[module.length - 2]);
                 }
-                appComponent.setVersion(module[module.length - 1]);
+                */
+                appComponent.setArtifactId(name);
+                appComponent.setVersion(version);
                 appComponent.setUsagePattern(usagePattern);
                 appComponent.setGroupId("");
                 appComponent.setOssHomepage(homePage);
@@ -139,11 +141,16 @@ public class YarnReader extends AbstractReader implements Reader {
 
     //helper method that transforms the .json created by yarn licenses into a correct form
     private void cutSourceJson(String sourceURL) {
-    	sourceURL = sourceURL.replaceAll("file:", "");
-    	File input = new File(sourceURL);
+    	String filePath = sourceURL.replaceAll("file:", "");
+    	File input = new File(filePath);
+    	String content ="";
+    	
     	try {
 	    	BufferedReader reader = new BufferedReader(new FileReader(input));
-	    	String content ="";
+	    	String line = "";
+	    	
+	    	/* OLD CODE
+	    	 * String content ="";
 	    	String line = reader.readLine();
 	
 	    	while (line != null)
@@ -153,7 +160,26 @@ public class YarnReader extends AbstractReader implements Reader {
     	    	
     		content = content.split("\\\"body\\\":")[1];
     		content = content.replace("}", "");
-    		content = "[" + content + "]";
+    		
+    		System.out.println("This is the cutted json: " + content);
+	    	 */
+	
+	    	//cuts last line of JSON 
+	    	  while ((line = reader.readLine()) != null) 
+	        {
+	            content = line;
+	        }
+    	    
+	    	
+	    	// checks if file was cutted into correct shape already
+	    	if(!content.startsWith("[")) {
+	    		content = content.split("\\\"body\\\":")[1];
+	    		content = content.replace("}", "");
+	    		//content = content.replace("\"", "");
+	    		//content = content.replace("@", "");
+	    		content = "[" + content + "]";
+	    	}
+    		
     		System.out.println("This is the cutted json: " + content);
     	
     		FileWriter writer;
@@ -163,6 +189,7 @@ public class YarnReader extends AbstractReader implements Reader {
 			
 	    	writer.close();
 	    	reader.close();
+
     	} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
