@@ -1002,6 +1002,11 @@ When creating the resource or filename for given URLs in the above steps the fol
 All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
 
 == Guessing of license URLs
+When fetching the license content via the net, _Solicitor_ uses the URL declared in `licenseUrl`, which usually contains a Github link. This URL will be further processed to have the license text in the desired format. 
+
+* The URLs structure is changed from `www.github.com` to  `www.raw.githubusercontent.com`. This ensures that only the raw license text is fetched and unnecessary things like HTML code is excluded.
+* If the URL does not point to the License file, _Solicitor_ tries to guess the URL by appending different variations of License file notations to the URL (e.g. LICENSE, License.txt, COPYING).
+
 
 == Feature Deprecation
 Within the lifecycle of the _Solicitor_ development features might be discontinued due
