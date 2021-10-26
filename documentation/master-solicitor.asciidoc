@@ -184,7 +184,7 @@ The internal business data model consists of 6 entities:
 | legalApproved | String | indicates whether this usage is legally approved
 | legalComments | String | comments from legal, possibly indicating additional conditions to be fulfilled
 | trace | String | detail info of history of this data record (rule executions)
-| guessedLicensedUrl | String | guessed (possibly improved) URL of the effective normalized license
+| guessedLicenseUrl | String | guessed (possibly improved) URL of the effective normalized license
 | guessedLicenseUrlAuditInfo | String | audit info which documents how the guessedLicenseUrl was guessed
 | guessedLicenseContent | String | resolved content of guessedLicenseUrl
 |===
@@ -996,7 +996,7 @@ Resolving of the content of license texts which are referenced by the URLs given
 * If the content is found as a resource in the classpath under `licenses` this will be taken. (The _Solicitor_ application might include a set of often used license texts and thus it is not necessary to fetch those via the net.) If the classpath does not contain the content of the URL the next step is taken.
 * If the content is found as a file in subdirectory `licenses` of the current working directory this is taken. If no such file exists the content is fetched via the net. The result will be written to the file directory, so any content will only be fetched once. (The user might alter the files in that directory to change/correct its content.) A file of length zero indicates that no content could be fetched.
 
-The determined content is avaliable as `NormalizedLicense.effectiveNormalizedLicenseContent` and `NormalizedLicense.licenseRefContent`
+The determined content is available as `NormalizedLicense.effectiveNormalizedLicenseContent` and `NormalizedLicense.licenseRefContent`
 
 === Encoding of URLs
 When creating the resource or filename for given URLs in the above steps the following encoding scheme will be applied to ensure that always a valid name can be created:
@@ -1016,7 +1016,7 @@ Currently license URL guessing is based solely on the URL given in `NormalizedLi
 
 The result of the license URL guessing is available via three attributes:
 
-* `NormalizedLicense.guessedLicensedUrl`: The (possibly) improved URL pointing to the license text.
+* `NormalizedLicense.guessedLicenseUrl`: The (possibly) improved URL pointing to the license text.
 * `NormalizedLicense.guessedLicenseUrlAuditInfo`: A text which gives info how the guessed url was determined (available for auditing purposes).
 * `NormalizedLicense.guessedLicenseContent`: The content downloaded from the guessed URL
 
