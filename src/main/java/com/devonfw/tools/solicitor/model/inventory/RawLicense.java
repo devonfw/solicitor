@@ -76,4 +76,9 @@ public interface RawLicense {
      */
     void setTrace(String trace);
 
+    /**
+     * Complete the data of this object by setting members which are derived
+     * from other members.
+     */
+    public void completeData();
 }

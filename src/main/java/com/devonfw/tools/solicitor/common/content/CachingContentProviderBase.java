@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.devonfw.tools.solicitor.common.webcontent;
+package com.devonfw.tools.solicitor.common.content;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,26 +15,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.devonfw.tools.solicitor.common.UrlInputStreamFactory;
 
-import net.bytebuddy.implementation.Implementation;
-
 /**
- * Abstract base {@link Implementation} of {@link WebContentProvider}s which
- * first try to load the content from some cache. If they are not able to load
- * the content from the cache they will delegate to some other
- * {@link WebContentProvider} for further handling.
+ * Abstract base implementation of {@link ContentProvider}s which first try to
+ * load the content from some cache. If they are not able to load the content
+ * from the cache they will delegate to some other {@link ContentProvider} for
+ * further handling.
  *
  */
-public abstract class CachingWebContentProviderBase implements WebContentProvider {
+public abstract class CachingContentProviderBase<C extends Content> extends AbstractContentProvider<C> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CachingWebContentProviderBase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CachingContentProviderBase.class);
 
     @Autowired
     private UrlInputStreamFactory urlInputStreamFactory;
 
+    private ContentProvider<C> nextContentProvider;
+
     /**
-     * Constructor.
+     * The Constructor.
+     *
+     * @param contentFactory factory for creating instances of C
+     * @param nextContentProvider the next {@link ContentProvider} in the chain
+     *        which will be used if the was no cache hit
      */
-    public CachingWebContentProviderBase() {
+    public CachingContentProviderBase(ContentFactory<C> contentFactory, ContentProvider<C> nextContentProvider) {
+
+        super(contentFactory);
+        this.nextContentProvider = nextContentProvider;
 
     }
 
@@ -70,23 +77,23 @@ public abstract class CachingWebContentProviderBase implements WebContentProvide
      * Tries to load the web content from the resource found via the URLs
      * returned by {@link #getCacheUrls(String)}. First hit will be returned. If
      * this does not succeed, then delegate further processing to
-     * {@link CachingWebContentProviderBase#loadFromNext(String)}.
+     * {@link CachingContentProviderBase#loadFromNext(String)}.
      */
     @Override
-    public String getWebContentForUrl(String url) {
+    public C getContentForUri(String url) {
 
         String key = getKey(url);
         Collection<String> classPathUrls = getCacheUrls(key);
 
         for (String classPathUrl : classPathUrls) {
-            try (InputStream is = urlInputStreamFactory.createInputStreamFor(classPathUrl);
+            try (InputStream is = this.urlInputStreamFactory.createInputStreamFor(classPathUrl);
                     Scanner s = new Scanner(is)) {
                 s.useDelimiter("\\A");
                 String result = s.hasNext() ? s.next() : "";
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Content for url '" + url + "' found at '" + classPathUrl + "'");
                 }
-                return result;
+                return createContentFromString(result);
             } catch (FileNotFoundException fnfe) {
                 LOG.debug("Content for url '" + url + "' NOT found at '" + classPathUrl + "'");
             } catch (IOException e) {
@@ -98,11 +105,14 @@ public abstract class CachingWebContentProviderBase implements WebContentProvide
 
     /**
      * Method for loading the requested web content from the next new
-     * {@link WebContentProvider} defined in the chain.
+     * {@link ContentProvider} defined in the chain.
      *
      * @param url the URL of the requests web content
      * @return the content of the web content given by the URL
      */
-    protected abstract String loadFromNext(String url);
+    protected C loadFromNext(String url) {
+
+        return this.nextContentProvider.getContentForUri(url);
+    }
 
 }

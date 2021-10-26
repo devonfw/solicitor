@@ -45,21 +45,21 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     @Override
     public void addNormalizedLicense(NormalizedLicense normalizedLicense) {
 
-        normalizedLicenses.add(normalizedLicense);
+        this.normalizedLicenses.add(normalizedLicense);
     }
 
     /** {@inheritDoc} */
     @Override
     public void addRawLicense(RawLicense rawLicense) {
 
-        rawLicenses.add(rawLicense);
+        this.rawLicenses.add(rawLicense);
     }
 
     /** {@inheritDoc} */
     @Override
     protected Application doGetParent() {
 
-        return application;
+        return this.application;
     }
 
     /** {@inheritDoc} */
@@ -67,21 +67,21 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     @JsonIgnore
     public Application getApplication() {
 
-        return application;
+        return this.application;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getArtifactId() {
 
-        return artifactId;
+        return this.artifactId;
     }
 
     /** {@inheritDoc} */
     @Override
     public String[] getDataElements() {
 
-        return new String[] { groupId, artifactId, version, getRepoType(), getOssHomepage(),
+        return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getOssHomepage(),
         getUsagePattern().toString(), isOssModified() ? "true" : "false" };
     }
 
@@ -89,7 +89,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     @Override
     public String getGroupId() {
 
-        return groupId;
+        return this.groupId;
     }
 
     /** {@inheritDoc} */
@@ -104,49 +104,49 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     @Override
     public List<NormalizedLicense> getNormalizedLicenses() {
 
-        return Collections.unmodifiableList(normalizedLicenses);
+        return Collections.unmodifiableList(this.normalizedLicenses);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getOssHomepage() {
 
-        return ossHomepage;
+        return this.ossHomepage;
     }
 
     /** {@inheritDoc} */
     @Override
     public List<RawLicense> getRawLicenses() {
 
-        return Collections.unmodifiableList(rawLicenses);
+        return Collections.unmodifiableList(this.rawLicenses);
     }
 
     /** {@inheritDoc} */
     @Override
     public UsagePattern getUsagePattern() {
 
-        return usagePattern;
+        return this.usagePattern;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getVersion() {
 
-        return version;
+        return this.version;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getRepoType() {
 
-        return repoType;
+        return this.repoType;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isOssModified() {
 
-        return ossModified;
+        return this.ossModified;
     }
 
     /** {@inheritDoc} */
@@ -207,6 +207,19 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     public void setRepoType(String repoType) {
 
         this.repoType = repoType;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void completeData() {
+
+        for (RawLicense rawLicense : this.rawLicenses) {
+            rawLicense.completeData();
+        }
+        for (NormalizedLicense normalizedLicense : this.normalizedLicenses) {
+            normalizedLicense.completeData();
+        }
+
     }
 
 }

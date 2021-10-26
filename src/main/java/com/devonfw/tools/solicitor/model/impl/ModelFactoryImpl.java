@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorVersion;
-import com.devonfw.tools.solicitor.common.webcontent.InMemoryMapWebContentProvider;
+import com.devonfw.tools.solicitor.common.content.InMemoryMapContentProvider;
+import com.devonfw.tools.solicitor.common.content.web.WebContent;
+import com.devonfw.tools.solicitor.licensetexts.GuessedLicenseUrlContent;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.impl.inventory.ApplicationComponentImpl;
@@ -39,7 +41,10 @@ public class ModelFactoryImpl extends ModelFactory {
     private static final Logger LOG = LoggerFactory.getLogger(ModelFactoryImpl.class);
 
     @Autowired
-    private InMemoryMapWebContentProvider licenseContentProvider;
+    private InMemoryMapContentProvider<WebContent> licenseContentProvider;
+
+    @Autowired
+    private InMemoryMapContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser;
 
     @Autowired
     private SolicitorVersion solicitorVersion;
@@ -101,13 +106,13 @@ public class ModelFactoryImpl extends ModelFactory {
     public ModelRoot newModelRoot() {
 
         ModelRoot modelRoot = new ModelRootImpl();
-        modelRoot.setSolicitorVersion(solicitorVersion.getVersion());
-        modelRoot.setSolicitorGitHash(solicitorVersion.getGithash());
-        modelRoot.setSolicitorBuilddate(solicitorVersion.getBuilddate());
-        modelRoot.setExtensionArtifactId(solicitorVersion.getExtensionArtifact());
-        modelRoot.setExtensionVersion(solicitorVersion.getExtensionVersion());
-        modelRoot.setExtensionGitHash(solicitorVersion.getExtensionGithash());
-        modelRoot.setExtensionBuilddate(solicitorVersion.getExtensionBuilddate());
+        modelRoot.setSolicitorVersion(this.solicitorVersion.getVersion());
+        modelRoot.setSolicitorGitHash(this.solicitorVersion.getGithash());
+        modelRoot.setSolicitorBuilddate(this.solicitorVersion.getBuilddate());
+        modelRoot.setExtensionArtifactId(this.solicitorVersion.getExtensionArtifact());
+        modelRoot.setExtensionVersion(this.solicitorVersion.getExtensionVersion());
+        modelRoot.setExtensionGitHash(this.solicitorVersion.getExtensionGithash());
+        modelRoot.setExtensionBuilddate(this.solicitorVersion.getExtensionBuilddate());
         return modelRoot;
     }
 
@@ -116,7 +121,8 @@ public class ModelFactoryImpl extends ModelFactory {
     public NormalizedLicense newNormalizedLicense() {
 
         NormalizedLicenseImpl result = new NormalizedLicenseImpl();
-        result.setLicenseContentProvider(licenseContentProvider);
+        result.setLicenseContentProvider(this.licenseContentProvider);
+        result.setLicenseUrlGuesser(this.licenseUrlGuesser);
         return result;
     }
 
@@ -125,7 +131,8 @@ public class ModelFactoryImpl extends ModelFactory {
     public NormalizedLicense newNormalizedLicense(RawLicense rawLicense) {
 
         NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
-        result.setLicenseContentProvider(licenseContentProvider);
+        result.setLicenseContentProvider(this.licenseContentProvider);
+        result.setLicenseUrlGuesser(this.licenseUrlGuesser);
         return result;
     }
 
