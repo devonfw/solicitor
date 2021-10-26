@@ -997,6 +997,7 @@ Resolving of the content of license texts which are referenced by the URLs given
 * If the content is found as a file in subdirectory `licenses` of the current working directory this is taken. If no such file exists the content is fetched via the net. The result will be written to the file directory, so any content will only be fetched once. (The user might alter the files in that directory to change/correct its content.) A file of length zero indicates that no content could be fetched.
 
 The determined content is avaliable as `NormalizedLicense.effectiveNormalizedLicenseContent` and `NormalizedLicense.licenseRefContent`
+
 === Encoding of URLs
 When creating the resource or filename for given URLs in the above steps the following encoding scheme will be applied to ensure that always a valid name can be created:
 
