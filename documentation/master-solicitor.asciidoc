@@ -1004,14 +1004,15 @@ When creating the resource or filename for given URLs in the above steps the fol
 All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
 
 == Guessing of license URLs
-Fetching the license content `NormalizedLicense.effectiveNormalizedLicenseContent` based on the URL in `NormalizedLicense.effectiveNormalizedLicenseUrl` will often result in content which is in HTML format instead of plain text and is not properly rendered when included in reports. Sometimes the URL even does not point to the license text itself but
-just the homepage of the project. In general it is possible to manually correct this by editing the downloaded and cached content as described in the previous section. This approach might require a lot of manual work. _Solicitor_ therefore includes a mechanism named license url guessing which tries to guess an alternative license URL which should point to a representation of the content better suited for rendering.
+Fetching the license content `NormalizedLicense.effectiveNormalizedLicenseContent` based on the URL in `NormalizedLicense.effectiveNormalizedLicenseUrl` will often result in content which is in HTML format instead of plain text and is not properly rendered when included in reports. 
+Sometimes the URL even does not point to the license text itself but just the homepage of the project.
+In general it is possible to manually correct this by editing the downloaded and cached content as described in the previous section. This approach might require a lot of manual work. _Solicitor_ therefore includes a mechanism named license url guessing which tries to guess an alternative license URL which should point to a representation of the content better suited for rendering.
 
-Currently license URL guessing is based solely on the URL given in `NormalizedLicense.effectiveNormalizedLicenseUrl`. It will try the follwoing approaches:
+Currently license URL guessing is based solely on the URL given in `NormalizedLicense.effectiveNormalizedLicenseUrl`. It will try the following approaches:
 
-* If the original URL is a Github-URL and matches patterns which are known to return an HTML-formatted content then the URL is rewritten to point to a raw version of the content.
+* If the original URL is a Github-URL and matches patterns which are known to return HTML-formatted content then the URL is rewritten to point to a raw version of the content.
 * If the original URL points to a Github project page (not to a file), then the algorithm will try different typical locations (like e.g. looking for file `LICENSE`). If found it will return this URL as result.
-* If no "better" URL could be guessed it will return the original URL
+* If no "better" URL could be guessed it will return the original URL.
 
 The result of the license URL guessing is available via three attributes:
 
@@ -1022,7 +1023,7 @@ The result of the license URL guessing is available via three attributes:
 NOTE: Downloading the license content (also including the checking if a certain resource is available when trying different possible filenames) is done using the same (caching) mechanisms as downloading the content for other URLs, see the previous section.
 
 === Caching of guessed URLs
-The information about guessed URLs for given original URLs (also including the audit info on the guessing process) uses a caching mechanism which is mainly identical to the caching of downloaded content. The files containing the chached data are stored in directory `licenseurls` (instead of `licenses` for the content itself).
+The information about guessed URLs for given original URLs (also including the audit info on the guessing process) uses a caching mechanism which is mainly identical to the caching of downloaded content. The files containing the cached data are stored in directory `licenseurls` (instead of `licenses` for the content itself).
 
 The file content looks as follows:
 
