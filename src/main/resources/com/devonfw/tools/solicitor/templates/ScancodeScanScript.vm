@@ -3,10 +3,11 @@ mkdir scancodeOutput
 SET so=%CD%\scancodeOutput
 echo {"artifacts": [ > scancodeOutput/scancodeOut.json
 SET dir=%CD%\Source
-cd ../../scancode/scancode-toolkit-21.8.4
-SET scan=%CD%
+SET scan=%1
+
 
 #foreach ($artifact in $ARTIFACTS)
+cd %beginning%
 cd %scan%
 	#if ( $artifact.artifactId.toString().contains("/") )
 		SET art=$artifact.artifactId-$artifact.version
