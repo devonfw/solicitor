@@ -52,7 +52,6 @@ public class YarnReader extends AbstractReader implements Reader {
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType) { 
 
-    		//TODO implement an easy check whether the file has been fixed already
         	cutSourceJson(sourceUrl);
 
     	
@@ -62,8 +61,6 @@ public class YarnReader extends AbstractReader implements Reader {
         // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
-        	//TODO in yarn are only arrays so work with lists 
-        	
         	List l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
             List body = (List) l.get(0);
         	for (int i = 0; i<body.size(); i++) {
@@ -72,37 +69,17 @@ public class YarnReader extends AbstractReader implements Reader {
                 String name = (String) attributes.get(0);
                 String version = (String) attributes.get(1);
                 String repo = (String) attributes.get(3);
-                //TODO we dont have a licenseFile or path with yarn
-
-                //String path = (String) attributes.get("LicenseFile");
-                //String licenseFile = (String) attributes.get("LicenseFile");
-                //String licenseUrl = estimateLicenseUrl(repo, path, licenseFile);
                 
                 String licenseUrl = repo;
                 String homePage = (String) attributes.get(4);
 
                 String license = (String) attributes.get(2);
-                
-                /*
-                Object lic = attributes.get("licenses");
-                List<String> licenseList;
-                if (lic != null) {
-                    if (lic instanceof List) {  €
-                        licenseList = new ArrayList<>();
-                        for (Object entry : (List) lic) {
-                            licenseList.add((String) entry);
-                        }
 
-                    } else {
-                        licenseList = Collections.singletonList((String) lic);
-                    }
-                } else {
-                    licenseList = Collections.emptyList();
-                }
-*/
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
                 appComponent.setApplication(application);
                 componentCount++;
+                
+                //TODO ask Oliver for comprehension
               /*  String[] module = name.split("@");
                 if (name.startsWith("@")) {
                     appComponent.setArtifactId("@" + module[module.length - 2]);
@@ -110,6 +87,7 @@ public class YarnReader extends AbstractReader implements Reader {
                     appComponent.setArtifactId(module[module.length - 2]);
                 }
                 */
+                
                 appComponent.setArtifactId(name);
                 appComponent.setVersion(version);
                 appComponent.setUsagePattern(usagePattern);
@@ -153,10 +131,18 @@ public class YarnReader extends AbstractReader implements Reader {
 	    	if(!content.startsWith("[")) {
 	    		content = content.split("\\\"body\\\":")[1];
 	    		content = content.replace("}", "");
-	    		//content = content.replace("\"", "");
-	    		//content = content.replace("@", "");
-	    	    //TODO +git cut  git+https://github.com/Rich-Harris/svg-parser.git
+	    	    //TODO +git and .git cut  git+https://github.com/Rich-Harris/svg-parser.git
+	    		content = content.replace("git+", "");
+	    		content = content.replace("www.github", "github");
+	    		content = content.replace(".git", "");
 	    		//TODO git://github.com/hapijs/hoek change to https://
+	    		content = content.replace("git://", "https://");
+	    		//TODO git@github.com: syntax change git@github.com:colorjs/color-name.git
+	    		content = content.replace("git@github.com:", "https://github.com/");
+	    		//TODO ssh://git@github.com/rexxars/registry-auth-token ssh change
+	    		content = content.replace("ssh://git@", "https://");
+	    		//TODO rename "Unknown" to "" for solicitor syntax? 
+	    		content = content.replace("Unknown", "");
 	    		content = "[" + content + "]";
 	    	}
     		
@@ -176,6 +162,8 @@ public class YarnReader extends AbstractReader implements Reader {
 		}
     }
     
+    //TODO yarn does not have a path or licenseFile attribute, so estimateLicenseUrl needs to be configured accordingly
+
     private String estimateLicenseUrl(String repo, String path, String licenseFile) {
 
         if (repo == null || repo.isEmpty()) {
