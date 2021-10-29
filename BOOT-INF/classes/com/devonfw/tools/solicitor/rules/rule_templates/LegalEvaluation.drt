@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: Apache-2.0
+
+template header
+ruleId
+clientName
+engagementName
+applicationName
+customerProvidesOss
+groupId
+artifactId
+version
+usagePattern
+ossModified
+effectiveNormalizedLicenseType
+effectiveNormalizedLicense
+legalApproved
+legalComments
+
+package com.devonfw.tools.solicitor.rules;
+
+import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
+import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
+import com.devonfw.tools.solicitor.model.masterdata.Application;
+import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
+
+template "LegalEvaluation"
+
+rule "Legal Evaluation @{ruleId}" salience -@{row.rowNumber}
+    when
+        $e : Engagement( 
+        	clientName == "@{clientName}", 
+        	engagementName == "@{engagementName}",
+        	customerProvidesOss == @{customerProvidesOss},
+        	$name :  engagementName )
+        $a : Application( 
+        	name == "@{applicationName}", 
+        	engagement == $e )
+        $ac : ApplicationComponent(
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
+        	usagePattern.name() == "@{usagePattern}",
+        	ossModified == @{ossModified},
+        	application == $a )
+        $nl : NormalizedLicense(legalApproved == null,  
+        	effectiveNormalizedLicenseType == "@{effectiveNormalizedLicenseType}",
+        	effectiveNormalizedLicense == "@{effectiveNormalizedLicense}",
+        	applicationComponent == $ac )
+    then
+        $nl.setLegalApproved( "@{legalApproved}" );
+        $nl.setLegalComments( "@{legalComments}" );
+
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleId("@{ruleId}")
+        .withMatching("clientName", "@{clientName}" )
+		.withMatching("engagementName", "@{engagementName}" )
+        .withMatching("customerProvidesOss", "@{customerProvidesOss}" )
+        .withMatching("name", "@{applicationName}" )
+        .withMatching("groupId", "@{groupId}" )
+        .withMatching("artifactId", "@{artifactId}" )
+        .withMatching("version", "@{version}" )
+        .withMatching("usagePattern", "@{usagePattern}" )
+        .withMatching("ossModified", "@{ossModified}" )
+        .withMatching("effectiveNormalizedLicenseType", "@{effectiveNormalizedLicenseType}" )
+        .withMatching("effectiveNormalizedLicense", "@{effectiveNormalizedLicense}" )
+        .withSetting("legalApproved", "@{legalApproved}" )
+        .withSetting("legalComments", "@{legalComments}" )
+        .nop();
+        ModelHelper.appendTraceToNormalizedLicense($nl, aeb.build()); 
+        
+        update($nl);
+end
+end template

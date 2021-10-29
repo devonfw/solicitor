@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Implementation-Title: Solicitor
+Implementation-Version: 1.1.1
+Built-By: dungpham
+Implementation-Vendor-Id: com.devonfw.tools
+Spring-Boot-Version: 2.1.4.RELEASE
+Main-Class: org.springframework.boot.loader.PropertiesLauncher
+Start-Class: com.devonfw.tools.solicitor.SolicitorApplication
+Spring-Boot-Classes: BOOT-INF/classes/
+Spring-Boot-Lib: BOOT-INF/lib/
+Created-By: Apache Maven 3.6.3
+Build-Jdk: 1.8.0_292
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/solicitor
+

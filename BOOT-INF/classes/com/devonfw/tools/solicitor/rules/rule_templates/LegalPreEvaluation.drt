@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: Apache-2.0
+
+template header
+ruleId
+type
+spdxid
+legalPreApproved
+copyLeft
+licenseCompliance
+licenseRefUrl
+includeLicense
+includeSource
+
+package com.devonfw.tools.solicitor.rules;
+
+import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
+
+template "LegalPreEvaluation"
+
+rule "Legal Preevaluation @{ruleId}" salience -@{row.rowNumber}
+    when
+        	$nl : NormalizedLicense(
+        	effectiveNormalizedLicenseType == "@{type}", 
+        	effectiveNormalizedLicense == "@{spdxid}", 
+        	legalPreApproved == null)
+    then
+        $nl.setLegalPreApproved( "@{legalPreApproved}" );
+        $nl.setCopyLeft( "@{copyLeft}" );
+        $nl.setLicenseCompliance( "@{licenseCompliance}" );
+        $nl.setLicenseRefUrl( "@{licenseRefUrl}" );
+        $nl.setIncludeLicense( "@{includeLicense}" );
+        $nl.setIncludeSource( "@{includeSource}" );
+ 
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleId("@{ruleId}")
+        .withMatching("effectiveNormalizedLicenseType", "@{type}" )
+        .withMatching("effectiveNormalizedLicense", "@{spdxid}" )
+        .withSetting("legalPreApproved",  "@{legalPreApproved}" )
+        .withSetting("copyLeft", "@{copyLeft}" )
+        .withSetting("licenseCompliance", "@{licenseCompliance}" )
+        .withSetting("licenseRefUrl", "@{licenseRefUrl}" )
+        .withSetting("includeLicense", "@{includeLicense}" )
+        .withSetting("includeSource", "@{includeSource}" )
+        .nop();
+         ModelHelper.appendTraceToNormalizedLicense($nl,aeb.build()); 
+ 
+        update($nl);
+end
+end template

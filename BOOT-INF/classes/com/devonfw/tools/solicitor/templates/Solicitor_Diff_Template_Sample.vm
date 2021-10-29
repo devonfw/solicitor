@@ -1,0 +1,136 @@
+## SPDX-License-Identifier: Apache-2.0
+
+## template
+
+ <!DOCTYPE html>
+<html>
+<body>
+
+## styling (table)
+
+<style>
+
+table {
+  width:auto;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+tr:nth-child(even) {
+  background-color: #eee;
+}
+tr:nth-child(odd) {
+ background-color: #fff;
+}
+th {
+  background-color: lightblue;
+  color: black;
+}
+.replacable-license-text {
+	color: #CC0000;
+}
+
+.replacable-license-text p var {
+	color: #CC0000;
+}
+
+.optional-license-text {
+	color: #0000cc;
+}
+
+.optional-license-text p var {
+	color: #0000cc;
+}
+
+tr.new-row  {
+	background-color: yellow;
+}
+
+td.changed  {
+	background-color: cyan;
+}
+
+ul, ol, li {
+	margin: 10px 0 10px 0;
+}
+</style>
+
+## header of the document, contract parties
+
+<h1>Diff Test Report</h1>
+
+
+<table>
+	## head row
+  <tr>
+		<th>Application</th>
+		<th>OSS Name / Product</th>
+		<th>OSS Artifact Id</th>
+		<th>OSS Version</th>
+		<th>OSS Declared License</th>
+		<th>URL License</th>
+		<th>Usage pattern</th>
+		<th>Normalized License Type</th>
+		<th>Normalized License</th>
+		<th>Normalized License URL</th>
+		<th>Effective Normalized License Type</th>
+		<th>Effective Normalized License</th>
+		<th>URL Effective Normalized License</th>
+		<th>Include License-Text</th>
+		<th>Include Source</th>
+		<th>Comments</th>
+		<th>Approved</th>
+		<th>Legal-Comments</th>
+  </tr>
+	## content
+
+#macro( tableValue $field )
+#if ($field.diffStatus=="CHANGED")
+			<td class="changed" title="previous: $field.oldValue">
+#else
+			<td>
+#end
+#if( $field.value )
+				$field.value</td>
+#else
+				</td>
+#end				
+#end
+
+	#foreach ($license in $LICENSE)
+#if ($license.rowDiffStatus=="NEW")
+			<tr class="new-row">
+#else
+			<tr>
+#end
+
+#tableValue($license.applicationName)
+#tableValue($license.groupId)
+#tableValue($license.artifactId)
+#tableValue($license.version)
+#tableValue($license.declaredLicense)
+#tableValue($license.licenseUrl)
+#tableValue($license.usagePattern)
+#tableValue($license.normalizedLicenseType)
+#tableValue($license.normalizedLicense)
+#tableValue($license.normalizedLicenseUrl)
+#tableValue($license.effectiveNormalizedLicenseType)
+#tableValue($license.effectiveNormalizedLicense)
+#tableValue($license.effectiveNormalizedLicenseUrl)
+#tableValue($license.includeLicense)
+#tableValue($license.includeSource)
+#tableValue($license.comments)
+#tableValue($license.legalApproved)
+#tableValue($license.legalComments)
+			</tr>
+	#end
+
+</table>
+
+</body>
+</html>

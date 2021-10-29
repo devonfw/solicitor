@@ -1,0 +1,74 @@
+// SPDX-License-Identifier: Apache-2.0
+
+template header
+ruleId
+groupId
+artifactId
+version
+normalizedLicenseType
+normalizedLicense
+effectiveLicenseType
+effectiveLicense
+effectiveLicenseUrl
+comment
+
+package com.devonfw.tools.solicitor.rules;
+
+import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
+import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
+import com.devonfw.tools.solicitor.model.masterdata.Application;
+import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
+
+
+template "Effective License Selection"
+
+rule "License Selection @{ruleId}" salience -@{row.rowNumber}
+    when
+        $ac : ApplicationComponent(
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
+        	$dummyAssignemt : application )
+        $li : NormalizedLicense(
+        	effectiveNormalizedLicense == null, 
+        	normalizedLicenseType != null,
+        	normalizedLicenseType ==  "@{normalizedLicenseType}",
+        	normalizedLicense != null,
+        	normalizedLicense ==  "@{normalizedLicense}",
+        	$theLicenseTypeToTake : normalizedLicenseType,
+        	$theLicenseToTake : normalizedLicense,
+        	$theLicenseUrlToTake : normalizedLicenseUrl,
+        	applicationComponent == $ac )
+      	
+    then
+        $li.setEffectiveNormalizedLicenseType( $theLicenseTypeToTake );
+        $li.setEffectiveNormalizedLicenseType( "@{effectiveLicenseType}" );
+        $li.setEffectiveNormalizedLicense( $theLicenseToTake );
+        $li.setEffectiveNormalizedLicense( "@{effectiveLicense}" );
+        $li.setEffectiveNormalizedLicenseUrl( $theLicenseUrlToTake );
+        $li.setEffectiveNormalizedLicenseUrl( "@{effectiveLicenseUrl}" );
+
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleId("@{ruleId}")
+        .withMatching("groupId", "@{groupId}" )
+        .withMatching("artifactId", "@{artifactId}" )
+        .withMatching("version", "@{version}" )
+        .withMatching("normalizedLicenseType", "@{normalizedLicenseType} " )
+        .withMatching("normalizedLicense", "@{normalizedLicense}" )
+        .withSetting("effectiveNormalizedLicenseType", $theLicenseTypeToTake, "taking data from input" )
+        .withSetting("effectiveNormalizedLicenseType","@{effectiveLicenseType}" )
+        .withSetting("effectiveNormalizedLicense", $theLicenseToTake, "taking data from input" )
+        .withSetting("effectiveNormalizedLicense", "@{effectiveLicense}" )
+        .withSetting("effectiveNormalizedLicenseUrl", $theLicenseUrlToTake, "taking data from input" )
+        .withSetting("effectiveNormalizedLicenseUrl", "@{effectiveLicenseUrl}" )
+        .nop();
+        ModelHelper.appendTraceToNormalizedLicense($li, aeb.build()); 
+        
+        update($li);
+        
+        
+end
+end template

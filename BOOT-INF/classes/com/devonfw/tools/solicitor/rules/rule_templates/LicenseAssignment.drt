@@ -1,0 +1,115 @@
+// SPDX-License-Identifier: Apache-2.0
+
+template header
+ruleId
+clientName
+engagementName
+applicationName
+groupId
+artifactId
+version
+declaredLicense
+url
+normalizedLicenseType
+normalizedLicense
+normalizedLicenseUrl
+comment
+
+
+package com.devonfw.tools.solicitor.rules;
+
+import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
+import com.devonfw.tools.solicitor.model.inventory.RawLicense;
+import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
+import com.devonfw.tools.solicitor.model.masterdata.Application;
+import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
+
+
+template "License Assignment"
+
+rule "License Assignment @{ruleId} - mark RawLicense as done by specialHandling" salience -10000
+    when
+    	// make sure that the main conditions given here are the same as in the below rule
+    	// this rule fires at the very end (salience -10000) of the group and
+    	// assures that all records which have been processed by the other rule get
+    	// marked with "specialHandling=true" so they wont be handled again
+        $e : Engagement( 
+        	clientName == "@{clientName}", 
+        	engagementName == "@{engagementName}",
+        	$name :  engagementName )
+        $a : Application( 
+        	name == "@{applicationName}", 
+        	engagement == $e )
+        $ac : ApplicationComponent(
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
+        	application == $a )
+        $rl : RawLicense( 
+          specialHandling == false,
+        	ModelHelper.match( declaredLicense, "@{declaredLicense}" ),
+        	$licUrl : licenseUrl,
+        	ModelHelper.match( licenseUrl, "@{url}" ), 
+        	applicationComponent == $ac )
+    then
+        $rl.setSpecialHandling(true);
+        update($rl);
+       
+end
+
+rule "License Assignment @{ruleId} - add given NormalizedLicense" salience -@{row.rowNumber}
+    when
+        $e : Engagement( 
+        	clientName == "@{clientName}", 
+        	engagementName == "@{engagementName}",
+        	$name :  engagementName )
+        $a : Application( 
+        	name == "@{applicationName}", 
+        	engagement == $e )
+        $ac : ApplicationComponent(
+        	ModelHelper.match( groupId, "@{groupId}" ), 
+        	ModelHelper.match( artifactId, "@{artifactId}" ), 
+        	ModelHelper.match( version, "@{version}" ),
+        	application == $a )
+        $rl : RawLicense(  
+          specialHandling == false,
+        	ModelHelper.match( declaredLicense, "@{declaredLicense}" ),
+        	$licUrl : licenseUrl,
+        	ModelHelper.match( licenseUrl, "@{url}" ), 
+        	applicationComponent == $ac )
+        not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalizedLicense}") )  // differs from above
+        	
+    then
+        NormalizedLicense normalizedLicense = ModelHelper.newNormalizedLicense($rl );
+        normalizedLicense.setNormalizedLicenseType("@{normalizedLicenseType}");
+        normalizedLicense.setNormalizedLicense("@{normalizedLicense}"); 
+        normalizedLicense.setNormalizedLicenseUrl($licUrl);
+ 		normalizedLicense.setNormalizedLicenseUrl( "@{normalizedLicenseUrl}" ); 
+        ModelHelper.addCommentToNormalizedLicense(normalizedLicense, "@{comment}" );
+        
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleId("@{ruleId}")
+        .withMatching("clientName", "@{clientName}" ) 
+        .withMatching("engagementName", "@{engagementName}" )
+        .withMatching("name", "@{applicationName}" ) 
+        .withMatching("groupId", "@{groupId}" )
+        .withMatching("artifactId", "@{artifactId}" )
+        .withMatching("version", "@{version}" )
+        .withMatching("declaredLicense", "@{declaredLicense}" )
+        .withMatching("licenseUrl", "@{url}" )
+        .withSetting("normalizedLicenseType", "@{normalizedLicenseType}" )
+        .withSetting("normalizedLicense", "@{normalizedLicense}" )
+        .withSetting("normalizedLicenseUrl", $licUrl, "taking url from read data" )
+        .withSetting("normalizedLicenseUrl", "@{normalizedLicenseUrl}" )
+        .withSetting("comment", "@{comment}")
+        .nop();
+         ModelHelper.appendTraceToNormalizedLicense(normalizedLicense,aeb.build()); 
+        
+        insert(normalizedLicense);
+       
+end
+
+end template
