@@ -32,6 +32,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class ModelImporterExporter {
     private static final Logger LOG = LoggerFactory.getLogger(ModelImporterExporter.class);
 
+    private static final int LOWEST_SUPPORTED_MODEL_VERSION = 2;
+
+    private static final int LOWEST_VERSION_WITH_GUESSED_LICENSE_URL = 3;
+
     @Autowired
     private ModelFactory modelFactory;
 
@@ -46,11 +50,9 @@ public class ModelImporterExporter {
         ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
             JsonNode root = objectMapper.readTree(new File(filename));
-            int modelVersion = root.get("modelVersion").asInt();
-            ModelRoot modelRoot = modelFactory.newModelRoot();
-            if (modelVersion != modelRoot.getModelVersion()) {
-                throw new SolicitorRuntimeException("Unsupported model version " + modelVersion + " can not be loaded");
-            }
+            int readModelVersion = root.get("modelVersion").asInt();
+            ModelRoot modelRoot = this.modelFactory.newModelRoot();
+            checkModelVersion(readModelVersion, modelRoot);
             String executionTime = root.get("executionTime").asText();
             String solicitorVersion = root.get("solicitorVersion").asText();
             String solicitorGitHash = root.get("solicitorGitHash").asText();
@@ -68,7 +70,7 @@ public class ModelImporterExporter {
             modelRoot.setExtensionVersion(extensionVersion);
             modelRoot.setExtensionGitHash(extensionGitHash);
             modelRoot.setExtensionBuilddate(extensionBuilddate);
-            readEngagement(modelRoot, engagementNode);
+            readEngagement(modelRoot, engagementNode, readModelVersion);
             return modelRoot;
         } catch (IOException e) {
             throw new SolicitorRuntimeException("Could not load internal data model from file '" + filename + "'", e);
@@ -77,14 +79,32 @@ public class ModelImporterExporter {
     }
 
     /**
+     * Checks if the version of the model to be loaded is supported.
+     *
+     * @param readModelVersion the model version of the model to be loaded
+     * @param currentModelRoot the root object of the current (target) model
+     */
+    private void checkModelVersion(int readModelVersion, ModelRoot currentModelRoot) {
+
+        if (readModelVersion < LOWEST_SUPPORTED_MODEL_VERSION
+                || readModelVersion > currentModelRoot.getModelVersion()) {
+            throw new SolicitorRuntimeException(
+                    "Unsupported model version " + readModelVersion + " can not be loaded; version must be in range "
+                            + LOWEST_SUPPORTED_MODEL_VERSION + " to " + currentModelRoot.getModelVersion() + ".");
+        }
+    }
+
+    /**
      * Read the {@link ApplicationComponent}s from the JSON data structure.
-     * 
+     *
      * @param application the {@link Application} to which the
      *        {@link ApplicationComponent}s belong to
      * @param applicationComponentsNode the relevant part of the parse JSON
      *        model
+     * @param readModelVersion the model version of the model to be read
      */
-    private void readApplicationComponents(Application application, JsonNode applicationComponentsNode) {
+    private void readApplicationComponents(Application application, JsonNode applicationComponentsNode,
+            int readModelVersion) {
 
         for (JsonNode applicationComponentNode : applicationComponentsNode) {
             String usagePattern = applicationComponentNode.get("usagePattern").asText(null);
@@ -96,7 +116,7 @@ public class ModelImporterExporter {
             JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
             JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
 
-            ApplicationComponent applicationComponent = modelFactory.newApplicationComponent();
+            ApplicationComponent applicationComponent = this.modelFactory.newApplicationComponent();
             applicationComponent.setApplication(application);
             applicationComponent.setUsagePattern(UsagePattern.valueOf(usagePattern));
             applicationComponent.setOssModified(ossModified);
@@ -105,8 +125,8 @@ public class ModelImporterExporter {
             applicationComponent.setArtifactId(artifactId);
             applicationComponent.setVersion(version);
 
-            readNormalizedLicenses(applicationComponent, normalizedLicensesNode);
-            readRawLicenses(applicationComponent, rawLicensesNode);
+            readNormalizedLicenses(applicationComponent, normalizedLicensesNode, readModelVersion);
+            readRawLicenses(applicationComponent, rawLicensesNode, readModelVersion);
 
         }
 
@@ -114,12 +134,13 @@ public class ModelImporterExporter {
 
     /**
      * Read the {@link Application}s from the JSON data structure.
-     * 
+     *
      * @param engagement the {@link Engagement} to which the
      *        {@link Application}s belong to
      * @param applicationsNode the relevant part of the parsed JSON model
+     * @param readModelVersion the model version of the model to be read
      */
-    private void readApplications(Engagement engagement, JsonNode applicationsNode) {
+    private void readApplications(Engagement engagement, JsonNode applicationsNode, int readModelVersion) {
 
         for (JsonNode applicationNode : applicationsNode) {
             String name = applicationNode.get("name").asText(null);
@@ -129,9 +150,9 @@ public class ModelImporterExporter {
             String programmingEcosystem = applicationNode.get("programmingEcosystem").asText(null);
             JsonNode applicationComponentsNode = applicationNode.get("applicationComponents");
             Application application =
-                    modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
+                    this.modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
             application.setEngagement(engagement);
-            readApplicationComponents(application, applicationComponentsNode);
+            readApplicationComponents(application, applicationComponentsNode, readModelVersion);
 
         }
 
@@ -139,12 +160,13 @@ public class ModelImporterExporter {
 
     /**
      * Read the {@link Engagement} from the JSON data structure.
-     * 
+     *
      * @param modelRoot the root object of the data model to which the
      *        {@link Engagement} should be added
      * @param engagementNode the relevant part of the parsed JSON model
+     * @param readModelVersion the model version of the model to be read
      */
-    private void readEngagement(ModelRoot modelRoot, JsonNode engagementNode) {
+    private void readEngagement(ModelRoot modelRoot, JsonNode engagementNode, int readModelVersion) {
 
         String engagementName = engagementNode.get("engagementName").asText(null);
         String engagementType = engagementNode.get("engagementType").asText(null);
@@ -155,23 +177,25 @@ public class ModelImporterExporter {
         boolean customerProvidesOss = engagementNode.get("customerProvidesOss").asBoolean();
         JsonNode applicationsNode = engagementNode.get("applications");
 
-        Engagement engagement = modelFactory.newEngagement(engagementName, EngagementType.valueOf(engagementType),
+        Engagement engagement = this.modelFactory.newEngagement(engagementName, EngagementType.valueOf(engagementType),
                 clientName, GoToMarketModel.valueOf(goToMarketModel));
         engagement.setModelRoot(modelRoot);
         engagement.setContractAllowsOss(contractAllowsOss);
         engagement.setOssPolicyFollowed(ossPolicyFollowed);
         engagement.setCustomerProvidesOss(customerProvidesOss);
-        readApplications(engagement, applicationsNode);
+        readApplications(engagement, applicationsNode, readModelVersion);
     }
 
     /**
      * Read the {@link NormalizedLicense}s from the JSON data structure.
-     * 
+     *
      * @param applicationComponent The {@link ApplicationComponent} to which the
      *        license belongs
      * @param normalizedLicensesNode the relevant part of the parsed JSON model
+     * @param readModelVersion the model version of the model to be read
      */
-    private void readNormalizedLicenses(ApplicationComponent applicationComponent, JsonNode normalizedLicensesNode) {
+    private void readNormalizedLicenses(ApplicationComponent applicationComponent, JsonNode normalizedLicensesNode,
+            int readModelVersion) {
 
         for (JsonNode normalizedLicenseNode : normalizedLicensesNode) {
             String declaredLicense = normalizedLicenseNode.get("declaredLicense").asText(null);
@@ -195,8 +219,14 @@ public class ModelImporterExporter {
             String legalApproved = normalizedLicenseNode.get("legalApproved").asText(null);
             String legalComments = normalizedLicenseNode.get("legalComments").asText(null);
             String trace = normalizedLicenseNode.get("trace").asText(null);
+            String guessedLicenseUrl = null;
+            String guessedLicenseUrlAuditInfo = null;
+            if (readModelVersion >= LOWEST_VERSION_WITH_GUESSED_LICENSE_URL) {
+                guessedLicenseUrl = normalizedLicenseNode.get("guessedLicenseUrl").asText(null);
+                guessedLicenseUrlAuditInfo = normalizedLicenseNode.get("guessedLicenseUrlAuditInfo").asText(null);
+            }
 
-            NormalizedLicense normalizedLicense = modelFactory.newNormalizedLicense();
+            NormalizedLicense normalizedLicense = this.modelFactory.newNormalizedLicense();
             normalizedLicense.setApplicationComponent(applicationComponent);
             normalizedLicense.setDeclaredLicense(declaredLicense);
             normalizedLicense.setLicenseUrl(licenseUrl);
@@ -217,17 +247,21 @@ public class ModelImporterExporter {
             normalizedLicense.setLegalApproved(legalApproved);
             normalizedLicense.setLegalComments(legalComments);
             normalizedLicense.setTrace(trace);
+            normalizedLicense.setGuessedLicenseUrl(guessedLicenseUrl);
+            normalizedLicense.setGuessedLicenseUrlAuditInfo(guessedLicenseUrlAuditInfo);
         }
     }
 
     /**
      * Read the {@link RawLicense}s from the JSON data structure.
-     * 
+     *
      * @param applicationComponent The {@link ApplicationComponent} to which the
      *        license belong
      * @param rawLicensesNode the relevant part of the parsed JSON model
+     * @param readModelVersion the model version of the model to be read
      */
-    private void readRawLicenses(ApplicationComponent applicationComponent, JsonNode rawLicensesNode) {
+    private void readRawLicenses(ApplicationComponent applicationComponent, JsonNode rawLicensesNode,
+            int readModelVersion) {
 
         for (JsonNode rawLicenseNode : rawLicensesNode) {
             String declaredLicense = rawLicenseNode.get("declaredLicense").asText(null);
@@ -235,7 +269,7 @@ public class ModelImporterExporter {
             String trace = rawLicenseNode.get("trace").asText(null);
             boolean specialHandling = rawLicenseNode.get("specialHandling").asBoolean();
 
-            RawLicense rawLicense = modelFactory.newRawLicense();
+            RawLicense rawLicense = this.modelFactory.newRawLicense();
             rawLicense.setApplicationComponent(applicationComponent);
             rawLicense.setDeclaredLicense(declaredLicense);
             rawLicense.setLicenseUrl(licenseUrl);

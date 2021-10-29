@@ -76,7 +76,7 @@ public class Solicitor {
      */
     private void extractUserguide() {
 
-        resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE, ".");
+        this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE, ".");
     }
 
     /**
@@ -86,7 +86,7 @@ public class Solicitor {
      */
     private void wizard(String targetDir) {
 
-        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.PROJECT_FILES, targetDir);
+        String location = this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.PROJECT_FILES, targetDir);
         LOG.info(LogMessages.PROJECT_CREATED.msg(), location);
     }
 
@@ -97,7 +97,7 @@ public class Solicitor {
      */
     private void extractConfig(String targetDir) {
 
-        String location = resourceToFileCopier.copyReourcesToFile(ResourceGroup.FULL_BASE_CONFIG, targetDir);
+        String location = this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.FULL_BASE_CONFIG, targetDir);
         LOG.info(LogMessages.FULL_CONFIG_EXTRACTED.msg(), location);
     }
 
@@ -108,24 +108,25 @@ public class Solicitor {
      */
     private void mainProcessing(CommandLineOptions clo) {
 
-        ModelRoot modelRoot = configFactory.createConfig(clo.configUrl);
+        ModelRoot modelRoot = this.configFactory.createConfig(clo.configUrl);
         if (clo.load) {
             LOG.info(LogMessages.LOADING_DATAMODEL.msg(), clo.pathForLoad);
-            modelRoot = modelImporterExporter.loadModel(clo.pathForLoad);
+            modelRoot = this.modelImporterExporter.loadModel(clo.pathForLoad);
         } else {
             readInventory();
-            ruleEngine.executeRules(modelRoot);
+            this.ruleEngine.executeRules(modelRoot);
+            modelRoot.completeData();
         }
         if (clo.save) {
             LOG.info(LogMessages.SAVING_DATAMODEL.msg(), clo.pathForSave);
-            modelImporterExporter.saveModel(modelRoot, clo.pathForSave);
+            this.modelImporterExporter.saveModel(modelRoot, clo.pathForSave);
         }
         ModelRoot oldModelRoot = null;
         if (clo.diff) {
             LOG.info(LogMessages.LOADING_DIFF.msg(), clo.pathForDiff);
-            oldModelRoot = modelImporterExporter.loadModel(clo.pathForDiff);
+            oldModelRoot = this.modelImporterExporter.loadModel(clo.pathForDiff);
         }
-        writerFacade.writeResult(modelRoot, oldModelRoot);
+        this.writerFacade.writeResult(modelRoot, oldModelRoot);
     }
 
     /**
@@ -134,13 +135,13 @@ public class Solicitor {
      */
     private void readInventory() {
 
-        for (ReaderSetup readerSetup : solicitorSetup.getReaderSetups()) {
-            Reader reader = readerFactory.readerFor(readerSetup.getType());
+        for (ReaderSetup readerSetup : this.solicitorSetup.getReaderSetups()) {
+            Reader reader = this.readerFactory.readerFor(readerSetup.getType());
             try {
                 reader.readInventory(readerSetup.getType(), readerSetup.getSource(), readerSetup.getApplication(),
                         readerSetup.getUsagePattern(), readerSetup.getRepoType());
             } catch (SolicitorRuntimeException sre) {
-                if (tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
+                if (this.tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
                     Application app = readerSetup.getApplication();
                     LOG.warn(LogMessages.MISSING_INVENTORY_INPUT_FILE.msg(), readerSetup.getSource(), app.getName());
                     markApplicationMissingData(app);
@@ -176,7 +177,7 @@ public class Solicitor {
 
         long startTime = System.currentTimeMillis();
         boolean doMainProcessing = true;
-        SolicitorVersion sv = solicitorVersion;
+        SolicitorVersion sv = this.solicitorVersion;
         LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
         if (sv.isExtensionPresent()) {
             activateExtension(sv);

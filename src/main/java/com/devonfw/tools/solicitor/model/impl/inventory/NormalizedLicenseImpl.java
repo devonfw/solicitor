@@ -7,8 +7,9 @@ package com.devonfw.tools.solicitor.model.impl.inventory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.devonfw.tools.solicitor.common.webcontent.WebContentObject;
-import com.devonfw.tools.solicitor.common.webcontent.WebContentProvider;
+import com.devonfw.tools.solicitor.common.content.ContentProvider;
+import com.devonfw.tools.solicitor.common.content.web.WebContent;
+import com.devonfw.tools.solicitor.licensetexts.GuessedLicenseUrlContent;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -60,10 +61,15 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
     private String trace;
 
+    private String guessedLicenseUrl;
+
+    private String guessedLicenseUrlAuditInfo;
+
     private ApplicationComponent applicationComponent;
 
-    private WebContentProvider licenseContentProvider;
-    
+    private ContentProvider<WebContent> licenseContentProvider;
+
+    private ContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser;
 
     /**
      * Creates a new instance.
@@ -124,7 +130,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
         this.effectiveNormalizedLicenseType, this.effectiveNormalizedLicense, this.effectiveNormalizedLicenseUrl,
         getEffectiveNormalizedLicenseContent(), this.legalPreApproved, this.copyLeft, this.licenseCompliance,
         this.licenseRefUrl, getLicenseRefContent(), this.includeLicense, this.includeSource, this.reviewedForRelease,
-        this.comments, this.legalApproved, this.legalComments, this.trace };
+        this.comments, this.legalApproved, this.legalComments, this.trace, this.guessedLicenseUrl,
+        this.guessedLicenseUrlAuditInfo, getGuessedLicenseContent() };
     }
 
     /** {@inheritDoc} */
@@ -138,9 +145,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     @JsonIgnore
     public String getDeclaredLicenseContent() {
-        WebContentObject webObj = new WebContentObject();
-    	webObj.setUrl(this.licenseUrl);
-        return this.licenseContentProvider.getWebContentForUrl(webObj).getContent();
+
+        return this.licenseContentProvider.getContentForUri(this.licenseUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -154,9 +160,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     @JsonIgnore
     public String getEffectiveNormalizedLicenseContent() {
-        WebContentObject webObj = new WebContentObject();
-    	webObj.setUrl(this.effectiveNormalizedLicenseUrl);
-        return this.licenseContentProvider.getWebContentForUrl(webObj).getContent();
+
+        return this.licenseContentProvider.getContentForUri(this.effectiveNormalizedLicenseUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -181,7 +186,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
         "normalizedLicense", "normalizedLicenseUrl", "effectiveNormalizedLicenseType", "effectiveNormalizedLicense",
         "effectiveNormalizedLicenseUrl", "effectiveNormalizedLicenseContent", "legalPreApproved", "copyLeft",
         "licenseCompliance", "licenseRefUrl", "licenseRefContent", "includeLicense", "includeSource",
-        "reviewedForRelease", "comments", "legalApproved", "legalComments", "trace" };
+        "reviewedForRelease", "comments", "legalApproved", "legalComments", "trace", "guessedLicenseUrl",
+        "guessedLicenseUrlAuditInfo", "guessedLicenseContent" };
     }
 
     /** {@inheritDoc} */
@@ -232,7 +238,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
      * @return the field licenseContentProvider
      */
     @JsonIgnore
-    public WebContentProvider getLicenseContentProvider() {
+    public ContentProvider<WebContent> getLicenseContentProvider() {
 
         return this.licenseContentProvider;
     }
@@ -241,9 +247,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @Override
     @JsonIgnore
     public String getLicenseRefContent() {
-        WebContentObject webObj = new WebContentObject();
-    	webObj.setUrl(this.licenseRefUrl);
-        return this.licenseContentProvider.getWebContentForUrl(webObj).getContent();
+
+        return this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -293,6 +298,35 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     public String getTrace() {
 
         return this.trace;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getGuessedLicenseUrl() {
+
+        return this.guessedLicenseUrl;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getGuessedLicenseUrlAuditInfo() {
+
+        return this.guessedLicenseUrlAuditInfo;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @JsonIgnore
+    public String getGuessedLicenseContent() {
+
+        return this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent();
     }
 
     /** {@inheritDoc} */
@@ -396,9 +430,19 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
      * @param licenseContentProvider the new value of the field
      *        licenseContentProvider
      */
-    public void setLicenseContentProvider(WebContentProvider licenseContentProvider) {
+    public void setLicenseContentProvider(ContentProvider<WebContent> licenseContentProvider) {
 
         this.licenseContentProvider = licenseContentProvider;
+    }
+
+    /**
+     * This method sets the field <code>licenseUrlGuesser</code>.
+     *
+     * @param licenseUrlGuesser the new value of the field icenseUrlGuesser
+     */
+    public void setLicenseUrlGuesser(ContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser) {
+
+        this.licenseUrlGuesser = licenseUrlGuesser;
     }
 
     /** {@inheritDoc} */
@@ -448,6 +492,32 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     public void setTrace(String trace) {
 
         this.trace = trace;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setGuessedLicenseUrl(String guessedLicenseUrl) {
+
+        this.guessedLicenseUrl = guessedLicenseUrl;
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setGuessedLicenseUrlAuditInfo(String guessedLicenseUrlAuditInfo) {
+
+        this.guessedLicenseUrlAuditInfo = guessedLicenseUrlAuditInfo;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void completeData() {
+
+        this.guessedLicenseUrl =
+                this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl).getGuessedUrl();
+        this.guessedLicenseUrlAuditInfo =
+                this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl).getAuditInfo();
+
     }
 
 }
