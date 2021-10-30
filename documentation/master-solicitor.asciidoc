@@ -1186,7 +1186,8 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 
 Changes in 1.3.0::
 * New report _ScancodeDownloadScript.vm_ to compile copyright information using https://github.com/nexB/scancode-toolkit[ScanCode].
-* Added license URL guessing, see <<Guessing of license URLs>>.
+* https://github.com/devonfw/solicitor/issues/75:
+Added license URL guessing, see <<Guessing of license URLs>>.
 * https://github.com/devonfw/solicitor/issues/86:
 In case that downloading content for a given URL fails no WARN message with stacktrace will be shown any more.
 Instead there will be an info message (SOLI-047 or SOLI-048) indicating that the content could not be downloaded.
