@@ -4,6 +4,7 @@ on:
     paths:
       - '**.asciidoc'
       - '**.md'
+      - '**.dict'
   workflow_dispatch:
 jobs:
   build:
