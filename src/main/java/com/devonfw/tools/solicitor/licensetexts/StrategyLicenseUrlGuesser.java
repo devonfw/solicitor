@@ -76,6 +76,9 @@ public class StrategyLicenseUrlGuesser implements LicenseUrlGuesser {
       "license.txt", "COPYING", "LICENSE-MIT", "LICENSE-MIT.txt", "README.md", "Readme.md", "readme.md",
       "README.markdown" };
       url = url.replace("github.com", "raw.githubusercontent.com");
+      if (url.endsWith("/")) {
+        url = url.substring(0, url.length() - 1);
+      }
       for (String name : licensefilenames) {
         String testURL;
         if (!url.contains("/master/")) {
@@ -83,6 +86,12 @@ public class StrategyLicenseUrlGuesser implements LicenseUrlGuesser {
         } else {
           testURL = url.concat("/" + name);
         }
+        setTrace("Searching for license: testing with " + testURL, traceBuilder);
+        if (pingURL(testURL, traceBuilder) == true) {
+          setTrace("URL changed from " + oldURL + " to " + testURL, traceBuilder);
+          return normalizeGitURL(testURL, traceBuilder);
+        }
+        testURL = testURL.replace("master", "main");
         setTrace("Searching for license: testing with " + testURL, traceBuilder);
         if (pingURL(testURL, traceBuilder) == true) {
           setTrace("URL changed from " + oldURL + " to " + testURL, traceBuilder);
