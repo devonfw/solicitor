@@ -50,7 +50,7 @@ The _Solicitor_ code and accompanying resources (including this userguide) as st
 IMPORTANT: Specifically observe the "Disclaimer of Warranty" and "Limitation of Liability" which are part of the license.
 
 IMPORTANT: The executable JAR file which is created by the Maven based build process includes numerous other Open Source components which are subject to different Open Source licenses. Any distribution of the _Solicitor_ executable JAR file needs to comply with the license conditions of all those components.
-If you are running _Solicitor_ from the executable JAR you might use the `-eug` option to store detailed license information as file `solicitor_licenseinfo.html` in your current working directory (together with a copy of this user guide). 
+If you are running _Solicitor_ from the executable JAR you might use the `-eug` option to store detailed license information as file `solicitor_licenseinfo.html` in your current working directory (together with a copy of this user guide).
 
 == Architecture
 The following picture show a business oriented view of _Solicitor_.
@@ -513,7 +513,7 @@ line in the file for each license.
 
 === NPM
 
-For NPM based projects either the NPM License Crawler (https://www.npmjs.com/package/npm-license-crawler) or the NPM License Checker (https://www.npmjs.com/package/license-checker) might be used. The NPM License Crawler can process several node packages in one run. 
+For NPM based projects either the NPM License Crawler (https://www.npmjs.com/package/npm-license-crawler) or the NPM License Checker (https://www.npmjs.com/package/license-checker) might be used. The NPM License Crawler can process several node packages in one run.
 
 ==== NPM License Crawler
 
@@ -634,7 +634,7 @@ In _Solicitor_ the data is read with the following part of the config
 } ]
 ----
 
-NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>. 
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
 
 === Gradle (Android)
 For the Export of the the Licenses from a Gradle based Android Projects the Gradle License Plugin is used.
@@ -683,7 +683,7 @@ In Solicitor the Data is read with the following part of the config
    	} ]
 ----
 
-NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>. 
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
 
 
 == Working with Decision Tables
@@ -1004,7 +1004,7 @@ When creating the resource or filename for given URLs in the above steps the fol
 All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
 
 == Guessing of license URLs
-Fetching the license content `NormalizedLicense.effectiveNormalizedLicenseContent` based on the URL in `NormalizedLicense.effectiveNormalizedLicenseUrl` will often result in content which is in HTML format instead of plain text and is not properly rendered when included in reports. 
+Fetching the license content `NormalizedLicense.effectiveNormalizedLicenseContent` based on the URL in `NormalizedLicense.effectiveNormalizedLicenseUrl` will often result in content which is in HTML format instead of plain text and is not properly rendered when included in reports.
 Sometimes the URL even does not point to the license text itself but just the homepage of the project.
 In general it is possible to manually correct this by editing the downloaded and cached content as described in the previous section. This approach might require a lot of manual work. _Solicitor_ therefore includes a mechanism named license url guessing which tries to guess an alternative license URL which should point to a representation of the content better suited for rendering.
 
@@ -1046,7 +1046,7 @@ Within the lifecycle of the _Solicitor_ development features might be discontinu
 to various reasons. In case that such discontinuation is expected to break existing projects
 a two stage deprecation mechanism is used:
 
-* Stage 1: Usage of a deprecated feature will produce a _warning only_ giving details on 
+* Stage 1: Usage of a deprecated feature will produce a _warning only_ giving details on
 what needs to be changed.
 * Stage 2: When a deprecated feature is used _Solicitor_ by default will terminate with an error
 message giving information about the deprecation.
@@ -1061,12 +1061,12 @@ IMPORTANT: Enabling the use of deprecated feature via the above property should 
 a temporary workaround and not a standard setting.
 
 NOTE: If usage of a feature should be discontinued immediately (e.g. because it might lead to
-wrong/misleading output) the first stage of deprecation will be skipped. 
+wrong/misleading output) the first stage of deprecation will be skipped.
 
 === List of Deprecated Features
 The following features are deprecated via the above mechanism:
 
-* Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58 
+* Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58
 * Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
 
 [appendix]
@@ -1099,22 +1099,22 @@ include::../src/main/resources/application.properties[]
 [appendix]
 == Reporting Templates
 
- 
+
 
 There are different templates that can be used for reporting. For usage, the templates have to be specified in the “writers” section of the solicitor configuration file (see <<Writers / Reporting>>).
 In the default solicitor configuration all templates are specified. (see <<Appendix A: Default Base Configuration>>)
 
- 
 
-==== Solicitor_Output_Template_Sample.xlsx 
+
+==== Solicitor_Output_Template_Sample.xlsx
 With this template a report in Excel format can be created. The spreadsheet contains data from the internal database (see <<Database Structure>>) which can be fetched by specifying the path to the SQL statements files in the solicitor configuration file.
 
- 
+
 
 ==== Solicitor_Diff_Template_Sample.vm
 This template creates a HTML document which has a table containing the relevant data from the internal database. Cells that have been changed, compared to a previous solicitor run, are marked in a different color. For usage, the option -d <filename> needs to be appended with filename being saved_latest_model.json.
 
- 
+
 
 ==== Solicitor_Output_Template_Sample.vm
 This template creates an HTML document which has an overview of OSS components used in the project. The data is displayed in a table with the columns:
@@ -1122,7 +1122,7 @@ Name, GroupId, Version, Application, License, LicenseUrl.
 
 ==== Solicitor_Output_Template_Sample_v2.vm
 Similar to the above but uses guessed license URLs and content, see <<Guessing of license URLs>>.
- 
+
 
 ==== Quality_Report.vm
 This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:
@@ -1130,11 +1130,11 @@ Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized
 
 ==== ScancodeDownloadScript.vm
 This template creates a script file for using https://github.com/nexB/scancode-toolkit[ScanCode] to create a JSON document which contains copyright information (statements, holders, authors) about each artifact within a project. Copyright information
-is displayed on file level. The output format being a JSON allows for further usage and processing as we store it in a valid syntax with an array of artifacts that contain all infos. 
+is displayed on file level. The output format being a JSON allows for further usage and processing as we store it in a valid syntax with an array of artifacts that contain all infos.
 The copyright scanner used for this report is scancode-toolkit-21.8.4. Usage information can be found in the created scancode_project.sh script after running solicitor.
 
 NOTE: This report is an experimental feature and might be changed or removed in future versions without any notice.
- 
+
 [appendix]
 == Extending Solicitor
 `Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
@@ -1187,10 +1187,14 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 Changes in 1.3.0::
 * New report _ScancodeDownloadScript.vm_ to compile copyright information using https://github.com/nexB/scancode-toolkit[ScanCode].
 * Added license URL guessing, see <<Guessing of license URLs>>.
+* https://github.com/devonfw/solicitor/issues/86:
+In case that downloading content for a given URL fails no WARN message with stacktrace will be shown any more.
+Instead there will be an info message (SOLI-047 or SOLI-048) indicating that the content could not be downloaded.
+This change is due to the fact that failed downloads are expected - especially with the new feature license URL guessing.
 
 Changes in 1.2.0::
 * Added some license name mapping rules in LicenseNameMappingSample.xls.
-* https://github.com/devonfw/solicitor/issues/71: 
+* https://github.com/devonfw/solicitor/issues/71:
   New "Quality Report" which might be helpful in validating the outcome of the _Solicitor_ run.
   Currently this report contains a list of all application components which have more than one effective license attached.
   This might be helpful for spotting cases where appropriate rules for selecting the applicable license in case of dual-/multilicensing is missing.
@@ -1210,11 +1214,11 @@ Changes in 1.0.8::
 * https://github.com/devonfw/solicitor/issues/62: New Reader of type `npm-license-checker`
 for reading component/license data collected by NPM License Checker (https://www.npmjs.com/package/license-checker).
 The type of the existing Reader for reading CSV data from the NPM License Crawler has been changed from `npm`
-to `npm-license-crawler-csv`. (`npm` is still available but deprecated.) Projects should adopt their Reader 
-configuration and replace type `npm` by `npm-license-crawler-csv`. 
+to `npm-license-crawler-csv`. (`npm` is still available but deprecated.) Projects should adopt their Reader
+configuration and replace type `npm` by `npm-license-crawler-csv`.
 
 Changes in 1.0.7::
-* https://github.com/devonfw/solicitor/issues/56: Enable continuing analysis in 
+* https://github.com/devonfw/solicitor/issues/56: Enable continuing analysis in
 multiapplication projects even is some license files are unavailable.
 * Described simplified usage of license-maven-plugin without need to change pom.xml. (Documentation only)
 * Ensure consistent sorting even in case that multiple "Ignored" licenses exist for a component

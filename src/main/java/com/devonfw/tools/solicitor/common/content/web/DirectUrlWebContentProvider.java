@@ -55,7 +55,10 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
         try {
             webContentUrl = new URL(url);
         } catch (MalformedURLException e) {
-            LOG.warn("Invalid URL syntax '" + url + "'", e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Invalid URL syntax '" + url + "'", e);
+            }
+            LOG.info(LogMessages.COULD_NOT_DOWNLOAD_CONTENT_MALFORMED_URL.msg(), url);
             return new WebContent(null);
         }
 
@@ -64,7 +67,10 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
             String result = s.hasNext() ? s.next() : "";
             return new WebContent(result);
         } catch (IOException e) {
-            LOG.warn("Could not retieve content for url '" + url + "'", e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Could not retieve content for url '" + url + "'", e);
+            }
+            LOG.info(LogMessages.COULD_NOT_DOWNLOAD_CONTENT.msg(), url, e.getClass().getSimpleName());
         }
         return new WebContent(null);
     }

@@ -66,7 +66,10 @@ public enum LogMessages {
     MISSING_INVENTORY_INPUT_FILE(45,
             "Input file {} for Application {} not accessible, continuing anyway. (Property solicitor.tolerate-missing-input=true)"), //
     USING_DEPRECATED_FEATURE(46,
-            "You are using a deprecated feature which might be removed soon. You should ASAP migrate your project as this might be unavailable in future versions. Details: {}.");
+            "You are using a deprecated feature which might be removed soon. You should ASAP migrate your project as this might be unavailable in future versions. Details: {}."), //
+    COULD_NOT_DOWNLOAD_CONTENT(47, "Downloading content from URL '{}' did not succeed. Exception was: {}."), //
+    COULD_NOT_DOWNLOAD_CONTENT_MALFORMED_URL(48,
+            "Downloading content from URL '{}' did not succeed because the URL is malfomed");
 
     private final String message;
 
@@ -74,7 +77,7 @@ public enum LogMessages {
 
     /**
      * Private constructor.
-     * 
+     *
      * @param code the numeric message code
      * @param message the log message; might contain placeholders in logback
      *        format
@@ -87,21 +90,21 @@ public enum LogMessages {
 
     /**
      * Gets the complete message.
-     * 
+     *
      * @return the complete message
      */
     public String msg() {
 
-        return label + " " + message;
+        return this.label + " " + this.message;
     }
 
     /**
      * Gets the message label.
-     * 
+     *
      * @return the message label
      */
     public String label() {
 
-        return label;
+        return this.label;
     }
 }
