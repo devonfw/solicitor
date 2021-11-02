@@ -587,6 +587,26 @@ In _Solicitor_ the data is read with the following part of the config
 } ]
 ----
 
+=== Yarn
+
+To generate the input file required for Solicitor yarn needs to be executed with the following command within the directory that contains the project's package.json (we require JSON output here):
+
+----
+yarn licenses list --json > /path/to/licenses.json
+----
+
+Source: https://classic.yarnpkg.com/en/docs/cli/licenses/
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "yarn",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "yarn"
+} ]
+----
 
 === Gradle (Windows)
 
