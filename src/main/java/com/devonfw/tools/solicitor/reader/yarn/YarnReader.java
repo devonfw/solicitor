@@ -9,10 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -79,15 +77,6 @@ public class YarnReader extends AbstractReader implements Reader {
                 appComponent.setApplication(application);
                 componentCount++;
                 
-                //TODO ask Oliver for comprehension
-              /*  String[] module = name.split("@");
-                if (name.startsWith("@")) {
-                    appComponent.setArtifactId("@" + module[module.length - 2]);
-                } else {
-                    appComponent.setArtifactId(module[module.length - 2]);
-                }
-                */
-                
                 appComponent.setArtifactId(name);
                 appComponent.setVersion(version);
                 appComponent.setUsagePattern(usagePattern);
@@ -127,27 +116,20 @@ public class YarnReader extends AbstractReader implements Reader {
 	        }
     	    
 	    	
-	    	// checks if file was cutted into correct shape already
+	    	// checks if file was cutted into correct shape already and fixes URL issues
 	    	if(!content.startsWith("[")) {
 	    		content = content.split("\\\"body\\\":")[1];
 	    		content = content.replace("}", "");
-	    	    //TODO +git and .git cut  git+https://github.com/Rich-Harris/svg-parser.git
 	    		content = content.replace("git+", "");
 	    		content = content.replace("www.github", "github");
 	    		content = content.replace(".git", "");
-	    		//TODO git://github.com/hapijs/hoek change to https://
 	    		content = content.replace("git://", "https://");
-	    		//TODO git@github.com: syntax change git@github.com:colorjs/color-name.git
 	    		content = content.replace("git@github.com:", "https://github.com/");
-	    		//TODO ssh://git@github.com/rexxars/registry-auth-token ssh change
 	    		content = content.replace("ssh://git@", "https://");
-	    		//TODO rename "Unknown" to "" for solicitor syntax? 
 	    		content = content.replace("Unknown", "");
 	    		content = "[" + content + "]";
 	    	}
-    		
-    		System.out.println("This is the cutted json: " + content);
-    	
+    		    	
     		FileWriter writer;
 			writer = new FileWriter(input);
 			
@@ -160,30 +142,6 @@ public class YarnReader extends AbstractReader implements Reader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
-    
-    //TODO yarn does not have a path or licenseFile attribute, so estimateLicenseUrl needs to be configured accordingly
-
-    private String estimateLicenseUrl(String repo, String path, String licenseFile) {
-
-        if (repo == null || repo.isEmpty()) {
-            return null;
-        }
-        if (path == null || path.isEmpty() || //
-                licenseFile == null || licenseFile.isEmpty()) {
-            return repo;
-        }
-
-        if (repo.contains("github.com") && licenseFile.startsWith(path)) {
-            String licenseRelative = licenseFile.replace(path, "").replace("\\", "/");
-            if (repo.endsWith("/")) {
-                repo = repo.substring(0, repo.length() - 1);
-            }
-            if (repo.contains("github.com")) {
-                return repo.replace("git://", "https://") + "/raw/master" + licenseRelative;
-            }
-        }
-        return repo;
     }
 
 }
