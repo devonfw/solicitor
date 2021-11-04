@@ -54,7 +54,6 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
-        	//TODO probably make a list as the json is an array 
             List l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
             for (int i = 0; i<l.size(); i++) {
                 Map attributes = (Map) l.get(i);
@@ -62,9 +61,9 @@ public class PipLicensesReader extends AbstractReader implements Reader {
                 String version = (String) attributes.get("Version");
                 String repo = (String) attributes.get("URL");
                 String path = (String) attributes.get("LicenseFile");
-                String licenseFile = (String) attributes.get("LicenseFile");
-                String licenseUrl = estimateLicenseUrl(repo, path, licenseFile);
+                String licenseUrl = estimateLicenseUrl(repo, path);
                 String homePage = (String) attributes.get("URL");
+                String licenseTest = (String) attributes.get("LicenseText");
                 if (homePage == null || homePage.isEmpty()) {
                     homePage = repo;
                 }
@@ -113,23 +112,23 @@ public class PipLicensesReader extends AbstractReader implements Reader {
 
     }
 
-    private String estimateLicenseUrl(String repo, String path, String licenseFile) {
+    //estimates license location in github links based on local file location
+    private String estimateLicenseUrl(String repo, String path) {
 
         if (repo == null || repo.isEmpty()) {
             return null;
         }
-        if (path == null || path.isEmpty() || //
-                licenseFile == null || licenseFile.isEmpty()) {
+        if (path == null || path.isEmpty()) {
             return repo;
         }
 
-        if (repo.contains("github.com") && licenseFile.startsWith(path)) {
-            String licenseRelative = licenseFile.replace(path, "").replace("\\", "/");
+        if (repo.contains("github.com")) {
+        	String licenseRelative = path.substring(path.lastIndexOf("\\")+1);
             if (repo.endsWith("/")) {
                 repo = repo.substring(0, repo.length() - 1);
             }
             if (repo.contains("github.com")) {
-                return repo.replace("git://", "https://") + "/raw/master" + licenseRelative;
+                return repo.replace("git://", "https://") + "/raw/master/" + licenseRelative;
             }
         }
         return repo;
