@@ -128,7 +128,13 @@ public class PipLicensesReader extends AbstractReader implements Reader {
                 repo = repo.substring(0, repo.length() - 1);
             }
             if (repo.contains("github.com")) {
-                return repo.replace("git://", "https://") + "/raw/master/" + licenseRelative;
+            	//https://raw.githubusercontent.com/django/asgiref/master/LICENSE
+            	//https://github.com/django/asgiref/raw/master/LICENSE
+            	//https://github.com/django/asgiref/
+                repo = repo.replace("git://", "https://");
+                repo = repo.replace("github.com","raw.githubusercontent.com");
+                repo = repo.concat("/master/"+ licenseRelative);
+                return repo;
             }
         }
         return repo;
