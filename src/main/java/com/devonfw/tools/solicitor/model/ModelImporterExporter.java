@@ -113,6 +113,7 @@ public class ModelImporterExporter {
             String groupId = applicationComponentNode.get("groupId").asText(null);
             String artifactId = applicationComponentNode.get("artifactId").asText(null);
             String version = applicationComponentNode.get("version").asText(null);
+            String repoType = applicationComponentNode.get("repoType").asText(null);
             JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
             JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
 
@@ -124,6 +125,7 @@ public class ModelImporterExporter {
             applicationComponent.setGroupId(groupId);
             applicationComponent.setArtifactId(artifactId);
             applicationComponent.setVersion(version);
+            applicationComponent.setRepoType(repoType);
 
             readNormalizedLicenses(applicationComponent, normalizedLicensesNode, readModelVersion);
             readRawLicenses(applicationComponent, rawLicensesNode, readModelVersion);
