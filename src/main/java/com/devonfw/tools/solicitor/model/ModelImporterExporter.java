@@ -47,7 +47,7 @@ public class ModelImporterExporter {
         try {
             JsonNode root = objectMapper.readTree(new File(filename));
             int modelVersion = root.get("modelVersion").asInt();
-            ModelRoot modelRoot = modelFactory.newModelRoot();
+            ModelRoot modelRoot = this.modelFactory.newModelRoot();
             if (modelVersion != modelRoot.getModelVersion()) {
                 throw new SolicitorRuntimeException("Unsupported model version " + modelVersion + " can not be loaded");
             }
@@ -78,7 +78,7 @@ public class ModelImporterExporter {
 
     /**
      * Read the {@link ApplicationComponent}s from the JSON data structure.
-     * 
+     *
      * @param application the {@link Application} to which the
      *        {@link ApplicationComponent}s belong to
      * @param applicationComponentsNode the relevant part of the parse JSON
@@ -93,10 +93,11 @@ public class ModelImporterExporter {
             String groupId = applicationComponentNode.get("groupId").asText(null);
             String artifactId = applicationComponentNode.get("artifactId").asText(null);
             String version = applicationComponentNode.get("version").asText(null);
+            String repoType = applicationComponentNode.get("repoType").asText(null);
             JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
             JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
 
-            ApplicationComponent applicationComponent = modelFactory.newApplicationComponent();
+            ApplicationComponent applicationComponent = this.modelFactory.newApplicationComponent();
             applicationComponent.setApplication(application);
             applicationComponent.setUsagePattern(UsagePattern.valueOf(usagePattern));
             applicationComponent.setOssModified(ossModified);
@@ -104,6 +105,7 @@ public class ModelImporterExporter {
             applicationComponent.setGroupId(groupId);
             applicationComponent.setArtifactId(artifactId);
             applicationComponent.setVersion(version);
+            applicationComponent.setRepoType(repoType);
 
             readNormalizedLicenses(applicationComponent, normalizedLicensesNode);
             readRawLicenses(applicationComponent, rawLicensesNode);
@@ -114,7 +116,7 @@ public class ModelImporterExporter {
 
     /**
      * Read the {@link Application}s from the JSON data structure.
-     * 
+     *
      * @param engagement the {@link Engagement} to which the
      *        {@link Application}s belong to
      * @param applicationsNode the relevant part of the parsed JSON model
@@ -129,7 +131,7 @@ public class ModelImporterExporter {
             String programmingEcosystem = applicationNode.get("programmingEcosystem").asText(null);
             JsonNode applicationComponentsNode = applicationNode.get("applicationComponents");
             Application application =
-                    modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
+                    this.modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
             application.setEngagement(engagement);
             readApplicationComponents(application, applicationComponentsNode);
 
@@ -139,7 +141,7 @@ public class ModelImporterExporter {
 
     /**
      * Read the {@link Engagement} from the JSON data structure.
-     * 
+     *
      * @param modelRoot the root object of the data model to which the
      *        {@link Engagement} should be added
      * @param engagementNode the relevant part of the parsed JSON model
@@ -155,7 +157,7 @@ public class ModelImporterExporter {
         boolean customerProvidesOss = engagementNode.get("customerProvidesOss").asBoolean();
         JsonNode applicationsNode = engagementNode.get("applications");
 
-        Engagement engagement = modelFactory.newEngagement(engagementName, EngagementType.valueOf(engagementType),
+        Engagement engagement = this.modelFactory.newEngagement(engagementName, EngagementType.valueOf(engagementType),
                 clientName, GoToMarketModel.valueOf(goToMarketModel));
         engagement.setModelRoot(modelRoot);
         engagement.setContractAllowsOss(contractAllowsOss);
@@ -166,7 +168,7 @@ public class ModelImporterExporter {
 
     /**
      * Read the {@link NormalizedLicense}s from the JSON data structure.
-     * 
+     *
      * @param applicationComponent The {@link ApplicationComponent} to which the
      *        license belongs
      * @param normalizedLicensesNode the relevant part of the parsed JSON model
@@ -196,7 +198,7 @@ public class ModelImporterExporter {
             String legalComments = normalizedLicenseNode.get("legalComments").asText(null);
             String trace = normalizedLicenseNode.get("trace").asText(null);
 
-            NormalizedLicense normalizedLicense = modelFactory.newNormalizedLicense();
+            NormalizedLicense normalizedLicense = this.modelFactory.newNormalizedLicense();
             normalizedLicense.setApplicationComponent(applicationComponent);
             normalizedLicense.setDeclaredLicense(declaredLicense);
             normalizedLicense.setLicenseUrl(licenseUrl);
@@ -222,7 +224,7 @@ public class ModelImporterExporter {
 
     /**
      * Read the {@link RawLicense}s from the JSON data structure.
-     * 
+     *
      * @param applicationComponent The {@link ApplicationComponent} to which the
      *        license belong
      * @param rawLicensesNode the relevant part of the parsed JSON model
@@ -235,7 +237,7 @@ public class ModelImporterExporter {
             String trace = rawLicenseNode.get("trace").asText(null);
             boolean specialHandling = rawLicenseNode.get("specialHandling").asBoolean();
 
-            RawLicense rawLicense = modelFactory.newRawLicense();
+            RawLicense rawLicense = this.modelFactory.newRawLicense();
             rawLicense.setApplicationComponent(applicationComponent);
             rawLicense.setDeclaredLicense(declaredLicense);
             rawLicense.setLicenseUrl(licenseUrl);

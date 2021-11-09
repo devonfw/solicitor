@@ -117,7 +117,7 @@ public class ExcelWriter implements Writer {
 
     /**
      * This function will fill in information in the template sheet.
-     * 
+     *
      * @param wb the workbook to work on
      * @param cell the cell to start from
      * @param dataTable the table which contains the data
@@ -208,9 +208,9 @@ public class ExcelWriter implements Writer {
                                                            // #Level.value# as
                                                            // content
 
-        try (InputStream inp = inputStreamFactory.createInputStreamFor(templateSource)) { // read
-                                                                                          // the
-                                                                                          // template
+        try (InputStream inp = this.inputStreamFactory.createInputStreamFor(templateSource)) { // read
+            // the
+            // template
 
             Workbook wb = WorkbookFactory.create(inp);
 
@@ -232,6 +232,9 @@ public class ExcelWriter implements Writer {
                 DataTable dataTable = dataTables.get(label);
                 iterateFromCell(wb, cell, dataTable, label);
             }
+
+            // force reevaluation of all formulas
+            wb.setForceFormulaRecalculation(true);
 
             // Write the output to a file
             IOHelper.checkAndCreateLocation(target);

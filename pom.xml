@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.devonfw.tools</groupId>
 	<artifactId>solicitor</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<name>Solicitor</name>
 	<description>A tool for rule based checking of license conditions in software projects.</description>
 	<parent>
@@ -221,14 +221,14 @@
 						<artifactId>asciidoctorj-pdf</artifactId>
 						<version>${asciidoctorj.pdf.version}</version>
 					</dependency>
-					<!-- Comment this section to use the default jruby artifact provided 
+					<!-- Comment this section to use the default jruby artifact provided
 						by the plugin -->
 					<dependency>
 						<groupId>org.jruby</groupId>
 						<artifactId>jruby-complete</artifactId>
 						<version>${jruby.version}</version>
 					</dependency>
-					<!-- Comment this section to use the default AsciidoctorJ artifact provided 
+					<!-- Comment this section to use the default AsciidoctorJ artifact provided
 						by the plugin -->
 					<dependency>
 						<groupId>org.asciidoctor</groupId>
@@ -328,7 +328,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
