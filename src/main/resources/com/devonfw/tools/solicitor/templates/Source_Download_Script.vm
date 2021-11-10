@@ -22,6 +22,15 @@ then
   echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually-npm
 fi
 rm -r package/
+#elseif ( $artifact.repoType == "pip" )
+art='${artifact.artifactId}'
+#[[firstChar=${art:0:1}]]#
+curl -# -L https://pypi.io/packages/source/#[[$firstChar]]#/$artifact.artifactId/$artifact.artifactId-${artifact.version}.tar.gz -o $artifact.artifactId-${artifact.version}.tar.gz
+tar -xvzf $artifact.artifactId-${artifact.version}.tar.gz
+if [ $? -ne 0 ]
+then
+  echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tar.gz--need-to-retrieve-manually-pip
+fi
 #else
 echo "Need to retrieve-manually (unknown repoType)" > $artifact.groupId--$artifact.artifactId-${artifact.version}--need-to-retrieve-manually
 #end
