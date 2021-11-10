@@ -63,27 +63,13 @@ public class PipLicensesReader extends AbstractReader implements Reader {
                 String path = (String) attributes.get("LicenseFile");
                 String licenseUrl = estimateLicenseUrl(repo, path);
                 String homePage = (String) attributes.get("URL");
-                String licenseTest = (String) attributes.get("LicenseText");
+                String licenseText = (String) attributes.get("LicenseText");
                 if (homePage == null || homePage.isEmpty()) {
                     homePage = repo;
                 }
 
-                Object lic = attributes.get("License-Metadata");
-                List<String> licenseList;
-                if (lic != null) {
-                    if (lic instanceof List) {
-                        licenseList = new ArrayList<>();
-                        for (Object entry : (List) lic) {
-                            licenseList.add((String) entry);
-                        }
-
-                    } else {
-                        licenseList = Collections.singletonList((String) lic);
-                    }
-                } else {
-                    licenseList = Collections.emptyList();
-                }
-
+                String license = (String) attributes.get("License-Metadata");
+                
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
                 appComponent.setApplication(application);
                 componentCount++;
@@ -93,15 +79,10 @@ public class PipLicensesReader extends AbstractReader implements Reader {
                 appComponent.setGroupId("");
                 appComponent.setOssHomepage(homePage);
                 appComponent.setRepoType(repoType);
-                if (licenseList.isEmpty()) {
-                    // add empty raw license if no license info attached
-                    addRawLicense(appComponent, null, null, sourceUrl);
-                } else {
-                    for (String cl : licenseList) {
-                        licenseCount++;
-                        addRawLicense(appComponent, cl, licenseUrl, sourceUrl);
-                    }
-                }
+                
+                addRawLicense(appComponent, license, licenseUrl, sourceUrl);
+
+                
 
             }
             doLogging(sourceUrl, application, componentCount, licenseCount);
@@ -128,9 +109,6 @@ public class PipLicensesReader extends AbstractReader implements Reader {
                 repo = repo.substring(0, repo.length() - 1);
             }
             if (repo.contains("github.com")) {
-            	//https://raw.githubusercontent.com/django/asgiref/master/LICENSE
-            	//https://github.com/django/asgiref/raw/master/LICENSE
-            	//https://github.com/django/asgiref/
                 repo = repo.replace("git://", "https://");
                 repo = repo.replace("github.com","raw.githubusercontent.com");
                 repo = repo.concat("/master/"+ licenseRelative);
