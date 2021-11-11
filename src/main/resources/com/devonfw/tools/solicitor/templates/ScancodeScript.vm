@@ -54,6 +54,16 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 						rm -r $artifact.artifactId-$artifact.version
 					fi
 				#[[cd $SD]]#
+			#elseif ( $artifact.repoType == "yarn" )
+				curl -# https://registry.yarnpkg.com/$artifact.artifactId/-/#[[${cutArtifact#*/}]]#-${artifact.version}.tgz -o #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
+				tar -xvzf #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
+					if [ $? -ne 0 ]
+					then
+						cd ..
+						echo "npm $artifact.artifactId-${artifact.version}.tgz" >> need-to-retrieve-manually.txt
+						rm -r $artifact.artifactId-$artifact.version
+					fi
+				#[[cd $SD]]#
 			#else
 				cd ..
 				echo "$artifact.groupId--$artifact.artifactId-${artifact.version} (unknown repoType)" >> need-to-retrieve-manually.txt
@@ -78,6 +88,16 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 				#[[cd $SD]]#
 			#elseif ( $artifact.repoType == "npm" )
 				curl -# https://registry.npmjs.org/$artifact.artifactId/-/$artifact.artifactId-${artifact.version}.tgz -o $artifact.artifactId-${artifact.version}.tgz
+				tar -xvzf $artifact.artifactId-${artifact.version}.tgz
+					if [ $? -ne 0 ]
+					then
+						cd ..
+						echo "npm $artifact.artifactId-${artifact.version}.tgz" >> need-to-retrieve-manually.txt
+						rm -r $artifact.artifactId-$artifact.version					
+					fi
+				#[[cd $SD]]#
+			#elseif ( $artifact.repoType == "yarn" )
+				curl -# https://registry.yarnpkg.com/$artifact.artifactId/-/$artifact.artifactId-${artifact.version}.tgz -o $artifact.artifactId-${artifact.version}.tgz
 				tar -xvzf $artifact.artifactId-${artifact.version}.tgz
 					if [ $? -ne 0 ]
 					then
