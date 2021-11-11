@@ -106,6 +106,18 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 						rm -r $artifact.artifactId-$artifact.version					
 					fi
 				#[[cd $SD]]#
+			#elseif ( $artifact.repoType == "pip" )
+				art='${artifact.artifactId}'
+				#[[firstChar=${art:0:1}]]#
+				curl -# -L https://pypi.io/packages/source/#[[$firstChar]]#/$artifact.artifactId/$artifact.artifactId-${artifact.version}.tar.gz -o $artifact.artifactId-${artifact.version}.tar.gz
+				tar -xvzf $artifact.artifactId-${artifact.version}.tar.gz
+					if [ $? -ne 0 ]
+					then
+						cd ..
+						echo "npm $artifact.artifactId-${artifact.version}.tar.gz" >> need-to-retrieve-manually.txt
+						rm -r $artifact.artifactId-$artifact.version					
+					fi
+				#[[cd $SD]]#
 			#else
 				cd ..
 				echo "$artifact.groupId--$artifact.artifactId-${artifact.version} (unknown repoType)" >> need-to-retrieve-manually.txt
