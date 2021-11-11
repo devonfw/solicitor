@@ -31,6 +31,14 @@ if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tar.gz--need-to-retrieve-manually-pip
 fi
+#elseif ( $artifact.repoType == "yarn" )
+curl -# https://registry.yarnpkg.com/$artifact.artifactId/-/$artifact.artifactId-${artifact.version}.tgz -o $artifact.artifactId-${artifact.version}.tgz
+tar -xvzf $artifact.artifactId-${artifact.version}.tgz
+if [ $? -ne 0 ]
+then
+  echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually-npm
+fi
+mv package/ $artifact.artifactId-${artifact.version}/
 #else
 echo "Need to retrieve-manually (unknown repoType)" > $artifact.groupId--$artifact.artifactId-${artifact.version}--need-to-retrieve-manually
 #end
