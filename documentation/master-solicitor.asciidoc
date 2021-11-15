@@ -1100,6 +1100,9 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 
 [appendix]
 == Release Notes
+Changes in 1.2.2::
+* Fixed bug which resulted in corrupt XLS report due to cell comment exceeding maximum allowed size.
+
 Changes in 1.2.1::
 * https://github.com/devonfw/solicitor/issues/94: Fixed by making sure that formulas get evaluated when opening the workbook with excel.
 * Fixed bug when reading saved data model for delta calculation. (`repoType` was not read correctly and resulted in always reporting a difference.)
