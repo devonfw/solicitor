@@ -1101,7 +1101,7 @@ include::../src/main/resources/application.properties[]
 
 
 
-There are different templates that can be used for reporting. For usage, the templates have to be specified in the ìwritersî section of the solicitor configuration file (see <<Writers / Reporting>>).
+There are different templates that can be used for reporting. For usage, the templates have to be specified in the ‚Äúwriters‚Äù section of the solicitor configuration file (see <<Writers / Reporting>>).
 In the default solicitor configuration all templates are specified. (see <<Appendix A: Default Base Configuration>>)
 
 
