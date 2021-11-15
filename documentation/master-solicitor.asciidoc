@@ -595,6 +595,14 @@ To generate the input file required for Solicitor yarn needs to be executed with
 yarn licenses list --json > /path/to/yarnlicenses.json
 ----
 
+The export should look like the following
+
+[source]
+----
+include::yarnlicenses.json[]
+
+----
+
 Source: https://classic.yarnpkg.com/en/docs/cli/licenses/
 
 In _Solicitor_ the data is read with the following part of the config
@@ -618,6 +626,14 @@ To generate the input file required for Solicitor one has follow two steps:
 After that, we execute following command within the virtual environment to extract the input file (we require JSON output here):
 ----
 pip-licenses --from=all --format=json --with-urls --with-license-file > piplicenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::piplicenses.json[]
+
 ----
 
 Source: https://pypi.org/project/pip-licenses/
