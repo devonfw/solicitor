@@ -67,6 +67,17 @@ public class ExcelWriter implements Writer {
         return "xls".equals(type);
     }
 
+    private String trimToMaxCellLength(String original) {
+
+        if (original.length() > 32767) {
+            LOG.warn("Shortening text content for XLS");
+            return original.substring(0, 32767);
+        } else {
+            return original;
+        }
+
+    }
+
     private void addCommentToCell(Cell cell, String commentText) {
 
         Row row = cell.getRow();
@@ -159,28 +170,20 @@ public class ExcelWriter implements Writer {
                         if (text.contains(toReplace)) {
                             DataTableField value = rowData.getValueByIndex(i);
                             String textValue = value.toString() == null ? "" : value.toString();
-                            if (textValue.length() > 32767) {
-                                LOG.warn("Shortening text content for XLS");
-                                textValue = textValue.substring(0, 32767);
-                            }
                             text = text.replace(toReplace, textValue);
                             if (value.getDiffStatus() == FieldDiffStatus.CHANGED) {
                                 hasChanged = true;
                                 String oldTextValue = value.getOldValue() == null ? "" : value.getOldValue().toString();
-                                if (oldTextValue.length() > 32767) {
-                                    LOG.warn("Shortening text content for XLS");
-                                    oldTextValue = oldTextValue.substring(0, 32767);
-                                }
                                 oldModelText = oldModelText.replace(toReplace, oldTextValue);
-
                             } else {
                                 oldModelText = oldModelText.replace(toReplace, textValue);
                             }
                         }
                     }
-                    oneCell.setCellValue(text);
+                    oneCell.setCellValue(trimToMaxCellLength(text.replace("\r", "")));
                     if (hasChanged) {
-                        addCommentToCell(oneCell, "Previous value: '" + oldModelText + "'");
+                        addCommentToCell(oneCell,
+                                trimToMaxCellLength("Previous value: '" + oldModelText.replace("\r", "") + "'"));
 
                     }
                 }
