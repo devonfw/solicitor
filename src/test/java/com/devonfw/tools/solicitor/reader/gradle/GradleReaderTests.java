@@ -4,6 +4,7 @@
 
 package com.devonfw.tools.solicitor.reader.gradle;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class GradleReaderTests {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
-        application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
+        this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
         GradleReader gr = new GradleReader();
         gr.setDeprecationChecker(new DeprecationChecker() {
 
@@ -41,15 +42,15 @@ public class GradleReaderTests {
         });
         gr.setModelFactory(modelFactory);
         gr.setInputStreamFactory(new FileInputStreamFactory());
-        gr.readInventory("gradle", "src/test/resources/licenseReport.json", application, UsagePattern.DYNAMIC_LINKING,
-                "maven");
+        gr.readInventory("gradle", "src/test/resources/licenseReport.json", this.application,
+                UsagePattern.DYNAMIC_LINKING, "maven");
 
     }
 
     @Test
     public void findArtifact() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("org.apache.xmlbeans:xmlbeans:3.0.2")) {
@@ -61,15 +62,16 @@ public class GradleReaderTests {
     }
 
     @Test
-    public void readFile() {
+    public void readFileAndCheckSize() {
 
-        LOG.info(application.toString());
+        LOG.info(this.application.toString());
+        assertEquals(15, this.application.getApplicationComponents().size());
     }
 
     @Test
     public void testFindLicense() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("io.vavr:vavr-jackson:0.9.3") && ap.getRawLicenses().get(0)
@@ -84,7 +86,7 @@ public class GradleReaderTests {
     @Test
     public void testFindLicense2() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("com.github.virtuald:curvesapi:1.05")
@@ -99,7 +101,7 @@ public class GradleReaderTests {
     @Test
     public void testFindLicense3() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("com.fasterxml.jackson.core:jackson-core:2.9.4")
