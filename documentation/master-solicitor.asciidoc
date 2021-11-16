@@ -1193,6 +1193,10 @@ In case that downloading content for a given URL fails no WARN message with stac
 Instead there will be an info message (SOLI-047 or SOLI-048) indicating that the content could not be downloaded.
 This change is due to the fact that failed downloads are expected - especially with the new feature license URL guessing.
 
+Changes in 1.2.3::
+* https://github.com/devonfw/solicitor/issues/97: Fixed the bug which made the GradleReader and GradleReader2 skip the first entry in the file.
+* https://github.com/devonfw/solicitor/issues/87: GradleReader and GradleReader2 no longer fail when reading files that contain no entry. Actually this was due to bug https://github.com/devonfw/solicitor/issues/97.
+
 Changes in 1.2.2::
 * Fixed bug which resulted in corrupt XLS report due to cell comment exceeding maximum allowed size.
 
