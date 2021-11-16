@@ -8,9 +8,6 @@
 
 SPDX-License-Identifier: Apache-2.0
 
-[.internal]
-solicitor-oss-license-service
-
 == Introduction
 Todays software projects often make use of large amounts of Open Source software. Being
 compliant with the license obligations of the used software components is a prerequisite for every such project. This results in different requirements that the project might need to fulfill. Those requirements can be grouped into two main categories:
@@ -215,6 +212,10 @@ A "normalized" license id might be either a SPDX-Id or a "pseudo license id" whi
 * `NonOSS` - commercial license, not OSS
 
 == Usage
+
+[.internal]
+solicitor-oss-license-service
+
 === Executing Solicitor
 _Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java 8 or 11 runtime environment. If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw/solicitor .
 
