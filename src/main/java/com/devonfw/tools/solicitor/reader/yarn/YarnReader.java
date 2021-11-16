@@ -67,27 +67,28 @@ public class YarnReader extends AbstractReader implements Reader {
                 String name = (String) attributes.get(0);
                 String version = (String) attributes.get(1);
                 String repo = (String) attributes.get(3);
-                
-                String licenseUrl = repo;
-                String homePage = (String) attributes.get(4);
-
                 String license = (String) attributes.get(2);
+                String licenseUrl = repo;
+                String homePage ="";
+                
+                //check whether VendorUrl is included in input file or not
+                if(attributes.size()==6) {
+                	homePage = (String) attributes.get(4);
+                }else if (attributes.size()==5) {
+                	homePage = repo;
+                }
 
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
                 appComponent.setApplication(application);
-                componentCount++;
-                
+                componentCount++;      
                 appComponent.setArtifactId(name);
                 appComponent.setVersion(version);
                 appComponent.setUsagePattern(usagePattern);
                 appComponent.setGroupId("");
                 appComponent.setOssHomepage(homePage);
                 appComponent.setRepoType(repoType);
-  
 
-                addRawLicense(appComponent, license, licenseUrl, sourceUrl);
- 
-               
+                addRawLicense(appComponent, license, licenseUrl, sourceUrl);            
             }
             doLogging(sourceUrl, application, componentCount, licenseCount);
         } catch (IOException e) {

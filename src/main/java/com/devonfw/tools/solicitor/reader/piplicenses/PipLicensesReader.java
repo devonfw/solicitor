@@ -63,11 +63,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
                 String path = (String) attributes.get("LicenseFile");
                 String licenseUrl = estimateLicenseUrl(repo, path);
                 String homePage = (String) attributes.get("URL");
-                String licenseText = (String) attributes.get("LicenseText");
-                if (homePage == null || homePage.isEmpty()) {
-                    homePage = repo;
-                }
-
+                //String licenseText = (String) attributes.get("LicenseText");
                 String license = (String) attributes.get("License-Metadata");
                 
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
@@ -81,9 +77,6 @@ public class PipLicensesReader extends AbstractReader implements Reader {
                 appComponent.setRepoType(repoType);
                 
                 addRawLicense(appComponent, license, licenseUrl, sourceUrl);
-
-                
-
             }
             doLogging(sourceUrl, application, componentCount, licenseCount);
         } catch (IOException e) {
