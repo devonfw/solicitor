@@ -1,0 +1,20 @@
+[
+  {
+    "License-Classifier": "MIT License",
+    "License-Metadata": "MIT",
+    "LicenseFile": "c:\\users\\path\\LICENSE.txt",
+    "LicenseText": "Permission",
+    "Name": "test",
+    "URL": "http://test.org",
+    "Version": "2021.1"
+  },
+  {
+    "License-Classifier": "BSD License",
+    "License-Metadata": "BSD-3-Clause",
+    "LicenseFile": "c:\\users\\path\\LICENSE",
+    "LicenseText": "Redistribution",
+    "Name": "test2",
+    "URL": "https://github.com/test/test2",
+    "Version": "0.4.2"
+  }
+]
