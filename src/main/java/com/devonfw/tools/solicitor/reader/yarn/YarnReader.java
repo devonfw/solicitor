@@ -50,7 +50,7 @@ public class YarnReader extends AbstractReader implements Reader {
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType) { 
 
-        	cutSourceJson(sourceUrl);
+        	String content = cutSourceJson(sourceUrl);
 
     	
         int componentCount = 0;
@@ -59,10 +59,9 @@ public class YarnReader extends AbstractReader implements Reader {
         // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
-        	List l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
-            List body = (List) l.get(0);
+        	List body = mapper.readValue(content, List.class);
         	for (int i = 0; i<body.size(); i++) {
-                List<String> attributes = (List) body.get(i);
+                List<String> attributes = (List) body.get(i);       
                 //Array contents: ["Name","Version","License","URL","VendorUrl","VendorName"]
                 String name = (String) attributes.get(0);
                 String version = (String) attributes.get(1);
@@ -99,8 +98,8 @@ public class YarnReader extends AbstractReader implements Reader {
     }
 
     
-    //helper method that transforms the .json created by yarn licenses into a correct form
-    private void cutSourceJson(String sourceURL) {
+    //helper method that extracts information from the .json created by yarn licenses into a correct form
+    private String cutSourceJson(String sourceURL) {
     	String filePath = sourceURL.replaceAll("file:", "");
     	File input = new File(filePath);
     	String content ="";
@@ -117,32 +116,23 @@ public class YarnReader extends AbstractReader implements Reader {
 	        }
     	    
 	    	
-	    	// checks if file was cutted into correct shape already and fixes URL issues
-	    	if(!content.startsWith("[")) {
-	    		content = content.split("\\\"body\\\":")[1];
-	    		content = content.replace("}", "");
-	    		content = content.replace("git+", "");
-	    		content = content.replace("www.github", "github");
-	    		content = content.replace(".git", "");
-	    		content = content.replace("git://", "https://");
-	    		content = content.replace("git@github.com:", "https://github.com/");
-	    		content = content.replace("ssh://git@", "https://");
-	    		content = content.replace("Unknown", "");
-	    		content = "[" + content + "]";
-	    	}
-    		    	
-    		FileWriter writer;
-			writer = new FileWriter(input);
-			
-			writer.write(content);
-			
-	    	writer.close();
+	    	//fixes URL issues
+    		content = content.split("\\\"body\\\":")[1];
+    		content = content.replace("}", "");
+    		content = content.replace("git+", "");
+    		content = content.replace("www.github", "github");
+    		content = content.replace(".git", "");
+    		content = content.replace("git://", "https://");
+    		content = content.replace("git@github.com:", "https://github.com/");
+    		content = content.replace("ssh://git@", "https://");
+    		content = content.replace("Unknown", "");
+
 	    	reader.close();
 
     	} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    		
+    	}
+		return content;
     }
 
 }
