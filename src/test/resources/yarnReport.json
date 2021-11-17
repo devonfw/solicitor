@@ -1,0 +1,5 @@
+{"type":"progressStart","data":{"id":0,"total":2}}
+{"type":"progressTick","data":{"id":0,"current":1}}
+{"type":"progressTick","data":{"id":0,"current":2}}
+{"type":"progressFinish","data":{"id":0}}
+{"type":"table","data":{"head":["Name","Version","License","URL","VendorUrl","VendorName"],"body":[["test","11.0.0","Apache-2.0","https://github.com/mrtest/test","http://test.com","Mr.Test"],["@test/testing","7.16.3","MIT","https://yarnpkg.com/package/@test/testing","TestCase"]]}}

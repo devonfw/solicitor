@@ -11,6 +11,8 @@ for the project. Text or spreadsheet (Excel) based reports might be created to d
   * Maven
   * Gradle
   * NPM
+  * Yarn
+  * Pip
   * CSV (e.g. for manual entry of data)
 * Rules processing (using Drools Rule Engine) controls the the different phases:
   * Normalizing / Enhancing of license information
