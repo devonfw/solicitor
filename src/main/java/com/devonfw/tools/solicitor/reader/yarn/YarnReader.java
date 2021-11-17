@@ -58,8 +58,13 @@ public class YarnReader extends AbstractReader implements Reader {
 
         // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        try {
-        	List body = mapper.readValue(content, List.class);
+        	List body;
+			try {
+				body = mapper.readValue(content, List.class);
+			} catch (IOException e) {
+				throw new SolicitorRuntimeException(
+	                    "Could not read yarn inventory source '" + sourceUrl + "'", e);
+			}
         	for (int i = 0; i<body.size(); i++) {
                 List<String> attributes = (List) body.get(i);       
                 //Array contents: ["Name","Version","License","URL","VendorUrl","VendorName"]
@@ -90,10 +95,6 @@ public class YarnReader extends AbstractReader implements Reader {
                 addRawLicense(appComponent, license, licenseUrl, sourceUrl);            
             }
             doLogging(sourceUrl, application, componentCount, licenseCount);
-        } catch (IOException e) {
-            throw new SolicitorRuntimeException(
-                    "Could not read yarn inventory source '" + sourceUrl + "'", e);
-        }
 
     }
 
@@ -130,7 +131,8 @@ public class YarnReader extends AbstractReader implements Reader {
 	    	reader.close();
 
     	} catch (IOException e) {
-    		
+    		throw new SolicitorRuntimeException(
+                    "Could not read yarn inventory source '" + sourceURL + "'", e);
     	}
 		return content;
     }
