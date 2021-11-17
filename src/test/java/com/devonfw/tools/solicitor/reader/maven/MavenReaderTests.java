@@ -4,6 +4,8 @@
 
 package com.devonfw.tools.solicitor.reader.maven;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +20,7 @@ public class MavenReaderTests {
     private static final Logger LOG = LoggerFactory.getLogger(MavenReaderTests.class);
 
     @Test
-    public void readFile() {
+    public void readFileAndCheckSize() {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
@@ -30,6 +32,7 @@ public class MavenReaderTests {
         mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
                 "maven");
         LOG.info(application.toString());
+        assertEquals(95, application.getApplicationComponents().size());
     }
 
 }

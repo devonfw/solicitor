@@ -4,6 +4,7 @@
 
 package com.devonfw.tools.solicitor.reader.npmlicensechecker;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -28,11 +29,12 @@ public class NpmLicenseCheckerReaderTests {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
-        application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+        this.application =
+                modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
         NpmLicenseCheckerReader gr = new NpmLicenseCheckerReader();
         gr.setModelFactory(modelFactory);
         gr.setInputStreamFactory(new FileInputStreamFactory());
-        gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", application,
+        gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", this.application,
                 UsagePattern.DYNAMIC_LINKING, "npm");
 
     }
@@ -40,7 +42,7 @@ public class NpmLicenseCheckerReaderTests {
     @Test
     public void findArtifact() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("foo") && //
@@ -53,15 +55,17 @@ public class NpmLicenseCheckerReaderTests {
     }
 
     @Test
-    public void readFile() {
+    public void readFileAndCheckSize() {
 
-        LOG.info(application.toString());
+        LOG.info(this.application.toString());
+        assertEquals(3, this.application.getApplicationComponents().size());
+
     }
 
     @Test
     public void testFindLicenseIfSingle() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("foo") && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
@@ -75,7 +79,7 @@ public class NpmLicenseCheckerReaderTests {
     @Test
     public void testFindLicensesIfMultiple() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("foo-bar")
@@ -91,7 +95,7 @@ public class NpmLicenseCheckerReaderTests {
     @Test
     public void testHomepageWhichIsGiven() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("foo") && ap.getOssHomepage().equals("http://www.somebody.com/")) {
@@ -105,7 +109,7 @@ public class NpmLicenseCheckerReaderTests {
     @Test
     public void testHomepageFromRepo() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("foo-bar")
@@ -120,7 +124,7 @@ public class NpmLicenseCheckerReaderTests {
     @Test
     public void testLicenseUrlIfLicenseFileFoundAndGithub() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("foo") && ap.getRawLicenses().get(0).getLicenseUrl()
@@ -135,7 +139,7 @@ public class NpmLicenseCheckerReaderTests {
     @Test
     public void testLicenseUrlIfNoLicenseFile() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("foo-bar")

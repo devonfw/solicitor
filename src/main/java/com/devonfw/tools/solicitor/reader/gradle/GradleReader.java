@@ -64,7 +64,7 @@ public class GradleReader extends AbstractReader implements Reader {
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType) {
 
-        deprecationChecker.check(false,
+        this.deprecationChecker.check(false,
                 "Use of Reader of type 'gradle' is deprecated, use 'gradle2' instead. See https://github.com/devonfw/solicitor/issues/58");
         int components = 0;
         int licenses = 0;
@@ -74,8 +74,7 @@ public class GradleReader extends AbstractReader implements Reader {
         // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            List<Map> l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
-            l = l.subList(1, l.size());
+            List<Map> l = mapper.readValue(this.inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
             for (Map<String, Object> m : l) {
                 Dependency dep = new Dependency();
                 dep.setProject((String) m.get("project"));

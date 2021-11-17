@@ -58,8 +58,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
         // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            List<Map> l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
-            l = l.subList(1, l.size());
+            List<Map> l = mapper.readValue(this.inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
             for (Map<String, Object> m : l) {
                 Dependency dep = new Dependency();
                 dep.setProject((String) m.get("project"));

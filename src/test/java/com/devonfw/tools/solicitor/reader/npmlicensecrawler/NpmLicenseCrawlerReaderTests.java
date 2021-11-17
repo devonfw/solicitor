@@ -4,6 +4,7 @@
 
 package com.devonfw.tools.solicitor.reader.npmlicensecrawler;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -19,7 +20,6 @@ import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
-import com.devonfw.tools.solicitor.reader.npmlicensecrawler.NpmLicenseCrawlerReader;
 
 public class NpmLicenseCrawlerReaderTests {
 
@@ -30,7 +30,8 @@ public class NpmLicenseCrawlerReaderTests {
     public NpmLicenseCrawlerReaderTests() {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
-        application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+        this.application =
+                modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
         NpmLicenseCrawlerReader nr = new NpmLicenseCrawlerReader();
         nr.setDeprecationChecker(new DeprecationChecker() {
 
@@ -42,19 +43,21 @@ public class NpmLicenseCrawlerReaderTests {
         });
         nr.setModelFactory(modelFactory);
         nr.setInputStreamFactory(new FileInputStreamFactory());
-        nr.readInventory("npm", "src/test/resources/npmlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "npm");
+        nr.readInventory("npm", "src/test/resources/npmlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
+                "npm");
     }
 
     @Test
-    public void readFile() {
+    public void readFileAndCheckSize() {
 
-        LOG.info(application.toString());
+        LOG.info(this.application.toString());
+        assertEquals(68, this.application.getApplicationComponents().size());
     }
 
     @Test
     public void testFindArtifact() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("to-fast-properties")) {
@@ -68,7 +71,7 @@ public class NpmLicenseCrawlerReaderTests {
     @Test
     public void testFindDiffrentLicense() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("aws-sign2")
@@ -83,7 +86,7 @@ public class NpmLicenseCrawlerReaderTests {
     @Test
     public void testFindDiffrentLicense2() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("autoprefixer")
@@ -98,7 +101,7 @@ public class NpmLicenseCrawlerReaderTests {
     @Test
     public void testFindDiffrentLicense3() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("yargs") && ap.getVersion().equals("9.0.1")
@@ -113,7 +116,7 @@ public class NpmLicenseCrawlerReaderTests {
     @Test
     public void testFindLicense() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("tough-cookie")
