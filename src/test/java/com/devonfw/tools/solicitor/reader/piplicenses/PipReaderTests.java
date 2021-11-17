@@ -2,8 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package com.devonfw.tools.solicitor.reader.pip;
+package com.devonfw.tools.solicitor.reader.piplicenses;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -18,7 +19,6 @@ import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
-import com.devonfw.tools.solicitor.reader.piplicenses.PipLicensesReader;
 
 public class PipReaderTests {
     private static final Logger LOG = LoggerFactory.getLogger(PipReaderTests.class);
@@ -29,11 +29,11 @@ public class PipReaderTests {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
-        application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
-        PipLicensesReader gr = new PipLicensesReader();
-        gr.setModelFactory(modelFactory);
-        gr.setInputStreamFactory(new FileInputStreamFactory());
-        gr.readInventory("pip", "src/test/resources/pipReport.json", application,
+        this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+        PipLicensesReader pr = new PipLicensesReader();
+        pr.setModelFactory(modelFactory);
+        pr.setInputStreamFactory(new FileInputStreamFactory());
+        pr.readInventory("pip", "src/test/resources/pipReport.json", this.application,
                 UsagePattern.DYNAMIC_LINKING, "pip");
 
     }
@@ -41,7 +41,7 @@ public class PipReaderTests {
     @Test
     public void findArtifact() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test") && //
@@ -54,15 +54,16 @@ public class PipReaderTests {
     }
 
     @Test
-    public void readFile() {
+    public void readFileAndCheckSize() {
 
-        LOG.info(application.toString());
+        LOG.info(this.application.toString());
+        assertEquals(2, this.application.getApplicationComponents().size());
     }
 
     @Test
     public void testFindLicenseIfSingle() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test") && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
@@ -76,7 +77,7 @@ public class PipReaderTests {
     @Test
     public void testHomepageWhichIsGiven() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test2") && ap.getOssHomepage().equals("https://github.com/test/test2")) {
@@ -90,7 +91,7 @@ public class PipReaderTests {
     @Test
     public void testLicenseUrlWhichIsGiven() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test2")

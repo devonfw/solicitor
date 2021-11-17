@@ -4,6 +4,7 @@
 
 package com.devonfw.tools.solicitor.reader.yarn;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -28,11 +29,11 @@ public class YarnReaderTests {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
-        application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
-        YarnReader gr = new YarnReader();
-        gr.setModelFactory(modelFactory);
-        gr.setInputStreamFactory(new FileInputStreamFactory());
-        gr.readInventory("yarn", "src/test/resources/yarnReport.json", application,
+        this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+        YarnReader yr = new YarnReader();
+        yr.setModelFactory(modelFactory);
+        yr.setInputStreamFactory(new FileInputStreamFactory());
+        yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application,
                 UsagePattern.DYNAMIC_LINKING, "yarn");
 
     }
@@ -40,7 +41,7 @@ public class YarnReaderTests {
     @Test
     public void findArtifact() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test") && //
@@ -53,15 +54,16 @@ public class YarnReaderTests {
     }
 
     @Test
-    public void readFile() {
+    public void readFileAndCheckSize() {
 
-        LOG.info(application.toString());
+        LOG.info(this.application.toString());
+        assertEquals(2, this.application.getApplicationComponents().size());
     }
 
     @Test
     public void testFindLicenseIfSingle() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("@test/testing") && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
@@ -75,7 +77,7 @@ public class YarnReaderTests {
     @Test
     public void testHomepageWhichIsGiven() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test") && ap.getOssHomepage().equals("http://test.com")) {
@@ -89,7 +91,7 @@ public class YarnReaderTests {
     @Test
     public void testLicenseUrlWhichIsGiven() {
 
-        List<ApplicationComponent> lapc = application.getApplicationComponents();
+        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test")
