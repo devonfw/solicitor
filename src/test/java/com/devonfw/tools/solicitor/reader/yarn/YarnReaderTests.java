@@ -29,12 +29,13 @@ public class YarnReaderTests {
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
-        this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+        this.application =
+                modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
         YarnReader yr = new YarnReader();
         yr.setModelFactory(modelFactory);
         yr.setInputStreamFactory(new FileInputStreamFactory());
-        yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application,
-                UsagePattern.DYNAMIC_LINKING, "yarn");
+        yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
+                "yarn");
 
     }
 
@@ -66,7 +67,8 @@ public class YarnReaderTests {
         List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("@test/testing") && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
+            if (ap.getArtifactId().equals("@test/testing")
+                    && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
                 found = true;
                 break;
             }

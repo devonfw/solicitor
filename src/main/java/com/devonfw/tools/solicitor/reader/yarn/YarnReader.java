@@ -7,7 +7,6 @@ package com.devonfw.tools.solicitor.reader.yarn;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -48,93 +47,90 @@ public class YarnReader extends AbstractReader implements Reader {
     @SuppressWarnings("rawtypes")
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType) { 
+            String repoType) {
 
-        	String content = cutSourceJson(sourceUrl);
+        String content = cutSourceJson(sourceUrl);
 
-    	
         int componentCount = 0;
         int licenseCount = 0;
 
         // According to tutorial https://github.com/FasterXML/jackson-databind/
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        	List body;
-			try {
-				body = mapper.readValue(content, List.class);
-			} catch (IOException e) {
-				throw new SolicitorRuntimeException(
-	                    "Could not read yarn inventory source '" + sourceUrl + "'", e);
-			}
-        	for (int i = 0; i<body.size(); i++) {
-                List<String> attributes = (List) body.get(i);       
-                //Array contents: ["Name","Version","License","URL","VendorUrl","VendorName"]
-                String name = (String) attributes.get(0);
-                String version = (String) attributes.get(1);
-                String repo = (String) attributes.get(3);
-                String license = (String) attributes.get(2);
-                String licenseUrl = repo;
-                String homePage ="";
-                
-                //check whether VendorUrl is included in input file or not
-                if(attributes.size()==6) {
-                	homePage = (String) attributes.get(4);
-                }else if (attributes.size()==5) {
-                	homePage = repo;
-                }
+        List body;
+        try {
+            body = mapper.readValue(content, List.class);
+        } catch (IOException e) {
+            throw new SolicitorRuntimeException("Could not read yarn inventory source '" + sourceUrl + "'", e);
+        }
+        for (int i = 0; i < body.size(); i++) {
+            List<String> attributes = (List) body.get(i);
+            // Array contents:
+            // ["Name","Version","License","URL","VendorUrl","VendorName"]
+            String name = attributes.get(0);
+            String version = attributes.get(1);
+            String repo = attributes.get(3);
+            String license = attributes.get(2);
+            String licenseUrl = repo;
+            String homePage = "";
 
-                ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-                appComponent.setApplication(application);
-                componentCount++;      
-                appComponent.setArtifactId(name);
-                appComponent.setVersion(version);
-                appComponent.setUsagePattern(usagePattern);
-                appComponent.setGroupId("");
-                appComponent.setOssHomepage(homePage);
-                appComponent.setRepoType(repoType);
-
-                addRawLicense(appComponent, license, licenseUrl, sourceUrl);            
+            // check whether VendorUrl is included in input file or not
+            if (attributes.size() == 6) {
+                homePage = attributes.get(4);
+            } else if (attributes.size() == 5) {
+                homePage = repo;
             }
-            doLogging(sourceUrl, application, componentCount, licenseCount);
+
+            ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
+            appComponent.setApplication(application);
+            componentCount++;
+            appComponent.setArtifactId(name);
+            appComponent.setVersion(version);
+            appComponent.setUsagePattern(usagePattern);
+            appComponent.setGroupId("");
+            appComponent.setOssHomepage(homePage);
+            appComponent.setRepoType(repoType);
+
+            addRawLicense(appComponent, license, licenseUrl, sourceUrl);
+        }
+        doLogging(sourceUrl, application, componentCount, licenseCount);
 
     }
 
-    
-    //helper method that extracts information from the .json created by yarn licenses into a correct form
+    // helper method that extracts information from the .json created by yarn
+    // licenses into a correct form
     private String cutSourceJson(String sourceURL) {
-    	String filePath = sourceURL.replaceAll("file:", "");
-    	File input = new File(filePath);
-    	String content ="";
-    	
-    	try {
-	    	BufferedReader reader = new BufferedReader(new FileReader(input));
-	    	String line = "";
-	    	
 
-	    	//cuts last line of JSON 
-	    	  while ((line = reader.readLine()) != null) 
-	        {
-	            content = line;
-	        }
-    	    
-	    	
-	    	//fixes URL issues
-    		content = content.split("\\\"body\\\":")[1];
-    		content = content.replace("}", "");
-    		content = content.replace("git+", "");
-    		content = content.replace("www.github", "github");
-    		content = content.replace(".git", "");
-    		content = content.replace("git://", "https://");
-    		content = content.replace("git@github.com:", "https://github.com/");
-    		content = content.replace("ssh://git@", "https://");
-    		content = content.replace("Unknown", "");
+        String filePath = sourceURL.replaceAll("file:", "");
+        File input = new File(filePath);
+        String content = "";
 
-	    	reader.close();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(input));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
 
-    	} catch (IOException e) {
-    		throw new SolicitorRuntimeException(
-                    "Could not read yarn inventory source '" + sourceURL + "'", e);
-    	}
-		return content;
+            // cuts last line of JSON
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+
+            // fixes URL issues
+            content = sb.toString().split("\\\"body\\\":")[1];
+            content = content.replace("}", "");
+            content = content.replace("git+", "");
+            content = content.replace("www.github", "github");
+            content = content.replace(".git", "");
+            content = content.replace("git://", "https://");
+            content = content.replace("git@github.com:", "https://github.com/");
+            content = content.replace("ssh://git@", "https://");
+            content = content.replace("Unknown", "");
+
+            reader.close();
+
+        } catch (IOException e) {
+            throw new SolicitorRuntimeException("Could not read yarn inventory source '" + sourceURL + "'", e);
+        }
+        return content;
     }
 
 }
