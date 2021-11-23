@@ -97,7 +97,7 @@ public class YarnReaderTests {
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getArtifactId().equals("test")
-                    && ap.getRawLicenses().get(0).getLicenseUrl().equals("https://github.com/mrtest/test")) {
+                    && ap.getRawLicenses().get(0).getLicenseUrl().equals("https://raw.githubusercontent.com/mrtest/test/master/LICENSE")) {
                 found = true;
                 break;
             }

@@ -70,7 +70,7 @@ public class YarnReader extends AbstractReader implements Reader {
             String version = attributes.get(1);
             String repo = attributes.get(3);
             String license = attributes.get(2);
-            String licenseUrl = repo;
+            String licenseUrl = defaultGithubLicenseURL(repo);
             String homePage = "";
 
             // check whether VendorUrl is included in input file or not
@@ -96,6 +96,16 @@ public class YarnReader extends AbstractReader implements Reader {
 
     }
 
+    // helper method that defaults github-links (html) to a default license path
+    private String defaultGithubLicenseURL(String repo) {
+    	if (repo.contains("github.com") && !repo.contains("/raw/")) {
+            repo = repo.replace("git://", "https://");
+            repo = repo.replace("github.com", "raw.githubusercontent.com");
+            repo = repo.concat("/master/LICENSE");
+        }
+    	return repo;
+    }
+    
     // helper method that extracts information from the .json created by yarn
     // licenses into a correct form
     private String cutSourceJson(String sourceURL) {
