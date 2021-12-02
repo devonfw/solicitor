@@ -265,7 +265,7 @@ The config file has the following skeleton:
 <1> The leading data defines the engagement master data, see <<Header and Engagement Master Data>>
 <2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Applications>>
 <3> `rules` references the rules to apply to the imported data, see <<Business Rules>>
-<4> `writers` configures how the processed data should be exported, see <<Writers / Reporting>>
+<4> `writers` configures how the processed data should be exported, see <<Writers and Reporting>>
 
 NOTE: The following section describes all sections of the _Solicitor_ configuration file format. Often the configuration of `writers` and especially `rules` will be identical for projects. To facilitate the project specific configuration setup _Solicitor_ internally provides a base configuration which contains reasonable defaults for the `rules` and `writers` section. If the project specific configuration file omits the `rules` and/or `writers` sections then the corresponding settings from the base configuration will be taken. For details see <<Default Base Configuration>>.
 
@@ -383,7 +383,7 @@ Normally a project will only customize (part of) the data of the decision tables
 
 See <<Working with Decision Tables>> and <<Standard Business Rules>> for further information on the business rules.
 
-==== Writers / Reporting
+==== Writers and Reporting
 The writer configuration defines how the processed data will be exported and/or reported.
 
 [listing]
@@ -405,7 +405,7 @@ The writer configuration defines how the processed data will be exported and/or 
 <5> reference to SQL statements used to transform the internal data model to data tables used for reporting
 <6> _placeholder patterns might be used here_
 
-For details on the writer configuration see <<Reporting / Creating output documents>>.
+For details on the writer configuration see <<Reporting and Creating output documents>>.
 
 === Starting a new project
 
@@ -926,7 +926,7 @@ To use your own rule data there are three approaches:
 * Create your own "Solicitor Extension" which might completely redefine/replace the buitin `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
 * Make use of the optional project specific decision tables which are defined in the default base configuration: For every builtin decision table there is an optional external decision table (expected in the filesystem) which will be checked for existence. If such external decision table exists it will be processed first - before processing the builtin decision table. Thus is it possible to amend / override the builtin rules by project specific rules. When you create the starter configuration of your project as described in <<Starting a new project>>, those project specific decision tables are automatically created.
 
-== Reporting / Creating output documents
+== Reporting and Creating output documents
 After applying the business rules the resulting data can can be used to create reports and
 other output documents.
 
@@ -952,7 +952,7 @@ command line option `-l`) the model data is stored in a dynamically created inte
 
 ==== SQL queries for filtering and transformation
 
-Each Writer configuration (see <<Writers / Reporting>>) includes a section which references SQL select statements that are applied on the database data. The result of the SQL select statements is made accessible for the subsequent processing of the Writer via the dataTable name given in the configuration.
+Each Writer configuration (see <<Writers and Reporting>>) includes a section which references SQL select statements that are applied on the database data. The result of the SQL select statements is made accessible for the subsequent processing of the Writer via the dataTable name given in the configuration.
 
 ==== Postprocessing of data selected from the database tables
 
@@ -1162,7 +1162,7 @@ include::../src/main/resources/application.properties[]
 
 
 
-There are different templates that can be used for reporting. For usage, the templates have to be specified in the “writers” section of the solicitor configuration file (see <<Writers / Reporting>>).
+There are different templates that can be used for reporting. For usage, the templates have to be specified in the “writers” section of the solicitor configuration file (see <<Writers and Reporting>>).
 In the default solicitor configuration all templates are specified. (see <<Appendix A: Default Base Configuration>>)
 
 
