@@ -4,10 +4,13 @@
 
 package com.devonfw.tools.solicitor.reader.csv;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
@@ -53,7 +56,20 @@ public class CsvReader extends AbstractReader implements Reader {
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType) {
-
+    	
+    	String sourceEnding = sourceUrl.substring(sourceUrl.lastIndexOf("/") + 1);
+		String configPath = sourceUrl.replace(sourceEnding, "csvreader.config");
+		configPath = configPath.replace("file:", "");
+		System.out.println(configPath); //csvreader.config
+    	Properties props = new Properties();
+    	try (FileInputStream file = new FileInputStream(configPath)) {
+    	    props.load(file);
+    	} catch (FileNotFoundException ex) {
+    	    //TODO
+    	} catch (IOException ex) {
+    	    //TODO
+    	}
+    	
         int components = 0;
         int licenses = 0;
         InputStream is;
@@ -62,11 +78,37 @@ public class CsvReader extends AbstractReader implements Reader {
 
             java.io.Reader reader = new InputStreamReader(is);
             ApplicationComponent lastAppComponent = null;
-            for (CSVRecord record : CSVFormat.newFormat(';').parse(reader)) {
+            CSVFormat csvFormat = CSVFormat.newFormat(props.getProperty("delimiter").charAt(0));
+            
+            //checks if quote is set in config file
+            if(!props.getProperty("quote").isEmpty()) {
+                csvFormat = csvFormat.withQuote((props.getProperty("quote")).charAt(0));
+            }            
+           
+            
+            for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-                appComponent.setGroupId(record.get(0));
-                appComponent.setArtifactId(record.get(1));
-                appComponent.setVersion(record.get(2));
+                
+                //set strings from csv position defined by config
+                String groupId = "";
+                if(!props.getProperty("groupID").isEmpty()) {
+                    groupId = record.get(Integer.parseInt(props.getProperty("groupID")));
+                }
+                String license ="";
+                if(!props.getProperty("license").isEmpty()) {
+                    license = record.get(Integer.parseInt(props.getProperty("license")));
+                }
+                String licenseURL = "";
+                if(!props.getProperty("licenseURL").isEmpty()) {
+                    licenseURL = record.get(Integer.parseInt(props.getProperty("license")));
+                }
+                String artifactId = record.get(Integer.parseInt(props.getProperty("artifactID")));
+                String version = record.get(Integer.parseInt(props.getProperty("version")));
+
+                
+                appComponent.setGroupId(groupId);
+                appComponent.setArtifactId(artifactId);
+                appComponent.setVersion(version);
                 appComponent.setUsagePattern(usagePattern);
                 appComponent.setRepoType(repoType);
                 // merge ApplicationComponentImpl with same key if they appear
@@ -85,7 +127,8 @@ public class CsvReader extends AbstractReader implements Reader {
                     components++;
                 }
                 licenses++;
-                addRawLicense(lastAppComponent, record.get(3), record.get(4), sourceUrl);
+                
+                addRawLicense(lastAppComponent, license, licenseURL, sourceUrl);
             }
             doLogging(sourceUrl, application, components, licenses);
         } catch (IOException e1) {
