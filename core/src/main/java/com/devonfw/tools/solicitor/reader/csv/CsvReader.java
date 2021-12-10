@@ -79,12 +79,13 @@ public class CsvReader extends AbstractReader implements Reader {
             java.io.Reader reader = new InputStreamReader(is);
             ApplicationComponent lastAppComponent = null;
             CSVFormat csvFormat = CSVFormat.newFormat(props.getProperty("delimiter").charAt(0));
-            
             //checks if quote is set in config file
             if(!props.getProperty("quote").isEmpty()) {
                 csvFormat = csvFormat.withQuote((props.getProperty("quote")).charAt(0));
             }            
-           
+            if(props.getProperty("skipheader").equals("yes")) {
+            	csvFormat = csvFormat.withFirstRecordAsHeader().withSkipHeaderRecord();
+            }
             
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
