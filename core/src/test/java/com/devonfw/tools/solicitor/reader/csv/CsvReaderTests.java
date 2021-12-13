@@ -67,6 +67,7 @@ public class CsvReaderTests {
         List<ApplicationComponent> lapc = this.application.getApplicationComponents();
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
+        	System.out.println(ap.getRawLicenses().get(0).getLicenseUrl());
             if (ap.getArtifactId().equals("xtend") && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")
                     && ap.getRawLicenses().get(0).getLicenseUrl().equals("https://spdx.org/licenses/MIT#licenseText")) {
                 found = true;

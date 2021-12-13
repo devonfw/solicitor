@@ -65,11 +65,12 @@ public class CsvReader extends AbstractReader implements Reader {
     	try (FileInputStream file = new FileInputStream(configPath)) {
     	    props.load(file);
     	} catch (FileNotFoundException ex) {
-    	    //TODO
+            throw new SolicitorRuntimeException("Could not find config file '" + configPath + "'", ex);
     	} catch (IOException ex) {
-    	    //TODO
+            throw new SolicitorRuntimeException("Could not read config file '" + configPath + "'", ex);
     	}
-    	
+		System.out.println(props.getProperty("groupID")); //csvreader.config
+
         int components = 0;
         int licenses = 0;
         InputStream is;
@@ -89,7 +90,8 @@ public class CsvReader extends AbstractReader implements Reader {
             
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-                
+        		System.out.println(props.getProperty("groupID")); //csvreader.config
+
                 //set strings from csv position defined by config
                 String groupId = "";
                 if(!props.getProperty("groupID").isEmpty()) {
@@ -101,7 +103,7 @@ public class CsvReader extends AbstractReader implements Reader {
                 }
                 String licenseURL = "";
                 if(!props.getProperty("licenseURL").isEmpty()) {
-                    licenseURL = record.get(Integer.parseInt(props.getProperty("license")));
+                    licenseURL = record.get(Integer.parseInt(props.getProperty("licenseURL")));
                 }
                 String artifactId = record.get(Integer.parseInt(props.getProperty("artifactID")));
                 String version = record.get(Integer.parseInt(props.getProperty("version")));
