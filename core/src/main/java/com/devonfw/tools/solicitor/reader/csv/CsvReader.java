@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -23,6 +24,10 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * A {@link Reader} for files in CSV format.
@@ -57,8 +62,13 @@ public class CsvReader extends AbstractReader implements Reader {
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType, String configuration) {
     	
-    	System.out.println("this is the config parameter given in solicitor.cfg:");
+    	Map<String,String> configMap = configurationToMap(configuration); 
+    	
+    	System.out.println("this are the config parameters given in solicitor.cfg:");
     	System.out.println(configuration);
+    	System.out.println(configMap.toString());
+    	System.out.println(configMap.get("groupID"));
+    	System.out.println(configMap.get("artifactID"));
     	System.out.println("\n");
 
     	String sourceEnding = sourceUrl.substring(sourceUrl.lastIndexOf("/") + 1);
@@ -140,5 +150,16 @@ public class CsvReader extends AbstractReader implements Reader {
         }
 
     }
-
+    
+    private Map<String,String> configurationToMap (String configuration) {
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	TypeReference<Map<String, String>> typeRef  = new TypeReference<Map<String, String>>() {};
+    	try {
+			return objectMapper.readValue(configuration, typeRef);
+		} catch (IOException e) {
+			System.out.println("Something failed.");
+		}
+		return null;
+    }
+    
 }
