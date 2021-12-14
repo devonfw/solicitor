@@ -38,8 +38,9 @@ public interface Reader {
      * @param usagePattern the {@link UsagePattern} which applies for all read
      *        {@link ApplicationComponent}s
      * @param repoType the type of Repository to download the sources from
+     * @param string 
      */
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType);
+            String repoType, String configuration);
 
 }

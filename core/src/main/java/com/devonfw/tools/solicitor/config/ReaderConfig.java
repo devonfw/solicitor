@@ -25,6 +25,9 @@ public class ReaderConfig {
 
     @JsonProperty
     private String repoType;
+    
+    @JsonProperty
+    private String configuration;
 
     /**
      * Standard constructor. Field {@link #repoType} will be initialized to
@@ -45,6 +48,16 @@ public class ReaderConfig {
         return this.repoType;
     }
 
+    /**
+     * This method gets the field <code>configuration</code>.
+     *
+     * @return the field configuration
+     */
+    public String getConfiguration() {
+
+        return this.configuration;
+    }
+    
     /**
      * This method gets the field <code>source</code>.
      *
@@ -83,6 +96,16 @@ public class ReaderConfig {
     public void setRepoType(String repoType) {
 
         this.repoType = repoType;
+    }
+    
+    /**
+     * This method sets the field <code>configuration</code>.
+     *
+     * @param configuration the new value of the field configuration
+     */
+    public void setConfiguration(String configuration) {
+
+        this.configuration = configuration;
     }
 
     /**

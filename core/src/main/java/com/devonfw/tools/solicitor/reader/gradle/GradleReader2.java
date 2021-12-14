@@ -48,7 +48,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
     /** {@inheritDoc} */
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType) {
+            String repoType, String configuration) {
 
         int components = 0;
         int licenses = 0;

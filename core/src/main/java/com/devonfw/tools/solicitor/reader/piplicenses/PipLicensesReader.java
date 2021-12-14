@@ -44,7 +44,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
     @SuppressWarnings("rawtypes")
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType) {
+            String repoType, String configuration) {
 
         int componentCount = 0;
         int licenseCount = 0;

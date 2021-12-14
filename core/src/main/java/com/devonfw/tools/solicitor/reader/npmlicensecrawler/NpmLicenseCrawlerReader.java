@@ -60,7 +60,7 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
     /** {@inheritDoc} */
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType) {
+            String repoType, String configuration) {
 
         if (SUPPORTED_TYPE_DEPRECATED.equals(type)) {
             deprecationChecker.check(true, "Use of type 'npm' is deprecated. Change type in config to '"

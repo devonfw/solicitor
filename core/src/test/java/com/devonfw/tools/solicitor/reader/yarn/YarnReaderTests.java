@@ -35,7 +35,7 @@ public class YarnReaderTests {
         yr.setModelFactory(modelFactory);
         yr.setInputStreamFactory(new FileInputStreamFactory());
         yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
-                "yarn");
+                "yarn","config");
 
     }
 

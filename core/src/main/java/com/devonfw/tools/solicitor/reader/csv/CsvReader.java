@@ -55,12 +55,15 @@ public class CsvReader extends AbstractReader implements Reader {
     /** {@inheritDoc} */
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType) {
+            String repoType, String configuration) {
     	
+    	System.out.println("this is the config parameter given in solicitor.cfg:");
+    	System.out.println(configuration);
+    	System.out.println("\n");
+
     	String sourceEnding = sourceUrl.substring(sourceUrl.lastIndexOf("/") + 1);
 		String configPath = sourceUrl.replace(sourceEnding, "csvreader.config");
 		configPath = configPath.replace("file:", "");
-		System.out.println(configPath); //csvreader.config
     	Properties props = new Properties();
     	try (FileInputStream file = new FileInputStream(configPath)) {
     	    props.load(file);
@@ -69,7 +72,6 @@ public class CsvReader extends AbstractReader implements Reader {
     	} catch (IOException ex) {
             throw new SolicitorRuntimeException("Could not read config file '" + configPath + "'", ex);
     	}
-		System.out.println(props.getProperty("groupID")); //csvreader.config
 
         int components = 0;
         int licenses = 0;
@@ -90,7 +92,6 @@ public class CsvReader extends AbstractReader implements Reader {
             
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-        		System.out.println(props.getProperty("groupID")); //csvreader.config
 
                 //set strings from csv position defined by config
                 String groupId = "";
