@@ -4,6 +4,8 @@
 
 package com.devonfw.tools.solicitor.config;
 
+import java.util.Map;
+
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,7 +29,7 @@ public class ReaderConfig {
     private String repoType;
     
     @JsonProperty
-    private String configuration;
+    private Map<String,String> configuration;
 
     /**
      * Standard constructor. Field {@link #repoType} will be initialized to
@@ -53,7 +55,7 @@ public class ReaderConfig {
      *
      * @return the field configuration
      */
-    public String getConfiguration() {
+    public Map<String,String> getConfiguration() {
 
         return this.configuration;
     }
@@ -103,7 +105,7 @@ public class ReaderConfig {
      *
      * @param configuration the new value of the field configuration
      */
-    public void setConfiguration(String configuration) {
+    public void setConfiguration(Map<String,String> configuration) {
 
         this.configuration = configuration;
     }

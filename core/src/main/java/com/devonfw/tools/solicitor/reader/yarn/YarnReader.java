@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -47,7 +48,7 @@ public class YarnReader extends AbstractReader implements Reader {
     @SuppressWarnings("rawtypes")
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType, String configuration) {
+            String repoType, Map<String,String> configuration) {
 
         String content = cutSourceJson(sourceUrl);
 

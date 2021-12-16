@@ -60,15 +60,14 @@ public class CsvReader extends AbstractReader implements Reader {
     /** {@inheritDoc} */
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType, String configuration) {
+            String repoType, Map<String,String> configuration) {
     	
-    	Map<String,String> configMap = configurationToMap(configuration); 
-    	
+    	//Map<String,String> configMap = configurationToMap(configuration); 
+
     	System.out.println("this are the config parameters given in solicitor.cfg:");
+    	System.out.println(configuration.get("groupID"));
+    	System.out.println(configuration.get("artifactID"));
     	System.out.println(configuration);
-    	System.out.println(configMap.toString());
-    	System.out.println(configMap.get("groupID"));
-    	System.out.println(configMap.get("artifactID"));
     	System.out.println("\n");
 
     	String sourceEnding = sourceUrl.substring(sourceUrl.lastIndexOf("/") + 1);

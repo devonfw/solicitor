@@ -7,7 +7,9 @@ package com.devonfw.tools.solicitor.reader.csv;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -27,6 +29,9 @@ public class CsvReaderTests {
 
     public CsvReaderTests() {
 
+    	Map<String,String> config = new HashMap<String,String>();
+    	config.put("groupID", "groupValue");
+    	
         ModelFactory modelFactory = new ModelFactoryImpl();
 
         this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
@@ -34,7 +39,7 @@ public class CsvReaderTests {
         csvr.setModelFactory(modelFactory);
         csvr.setInputStreamFactory(new FileInputStreamFactory());
         csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
-                "maven","{\"groupID\" : \"test\" , \"artifactID\" : \"artifactTest\"}");
+                "maven",config);
 
     }
 

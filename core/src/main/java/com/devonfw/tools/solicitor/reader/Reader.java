@@ -4,6 +4,8 @@
 
 package com.devonfw.tools.solicitor.reader;
 
+import java.util.Map;
+
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -41,6 +43,6 @@ public interface Reader {
      * @param configuration 
      */
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType, String configuration);
+            String repoType, Map<String,String> configuration);
 
 }

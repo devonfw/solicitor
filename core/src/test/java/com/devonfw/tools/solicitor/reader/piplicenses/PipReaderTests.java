@@ -34,7 +34,7 @@ public class PipReaderTests {
         pr.setModelFactory(modelFactory);
         pr.setInputStreamFactory(new FileInputStreamFactory());
         pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
-                "pip", "config");
+                "pip", null);
 
     }
 
