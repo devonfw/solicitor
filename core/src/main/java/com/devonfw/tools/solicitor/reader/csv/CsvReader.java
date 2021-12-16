@@ -32,15 +32,21 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 /**
  * A {@link Reader} for files in CSV format.
  * <p>
- * CSV files need to be separated with ";" and contain the following 5 columns
+ * CSV files need to be configured within the solicitor.cfg and 
+ * contain at least following parameters:
  * </p>
  * <ul>
- * <li>groupId</li>
- * <li>artifactId</li>
+ * <li>artifactID</li>
  * <li>version</li>
- * <li>license name</li>
- * <li>license URL</li>
  * </ul>
+ * <p> Other optional (but recommended) parameters are:
+ * <ul>
+ * <li>groupID
+ * <li>license</li>
+ * <li>licenseURL</li>
+ * <li>skipheader</li>
+ * <li>quote</li>
+ * <li>delimiter</li>
  */
 @Component
 public class CsvReader extends AbstractReader implements Reader {
@@ -62,14 +68,14 @@ public class CsvReader extends AbstractReader implements Reader {
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType, Map<String,String> configuration) {
     	
-    	//Map<String,String> configMap = configurationToMap(configuration); 
-
+    	//this is how to get out values of configuration file
     	System.out.println("this are the config parameters given in solicitor.cfg:");
     	System.out.println(configuration.get("groupID"));
     	System.out.println(configuration.get("artifactID"));
     	System.out.println(configuration);
     	System.out.println("\n");
 
+    	//TODO replace config file logic with new configuration.get() methods
     	String sourceEnding = sourceUrl.substring(sourceUrl.lastIndexOf("/") + 1);
 		String configPath = sourceUrl.replace(sourceEnding, "csvreader.config");
 		configPath = configPath.replace("file:", "");
@@ -90,6 +96,10 @@ public class CsvReader extends AbstractReader implements Reader {
 
             java.io.Reader reader = new InputStreamReader(is);
             ApplicationComponent lastAppComponent = null;
+            
+            //TODO apply newest common csv format with csvFormat Builder
+            //TODO apply common csv formats like EXCEL as configuration parameter and disable rest if inputted
+            //TODO add documentation in solicitor asciidoc
             CSVFormat csvFormat = CSVFormat.newFormat(props.getProperty("delimiter").charAt(0));
             //checks if quote is set in config file
             if(!props.getProperty("quote").isEmpty()) {
@@ -98,6 +108,8 @@ public class CsvReader extends AbstractReader implements Reader {
             if(props.getProperty("skipheader").equals("yes")) {
             	csvFormat = csvFormat.withFirstRecordAsHeader().withSkipHeaderRecord();
             }
+            
+            
             
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
@@ -148,17 +160,6 @@ public class CsvReader extends AbstractReader implements Reader {
             throw new SolicitorRuntimeException("Could not read CSV inventory source '" + sourceUrl + "'", e1);
         }
 
-    }
-    
-    private Map<String,String> configurationToMap (String configuration) {
-    	ObjectMapper objectMapper = new ObjectMapper();
-    	TypeReference<Map<String, String>> typeRef  = new TypeReference<Map<String, String>>() {};
-    	try {
-			return objectMapper.readValue(configuration, typeRef);
-		} catch (IOException e) {
-			System.out.println("Something failed.");
-		}
-		return null;
     }
     
 }

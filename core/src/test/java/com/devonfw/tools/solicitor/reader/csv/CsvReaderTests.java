@@ -29,8 +29,9 @@ public class CsvReaderTests {
 
     public CsvReaderTests() {
 
-    	Map<String,String> config = new HashMap<String,String>();
-    	config.put("groupID", "groupValue");
+    	//configuration settings
+    	Map<String,String> configuration = new HashMap<String,String>();
+    	configuration.put("groupID", "groupValue");
     	
         ModelFactory modelFactory = new ModelFactoryImpl();
 
@@ -39,7 +40,7 @@ public class CsvReaderTests {
         csvr.setModelFactory(modelFactory);
         csvr.setInputStreamFactory(new FileInputStreamFactory());
         csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
-                "maven",config);
+                "maven",configuration);
 
     }
 
