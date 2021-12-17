@@ -31,8 +31,15 @@ public class CsvReaderTests {
 
     	//configuration settings
     	Map<String,String> configuration = new HashMap<String,String>();
-    	configuration.put("groupID", "groupValue");
-    	
+    	configuration.put("groupId", "0");
+    	configuration.put("artifactId", "1");
+    	configuration.put("version", "2");
+    	configuration.put("license", "3");
+    	configuration.put("licenseUrl", "4");
+    	configuration.put("delimiter", ";");
+    	configuration.put("quote", "'");
+    	configuration.put("skipheader", "no");
+
         ModelFactory modelFactory = new ModelFactoryImpl();
 
         this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");

@@ -36,17 +36,18 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * contain at least following parameters:
  * </p>
  * <ul>
- * <li>artifactID</li>
+ * <li>artifactId</li>
  * <li>version</li>
  * </ul>
  * <p> Other optional (but recommended) parameters are:
  * <ul>
- * <li>groupID
+ * <li>groupId</li>
  * <li>license</li>
  * <li>licenseURL</li>
  * <li>skipheader</li>
  * <li>quote</li>
  * <li>delimiter</li>
+ * </ul>
  */
 @Component
 public class CsvReader extends AbstractReader implements Reader {
@@ -70,23 +71,12 @@ public class CsvReader extends AbstractReader implements Reader {
     	
     	//this is how to get out values of configuration file
     	System.out.println("this are the config parameters given in solicitor.cfg:");
-    	System.out.println(configuration.get("groupID"));
-    	System.out.println(configuration.get("artifactID"));
+    	System.out.println(configuration.get("groupId"));
+    	System.out.println(configuration.get("artifactId"));
     	System.out.println(configuration);
     	System.out.println("\n");
 
-    	//TODO replace config file logic with new configuration.get() methods
-    	String sourceEnding = sourceUrl.substring(sourceUrl.lastIndexOf("/") + 1);
-		String configPath = sourceUrl.replace(sourceEnding, "csvreader.config");
-		configPath = configPath.replace("file:", "");
-    	Properties props = new Properties();
-    	try (FileInputStream file = new FileInputStream(configPath)) {
-    	    props.load(file);
-    	} catch (FileNotFoundException ex) {
-            throw new SolicitorRuntimeException("Could not find config file '" + configPath + "'", ex);
-    	} catch (IOException ex) {
-            throw new SolicitorRuntimeException("Could not read config file '" + configPath + "'", ex);
-    	}
+
 
         int components = 0;
         int licenses = 0;
@@ -100,35 +90,39 @@ public class CsvReader extends AbstractReader implements Reader {
             //TODO apply newest common csv format with csvFormat Builder
             //TODO apply common csv formats like EXCEL as configuration parameter and disable rest if inputted
             //TODO add documentation in solicitor asciidoc
-            CSVFormat csvFormat = CSVFormat.newFormat(props.getProperty("delimiter").charAt(0));
-            //checks if quote is set in config file
-            if(!props.getProperty("quote").isEmpty()) {
-                csvFormat = csvFormat.withQuote((props.getProperty("quote")).charAt(0));
-            }            
-            if(props.getProperty("skipheader").equals("yes")) {
-            	csvFormat = csvFormat.withFirstRecordAsHeader().withSkipHeaderRecord();
+            CSVFormat.Builder csvBuilder = CSVFormat.Builder.create();
+            csvBuilder.setDelimiter(configuration.get("delimiter"));
+            if(configuration.get("skipheader").equals("yes")) {
+            	csvBuilder.setHeader().setSkipHeaderRecord(true);
+            }
+            if(!configuration.get("quote").isEmpty()) {
+            	char[] quoteChar = configuration.get("quote").toCharArray();
+            	csvBuilder.setQuote(quoteChar[0]);
             }
             
-            
-            
+            CSVFormat csvFormat = csvBuilder.build();
+            //if(configuration.get("skipheader").equals("yes")) {
+            	//csvFormat.withFirstRecordAsHeader().withIgnoreHeaderCase(); 
+            	//}
+
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
 
                 //set strings from csv position defined by config
                 String groupId = "";
-                if(!props.getProperty("groupID").isEmpty()) {
-                    groupId = record.get(Integer.parseInt(props.getProperty("groupID")));
+                if(!configuration.get("groupId").isEmpty()) {
+                    groupId = record.get(Integer.parseInt(configuration.get("groupId")));
                 }
                 String license ="";
-                if(!props.getProperty("license").isEmpty()) {
-                    license = record.get(Integer.parseInt(props.getProperty("license")));
+                if(!configuration.get("license").isEmpty()) {
+                    license = record.get(Integer.parseInt(configuration.get("license")));
                 }
                 String licenseURL = "";
-                if(!props.getProperty("licenseURL").isEmpty()) {
-                    licenseURL = record.get(Integer.parseInt(props.getProperty("licenseURL")));
+                if(!configuration.get("licenseUrl").isEmpty()) {
+                    licenseURL = record.get(Integer.parseInt(configuration.get("licenseUrl")));
                 }
-                String artifactId = record.get(Integer.parseInt(props.getProperty("artifactID")));
-                String version = record.get(Integer.parseInt(props.getProperty("version")));
+                String artifactId = record.get(Integer.parseInt(configuration.get("artifactId")));
+                String version = record.get(Integer.parseInt(configuration.get("version")));
 
                 
                 appComponent.setGroupId(groupId);
