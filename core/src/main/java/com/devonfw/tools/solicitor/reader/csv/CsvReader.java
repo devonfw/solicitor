@@ -4,14 +4,11 @@
 
 package com.devonfw.tools.solicitor.reader.csv;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
@@ -24,10 +21,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+
 
 /**
  * A {@link Reader} for files in CSV format.
@@ -47,6 +41,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * <li>skipheader</li>
  * <li>quote</li>
  * <li>delimiter</li>
+ * <li>format</li>
  * </ul>
  */
 @Component
@@ -78,19 +73,33 @@ public class CsvReader extends AbstractReader implements Reader {
             java.io.Reader reader = new InputStreamReader(is);
             ApplicationComponent lastAppComponent = null;
             
-            //TODO apply common csv formats like EXCEL as configuration parameter and disable rest if inputted
             //TODO add documentation in solicitor asciidoc
-            CSVFormat.Builder csvBuilder = CSVFormat.Builder.create();
-            csvBuilder.setDelimiter(configuration.get("delimiter"));
-            if(configuration.get("skipheader").equals("yes")) {
-            	csvBuilder.setHeader().setSkipHeaderRecord(true);
-            }
-            if(!configuration.get("quote").isEmpty()) {
-            	char[] quoteChar = configuration.get("quote").toCharArray();
-            	csvBuilder.setQuote(quoteChar[0]);
-            }
+            CSVFormat csvFormat = null;
             
-            CSVFormat csvFormat = csvBuilder.build();
+            //Case that we have to set the format 
+            if(configuration.get("format") == null) {
+	            CSVFormat.Builder csvBuilder = CSVFormat.Builder.create();
+	            
+	            if(configuration.get("delimiter") != null) {
+	            csvBuilder.setDelimiter(configuration.get("delimiter"));
+	            }
+	            if(configuration.get("quote") != null) {
+	            	char[] quoteChar = configuration.get("quote").toCharArray();
+	            	csvBuilder.setQuote(quoteChar[0]);
+	            }
+	            if(configuration.get("skipheader") != null) {
+		            if(configuration.get("skipheader").equals("yes")) {
+		            	csvBuilder.setHeader().setSkipHeaderRecord(true);
+		            }
+	            }
+	            csvFormat = csvBuilder.build();
+            }
+           //Use predefined formats
+	       else {
+	    	   csvFormat = CSVFormat.valueOf(configuration.get("format"));
+	    	   
+	       }
+
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
 
