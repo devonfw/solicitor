@@ -69,15 +69,6 @@ public class CsvReader extends AbstractReader implements Reader {
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
             String repoType, Map<String,String> configuration) {
     	
-    	//this is how to get out values of configuration file
-    	System.out.println("this are the config parameters given in solicitor.cfg:");
-    	System.out.println(configuration.get("groupId"));
-    	System.out.println(configuration.get("artifactId"));
-    	System.out.println(configuration);
-    	System.out.println("\n");
-
-
-
         int components = 0;
         int licenses = 0;
         InputStream is;
@@ -87,7 +78,6 @@ public class CsvReader extends AbstractReader implements Reader {
             java.io.Reader reader = new InputStreamReader(is);
             ApplicationComponent lastAppComponent = null;
             
-            //TODO apply newest common csv format with csvFormat Builder
             //TODO apply common csv formats like EXCEL as configuration parameter and disable rest if inputted
             //TODO add documentation in solicitor asciidoc
             CSVFormat.Builder csvBuilder = CSVFormat.Builder.create();
@@ -101,10 +91,6 @@ public class CsvReader extends AbstractReader implements Reader {
             }
             
             CSVFormat csvFormat = csvBuilder.build();
-            //if(configuration.get("skipheader").equals("yes")) {
-            	//csvFormat.withFirstRecordAsHeader().withIgnoreHeaderCase(); 
-            	//}
-
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
 
