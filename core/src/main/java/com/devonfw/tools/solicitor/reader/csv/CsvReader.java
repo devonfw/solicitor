@@ -96,15 +96,15 @@ public class CsvReader extends AbstractReader implements Reader {
 
                 //set strings from csv position defined by config
                 String groupId = "";
-                if(!configuration.get("groupId").isEmpty()) {
+                if(configuration.get("groupId") != null) {
                     groupId = record.get(Integer.parseInt(configuration.get("groupId")));
                 }
                 String license ="";
-                if(!configuration.get("license").isEmpty()) {
+                if(configuration.get("license") != null) {
                     license = record.get(Integer.parseInt(configuration.get("license")));
                 }
                 String licenseURL = "";
-                if(!configuration.get("licenseUrl").isEmpty()) {
+                if(configuration.get("licenseUrl") != null) {
                     licenseURL = record.get(Integer.parseInt(configuration.get("licenseUrl")));
                 }
                 String artifactId = record.get(Integer.parseInt(configuration.get("artifactId")));
