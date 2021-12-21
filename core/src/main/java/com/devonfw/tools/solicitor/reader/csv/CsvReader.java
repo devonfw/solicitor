@@ -42,6 +42,7 @@ import com.devonfw.tools.solicitor.reader.Reader;
  * <li>quote</li>
  * <li>delimiter</li>
  * <li>format</li>
+ * <li>charset</li>
  * </ul>
  */
 @Component
@@ -69,8 +70,14 @@ public class CsvReader extends AbstractReader implements Reader {
         InputStream is;
         try {
             is = inputStreamFactory.createInputStreamFor(sourceUrl);
+            java.io.Reader reader;
+            
+            if(configuration.get("charset") != null) {
+                 reader = new InputStreamReader(is, configuration.get("charset"));
+	        }else {
+	             reader = new InputStreamReader(is);
+	        }   
 
-            java.io.Reader reader = new InputStreamReader(is);
             ApplicationComponent lastAppComponent = null;
             
             //TODO add documentation in solicitor asciidoc
