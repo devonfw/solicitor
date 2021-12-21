@@ -81,32 +81,32 @@ public class CsvReader extends AbstractReader implements Reader {
             ApplicationComponent lastAppComponent = null;
             
             //TODO add documentation in solicitor asciidoc
-            CSVFormat csvFormat = null;
+            CSVFormat csvFormat;
+            CSVFormat.Builder csvBuilder;
             
-            //Case that we have to set the format 
-            if(configuration.get("format") == null) {
-	            CSVFormat.Builder csvBuilder = CSVFormat.Builder.create();
-	            
-	            if(configuration.get("delimiter") != null) {
-	            csvBuilder.setDelimiter(configuration.get("delimiter"));
-	            }
-	            if(configuration.get("quote") != null) {
-	            	char[] quoteChar = configuration.get("quote").toCharArray();
-	            	csvBuilder.setQuote(quoteChar[0]);
-	            }
-	            if(configuration.get("skipheader") != null) {
-		            if(configuration.get("skipheader").equals("yes")) {
-		            	csvBuilder.setHeader().setSkipHeaderRecord(true);
-		            }
-	            }
-	            csvFormat = csvBuilder.build();
+            //predefined format + lets us overwrite values
+            if(configuration.get("format") != null) {
+            	csvFormat = CSVFormat.valueOf(configuration.get("format"));
+                csvBuilder = CSVFormat.Builder.create(csvFormat);
+            }else {
+                csvBuilder = CSVFormat.Builder.create();
+            }      
+            
+            if(configuration.get("delimiter") != null) {
+            csvBuilder.setDelimiter(configuration.get("delimiter"));
             }
-           //Use predefined formats
-	       else {
-	    	   csvFormat = CSVFormat.valueOf(configuration.get("format"));
-	    	   
-	       }
+            if(configuration.get("quote") != null) {
+            	char[] quoteChar = configuration.get("quote").toCharArray();
+            	csvBuilder.setQuote(quoteChar[0]);
+            }
+            if(configuration.get("skipheader") != null) {
+	            if(configuration.get("skipheader").equals("yes")) {
+	            	csvBuilder.setHeader().setSkipHeaderRecord(true);
+	            }
+            }
+            csvFormat = csvBuilder.build(); 	    
 
+            
             for (CSVRecord record : csvFormat.parse(reader)) {
                 ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
 
@@ -125,7 +125,7 @@ public class CsvReader extends AbstractReader implements Reader {
                 }
                 String artifactId = record.get(Integer.parseInt(configuration.get("artifactId")));
                 String version = record.get(Integer.parseInt(configuration.get("version")));
-
+                
                 
                 appComponent.setGroupId(groupId);
                 appComponent.setArtifactId(artifactId);
