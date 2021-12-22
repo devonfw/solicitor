@@ -16,16 +16,18 @@ tar -xvzf #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
 if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > #[[${cutArtifact%/*}+${cutArtifact#*/}]]#-${artifact.version}.tgz--need-to-retrieve-manually-npm
+  rm #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
 fi
-rm -r package/
+rm -rf package/
 #elseif ( $artifact.repoType == "yarn" )
 curl -# https://registry.yarnpkg.com/$artifact.artifactId/-/#[[${cutArtifact#*/}]]#-${artifact.version}.tgz -o #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
 tar -xvzf #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
 if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > #[[${cutArtifact%/*}+${cutArtifact#*/}]]#-${artifact.version}.tgz--need-to-retrieve-manually-yarn
+  rm #[[${cutArtifact#*/}]]#-${artifact.version}.tgz
 fi
-rm -r package/	
+rm -rf package/	
 #else
 echo "Need to retrieve-manually (unknown repoType" > $artifact.groupId--#[[${cutArtifact%/*}+${cutArtifact#*/}]]#-${artifact.version}.tgz--need-to-retrieve-manually
 #end	
@@ -36,6 +38,7 @@ unzip -q -t $artifact.groupId--$artifact.artifactId-$artifact.version-sources.ja
 if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar--need-to-retrieve-manually-maven
+  rm $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar
 fi
 #elseif ( $artifact.repoType == "npm" )
 curl -# https://registry.npmjs.org/$artifact.artifactId/-/$artifact.artifactId-${artifact.version}.tgz -o $artifact.artifactId-${artifact.version}.tgz
@@ -43,8 +46,9 @@ tar -xvzf $artifact.artifactId-${artifact.version}.tgz
 if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually-npm
+  rm $artifact.artifactId-${artifact.version}.tgz
 fi
-rm -r package/
+rm -rf package/
 #elseif ( $artifact.repoType == "pip" )
 art='${artifact.artifactId}'
 #[[firstChar=${art:0:1}]]#
@@ -53,16 +57,18 @@ tar -xvzf $artifact.artifactId-${artifact.version}.tar.gz
 if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tar.gz--need-to-retrieve-manually-pip
+  rm $artifact.artifactId-${artifact.version}.tar.gz
 fi
-rm -r $artifact.artifactId-${artifact.version}/
+rm -rf $artifact.artifactId-${artifact.version}/
 #elseif ( $artifact.repoType == "yarn" )
 curl -# https://registry.yarnpkg.com/$artifact.artifactId/-/$artifact.artifactId-${artifact.version}.tgz -o $artifact.artifactId-${artifact.version}.tgz
 tar -xvzf $artifact.artifactId-${artifact.version}.tgz
 if [ $? -ne 0 ]
 then
   echo "Need to retrieve-manually" > $artifact.artifactId-${artifact.version}.tgz--need-to-retrieve-manually-npm
+  rm $artifact.artifactId-${artifact.version}.tgz
 fi
-rm -r package/
+rm -rf package/
 #else
 echo "Need to retrieve-manually (unknown repoType)" > $artifact.groupId--$artifact.artifactId-${artifact.version}--need-to-retrieve-manually
 #end
