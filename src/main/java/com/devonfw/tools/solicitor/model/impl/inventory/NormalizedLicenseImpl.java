@@ -7,6 +7,7 @@ package com.devonfw.tools.solicitor.model.impl.inventory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.LicenseTextHelper;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
 import com.devonfw.tools.solicitor.licensetexts.GuessedLicenseUrlContent;
@@ -146,7 +147,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getDeclaredLicenseContent() {
 
-        return this.licenseContentProvider.getContentForUri(this.licenseUrl).getContent();
+        return LicenseTextHelper.replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.licenseUrl).getContent());
     }
 
     /** {@inheritDoc} */
@@ -161,7 +162,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getEffectiveNormalizedLicenseContent() {
 
-        return this.licenseContentProvider.getContentForUri(this.effectiveNormalizedLicenseUrl).getContent();
+        return LicenseTextHelper.replaceLongHtmlContent(
+                this.licenseContentProvider.getContentForUri(this.effectiveNormalizedLicenseUrl).getContent());
     }
 
     /** {@inheritDoc} */
@@ -248,7 +250,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getLicenseRefContent() {
 
-        return this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent();
+        return LicenseTextHelper.replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent());
     }
 
     /** {@inheritDoc} */
@@ -326,7 +328,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     @JsonIgnore
     public String getGuessedLicenseContent() {
 
-        return this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent();
+        return LicenseTextHelper.replaceLongHtmlContent(
+                this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent());
     }
 
     /** {@inheritDoc} */
