@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
@@ -70,7 +71,7 @@ public class ExcelWriter implements Writer {
     private String trimToMaxCellLength(String original) {
 
         if (original.length() > 32767) {
-            LOG.warn("Shortening text content for XLS");
+            LOG.warn(LogMessages.SHORTENING_XLS_CELL_CONTENT.msg());
             return original.substring(0, 32767);
         } else {
             return original;

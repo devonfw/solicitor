@@ -69,7 +69,10 @@ public enum LogMessages {
             "You are using a deprecated feature which might be removed soon. You should ASAP migrate your project as this might be unavailable in future versions. Details: {}."), //
     COULD_NOT_DOWNLOAD_CONTENT(47, "Downloading content from URL '{}' did not succeed. Exception was: {}."), //
     COULD_NOT_DOWNLOAD_CONTENT_MALFORMED_URL(48,
-            "Downloading content from URL '{}' did not succeed because the URL is malfomed");
+            "Downloading content from URL '{}' did not succeed because the URL is malfomed"), //
+    SHORTENING_XLS_CELL_CONTENT(49, "Shortening text content for XLS"), //
+    REPLACING_EXCESSIVE_HTML_CONTENT(50,
+            "At least one license text contained a large amount of raw HTML and was substituted by placeholder text '{}'");
 
     private final String message;
 
