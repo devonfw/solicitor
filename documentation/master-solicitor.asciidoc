@@ -1257,6 +1257,8 @@ This change is due to the fact that failed downloads are expected - especially w
 * https://github.com/devonfw/solicitor/issues/101:
 If downloaded license texts contain large amounts of html formatted content they will be replaced by a placeholder indicating the need
 for cleanup. A warning message will be written in this case (SOLI-050).
+* https://github.com/devonfw/solicitor/issues/103:
+Changed structure of Solicitor source code repository to maven multi module structure.
 
 Changes in 1.2.3::
 * https://github.com/devonfw/solicitor/issues/97: Fixed the bug which made the GradleReader and GradleReader2 skip the first entry in the file.
