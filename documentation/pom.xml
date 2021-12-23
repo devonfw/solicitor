@@ -31,6 +31,7 @@
     <jruby.version>9.1.17.0</jruby.version>
     <maven.build.timestamp.format>dd-MM-yy_HH:mm</maven.build.timestamp.format>
     <builddate>${maven.build.timestamp}</builddate>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <build>
@@ -165,6 +166,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>attach-doc</id>
