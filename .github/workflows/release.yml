@@ -37,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/solicitor.jar
+          asset_path: ./core/target/solicitor.jar
           asset_name: solicitor.jar
           asset_content_type: application/octet-stream
       - name: Upload Userguide
@@ -47,7 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/generated-docs/solicitor_userguide.pdf
+          asset_path: ./documentation/target/generated-docs/solicitor_userguide.pdf
           asset_name: solicitor_userguide.pdf
           asset_content_type: application/pdf        
       - name: Upload License Info
@@ -57,6 +57,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./output/solicitor_licenseinfo.html
+          asset_path: ./core/output/solicitor_licenseinfo.html
           asset_name: solicitor_licenseinfo.html
           asset_content_type: text/html
