@@ -37,7 +37,7 @@ for the project. Text or spreadsheet (Excel) based reports might be created to d
 ### Getting started
 Solicitor is a self contained Spring-Boot Command Line Application.
 
-After building Solicitor via `mvn clean install` you might execute it with `java -jar target/solicitor.jar -c classpath:samples/solicitor_sample.cfg`.
+After building Solicitor via `mvn clean install` you might execute it with `java -jar core/target/solicitor.jar -c classpath:samples/solicitor_sample.cfg`.
 This will use some prepackaged internal sample data (taken from Devon4J) and sample rulesets and generates sample reports in the current directory. 
 
 ### User Guide
