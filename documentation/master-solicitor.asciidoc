@@ -467,7 +467,7 @@ The generated output file named `licenses.xml` (in the directory specified in th
 plugin config) should look like the following:
 
 ----
-include::licenses.xml[]
+include::files/licenses.xml[]
 ----
 
 In _Solicitor_ the data is read with the following reader config:
@@ -487,7 +487,7 @@ The CSV input is normally manually generated and should look like this (The csv 
 
 [source]
 ----
-include::csvlicenses.csv[]
+include::files/csvlicenses.csv[]
 ----
 
 In _Solicitor_ the data is read with the following part of the config
@@ -533,7 +533,7 @@ The export should look like the following (The csv file is "," separated)
 
 [source]
 ----
-include::licenses.csv[]
+include::files/licenses.csv[]
 
 ----
 
@@ -569,7 +569,7 @@ The export should look like the following
 
 [source]
 ----
-include::licensesNpmLicenseChecker.json[]
+include::files/licensesNpmLicenseChecker.json[]
 
 ----
 
@@ -599,7 +599,7 @@ The export should look like the following
 
 [source]
 ----
-include::yarnlicenses.json[]
+include::files/yarnlicenses.json[]
 
 ----
 
@@ -632,7 +632,7 @@ The export should look like the following
 
 [source]
 ----
-include::piplicenses.json[]
+include::files/piplicenses.json[]
 
 ----
 
@@ -679,7 +679,7 @@ gradlew licenseReport
 The Export should look like this:
 
 ----
-include::licenses.json[]
+include::files/licenses.json[]
 ----
 
 
@@ -730,7 +730,7 @@ $Projectfolder\app\build\reports\licenses
 It should look like this:
 
 ----
-include::licenseDebugReport.json[]
+include::files/licenseDebugReport.json[]
 ----
 Source: https://github.com/jaredsburrows/gradle-license-plugin
 
@@ -1003,7 +1003,7 @@ correlations keys.
 
 [source,sql]
 ----
-include::../src/main/resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[]
+include::files/allden_normalizedlicenses.sql[]
 ----
 
 NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL
@@ -1138,7 +1138,7 @@ of the _Solicitor_ configuration file which will be used if the project specific
 [source,json]
 .Default Configuration
 ----
-include::../src/main/resources/com/devonfw/tools/solicitor/config/solicitor_base.cfg[lines=23..169]
+include::files/solicitor_base.cfg[lines=23..169]
 ----
 
 [appendix]
@@ -1154,7 +1154,7 @@ java -Dpropertyname1=value1 -Dpropertyname2=value2 -jar solicitor.jar <any other
 [source,properties]
 .application.properties
 ----
-include::../src/main/resources/application.properties[]
+include::files/application.properties[]
 ----
 
 [appendix]
@@ -1219,7 +1219,7 @@ to be included in this archive _in the root folder_.
 [source,properties]
 .application-extension.properties
 ----
-include::../src/main/resources/samples/application-extension.properties[]
+include::files/application-extension.properties[]
 ----
 
 This file is included via the standard Spring Boot profile mechanism. Besides containing
