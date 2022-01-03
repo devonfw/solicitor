@@ -33,17 +33,17 @@ import com.devonfw.tools.solicitor.reader.Reader;
  * <li>artifactId</li>
  * <li>version</li>
  * </ul>
- * <p> Other optional (but recommended) parameters are:
+ * <p> 
+ * Other optional (but recommended) parameters are:
  * <ul>
  * <li>groupId</li>
  * <li>license</li>
  * <li>licenseURL</li>
- * <li>skipheader</li>
- * <li>quote</li>
- * <li>delimiter</li>
- * <li>format</li>
- * <li>charset</li>
  * </ul>
+ * Furthermore, settings concerning the csv format can be configured 
+ * according to the methods specified in:
+ * https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html
+ * </p>
  */
 @Component
 public class CsvReader extends AbstractReader implements Reader {
@@ -92,18 +92,102 @@ public class CsvReader extends AbstractReader implements Reader {
                 csvBuilder = CSVFormat.Builder.create();
             }      
             
+            if(configuration.get("allowDuplicateHeaderNames") != null) {
+	            if(configuration.get("allowDuplicateHeaderNames").equals("true")) {
+	            	csvBuilder.setAllowDuplicateHeaderNames(true);
+	            }else {
+	            	csvBuilder.setAllowDuplicateHeaderNames(false);
+	            }
+            }
+            
+            if(configuration.get("allowMissingColumnNames") != null) {
+	            if(configuration.get("allowMissingColumnNames").equals("true")) {
+	            	csvBuilder.setAllowMissingColumnNames(true);
+	            }else {
+	            	csvBuilder.setAllowMissingColumnNames(false);
+	            }
+            }
+            
+            if(configuration.get("autoFlush") != null) {
+	            if(configuration.get("autoFlush").equals("true")) {
+	            	csvBuilder.setAutoFlush(true);
+	            }else {
+	            	csvBuilder.setAutoFlush(false);
+	            }
+            }
+            
+            if(configuration.get("commentMarker") != null){
+                csvBuilder.setCommentMarker(configuration.get("commentMarker").toCharArray()[0]);
+            }
+
             if(configuration.get("delimiter") != null) {
             csvBuilder.setDelimiter(configuration.get("delimiter"));
             }
-            if(configuration.get("quote") != null) {
-            	char[] quoteChar = configuration.get("quote").toCharArray();
-            	csvBuilder.setQuote(quoteChar[0]);
+            
+            if(configuration.get("escape") != null){
+                csvBuilder.setEscape(configuration.get("escape").toCharArray()[0]);
             }
-            if(configuration.get("skipheader") != null) {
-	            if(configuration.get("skipheader").equals("yes")) {
-	            	csvBuilder.setHeader().setSkipHeaderRecord(true);
+            
+            if(configuration.get("ignoreEmptyLines") != null) {
+	            if(configuration.get("ignoreEmptyLines").equals("true")) {
+	            	csvBuilder.setIgnoreEmptyLines(true);
+	            }else {
+	            	csvBuilder.setIgnoreEmptyLines(false);
 	            }
             }
+            
+            if(configuration.get("ignoreHeaderCase") != null) {
+	            if(configuration.get("ignoreHeaderCase").equals("true")) {
+	            	csvBuilder.setIgnoreHeaderCase(true);
+	            }else {
+	            	csvBuilder.setIgnoreHeaderCase(false);
+	            }
+            }
+            
+            if(configuration.get("ignoreSurroundingSpaces") != null) {
+	            if(configuration.get("ignoreSurroundingSpaces").equals("true")) {
+	            	csvBuilder.setIgnoreSurroundingSpaces(true);
+	            }else {
+	            	csvBuilder.setIgnoreSurroundingSpaces(false);
+	            }
+            }
+            
+            if(configuration.get("nullString") != null) {
+                csvBuilder.setNullString(configuration.get("nullString"));
+                }
+
+            if(configuration.get("quote") != null) {
+            	csvBuilder.setQuote(configuration.get("quote").toCharArray()[0]);
+            }
+            
+            if(configuration.get("recordSeparator") != null) {
+                csvBuilder.setRecordSeparator(configuration.get("recordSeparator"));
+                }
+            
+            if(configuration.get("skipHeaderRecord") != null) {
+	            if(configuration.get("skipHeaderRecord").equals("true")) {
+	            	csvBuilder.setHeader().setSkipHeaderRecord(true);
+	            }else {
+	            	csvBuilder.setHeader().setSkipHeaderRecord(false);
+	            }
+            }
+            
+            if(configuration.get("trailingDelimiter") != null) {
+	            if(configuration.get("trailingDelimiter").equals("true")) {
+	            	csvBuilder.setTrailingDelimiter(true);
+	            }else {
+	            	csvBuilder.setTrailingDelimiter(false);
+	            }
+            }
+            
+            if(configuration.get("trim") != null) {
+	            if(configuration.get("trim").equals("true")) {
+	            	csvBuilder.setTrim(true);
+	            }else {
+	            	csvBuilder.setTrim(false);
+	            }
+            }
+
             csvFormat = csvBuilder.build(); 	    
 
             
