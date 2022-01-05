@@ -32,19 +32,19 @@ import com.devonfw.tools.solicitor.reader.Reader;
  * <ul>
  * <li>artifactId</li>
  * <li>version</li>
- * </ul>
- * <p> 
+ * </ul> 
  * Other optional (but recommended) parameters are:
  * <ul>
+ * <li>charset</li>
  * <li>groupId</li>
  * <li>license</li>
- * <li>licenseURL</li>
+ * <li>licenseUrl</li>
  * </ul>
  * Furthermore, settings concerning the csv format can be configured 
  * according to the methods specified in:
  * https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html
- * </p>
  */
+
 @Component
 public class CsvReader extends AbstractReader implements Reader {
 

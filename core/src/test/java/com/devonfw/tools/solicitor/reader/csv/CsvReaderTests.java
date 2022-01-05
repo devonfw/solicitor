@@ -36,9 +36,21 @@ public class CsvReaderTests {
     	configuration.put("version", "2");
     	configuration.put("license", "3");
     	configuration.put("licenseUrl", "4");
+    	configuration.put("allowDuplicateHeaderNames", "false");
+    	configuration.put("allowMissingColumnNames", "false");
+    	configuration.put("autoFlush", "false");
+    	configuration.put("commentMarker", "#");
     	configuration.put("delimiter", ";");
+    	configuration.put("escape", "!");
+    	configuration.put("ignoreEmptyLines", "true");
+    	configuration.put("ignoreHeaderCase", "true");
+    	configuration.put("ignoreSurroundingSpaces", "true");
+    	configuration.put("nullString", "newNullString");
     	configuration.put("quote", "'");
-    	configuration.put("skipheader", "no");
+    	configuration.put("recordSeparator", "\n");
+    	configuration.put("skipHeaderRecord", "true");
+    	configuration.put("trailingDelimiter", "true");
+    	configuration.put("trim", "true");
 
         ModelFactory modelFactory = new ModelFactoryImpl();
 
@@ -58,7 +70,7 @@ public class CsvReaderTests {
         boolean found = false;
         for (ApplicationComponent ap : lapc) {
             if (ap.getGroupId().equals("org.antlr.runtime") && //
-                    ap.getArtifactId().equals("antlr") && //
+                    ap.getArtifactId().equals("antlr'") && //
                     ap.getVersion().equals("4.6.0")) {
                 found = true;
                 break;
