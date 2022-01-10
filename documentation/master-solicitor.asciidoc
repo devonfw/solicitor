@@ -483,30 +483,57 @@ In _Solicitor_ the data is read with the following reader config:
 (the above assumes that _Solicitor_ is executed in the maven projects main directory)
 
 === CSV
-The CSV input is normally manually generated and should look like this (The csv File is ";" separated):
+The CSV input is normally manually generated and should look like this:
 
 [source]
 ----
 include::files/csvlicenses.csv[]
 ----
 
-In _Solicitor_ the data is read with the following part of the config
+In _Solicitor_ the data is read with the following part of the config (configuration field includes optional parameters)
 
 ----
 "readers" : [ {
   "type" : "csv",
   "source" : "file:path/to/the/file.csv",
-  "usagePattern" : "DYNAMIC_LINKING"
+  "usagePattern" : "DYNAMIC_LINKING",
+  "configuration" : {
+	"charset" = "UTF-8",
+	"artifactId" : "0",
+	"version" : "1",
+	"format" : "EXCEL",
+	"skipHeaderRecord" : "true",
+	"delimiter" : ";"
+  }
 } ]
 ----
 
-The following 5 columns need to be contained:
+The following 2 configuration settings need to be contained:
 
-* groupId
 * artifactId
 * version
-* license name
-* license URL
+
+In these settings one can specify the position of the value within the csv file.
+Additional positional settings include:
+
+* groupId
+* license
+* licenseUrl
+
+If a charset needs to be specified, one can use the following option:
+
+* charset (string, specified charset for reader e.g. UTF-8)
+
+Furthermore, one can configure a range of other options based on the https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html[Apache Commons CSV API]:
+
+* skipHeaderRecord (boolean)
+* delimiter (char)
+* quote (char)
+* ...
+
+These configurations may also be used to overwrite options of a https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html[predefined format], which can be set with:
+
+* format (string, predefined format e.g. EXCEL)
 
 In case that a component has multiple licenses attached, there needs to be a separate
 line in the file for each license.
