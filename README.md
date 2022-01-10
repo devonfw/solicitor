@@ -52,7 +52,7 @@ On the [devonfw Youtube Channel](https://www.youtube.com/channel/UCtb1p-24jus-Qo
 
 ## Implementation Details
 
-The following diagram shows the Spring Beans of Solicitor including their major interconnections. See the Javadoc for more infomation.
+The following diagram shows the Spring Beans of Solicitor including their major interconnections. See the Javadoc for more information.
 
-![Solicitor Beans](https://github.com/devonfw-forge/solicitor/raw/master/src/main/java/com/devonfw/tools/solicitor/doc-files/solicitor_beans.png "Solicitor Spring Beans - See the Solicitor Javadoc for more information")
+![Solicitor Beans](https://github.com/devonfw-forge/solicitor/raw/master/core/src/main/java/com/devonfw/tools/solicitor/doc-files/solicitor_beans.png "Solicitor Spring Beans - See the Solicitor Javadoc for more information")
 
