@@ -490,7 +490,25 @@ The CSV input is normally manually generated and should look like this:
 include::files/csvlicenses.csv[]
 ----
 
-In _Solicitor_ the data is read with the following part of the config (configuration field includes optional parameters)
+In Solicitor the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+The following 5 columns need to be contained in order (separated with ";"):
+
+* groupId
+* artifactId
+* version
+* license name
+* license URL
+
+Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.: 
 
 ----
 "readers" : [ {
@@ -508,12 +526,12 @@ In _Solicitor_ the data is read with the following part of the config (configura
 } ]
 ----
 
-The following 2 configuration settings need to be contained:
+The minimum of following 2 configuration settings need to be contained:
 
 * artifactId
 * version
 
-In these settings one can specify the position of the value within the csv file.
+With these settings one can specify the position of the value within the csv file.
 Additional positional settings include:
 
 * groupId
@@ -524,19 +542,30 @@ If a charset needs to be specified, one can use the following option:
 
 * charset (string, specified charset for reader e.g. UTF-8)
 
-Furthermore, one can configure a range of other options based on the https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html[Apache Commons CSV API]:
+Furthermore, one can configure a range of other csv structure options based on the https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html[Apache Commons CSV API]:
 
-* skipHeaderRecord (boolean)
-* delimiter (char)
+* allowDuplicateHeaderNames (boolean)
+* allowMissingColumnNames (boolean)
+* autoFlush (boolean)
+* commentMarker (char)
+* delimiter (string)
+* escape (char)
+* ignoreEmptyLines (boolean)
+* ignoreHeaderCase (boolean)
+* ignoreSurroundingSpaces (boolean)
+* nullString (string)
 * quote (char)
-* ...
+* recordSeparator (string)
+* skipHeaderRecord (boolean)
+* trailingDelimiter (boolean)
+* trim (boolean)
 
 These configurations may also be used to overwrite options of a https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html[predefined format], which can be set with:
 
 * format (string, predefined format e.g. EXCEL)
 
-In case that a component has multiple licenses attached, there needs to be a separate
-line in the file for each license.
+Important: In case that a component has multiple licenses attached, there needs to be a separate
+line in the csv file for each license.
 
 === NPM
 
