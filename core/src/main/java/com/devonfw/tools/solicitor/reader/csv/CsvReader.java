@@ -35,14 +35,17 @@ import com.devonfw.tools.solicitor.reader.Reader;
  * </ul> 
  * Other optional (but recommended) parameters are:
  * <ul>
- * <li>charset</li>
  * <li>groupId</li>
  * <li>license</li>
  * <li>licenseUrl</li>
  * </ul>
+ * It is also possible to overwrite the default machine charset with the "charset" option.
  * Furthermore, settings concerning the csv format can be configured 
  * according to the methods specified in:
  * https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html
+ * These options can also be used to overwrite an already existing predefined format 
+ * which can be set with "format" from:
+ * https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html
  */
 
 @Component
