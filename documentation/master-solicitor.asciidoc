@@ -490,7 +490,7 @@ The CSV input is normally manually generated and should look like this:
 include::files/csvlicenses.csv[]
 ----
 
-In Solicitor the data is read with the following part of the config
+In _Solicitor_ the data is read with the following part of the config
 
 ----
 "readers" : [ {
