@@ -29,6 +29,11 @@ public class ModelHelper {
     private static final String REGEX_PREFIX = "REGEX:";
 
     /**
+     * Suffix which marks a string as defining a regular expression condition.
+     */
+    private static final String REGEX_SUFFIX = "(REGEX)";
+    
+    /**
      * Prefix which marks a string as defining a maven range condition.
      */
     private static final String RANGE_PREFIX = "RANGE:";
@@ -153,7 +158,7 @@ public class ModelHelper {
      * Checks if the given first String matches the second String. By default
      * this is done with simple string comparison. There are some keywords which
      * allow for advanced logic. If the seconds argument starts with "NOT:" then
-     * the rest of the condition is inverted. The prefix "REGEX:" indicates that
+     * the rest of the condition is inverted. The prefix "REGEX:" and the suffix "(REGEX)" indicate that
      * the remainder should be interpreted as a Java RegEx and matching will be
      * done against this RegEx. "RANGE:" indicates that the following should be
      * interpreted as a Maven version range expression.
@@ -176,6 +181,11 @@ public class ModelHelper {
         if (input != null && condition != null) {
             if (condition.startsWith(REGEX_PREFIX)) {
                 String pattern = condition.substring(REGEX_PREFIX.length());
+                return input.matches(pattern);
+            }
+            if (condition.endsWith(REGEX_SUFFIX)) {
+            	condition = condition.replaceAll(" ", "");
+                String pattern = condition.substring(0,condition.length()-REGEX_SUFFIX.length());
                 return input.matches(pattern);
             }
             if (condition.startsWith(RANGE_PREFIX)) {
