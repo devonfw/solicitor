@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
 import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.MavenVersionHelper;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
@@ -27,6 +28,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.ReaderFactory;
 import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
 import com.devonfw.tools.solicitor.writer.WriterFacade;
 
 /**
@@ -114,6 +116,7 @@ public class Solicitor {
             modelRoot = this.modelImporterExporter.loadModel(clo.pathForLoad);
         } else {
             readInventory();
+            ModelHelper.setDeprecationChecker(new DeprecationChecker());
             this.ruleEngine.executeRules(modelRoot);
             modelRoot.completeData();
         }

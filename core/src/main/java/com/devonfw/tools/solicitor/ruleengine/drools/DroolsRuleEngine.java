@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorSetup;
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.config.RuleConfig;
@@ -61,6 +62,7 @@ public class DroolsRuleEngine implements RuleEngine {
 
     @Autowired
     private ModelHelper modelHelper;
+    
 
     /**
      * {@inheritDoc}

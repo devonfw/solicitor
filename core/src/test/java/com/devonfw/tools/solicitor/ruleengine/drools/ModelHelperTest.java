@@ -8,18 +8,27 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
+
 /**
  * Test methods of {@link ModelHelper}.
  */
 public class ModelHelperTest {
 
+	
     /**
      * Test method for
      * {@link com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper#match(java.lang.String, java.lang.String)}.
      */
     @Test
     public void testMatch() {
+    	ModelHelper.setDeprecationChecker(new DeprecationChecker() {
 
+            @Override
+            public void check(boolean warnOnly, String detailsString) {
+                // do nothing...
+            }
+        });
         assertTrue(ModelHelper.match(null, null));
         assertFalse(ModelHelper.match(null, ""));
         assertFalse(ModelHelper.match("", null));

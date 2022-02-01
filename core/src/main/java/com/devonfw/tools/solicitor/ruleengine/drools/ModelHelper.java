@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.MavenVersionHelper;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -23,6 +24,15 @@ import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
  */
 @Component
 public class ModelHelper {
+	
+	private static DeprecationChecker deprecationChecker;
+
+    @Autowired
+    public static void setDeprecationChecker(DeprecationChecker deprecationChecker) {
+
+        ModelHelper.deprecationChecker = deprecationChecker;
+    }
+	
     /**
      * Prefix which marks a string as defining a regular expression condition.
      */
@@ -180,6 +190,8 @@ public class ModelHelper {
         }
         if (input != null && condition != null) {
             if (condition.startsWith(REGEX_PREFIX)) {
+            	deprecationChecker.check(false,
+                        "Use of 'REGEX:' prefix notation is deprecated, use '(REGEX)' suffix instead. See https://github.com/devonfw/solicitor/issues/78");
                 String pattern = condition.substring(REGEX_PREFIX.length());
                 return input.matches(pattern);
             }

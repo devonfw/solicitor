@@ -19,7 +19,7 @@ public class DeprecationChecker {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeprecationChecker.class);
 
-    private boolean deprecatedFeaturesAllowed = false;
+    private boolean deprecatedFeaturesAllowed = true;
 
     @Value("${solicitor.deprecated-features-allowed}")
     public void setDeprecatedFeaturesAllowed(boolean deprecatedFeaturesAllowed) {
