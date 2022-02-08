@@ -19,7 +19,7 @@ public class DeprecationChecker {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeprecationChecker.class);
 
-    private boolean deprecatedFeaturesAllowed = true;
+    private boolean deprecatedFeaturesAllowed = false;
 
     @Value("${solicitor.deprecated-features-allowed}")
     public void setDeprecatedFeaturesAllowed(boolean deprecatedFeaturesAllowed) {
@@ -46,7 +46,9 @@ public class DeprecationChecker {
      *         activated
      */
     public void check(boolean warnOnly, String detailsString) {
-
+    	//TODO set string object (class level) => details string speichern und nur einmal ausgeben
+    	
+    	
         if (warnOnly) {
             LOG.warn(LogMessages.USING_DEPRECATED_FEATURE.msg(), detailsString);
         } else {

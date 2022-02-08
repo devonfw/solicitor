@@ -190,7 +190,7 @@ public class ModelHelper {
         }
         if (input != null && condition != null) {
             if (condition.startsWith(REGEX_PREFIX)) {
-            	deprecationChecker.check(false,
+            	deprecationChecker.check(true,
                         "Use of 'REGEX:' prefix notation is deprecated, use '(REGEX)' suffix instead. See https://github.com/devonfw/solicitor/issues/78");
                 String pattern = condition.substring(REGEX_PREFIX.length());
                 return input.matches(pattern);
