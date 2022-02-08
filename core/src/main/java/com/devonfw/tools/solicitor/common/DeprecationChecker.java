@@ -3,6 +3,9 @@
  */
 package com.devonfw.tools.solicitor.common;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +24,8 @@ public class DeprecationChecker {
 
     private boolean deprecatedFeaturesAllowed = false;
 
+    private Set<String> thrownWarnings = new HashSet<String>();
+    
     @Value("${solicitor.deprecated-features-allowed}")
     public void setDeprecatedFeaturesAllowed(boolean deprecatedFeaturesAllowed) {
 
@@ -45,20 +50,22 @@ public class DeprecationChecker {
      * @throws SolicitorRuntimeException if deprecated features are not
      *         activated
      */
-    public void check(boolean warnOnly, String detailsString) {
-    	//TODO set string object (class level) => details string speichern und nur einmal ausgeben
+    public void check(boolean warnOnly, String detailsString) {    	
     	
-    	
-        if (warnOnly) {
-            LOG.warn(LogMessages.USING_DEPRECATED_FEATURE.msg(), detailsString);
-        } else {
-            if (deprecatedFeaturesAllowed) {
-                LOG.warn(LogMessages.USING_DEPRECATED_FEATURE_FORCED.msg(), configProperty, detailsString);
-            } else {
-                LOG.error(LogMessages.UNAVAILABLE_DEPRECATED_FEATURE.msg(), detailsString, configProperty);
-                throw new SolicitorRuntimeException("Deprecated feature unavailable");
-            }
-        }
+    	if(!thrownWarnings.contains(detailsString)) {
+	        if (warnOnly) {
+	                LOG.warn(LogMessages.USING_DEPRECATED_FEATURE.msg(), detailsString);
+	            	thrownWarnings.add(detailsString);
+	        } else {
+	            if (deprecatedFeaturesAllowed) {
+	                LOG.warn(LogMessages.USING_DEPRECATED_FEATURE_FORCED.msg(), configProperty, detailsString);
+	            	thrownWarnings.add(detailsString);
+	            } else {
+	                LOG.error(LogMessages.UNAVAILABLE_DEPRECATED_FEATURE.msg(), detailsString, configProperty);
+	                throw new SolicitorRuntimeException("Deprecated feature unavailable");
+	            }
+	        }
+    	}
     }
 
 }
