@@ -12,7 +12,7 @@
 
   <groupId>com.devonfw.tools</groupId>
   <artifactId>solicitor-core</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.3.0</version>
 
   <name>Solicitor Core (Main Application)</name>
   <description>A tool for rule based checking of license conditions in software projects.</description>
