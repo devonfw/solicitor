@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
@@ -60,7 +61,7 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
     /** {@inheritDoc} */
     @Override
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType) {
+            String repoType, Map<String,String> configuration) {
 
         if (SUPPORTED_TYPE_DEPRECATED.equals(type)) {
             deprecationChecker.check(true, "Use of type 'npm' is deprecated. Change type in config to '"

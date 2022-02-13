@@ -4,6 +4,8 @@
 
 package com.devonfw.tools.solicitor.config;
 
+import java.util.Map;
+
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,6 +27,9 @@ public class ReaderConfig {
 
     @JsonProperty
     private String repoType;
+    
+    @JsonProperty
+    private Map<String,String> configuration;
 
     /**
      * Standard constructor. Field {@link #repoType} will be initialized to
@@ -45,6 +50,16 @@ public class ReaderConfig {
         return this.repoType;
     }
 
+    /**
+     * This method gets the field <code>configuration</code>.
+     *
+     * @return the field configuration
+     */
+    public Map<String,String> getConfiguration() {
+
+        return this.configuration;
+    }
+    
     /**
      * This method gets the field <code>source</code>.
      *
@@ -83,6 +98,16 @@ public class ReaderConfig {
     public void setRepoType(String repoType) {
 
         this.repoType = repoType;
+    }
+    
+    /**
+     * This method sets the field <code>configuration</code>.
+     *
+     * @param configuration the new value of the field configuration
+     */
+    public void setConfiguration(Map<String,String> configuration) {
+
+        this.configuration = configuration;
     }
 
     /**
