@@ -1315,6 +1315,8 @@ If downloaded license texts contain large amounts of html formatted content they
 for cleanup. A warning message will be written in this case (SOLI-050).
 * https://github.com/devonfw/solicitor/issues/103:
 Changed structure of Solicitor source code repository to maven multi module structure.
+* https://github.com/devonfw/solicitor/issues/7:
+Allow more flexible CSV file format within the CsvReader. 
 
 Changes in 1.2.3::
 * https://github.com/devonfw/solicitor/issues/97: Fixed the bug which made the GradleReader and GradleReader2 skip the first entry in the file.
