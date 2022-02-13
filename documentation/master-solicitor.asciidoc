@@ -1131,7 +1131,7 @@ The following features are deprecated via the above mechanism:
 
 * Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58
 * Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
-* "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.2.4 on; see https://github.com/devonfw/solicitor/issues/78
+* "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see https://github.com/devonfw/solicitor/issues/78
 
 [appendix]
 == Default Base Configuration
@@ -1262,6 +1262,9 @@ If downloaded license texts contain large amounts of html formatted content they
 for cleanup. A warning message will be written in this case (SOLI-050).
 * https://github.com/devonfw/solicitor/issues/103:
 Changed structure of Solicitor source code repository to maven multi module structure.
+* https://github.com/devonfw/solicitor/issues/78: Introduce new suffix _(REGEX)_ in decision
+tables to mark regular expressions. Using this suffix avoids breaking any sorting when using
+mixed verbatim strings and regex patterns. The old prefix syntax _REGEX:_ has been deprecated.
 
 Changes in 1.2.3::
 * https://github.com/devonfw/solicitor/issues/97: Fixed the bug which made the GradleReader and GradleReader2 skip the first entry in the file.
