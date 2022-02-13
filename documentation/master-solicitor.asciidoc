@@ -483,7 +483,7 @@ In _Solicitor_ the data is read with the following reader config:
 (the above assumes that _Solicitor_ is executed in the maven projects main directory)
 
 === CSV
-The CSV input is normally manually generated and should look like this (The csv File is ";" separated):
+The CSV input is normally manually generated and should look like this:
 
 [source]
 ----
@@ -500,7 +500,7 @@ In _Solicitor_ the data is read with the following part of the config
 } ]
 ----
 
-The following 5 columns need to be contained:
+The following 5 columns need to be contained in order (separated with ";"):
 
 * groupId
 * artifactId
@@ -508,8 +508,64 @@ The following 5 columns need to be contained:
 * license name
 * license URL
 
-In case that a component has multiple licenses attached, there needs to be a separate
-line in the file for each license.
+Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.: 
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "configuration" : {
+	"charset" = "UTF-8",
+	"artifactId" : "0",
+	"version" : "1",
+	"format" : "EXCEL",
+	"skipHeaderRecord" : "true",
+	"delimiter" : ";"
+  }
+} ]
+----
+
+The minimum of following 2 configuration settings need to be contained:
+
+* artifactId
+* version
+
+With these settings one can specify the position of the value within the csv file.
+Additional positional settings include:
+
+* groupId
+* license
+* licenseUrl
+
+If a charset needs to be specified, one can use the following option:
+
+* charset (string, specified charset for reader e.g. UTF-8)
+
+Furthermore, one can configure a range of other csv structure options based on the https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html[Apache Commons CSV API]:
+
+* allowDuplicateHeaderNames (boolean)
+* allowMissingColumnNames (boolean)
+* autoFlush (boolean)
+* commentMarker (char)
+* delimiter (string)
+* escape (char)
+* ignoreEmptyLines (boolean)
+* ignoreHeaderCase (boolean)
+* ignoreSurroundingSpaces (boolean)
+* nullString (string)
+* quote (char)
+* recordSeparator (string)
+* skipHeaderRecord (boolean)
+* trailingDelimiter (boolean)
+* trim (boolean)
+
+These configurations may also be used to overwrite options of a https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html[predefined format], which can be set with:
+
+* format (string, predefined format e.g. EXCEL)
+
+Important: In case that a component has multiple licenses attached, there needs to be a separate
+line in the csv file for each license.
 
 === NPM
 
@@ -1259,6 +1315,8 @@ If downloaded license texts contain large amounts of html formatted content they
 for cleanup. A warning message will be written in this case (SOLI-050).
 * https://github.com/devonfw/solicitor/issues/103:
 Changed structure of Solicitor source code repository to maven multi module structure.
+* https://github.com/devonfw/solicitor/issues/7:
+Allow more flexible CSV file format within the CsvReader. 
 
 Changes in 1.2.3::
 * https://github.com/devonfw/solicitor/issues/97: Fixed the bug which made the GradleReader and GradleReader2 skip the first entry in the file.

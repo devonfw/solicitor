@@ -6,6 +6,7 @@ package com.devonfw.tools.solicitor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -34,6 +35,8 @@ public class SolicitorSetup {
         private UsagePattern usagePattern;
 
         private String repoType;
+        
+        private Map<String,String> configuration;
 
         /**
          * This method gets the field <code>application</code>.
@@ -84,6 +87,16 @@ public class SolicitorSetup {
 
             return this.repoType;
         }
+        
+        /**
+         * This method gets the field <code>configuration</code>.
+         *
+         * @return the field configuration
+         */
+        public Map<String,String> getConfiguration() {
+
+            return this.configuration;
+        }
 
         /**
          * This method sets the field <code>application</code>.
@@ -103,6 +116,16 @@ public class SolicitorSetup {
         public void setSource(String source) {
 
             this.source = source;
+        }
+        
+        /**
+         * This method sets the field <code>configuration</code>.
+         *
+         * @param configuration the new value of the field configuration
+         */
+        public void setConfiguration(Map<String,String> configuration) {
+
+            this.configuration = configuration;
         }
 
         /**

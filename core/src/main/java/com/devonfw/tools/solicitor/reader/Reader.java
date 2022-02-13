@@ -4,6 +4,8 @@
 
 package com.devonfw.tools.solicitor.reader;
 
+import java.util.Map;
+
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -38,8 +40,9 @@ public interface Reader {
      * @param usagePattern the {@link UsagePattern} which applies for all read
      *        {@link ApplicationComponent}s
      * @param repoType the type of Repository to download the sources from
+     * @param configuration optional configuration settings for readers
      */
     public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-            String repoType);
+            String repoType, Map<String,String> configuration);
 
 }
