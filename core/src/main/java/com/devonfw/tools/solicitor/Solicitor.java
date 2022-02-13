@@ -35,213 +35,208 @@ import com.devonfw.tools.solicitor.writer.WriterFacade;
 @Component
 public class Solicitor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Solicitor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Solicitor.class);
 
-    private static final String INPUT_DATA_MISSING = " (INPUT DATA MISSING!)";
+  private static final String INPUT_DATA_MISSING = " (INPUT DATA MISSING!)";
 
-    @Autowired
-    private SolicitorVersion solicitorVersion;
+  @Autowired
+  private SolicitorVersion solicitorVersion;
 
-    @Autowired
-    private SolicitorSetup solicitorSetup;
+  @Autowired
+  private SolicitorSetup solicitorSetup;
 
-    @Autowired
-    private ConfigFactory configFactory;
+  @Autowired
+  private ConfigFactory configFactory;
 
-    @Autowired
-    private ReaderFactory readerFactory;
+  @Autowired
+  private ReaderFactory readerFactory;
 
-    @Autowired
-    private RuleEngine ruleEngine;
+  @Autowired
+  private RuleEngine ruleEngine;
 
-    @Autowired
-    private WriterFacade writerFacade;
+  @Autowired
+  private WriterFacade writerFacade;
 
-    @Autowired
-    private ResourceToFileCopier resourceToFileCopier;
+  @Autowired
+  private ResourceToFileCopier resourceToFileCopier;
 
-    @Autowired
-    private ModelImporterExporter modelImporterExporter;
+  @Autowired
+  private ModelImporterExporter modelImporterExporter;
 
-    private boolean tolerateMissingInput = false;
+  private boolean tolerateMissingInput = false;
 
-    @Value("${solicitor.tolerate-missing-input}")
-    public void setTolerateMissingInput(boolean tolerateMissingInput) {
+  @Value("${solicitor.tolerate-missing-input}")
+  public void setTolerateMissingInput(boolean tolerateMissingInput) {
 
-        this.tolerateMissingInput = tolerateMissingInput;
+    this.tolerateMissingInput = tolerateMissingInput;
+  }
+
+  /**
+   * Copy the user guide to the current working directory.
+   */
+  private void extractUserguide() {
+
+    this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE, ".");
+  }
+
+  /**
+   * Create a new basic project configuration.
+   *
+   * @param targetDir the directory where the userguide should be stored
+   */
+  private void wizard(String targetDir) {
+
+    String location = this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.PROJECT_FILES, targetDir);
+    LOG.info(LogMessages.PROJECT_CREATED.msg(), location);
+  }
+
+  /**
+   * Save all sample configuration files to the working directory.
+   *
+   * @param targetDir the directory where the userguide should be stored
+   */
+  private void extractConfig(String targetDir) {
+
+    String location = this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.FULL_BASE_CONFIG, targetDir);
+    LOG.info(LogMessages.FULL_CONFIG_EXTRACTED.msg(), location);
+  }
+
+  /**
+   * Perform the main flow of processing.
+   *
+   * @param clo the parsed command line options
+   */
+  private void mainProcessing(CommandLineOptions clo) {
+
+    ModelRoot modelRoot = this.configFactory.createConfig(clo.configUrl);
+    if (clo.load) {
+      LOG.info(LogMessages.LOADING_DATAMODEL.msg(), clo.pathForLoad);
+      modelRoot = this.modelImporterExporter.loadModel(clo.pathForLoad);
+    } else {
+      readInventory();
+      this.ruleEngine.executeRules(modelRoot);
+      modelRoot.completeData();
     }
-
-    /**
-     * Copy the user guide to the current working directory.
-     */
-    private void extractUserguide() {
-
-        this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.USERGUIDE, ".");
+    if (clo.save) {
+      LOG.info(LogMessages.SAVING_DATAMODEL.msg(), clo.pathForSave);
+      this.modelImporterExporter.saveModel(modelRoot, clo.pathForSave);
     }
-
-    /**
-     * Create a new basic project configuration.
-     *
-     * @param targetDir the directory where the userguide should be stored
-     */
-    private void wizard(String targetDir) {
-
-        String location = this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.PROJECT_FILES, targetDir);
-        LOG.info(LogMessages.PROJECT_CREATED.msg(), location);
+    ModelRoot oldModelRoot = null;
+    if (clo.diff) {
+      LOG.info(LogMessages.LOADING_DIFF.msg(), clo.pathForDiff);
+      oldModelRoot = this.modelImporterExporter.loadModel(clo.pathForDiff);
     }
+    this.writerFacade.writeResult(modelRoot, oldModelRoot);
+  }
 
-    /**
-     * Save all sample configuration files to the working directory.
-     *
-     * @param targetDir the directory where the userguide should be stored
-     */
-    private void extractConfig(String targetDir) {
+  /**
+   * Read the inventory of {@link ApplicationComponent}s and their declared licenses.
+   */
+  private void readInventory() {
 
-        String location = this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.FULL_BASE_CONFIG, targetDir);
-        LOG.info(LogMessages.FULL_CONFIG_EXTRACTED.msg(), location);
-    }
-
-    /**
-     * Perform the main flow of processing.
-     *
-     * @param clo the parsed command line options
-     */
-    private void mainProcessing(CommandLineOptions clo) {
-
-        ModelRoot modelRoot = this.configFactory.createConfig(clo.configUrl);
-        if (clo.load) {
-            LOG.info(LogMessages.LOADING_DATAMODEL.msg(), clo.pathForLoad);
-            modelRoot = this.modelImporterExporter.loadModel(clo.pathForLoad);
-        } else {
-            readInventory();
-            this.ruleEngine.executeRules(modelRoot);
-            modelRoot.completeData();
-        }
-        if (clo.save) {
-            LOG.info(LogMessages.SAVING_DATAMODEL.msg(), clo.pathForSave);
-            this.modelImporterExporter.saveModel(modelRoot, clo.pathForSave);
-        }
-        ModelRoot oldModelRoot = null;
-        if (clo.diff) {
-            LOG.info(LogMessages.LOADING_DIFF.msg(), clo.pathForDiff);
-            oldModelRoot = this.modelImporterExporter.loadModel(clo.pathForDiff);
-        }
-        this.writerFacade.writeResult(modelRoot, oldModelRoot);
-    }
-
-    /**
-     * Read the inventory of {@link ApplicationComponent}s and their declared
-     * licenses.
-     */
-    private void readInventory() {
-
-        for (ReaderSetup readerSetup : this.solicitorSetup.getReaderSetups()) {
-            Reader reader = this.readerFactory.readerFor(readerSetup.getType());
-            try {
-                reader.readInventory(readerSetup.getType(), readerSetup.getSource(), readerSetup.getApplication(),
+    for (ReaderSetup readerSetup : this.solicitorSetup.getReaderSetups()) {
+      Reader reader = this.readerFactory.readerFor(readerSetup.getType());
+      try {
+        reader.readInventory(readerSetup.getType(), readerSetup.getSource(), readerSetup.getApplication(),
                         readerSetup.getUsagePattern(), readerSetup.getRepoType(), readerSetup.getConfiguration());
-            } catch (SolicitorRuntimeException sre) {
-                if (this.tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
-                    Application app = readerSetup.getApplication();
-                    LOG.warn(LogMessages.MISSING_INVENTORY_INPUT_FILE.msg(), readerSetup.getSource(), app.getName());
-                    markApplicationMissingData(app);
-                } else {
-                    throw sre;
-                }
-            }
-        }
-    }
-
-    private void markApplicationMissingData(Application app) {
-
-        String appName = app.getName();
-        if (!appName.endsWith(INPUT_DATA_MISSING)) {
-            app.setName(appName + INPUT_DATA_MISSING);
-        }
-        app.setProgrammingEcosystem(INPUT_DATA_MISSING);
-        app.setReleaseDate(INPUT_DATA_MISSING);
-        app.setReleaseId(INPUT_DATA_MISSING);
-        app.setSourceRepo(INPUT_DATA_MISSING);
-    }
-
-    /**
-     * Starts processing as given by the command line options.
-     *
-     * @param clo the parsed command line options
-     * @param rawCommandline the raw (unparsed) command line; for logging
-     *        puposes only
-     */
-    public void run(CommandLineOptions clo, String rawCommandline) {
-
-        LOG.info(LogMessages.CALLED.msg(), rawCommandline);
-
-        long startTime = System.currentTimeMillis();
-        boolean doMainProcessing = true;
-        SolicitorVersion sv = this.solicitorVersion;
-        LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
-        if (sv.isExtensionPresent()) {
-            activateExtension(sv);
+      } catch (SolicitorRuntimeException sre) {
+        if (this.tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
+          Application app = readerSetup.getApplication();
+          LOG.warn(LogMessages.MISSING_INVENTORY_INPUT_FILE.msg(), readerSetup.getSource(), app.getName());
+          markApplicationMissingData(app);
         } else {
-            LOG.warn(LogMessages.NO_EXTENSION_DISCLAIMER.msg());
+          throw sre;
         }
+      }
+    }
+  }
 
-        if (clo.extractUserGuide) {
-            extractUserguide();
-            doMainProcessing = false;
-        }
-        if (clo.extractConfig) {
-            extractConfig(clo.targetDir);
-            doMainProcessing = false;
-        } else if (clo.wizard) {
-            wizard(clo.targetDir);
-            doMainProcessing = false;
-        }
-        if (doMainProcessing) {
-            mainProcessing(clo);
-        }
-        LOG.info(LogMessages.COMPLETED.msg(), System.currentTimeMillis() - startTime);
+  private void markApplicationMissingData(Application app) {
+
+    String appName = app.getName();
+    if (!appName.endsWith(INPUT_DATA_MISSING)) {
+      app.setName(appName + INPUT_DATA_MISSING);
+    }
+    app.setProgrammingEcosystem(INPUT_DATA_MISSING);
+    app.setReleaseDate(INPUT_DATA_MISSING);
+    app.setReleaseId(INPUT_DATA_MISSING);
+    app.setSourceRepo(INPUT_DATA_MISSING);
+  }
+
+  /**
+   * Starts processing as given by the command line options.
+   *
+   * @param clo the parsed command line options
+   * @param rawCommandline the raw (unparsed) command line; for logging puposes only
+   */
+  public void run(CommandLineOptions clo, String rawCommandline) {
+
+    LOG.info(LogMessages.CALLED.msg(), rawCommandline);
+
+    long startTime = System.currentTimeMillis();
+    boolean doMainProcessing = true;
+    SolicitorVersion sv = this.solicitorVersion;
+    LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
+    if (sv.isExtensionPresent()) {
+      activateExtension(sv);
+    } else {
+      LOG.warn(LogMessages.NO_EXTENSION_DISCLAIMER.msg());
     }
 
-    /**
-     * Checks the extension and logs info.
-     *
-     * @param sv the object which holds info about the extension
-     * @throws SolicitorRuntimeException if the extension is incompatible with
-     *         this Solicitor version
-     */
-    private void activateExtension(SolicitorVersion sv) {
+    if (clo.extractUserGuide) {
+      extractUserguide();
+      doMainProcessing = false;
+    }
+    if (clo.extractConfig) {
+      extractConfig(clo.targetDir);
+      doMainProcessing = false;
+    } else if (clo.wizard) {
+      wizard(clo.targetDir);
+      doMainProcessing = false;
+    }
+    if (doMainProcessing) {
+      mainProcessing(clo);
+    }
+    LOG.info(LogMessages.COMPLETED.msg(), System.currentTimeMillis() - startTime);
+  }
 
-        LOG.info(LogMessages.EXTENSION_PRESENT.msg(), sv.getExtensionArtifact(), sv.getExtensionVersion(),
-                sv.getExtensionGithash(), sv.getExtensionBuilddate());
-        checkExtensionVersionRequirements(sv);
-        if (sv.getExtensionMessage1() != null && !sv.getExtensionMessage1().isEmpty()) {
-            LOG.info(LogMessages.EXTENSION_BANNER_1.msg(), sv.getExtensionMessage1());
-        }
-        if (sv.getExtensionMessage2() != null && !sv.getExtensionMessage2().isEmpty()) {
-            LOG.info(LogMessages.EXTENSION_BANNER_2.msg(), sv.getExtensionMessage2());
-        }
+  /**
+   * Checks the extension and logs info.
+   *
+   * @param sv the object which holds info about the extension
+   * @throws SolicitorRuntimeException if the extension is incompatible with this Solicitor version
+   */
+  private void activateExtension(SolicitorVersion sv) {
+
+    LOG.info(LogMessages.EXTENSION_PRESENT.msg(), sv.getExtensionArtifact(), sv.getExtensionVersion(),
+        sv.getExtensionGithash(), sv.getExtensionBuilddate());
+    checkExtensionVersionRequirements(sv);
+    if (sv.getExtensionMessage1() != null && !sv.getExtensionMessage1().isEmpty()) {
+      LOG.info(LogMessages.EXTENSION_BANNER_1.msg(), sv.getExtensionMessage1());
+    }
+    if (sv.getExtensionMessage2() != null && !sv.getExtensionMessage2().isEmpty()) {
+      LOG.info(LogMessages.EXTENSION_BANNER_2.msg(), sv.getExtensionMessage2());
+    }
+  }
+
+  /**
+   * Checks if Solicitor complies to the version expectations found in the extension.
+   *
+   * @param sv the object which holds info about the extension
+   * @throws SolicitorRuntimeException if Solicitor does not comply to the version requirements given in the extension
+   */
+  private void checkExtensionVersionRequirements(SolicitorVersion sv) {
+
+    final String expectedVersionRange = sv.getExtensionExpectedSolicitorVersionRange();
+    if (expectedVersionRange != null && !expectedVersionRange.isEmpty()) {
+      final String version = sv.getVersion();
+      boolean versionOk = MavenVersionHelper.checkVersionRange(version, expectedVersionRange);
+      if (!versionOk) {
+        LOG.error(LogMessages.EXTENSION_EXPECTATION_FAILED.msg(), expectedVersionRange);
+        throw new SolicitorRuntimeException("Solicitor does not match version requirements of the extension");
+      }
     }
 
-    /**
-     * Checks if Solicitor complies to the version expectations found in the
-     * extension.
-     *
-     * @param sv the object which holds info about the extension
-     * @throws SolicitorRuntimeException if Solicitor does not comply to the
-     *         version requirements given in the extension
-     */
-    private void checkExtensionVersionRequirements(SolicitorVersion sv) {
-
-        final String expectedVersionRange = sv.getExtensionExpectedSolicitorVersionRange();
-        if (expectedVersionRange != null && !expectedVersionRange.isEmpty()) {
-            final String version = sv.getVersion();
-            boolean versionOk = MavenVersionHelper.checkVersionRange(version, expectedVersionRange);
-            if (!versionOk) {
-                LOG.error(LogMessages.EXTENSION_EXPECTATION_FAILED.msg(), expectedVersionRange);
-                throw new SolicitorRuntimeException("Solicitor does not match version requirements of the extension");
-            }
-        }
-
-    }
+  }
 
 }

@@ -59,8 +59,7 @@ public class DroolsRuleEngine implements RuleEngine {
     @Autowired
     private SolicitorSetup setup;
 
-    @Autowired
-    private ModelHelper modelHelper;
+    
 
     /**
      * {@inheritDoc}

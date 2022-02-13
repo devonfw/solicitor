@@ -835,12 +835,14 @@ is true if the property of the model is identical to the given value in the XLS 
 Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:
 
 * If the given value of the XLS field starts with the prefix `NOT:` then the outcome of the remaining condition is logically negated, i.e. this field condition is  `true` if the rest of the condition is NOT fulfilled.
-* A prefix of `REGEX:` indicates that the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expression.
+* A suffix of `(REGEX)` indicates that the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expression.
 * The prefix `RANGE:` indicates that the remainder of the field defines
 a https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/maven/artifact/versioning/VersionRange.html#createFromVersionSpec(java.lang.String)[Maven Version Range]. Using this makes only sense on the artifact version property.
 * If no such prefix is detected, then the behavior is identical to the normal (verbatim) comparison logic
 
 Fields which are subject to this extended syntax are marked explicitly in the following section.
+
+NOTE: The former prefix notation of `REGEX:` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
 
 == Standard Business Rules
 The processing of business rules is organized in different phases. Each phase might consist of multiple decision tables to be processed in order.
@@ -1185,6 +1187,7 @@ The following features are deprecated via the above mechanism:
 
 * Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58
 * Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
+* "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see https://github.com/devonfw/solicitor/issues/78
 
 [appendix]
 == Default Base Configuration
@@ -1317,6 +1320,9 @@ for cleanup. A warning message will be written in this case (SOLI-050).
 Changed structure of Solicitor source code repository to maven multi module structure.
 * https://github.com/devonfw/solicitor/issues/7:
 Allow more flexible CSV file format within the CsvReader. 
+* https://github.com/devonfw/solicitor/issues/78: Introduce new suffix _(REGEX)_ in decision
+tables to mark regular expressions. Using this suffix avoids breaking any sorting when using
+mixed verbatim strings and regex patterns. The old prefix syntax _REGEX:_ has been deprecated.
 
 Changes in 1.2.3::
 * https://github.com/devonfw/solicitor/issues/97: Fixed the bug which made the GradleReader and GradleReader2 skip the first entry in the file.
