@@ -33,114 +33,114 @@ import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 
 /**
- * Implementation of the {@link ModelFactory} interface. All model object
- * created by this factory will be extensions of {@link AbstractModelObject}.
+ * Implementation of the {@link ModelFactory} interface. All model object created by this factory will be extensions of
+ * {@link AbstractModelObject}.
  */
 @Component
 public class ModelFactoryImpl extends ModelFactory {
-    private static final Logger LOG = LoggerFactory.getLogger(ModelFactoryImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ModelFactoryImpl.class);
 
-    @Autowired
-    private InMemoryMapContentProvider<WebContent> licenseContentProvider;
+  @Autowired
+  private InMemoryMapContentProvider<WebContent> licenseContentProvider;
 
-    @Autowired
-    private InMemoryMapContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser;
+  @Autowired
+  private InMemoryMapContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser;
 
-    @Autowired
-    private SolicitorVersion solicitorVersion;
+  @Autowired
+  private SolicitorVersion solicitorVersion;
 
-    /** {@inheritDoc} */
-    @Override
-    public Collection<Object> getAllModelObjects(ModelRoot modelRoot) {
+  /** {@inheritDoc} */
+  @Override
+  public Collection<Object> getAllModelObjects(ModelRoot modelRoot) {
 
-        Map<String, AbstractModelObject> resultMap = new TreeMap<>();
-        ModelRootImpl mr = (ModelRootImpl) modelRoot;
-        resultMap.put(mr.getId(), mr);
+    Map<String, AbstractModelObject> resultMap = new TreeMap<>();
+    ModelRootImpl mr = (ModelRootImpl) modelRoot;
+    resultMap.put(mr.getId(), mr);
 
-        EngagementImpl eg = (EngagementImpl) modelRoot.getEngagement();
-        resultMap.put(eg.getId(), eg);
-        for (Application application : eg.getApplications()) {
-            ApplicationImpl ap = (ApplicationImpl) application;
-            resultMap.put(ap.getId(), ap);
-            for (ApplicationComponent applicationComponent : ap.getApplicationComponents()) {
-                ApplicationComponentImpl ac = (ApplicationComponentImpl) applicationComponent;
-                resultMap.put(ac.getId(), ac);
-                for (RawLicense rawLicense : ac.getRawLicenses()) {
-                    RawLicenseImpl rl = (RawLicenseImpl) rawLicense;
-                    resultMap.put(rl.getId(), rl);
-                }
-                for (NormalizedLicense normalizedLicense : ac.getNormalizedLicenses()) {
-                    NormalizedLicenseImpl nl = (NormalizedLicenseImpl) normalizedLicense;
-                    resultMap.put(nl.getId(), nl);
-                }
-            }
+    EngagementImpl eg = (EngagementImpl) modelRoot.getEngagement();
+    resultMap.put(eg.getId(), eg);
+    for (Application application : eg.getApplications()) {
+      ApplicationImpl ap = (ApplicationImpl) application;
+      resultMap.put(ap.getId(), ap);
+      for (ApplicationComponent applicationComponent : ap.getApplicationComponents()) {
+        ApplicationComponentImpl ac = (ApplicationComponentImpl) applicationComponent;
+        resultMap.put(ac.getId(), ac);
+        for (RawLicense rawLicense : ac.getRawLicenses()) {
+          RawLicenseImpl rl = (RawLicenseImpl) rawLicense;
+          resultMap.put(rl.getId(), rl);
         }
-        return Collections.unmodifiableCollection(resultMap.values());
+        for (NormalizedLicense normalizedLicense : ac.getNormalizedLicenses()) {
+          NormalizedLicenseImpl nl = (NormalizedLicenseImpl) normalizedLicense;
+          resultMap.put(nl.getId(), nl);
+        }
+      }
     }
+    return Collections.unmodifiableCollection(resultMap.values());
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
-            String programmingEcosystem) {
+  /** {@inheritDoc} */
+  @Override
+  public Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
+      String programmingEcosystem) {
 
-        return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
-    }
+    return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public ApplicationComponent newApplicationComponent() {
+  /** {@inheritDoc} */
+  @Override
+  public ApplicationComponent newApplicationComponent() {
 
-        return new ApplicationComponentImpl();
-    }
+    return new ApplicationComponentImpl();
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public Engagement newEngagement(String engagementName, EngagementType engagementType, String clientName,
-            GoToMarketModel goToMarketModel) {
+  /** {@inheritDoc} */
+  @Override
+  public Engagement newEngagement(String engagementName, EngagementType engagementType, String clientName,
+      GoToMarketModel goToMarketModel) {
 
-        return new EngagementImpl(engagementName, engagementType, clientName, goToMarketModel);
-    }
+    return new EngagementImpl(engagementName, engagementType, clientName, goToMarketModel);
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public ModelRoot newModelRoot() {
+  /** {@inheritDoc} */
+  @Override
+  public ModelRoot newModelRoot() {
 
-        ModelRoot modelRoot = new ModelRootImpl();
-        modelRoot.setSolicitorVersion(this.solicitorVersion.getVersion());
-        modelRoot.setSolicitorGitHash(this.solicitorVersion.getGithash());
-        modelRoot.setSolicitorBuilddate(this.solicitorVersion.getBuilddate());
-        modelRoot.setExtensionArtifactId(this.solicitorVersion.getExtensionArtifact());
-        modelRoot.setExtensionVersion(this.solicitorVersion.getExtensionVersion());
-        modelRoot.setExtensionGitHash(this.solicitorVersion.getExtensionGithash());
-        modelRoot.setExtensionBuilddate(this.solicitorVersion.getExtensionBuilddate());
-        return modelRoot;
-    }
+    ModelRoot modelRoot = new ModelRootImpl();
+    modelRoot.setSolicitorVersion(this.solicitorVersion.getVersion());
+    modelRoot.setSolicitorGitHash(this.solicitorVersion.getGithash());
+    modelRoot.setSolicitorBuilddate(this.solicitorVersion.getBuilddate());
+    modelRoot.setExtensionArtifactId(this.solicitorVersion.getExtensionArtifact());
+    modelRoot.setExtensionVersion(this.solicitorVersion.getExtensionVersion());
+    modelRoot.setExtensionGitHash(this.solicitorVersion.getExtensionGithash());
+    modelRoot.setExtensionBuilddate(this.solicitorVersion.getExtensionBuilddate());
+    return modelRoot;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public NormalizedLicense newNormalizedLicense() {
+  /** {@inheritDoc} */
+  @Override
+  public NormalizedLicense newNormalizedLicense() {
 
-        NormalizedLicenseImpl result = new NormalizedLicenseImpl();
-        result.setLicenseContentProvider(this.licenseContentProvider);
-        result.setLicenseUrlGuesser(this.licenseUrlGuesser);
-        return result;
-    }
+    NormalizedLicenseImpl result = new NormalizedLicenseImpl();
+    result.setLicenseContentProvider(this.licenseContentProvider);
+    result.setLicenseUrlGuesser(this.licenseUrlGuesser);
+    return result;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public NormalizedLicense newNormalizedLicense(RawLicense rawLicense) {
+  /** {@inheritDoc} */
+  @Override
+  public NormalizedLicense newNormalizedLicense(RawLicense rawLicense) {
 
-        NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
-        result.setLicenseContentProvider(this.licenseContentProvider);
-        result.setLicenseUrlGuesser(this.licenseUrlGuesser);
-        return result;
-    }
+    NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
+    result.setLicenseContentProvider(this.licenseContentProvider);
+    result.setLicenseUrlGuesser(this.licenseUrlGuesser);
+    return result;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public RawLicense newRawLicense() {
+  /** {@inheritDoc} */
+  @Override
+  public RawLicense newRawLicense() {
 
-        return new RawLicenseImpl();
-    }
+    return new RawLicenseImpl();
+  }
 
 }

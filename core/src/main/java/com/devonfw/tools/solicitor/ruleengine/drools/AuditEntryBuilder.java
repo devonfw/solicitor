@@ -21,162 +21,162 @@ import com.devonfw.tools.solicitor.common.LogMessages;
  */
 public class AuditEntryBuilder implements Cloneable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AuditEntryBuilder.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AuditEntryBuilder.class);
 
-    /**
-     * A pair of Strings.
-     */
-    private static class StringPair {
-        public String string1;
+  /**
+   * A pair of Strings.
+   */
+  private static class StringPair {
+    public String string1;
 
-        public String string2;
+    public String string2;
 
-        public StringPair(String string1, String string2) {
+    public StringPair(String string1, String string2) {
 
-            super();
-            this.string1 = string1;
-            this.string2 = string2;
-        }
+      super();
+      this.string1 = string1;
+      this.string2 = string2;
+    }
+  }
+
+  /**
+   * Creates a new instance.
+   *
+   * @return a builder instance
+   */
+  public static AuditEntryBuilder instance() {
+
+    return new AuditEntryBuilder();
+  }
+
+  private Map<String, String> matchings;
+
+  private Map<String, StringPair> settings;
+
+  private String ruleId;
+
+  /**
+   * Private Constructor. Use {@link #instance()} to get an instance instead.
+   */
+  private AuditEntryBuilder() {
+
+    matchings = new LinkedHashMap<>();
+    settings = new LinkedHashMap<>();
+  }
+
+  /**
+   * Builds the audit entry string from the data contained in the builder.
+   *
+   * @return The audit entry string
+   */
+  public String build() {
+
+    StringBuilder detailSb = new StringBuilder();
+    detailSb.append("Matching: ");
+    List<String> stringList = new ArrayList<>();
+    if (matchings.size() > 0) {
+      for (Entry<String, String> e : matchings.entrySet()) {
+        stringList.add(e.getKey() + "==" + e.getValue());
+      }
+      detailSb.append(String.join(", ", stringList));
+    } else {
+      detailSb.append("-default-");
+    }
+    detailSb.append("; Setting: ");
+    stringList.clear();
+    for (Entry<String, StringPair> e : settings.entrySet()) {
+      String theEntry = e.getKey() + "=" + e.getValue().string1;
+      String string2 = e.getValue().string2;
+      if (string2 != null) {
+        theEntry = theEntry + " (" + string2 + ")";
+      }
+      stringList.add(theEntry);
+    }
+    detailSb.append(String.join(", ", stringList));
+    String detailInfo = detailSb.toString();
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(LogMessages.FIRING_RULE.msg(), ModelHelper.getCurrentRuleGroup(), ruleId, detailInfo);
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @return a builder instance
-     */
-    public static AuditEntryBuilder instance() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("+ Rule Group: ").append(ModelHelper.getCurrentRuleGroup()).append("; RuleId: ").append(ruleId)
+        .append("; ").append(detailInfo);
 
-        return new AuditEntryBuilder();
-    }
+    return sb.toString();
+  }
 
-    private Map<String, String> matchings;
+  /** {@inheritDoc} */
+  @Override
+  public AuditEntryBuilder clone() {
 
-    private Map<String, StringPair> settings;
+    AuditEntryBuilder clone = new AuditEntryBuilder();
+    clone.matchings = new LinkedHashMap<>(matchings);
+    clone.settings = new LinkedHashMap<>(settings);
+    clone.ruleId = ruleId;
+    return clone;
+  }
 
-    private String ruleId;
+  /**
+   * Does nothing.
+   *
+   * @return the same builder to allow chaining
+   */
+  public AuditEntryBuilder nop() {
 
-    /**
-     * Private Constructor. Use {@link #instance()} to get an instance instead.
-     */
-    private AuditEntryBuilder() {
+    return this;
+  }
 
-        matchings = new LinkedHashMap<>();
-        settings = new LinkedHashMap<>();
-    }
+  /**
+   * Add information about a matching field.
+   *
+   * @param fieldName the name of the matching field
+   * @param value the machting value
+   * @return the same builder to allow chaining
+   */
+  public AuditEntryBuilder withMatching(String fieldName, String value) {
 
-    /**
-     * Builds the audit entry string from the data contained in the builder.
-     *
-     * @return The audit entry string
-     */
-    public String build() {
+    matchings.put(fieldName, value);
+    return this;
+  }
 
-        StringBuilder detailSb = new StringBuilder();
-        detailSb.append("Matching: ");
-        List<String> stringList = new ArrayList<>();
-        if (matchings.size() > 0) {
-            for (Entry<String, String> e : matchings.entrySet()) {
-                stringList.add(e.getKey() + "==" + e.getValue());
-            }
-            detailSb.append(String.join(", ", stringList));
-        } else {
-            detailSb.append("-default-");
-        }
-        detailSb.append("; Setting: ");
-        stringList.clear();
-        for (Entry<String, StringPair> e : settings.entrySet()) {
-            String theEntry = e.getKey() + "=" + e.getValue().string1;
-            String string2 = e.getValue().string2;
-            if (string2 != null) {
-                theEntry = theEntry + " (" + string2 + ")";
-            }
-            stringList.add(theEntry);
-        }
-        detailSb.append(String.join(", ", stringList));
-        String detailInfo = detailSb.toString();
+  /**
+   * Add a rule id.
+   *
+   * @param id the rule id to use
+   * @return the same builder to allow chaining
+   */
+  public AuditEntryBuilder withRuleId(String id) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(LogMessages.FIRING_RULE.msg(), ModelHelper.getCurrentRuleGroup(), ruleId, detailInfo);
-        }
+    ruleId = id;
+    return this;
+  }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("+ Rule Group: ").append(ModelHelper.getCurrentRuleGroup()).append("; RuleId: ").append(ruleId)
-                .append("; ").append(detailInfo);
+  /**
+   * Add information about a field being set to some value.
+   *
+   * @param fieldName the name of the field
+   * @param value the value to which the field was set
+   * @return the same builder to allow chaining
+   */
+  public AuditEntryBuilder withSetting(String fieldName, String value) {
 
-        return sb.toString();
-    }
+    settings.put(fieldName, new StringPair(value, null));
+    return this;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public AuditEntryBuilder clone() {
+  /**
+   * Add information about a field being set to some value.
+   *
+   * @param fieldName the name of the field
+   * @param value the value to which the field was set
+   * @param comment an optional comment (might be <code>null</code>
+   * @return the same builder to allow chaining
+   */
+  public AuditEntryBuilder withSetting(String fieldName, String value, String comment) {
 
-        AuditEntryBuilder clone = new AuditEntryBuilder();
-        clone.matchings = new LinkedHashMap<>(matchings);
-        clone.settings = new LinkedHashMap<>(settings);
-        clone.ruleId = ruleId;
-        return clone;
-    }
-
-    /**
-     * Does nothing.
-     *
-     * @return the same builder to allow chaining
-     */
-    public AuditEntryBuilder nop() {
-
-        return this;
-    }
-
-    /**
-     * Add information about a matching field.
-     *
-     * @param fieldName the name of the matching field
-     * @param value the machting value
-     * @return the same builder to allow chaining
-     */
-    public AuditEntryBuilder withMatching(String fieldName, String value) {
-
-        matchings.put(fieldName, value);
-        return this;
-    }
-
-    /**
-     * Add a rule id.
-     *
-     * @param id the rule id to use
-     * @return the same builder to allow chaining
-     */
-    public AuditEntryBuilder withRuleId(String id) {
-
-        ruleId = id;
-        return this;
-    }
-
-    /**
-     * Add information about a field being set to some value.
-     *
-     * @param fieldName the name of the field
-     * @param value the value to which the field was set
-     * @return the same builder to allow chaining
-     */
-    public AuditEntryBuilder withSetting(String fieldName, String value) {
-
-        settings.put(fieldName, new StringPair(value, null));
-        return this;
-    }
-
-    /**
-     * Add information about a field being set to some value.
-     *
-     * @param fieldName the name of the field
-     * @param value the value to which the field was set
-     * @param comment an optional comment (might be <code>null</code>
-     * @return the same builder to allow chaining
-     */
-    public AuditEntryBuilder withSetting(String fieldName, String value, String comment) {
-
-        settings.put(fieldName, new StringPair(value, comment));
-        return this;
-    }
+    settings.put(fieldName, new StringPair(value, comment));
+    return this;
+  }
 
 }

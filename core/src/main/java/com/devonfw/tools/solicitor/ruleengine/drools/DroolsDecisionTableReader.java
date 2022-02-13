@@ -25,61 +25,59 @@ import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 @Component
 public class DroolsDecisionTableReader implements DroolsRulesReader {
 
-    @Autowired
-    private InputStreamFactory inputStreamFactory;
+  @Autowired
+  private InputStreamFactory inputStreamFactory;
 
-    /**
-     * Constructor.
-     */
-    public DroolsDecisionTableReader() {
+  /**
+   * Constructor.
+   */
+  public DroolsDecisionTableReader() {
 
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean accept(String type) {
+
+    return "dt".equals(type);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void readRules(String ruleSource, String templateSource, String decription, KieBaseModel baseModel,
+      Collection<Resource> resources) {
+
+    String ruleUuid = "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
+    String templateUuid = "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
+
+    baseModel.addRuleTemplate(ruleUuid, templateUuid, 2, 1);
+    Resource dt;
+    try {
+      dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(ruleSource));
+    } catch (IOException e) {
+      throw new SolicitorRuntimeException("Could not open decision table xls resource '" + ruleSource + "'for reading");
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean accept(String type) {
-
-        return "dt".equals(type);
+    // Resource dt = ResourceFactory.newClassPathResource(ruleSource,
+    // getClass());
+    dt.setSourcePath(ruleUuid);
+    dt.setSourcePath(ruleUuid);
+    dt.setResourceType(ResourceType.DTABLE);
+    dt.setConfiguration(new DecisionTableConfigurationImpl()); // if this is
+                                                               // not done
+                                                               // then the
+                                                               // system
+                                                               // fails to
+    // compile the rules
+    resources.add(dt);
+    try {
+      dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(templateSource));
+    } catch (IOException e) {
+      throw new SolicitorRuntimeException("Could not open rule template resource '" + templateSource + "'for reading");
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void readRules(String ruleSource, String templateSource, String decription, KieBaseModel baseModel,
-            Collection<Resource> resources) {
-
-        String ruleUuid = "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
-        String templateUuid = "com/devonfw/tools/solicitor/rules/" + UUID.randomUUID().toString();
-
-        baseModel.addRuleTemplate(ruleUuid, templateUuid, 2, 1);
-        Resource dt;
-        try {
-            dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(ruleSource));
-        } catch (IOException e) {
-            throw new SolicitorRuntimeException(
-                    "Could not open decision table xls resource '" + ruleSource + "'for reading");
-        }
-        // Resource dt = ResourceFactory.newClassPathResource(ruleSource,
-        // getClass());
-        dt.setSourcePath(ruleUuid);
-        dt.setSourcePath(ruleUuid);
-        dt.setResourceType(ResourceType.DTABLE);
-        dt.setConfiguration(new DecisionTableConfigurationImpl()); // if this is
-                                                                   // not done
-                                                                   // then the
-                                                                   // system
-                                                                   // fails to
-        // compile the rules
-        resources.add(dt);
-        try {
-            dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(templateSource));
-        } catch (IOException e) {
-            throw new SolicitorRuntimeException(
-                    "Could not open rule template resource '" + templateSource + "'for reading");
-        }
-        dt.setSourcePath(templateUuid);
-        dt.setSourcePath(templateUuid);
-        dt.setResourceType(ResourceType.DRT);
-        resources.add(dt);
-    }
+    dt.setSourcePath(templateUuid);
+    dt.setSourcePath(templateUuid);
+    dt.setResourceType(ResourceType.DRT);
+    resources.add(dt);
+  }
 
 }

@@ -17,96 +17,96 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Dependency {
 
-    @XmlElement(name = "groupId")
-    private String groupId;
+  @XmlElement(name = "groupId")
+  private String groupId;
 
-    @XmlElement(name = "artifactId")
-    private String artifactId;
+  @XmlElement(name = "artifactId")
+  private String artifactId;
 
-    @XmlElement(name = "version")
-    private String version;
+  @XmlElement(name = "version")
+  private String version;
 
-    @XmlElementWrapper(name = "licenses")
-    @XmlElement(name = "license")
-    private ArrayList<License> licenses;
+  @XmlElementWrapper(name = "licenses")
+  @XmlElement(name = "license")
+  private ArrayList<License> licenses;
 
-    /**
-     * This method gets the field <code>artifactId</code>.
-     *
-     * @return the field artifactId
-     */
-    public String getArtifactId() {
+  /**
+   * This method gets the field <code>artifactId</code>.
+   *
+   * @return the field artifactId
+   */
+  public String getArtifactId() {
 
-        return this.artifactId;
-    }
+    return this.artifactId;
+  }
 
-    /**
-     * This method gets the field <code>groupId</code>.
-     *
-     * @return the field groupId
-     */
-    public String getGroupId() {
+  /**
+   * This method gets the field <code>groupId</code>.
+   *
+   * @return the field groupId
+   */
+  public String getGroupId() {
 
-        return this.groupId;
-    }
+    return this.groupId;
+  }
 
-    /**
-     * This method gets the field <code>licenses</code>.
-     *
-     * @return the field licenses
-     */
-    public ArrayList<License> getLicenses() {
+  /**
+   * This method gets the field <code>licenses</code>.
+   *
+   * @return the field licenses
+   */
+  public ArrayList<License> getLicenses() {
 
-        return this.licenses;
-    }
+    return this.licenses;
+  }
 
-    /**
-     * This method gets the field <code>version</code>.
-     *
-     * @return the field version
-     */
-    public String getVersion() {
+  /**
+   * This method gets the field <code>version</code>.
+   *
+   * @return the field version
+   */
+  public String getVersion() {
 
-        return this.version;
-    }
+    return this.version;
+  }
 
-    /**
-     * This method sets the field <code>artifactId</code>.
-     *
-     * @param artifactId the new value of the field artifactId
-     */
-    public void setArtifactId(String artifactId) {
+  /**
+   * This method sets the field <code>artifactId</code>.
+   *
+   * @param artifactId the new value of the field artifactId
+   */
+  public void setArtifactId(String artifactId) {
 
-        this.artifactId = artifactId;
-    }
+    this.artifactId = artifactId;
+  }
 
-    /**
-     * This method sets the field <code>groupId</code>.
-     *
-     * @param groupId the new value of the field groupId
-     */
-    public void setGroupId(String groupId) {
+  /**
+   * This method sets the field <code>groupId</code>.
+   *
+   * @param groupId the new value of the field groupId
+   */
+  public void setGroupId(String groupId) {
 
-        this.groupId = groupId;
-    }
+    this.groupId = groupId;
+  }
 
-    /**
-     * This method sets the field <code>licenses</code>.
-     *
-     * @param licenses the new value of the field licenses
-     */
-    public void setLicenses(ArrayList<License> licenses) {
+  /**
+   * This method sets the field <code>licenses</code>.
+   *
+   * @param licenses the new value of the field licenses
+   */
+  public void setLicenses(ArrayList<License> licenses) {
 
-        this.licenses = licenses;
-    }
+    this.licenses = licenses;
+  }
 
-    /**
-     * This method sets the field <code>version</code>.
-     *
-     * @param version the new value of the field version
-     */
-    public void setVersion(String version) {
+  /**
+   * This method sets the field <code>version</code>.
+   *
+   * @param version the new value of the field version
+   */
+  public void setVersion(String version) {
 
-        this.version = version;
-    }
+    this.version = version;
+  }
 }

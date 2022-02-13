@@ -23,60 +23,59 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 @Component
 public class ConfigReader {
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigReader.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ConfigReader.class);
 
-    private static final int EXPECTED_CFG_VERSION = 1;
+  private static final int EXPECTED_CFG_VERSION = 1;
 
-    @Autowired
-    private InputStreamFactory inputStreamFactory;
+  @Autowired
+  private InputStreamFactory inputStreamFactory;
 
-    private ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+  private ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-    /**
-     * Reads a JSON configuration file.
-     * 
-     * @param url the location to read from
-     * @return the read config
-     */
-    public SolicitorConfig readConfig(String url) {
+  /**
+   * Reads a JSON configuration file.
+   * 
+   * @param url the location to read from
+   * @return the read config
+   */
+  public SolicitorConfig readConfig(String url) {
 
-        checkConfigVersion(url);
+    checkConfigVersion(url);
 
-        SolicitorConfig sc;
-        try {
-            sc = objectMapper.readValue(inputStreamFactory.createInputStreamFor(url), SolicitorConfig.class);
-        } catch (IOException e) {
-            throw new SolicitorRuntimeException("Could not read config file", e);
-        }
-        return sc;
+    SolicitorConfig sc;
+    try {
+      sc = objectMapper.readValue(inputStreamFactory.createInputStreamFor(url), SolicitorConfig.class);
+    } catch (IOException e) {
+      throw new SolicitorRuntimeException("Could not read config file", e);
+    }
+    return sc;
+  }
+
+  /**
+   * Checks if the config file contains the correct version info.
+   * 
+   * @param url the location to read the config from
+   * @throws SolicitorRuntimeException if the version info in the file does not exist or is not identical to the
+   *         expected version {@value #EXPECTED_CFG_VERSION} or if the file could not be read.
+   */
+  private void checkConfigVersion(String url) {
+
+    ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+    try {
+      JsonNode root = objectMapper.readTree(inputStreamFactory.createInputStreamFor(url));
+      int version = 0;
+      JsonNode versionNode = root.get("version");
+      if (versionNode != null) {
+        version = versionNode.asInt();
+      }
+      if (version != EXPECTED_CFG_VERSION) {
+        LOG.error(LogMessages.UNSUPPORTED_CONFIG_VERSION.msg(), url, EXPECTED_CFG_VERSION, version);
+        throw new SolicitorRuntimeException("Could not read config file due to version mismatch");
+      }
+    } catch (IOException e) {
+      throw new SolicitorRuntimeException("Could not read config file", e);
     }
 
-    /**
-     * Checks if the config file contains the correct version info.
-     * 
-     * @param url the location to read the config from
-     * @throws SolicitorRuntimeException if the version info in the file does
-     *         not exist or is not identical to the expected version
-     *         {@value #EXPECTED_CFG_VERSION} or if the file could not be read.
-     */
-    private void checkConfigVersion(String url) {
-
-        ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        try {
-            JsonNode root = objectMapper.readTree(inputStreamFactory.createInputStreamFor(url));
-            int version = 0;
-            JsonNode versionNode = root.get("version");
-            if (versionNode != null) {
-                version = versionNode.asInt();
-            }
-            if (version != EXPECTED_CFG_VERSION) {
-                LOG.error(LogMessages.UNSUPPORTED_CONFIG_VERSION.msg(), url, EXPECTED_CFG_VERSION, version);
-                throw new SolicitorRuntimeException("Could not read config file due to version mismatch");
-            }
-        } catch (IOException e) {
-            throw new SolicitorRuntimeException("Could not read config file", e);
-        }
-
-    }
+  }
 
 }

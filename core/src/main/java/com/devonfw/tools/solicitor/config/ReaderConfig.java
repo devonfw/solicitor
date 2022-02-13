@@ -14,129 +14,129 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents the configuration of a {@link Reader} in JSON format.
  */
 public class ReaderConfig {
-    private static final String DEFAULT_REPO_TYPE = "maven";
+  private static final String DEFAULT_REPO_TYPE = "maven";
 
-    @JsonProperty
-    private String type;
+  @JsonProperty
+  private String type;
 
-    @JsonProperty
-    private String source;
+  @JsonProperty
+  private String source;
 
-    @JsonProperty
-    private UsagePattern usagePattern;
+  @JsonProperty
+  private UsagePattern usagePattern;
 
-    @JsonProperty
-    private String repoType;
-    
-    @JsonProperty
-    private Map<String,String> configuration;
+  @JsonProperty
+  private String repoType;
 
-    /**
-     * Standard constructor. Field {@link #repoType} will be initialized to
-     * "maven" to use this if value is not defined in JSON config.
-     */
-    public ReaderConfig() {
+  @JsonProperty
+  private Map<String, String> configuration;
 
-        this.repoType = DEFAULT_REPO_TYPE;
-    }
+  /**
+   * Standard constructor. Field {@link #repoType} will be initialized to "maven" to use this if value is not defined in
+   * JSON config.
+   */
+  public ReaderConfig() {
 
-    /**
-     * This method gets the field <code>repoType</code>.
-     *
-     * @return the field repoType
-     */
-    public String getRepoType() {
+    this.repoType = DEFAULT_REPO_TYPE;
+  }
 
-        return this.repoType;
-    }
+  /**
+   * This method gets the field <code>repoType</code>.
+   *
+   * @return the field repoType
+   */
+  public String getRepoType() {
 
-    /**
-     * This method gets the field <code>configuration</code>.
-     *
-     * @return the field configuration
-     */
-    public Map<String,String> getConfiguration() {
+    return this.repoType;
+  }
 
-        return this.configuration;
-    }
-    
-    /**
-     * This method gets the field <code>source</code>.
-     *
-     * @return the field source
-     */
-    public String getSource() {
+  /**
+   * This method gets the field <code>configuration</code>.
+   *
+   * @return the field configuration
+   */
+  public Map<String, String> getConfiguration() {
 
-        return this.source;
-    }
+    return this.configuration;
+  }
 
-    /**
-     * This method gets the field <code>type</code>.
-     *
-     * @return the field type
-     */
-    public String getType() {
+  /**
+   * This method gets the field <code>source</code>.
+   *
+   * @return the field source
+   */
+  public String getSource() {
 
-        return this.type;
-    }
+    return this.source;
+  }
 
-    /**
-     * This method gets the field <code>usagePattern</code>.
-     *
-     * @return the field usagePattern
-     */
-    public UsagePattern getUsagePattern() {
+  /**
+   * This method gets the field <code>type</code>.
+   *
+   * @return the field type
+   */
+  public String getType() {
 
-        return this.usagePattern;
-    }
+    return this.type;
+  }
 
-    /**
-     * This method sets the field <code>repoType</code>.
-     *
-     * @param repoType the new value of the field repoType
-     */
-    public void setRepoType(String repoType) {
+  /**
+   * This method gets the field <code>usagePattern</code>.
+   *
+   * @return the field usagePattern
+   */
+  public UsagePattern getUsagePattern() {
 
-        this.repoType = repoType;
-    }
-    
-    /**
-     * This method sets the field <code>configuration</code>.
-     *
-     * @param configuration the new value of the field configuration
-     */
-    public void setConfiguration(Map<String,String> configuration) {
+    return this.usagePattern;
+  }
 
-        this.configuration = configuration;
-    }
+  /**
+   * This method sets the field <code>repoType</code>.
+   *
+   * @param repoType the new value of the field repoType
+   */
+  public void setRepoType(String repoType) {
 
-    /**
-     * This method sets the field <code>source</code>.
-     *
-     * @param source the new value of the field source
-     */
-    public void setSource(String source) {
+    this.repoType = repoType;
+  }
 
-        this.source = source;
-    }
+  /**
+   * This method sets the field <code>configuration</code>.
+   *
+   * @param configuration the new value of the field configuration
+   */
+  public void setConfiguration(Map<String, String> configuration) {
 
-    /**
-     * This method sets the field <code>type</code>.
-     *
-     * @param type the new value of the field type
-     */
-    public void setType(String type) {
+    this.configuration = configuration;
+  }
 
-        this.type = type;
-    }
+  /**
+   * This method sets the field <code>source</code>.
+   *
+   * @param source the new value of the field source
+   */
+  public void setSource(String source) {
 
-    /**
-     * This method sets the field <code>usagePattern</code>.
-     *
-     * @param usagePattern the new value of the field usagePattern
-     */
-    public void setUsagePattern(UsagePattern usagePattern) {
+    this.source = source;
+  }
 
-        this.usagePattern = usagePattern;
-    }
+  /**
+   * This method sets the field <code>type</code>.
+   *
+   * @param type the new value of the field type
+   */
+  public void setType(String type) {
+
+    this.type = type;
+  }
+
+  /**
+   * This method sets the field <code>usagePattern</code>.
+   *
+   * @param usagePattern the new value of the field usagePattern
+   */
+  public void setUsagePattern(UsagePattern usagePattern) {
+
+    this.usagePattern = usagePattern;
+  }
 }

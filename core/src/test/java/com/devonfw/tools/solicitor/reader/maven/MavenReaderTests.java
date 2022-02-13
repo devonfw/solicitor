@@ -17,22 +17,22 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
 public class MavenReaderTests {
-    private static final Logger LOG = LoggerFactory.getLogger(MavenReaderTests.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MavenReaderTests.class);
 
-    @Test
-    public void readFileAndCheckSize() {
+  @Test
+  public void readFileAndCheckSize() {
 
-        ModelFactory modelFactory = new ModelFactoryImpl();
+    ModelFactory modelFactory = new ModelFactoryImpl();
 
-        Application application =
-                modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
-        MavenReader mr = new MavenReader();
-        mr.setModelFactory(modelFactory);
-        mr.setInputStreamFactory(new FileInputStreamFactory());
-        mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
-                "maven",null);
-        LOG.info(application.toString());
-        assertEquals(95, application.getApplicationComponents().size());
-    }
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8");
+    MavenReader mr = new MavenReader();
+    mr.setModelFactory(modelFactory);
+    mr.setInputStreamFactory(new FileInputStreamFactory());
+    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
+        "maven", null);
+    LOG.info(application.toString());
+    assertEquals(95, application.getApplicationComponents().size());
+  }
 
 }

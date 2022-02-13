@@ -17,52 +17,52 @@ import com.devonfw.tools.solicitor.common.content.InMemoryMapContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
 
 /**
- * Java Spring configuration for the beans in the area of the
- * {@link ContentProvider} for {@link GuessedLicenseUrlContent}.
+ * Java Spring configuration for the beans in the area of the {@link ContentProvider} for
+ * {@link GuessedLicenseUrlContent}.
  */
 @Configuration
 public class LicenseUrlGuesserConfiguration {
 
-    @Value("${solicitor.classpath-guessedlicenseurl-cache-locations}")
-    private String[] cachePaths;
+  @Value("${solicitor.classpath-guessedlicenseurl-cache-locations}")
+  private String[] cachePaths;
 
-    @Autowired
-    private InMemoryMapContentProvider<WebContent> inMemoryMapWebContentProvider;
+  @Autowired
+  private InMemoryMapContentProvider<WebContent> inMemoryMapWebContentProvider;
 
-    @Autowired
-    private SolicitorVersion solicitorVersion;
+  @Autowired
+  private SolicitorVersion solicitorVersion;
 
-    @Bean
-    public ContentFactory<GuessedLicenseUrlContent> guessedLicenseUrlContentFactory() {
+  @Bean
+  public ContentFactory<GuessedLicenseUrlContent> guessedLicenseUrlContentFactory() {
 
-        return new GuessedLicenseUrlContentFactory();
-    }
+    return new GuessedLicenseUrlContentFactory();
+  }
 
-    @Bean
-    public InMemoryMapContentProvider<GuessedLicenseUrlContent> inMemoryMapGuessedLicenseUrlContentProvider() {
+  @Bean
+  public InMemoryMapContentProvider<GuessedLicenseUrlContent> inMemoryMapGuessedLicenseUrlContentProvider() {
 
-        return new InMemoryMapContentProvider<>(guessedLicenseUrlContentFactory(),
-                classpathGuessedLicenseUrlContentProvider());
+    return new InMemoryMapContentProvider<>(guessedLicenseUrlContentFactory(),
+        classpathGuessedLicenseUrlContentProvider());
 
-    }
+  }
 
-    @Bean
-    public ClasspathContentProvider<GuessedLicenseUrlContent> classpathGuessedLicenseUrlContentProvider() {
+  @Bean
+  public ClasspathContentProvider<GuessedLicenseUrlContent> classpathGuessedLicenseUrlContentProvider() {
 
-        return new ClasspathContentProvider<>(guessedLicenseUrlContentFactory(),
-                filesystemCachingGuessedLicenseUrlContentProvider(), this.cachePaths);
-    }
+    return new ClasspathContentProvider<>(guessedLicenseUrlContentFactory(),
+        filesystemCachingGuessedLicenseUrlContentProvider(), this.cachePaths);
+  }
 
-    @Bean
-    public FilesystemCachingContentProvider<GuessedLicenseUrlContent> filesystemCachingGuessedLicenseUrlContentProvider() {
+  @Bean
+  public FilesystemCachingContentProvider<GuessedLicenseUrlContent> filesystemCachingGuessedLicenseUrlContentProvider() {
 
-        return new FilesystemCachingContentProvider<>(guessedLicenseUrlContentFactory(), strategyLicenseUrlGuesser(),
-                "licenseurls");
-    }
+    return new FilesystemCachingContentProvider<>(guessedLicenseUrlContentFactory(), strategyLicenseUrlGuesser(),
+        "licenseurls");
+  }
 
-    @Bean
-    public StrategyLicenseUrlGuesser strategyLicenseUrlGuesser() {
+  @Bean
+  public StrategyLicenseUrlGuesser strategyLicenseUrlGuesser() {
 
-        return new StrategyLicenseUrlGuesser(this.inMemoryMapWebContentProvider, this.solicitorVersion);
-    }
+    return new StrategyLicenseUrlGuesser(this.inMemoryMapWebContentProvider, this.solicitorVersion);
+  }
 }

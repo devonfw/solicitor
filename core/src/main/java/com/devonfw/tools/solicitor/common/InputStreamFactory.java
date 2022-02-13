@@ -12,24 +12,21 @@ import java.io.InputStream;
  */
 public interface InputStreamFactory {
 
-    /**
-     * Create an input stream for the given id.
-     *
-     * @param stringIdentifier a string which identifies the source. Concrete
-     *        meaning depends on the implementation.
-     * @return the creates {@link InputStream} object.
-     * @throws java.io.IOException if any lowlevel exception occurs
-     */
-    InputStream createInputStreamFor(String stringIdentifier) throws IOException;
+  /**
+   * Create an input stream for the given id.
+   *
+   * @param stringIdentifier a string which identifies the source. Concrete meaning depends on the implementation.
+   * @return the creates {@link InputStream} object.
+   * @throws java.io.IOException if any lowlevel exception occurs
+   */
+  InputStream createInputStreamFor(String stringIdentifier) throws IOException;
 
-    /**
-     * Checks if the identified source exists so that an {@link InputStream}
-     * might be obtained via {@link #createInputStreamFor(String)}.
-     *
-     * @param stringIdentifier a string which identifies the source. Concrete
-     *        meaning depends on the implementation.
-     * @return <code>true</code> if the identified source exists,
-     *         <code>false</code> otherwise
-     */
-    boolean isExisting(String stringIdentifier);
+  /**
+   * Checks if the identified source exists so that an {@link InputStream} might be obtained via
+   * {@link #createInputStreamFor(String)}.
+   *
+   * @param stringIdentifier a string which identifies the source. Concrete meaning depends on the implementation.
+   * @return <code>true</code> if the identified source exists, <code>false</code> otherwise
+   */
+  boolean isExisting(String stringIdentifier);
 }

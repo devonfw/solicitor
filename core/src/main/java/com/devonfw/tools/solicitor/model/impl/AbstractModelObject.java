@@ -13,85 +13,83 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class AbstractModelObject {
 
-    private static long idSingleton = 0;
+  private static long idSingleton = 0;
 
-    private static final DecimalFormat integerFormat = new DecimalFormat("000000000");
+  private static final DecimalFormat integerFormat = new DecimalFormat("000000000");
 
-    /**
-     * Concatenates two String arrays.
-     *
-     * @param first an array
-     * @param second an array o
-     * @return concatenated array
-     */
-    public static String[] concatRow(String[] first, String[] second) {
+  /**
+   * Concatenates two String arrays.
+   *
+   * @param first an array
+   * @param second an array o
+   * @return concatenated array
+   */
+  public static String[] concatRow(String[] first, String[] second) {
 
-        String[] result = Arrays.copyOf(first, first.length + second.length);
-        System.arraycopy(second, 0, result, first.length, second.length);
-        return result;
+    String[] result = Arrays.copyOf(first, first.length + second.length);
+    System.arraycopy(second, 0, result, first.length, second.length);
+    return result;
+  }
+
+  private String id;
+
+  /**
+   * Constructor.
+   */
+  public AbstractModelObject() {
+
+    synchronized (integerFormat) {
+      id = integerFormat.format(idSingleton++);
     }
+  }
 
-    private String id;
+  /**
+   * Returns the parent. To be overridden in subclasses where a parent exits,
+   *
+   * @return the parent in the model object hierarchy
+   */
+  @JsonIgnore
+  protected Object doGetParent() {
 
-    /**
-     * Constructor.
-     */
-    public AbstractModelObject() {
+    return null;
+  }
 
-        synchronized (integerFormat) {
-            id = integerFormat.format(idSingleton++);
-        }
-    }
+  /**
+   * Gets an array of Strings which represent the data values contained in this object.
+   *
+   * @return the value array
+   */
+  @JsonIgnore
+  public abstract String[] getDataElements();
 
-    /**
-     * Returns the parent. To be overridden in subclasses where a parent exits,
-     *
-     * @return the parent in the model object hierarchy
-     */
-    @JsonIgnore
-    protected Object doGetParent() {
+  /**
+   * Gets an array of Strings which are the names of the datafields contained in this object.
+   * 
+   * @return the column name array
+   */
+  @JsonIgnore
+  public abstract String[] getHeadElements();
 
-        return null;
-    }
+  /**
+   * Gets the id of the model object.
+   * 
+   * @return the id
+   */
+  @JsonIgnore
+  public String getId() {
 
-    /**
-     * Gets an array of Strings which represent the data values contained in
-     * this object.
-     *
-     * @return the value array
-     */
-    @JsonIgnore
-    public abstract String[] getDataElements();
+    return id;
+  }
 
-    /**
-     * Gets an array of Strings which are the names of the datafields contained
-     * in this object.
-     * 
-     * @return the column name array
-     */
-    @JsonIgnore
-    public abstract String[] getHeadElements();
+  /**
+   * Gets the parent.
+   *
+   * @return the parent in the model object hierarchy
+   */
+  @JsonIgnore
+  public final AbstractModelObject getParent() {
 
-    /**
-     * Gets the id of the model object.
-     * 
-     * @return the id
-     */
-    @JsonIgnore
-    public String getId() {
-
-        return id;
-    }
-
-    /**
-     * Gets the parent.
-     *
-     * @return the parent in the model object hierarchy
-     */
-    @JsonIgnore
-    public final AbstractModelObject getParent() {
-
-        return (AbstractModelObject) doGetParent();
-    }
+    return (AbstractModelObject) doGetParent();
+  }
 
 }

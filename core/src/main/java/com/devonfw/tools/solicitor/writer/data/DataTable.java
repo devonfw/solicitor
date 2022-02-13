@@ -9,26 +9,26 @@ package com.devonfw.tools.solicitor.writer.data;
  */
 public interface DataTable extends Iterable<DataTableRow> {
 
-    /**
-     * Get a row. Does not include headline.
-     *
-     * @param rowNum (zero based)
-     * @return the requested row
-     */
-    DataTableRow getDataRow(int rowNum);
+  /**
+   * Get a row. Does not include headline.
+   *
+   * @param rowNum (zero based)
+   * @return the requested row
+   */
+  DataTableRow getDataRow(int rowNum);
 
-    /**
-     * Get the Headline.
-     *
-     * @return the headline
-     */
-    String[] getHeadRow();
+  /**
+   * Get the Headline.
+   *
+   * @return the headline
+   */
+  String[] getHeadRow();
 
-    /**
-     * Tests if the DataTable contains data. If it does not contain data then
-     * even {@link #getHeadRow()} might not provide any information.
-     * 
-     * @return <code>true</code> if there is no data in the table
-     */
-    boolean isEmpty();
+  /**
+   * Tests if the DataTable contains data. If it does not contain data then even {@link #getHeadRow()} might not provide
+   * any information.
+   * 
+   * @return <code>true</code> if there is no data in the table
+   */
+  boolean isEmpty();
 }

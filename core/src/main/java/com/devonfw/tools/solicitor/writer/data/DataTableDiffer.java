@@ -8,13 +8,13 @@ package com.devonfw.tools.solicitor.writer.data;
  */
 public interface DataTableDiffer {
 
-    /**
-     * Calculate difference between the given DataTable objects.
-     *
-     * @param newTable the new table
-     * @param oldTable the old table
-     * @return the difference
-     */
-    DataTable diff(DataTable newTable, DataTable oldTable);
+  /**
+   * Calculate difference between the given DataTable objects.
+   *
+   * @param newTable the new table
+   * @param oldTable the old table
+   * @return the difference
+   */
+  DataTable diff(DataTable newTable, DataTable oldTable);
 
 }

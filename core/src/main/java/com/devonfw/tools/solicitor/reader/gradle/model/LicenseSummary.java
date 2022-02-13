@@ -11,36 +11,36 @@ import java.util.List;
  */
 
 public class LicenseSummary {
-    private List<Dependency> dependencies;
+  private List<Dependency> dependencies;
 
-    /**
-     * This method gets the field <code>dependencies</code>.
-     *
-     * @return the field dependencies
-     */
-    public List<Dependency> getDependencies() {
+  /**
+   * This method gets the field <code>dependencies</code>.
+   *
+   * @return the field dependencies
+   */
+  public List<Dependency> getDependencies() {
 
-        return this.dependencies;
+    return this.dependencies;
+  }
+
+  /**
+   * This method sets the field <code>dependencies</code>.
+   *
+   * @param dependencies the new value of the field dependencies
+   */
+  public void setDependencies(List<Dependency> dependencies) {
+
+    this.dependencies = dependencies;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+
+    String ld = "";
+    for (Dependency d : this.dependencies) {
+      ld += d + "\n";
     }
-
-    /**
-     * This method sets the field <code>dependencies</code>.
-     *
-     * @param dependencies the new value of the field dependencies
-     */
-    public void setDependencies(List<Dependency> dependencies) {
-
-        this.dependencies = dependencies;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-
-        String ld = "";
-        for (Dependency d : this.dependencies) {
-            ld += d + "\n";
-        }
-        return ld;
-    }
+    return ld;
+  }
 }

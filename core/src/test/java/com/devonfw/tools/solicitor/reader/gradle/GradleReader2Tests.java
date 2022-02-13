@@ -21,88 +21,88 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
 public class GradleReader2Tests {
-    private static final Logger LOG = LoggerFactory.getLogger(GradleReader2Tests.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GradleReader2Tests.class);
 
-    Application application;
+  Application application;
 
-    public GradleReader2Tests() {
+  public GradleReader2Tests() {
 
-        ModelFactory modelFactory = new ModelFactoryImpl();
+    ModelFactory modelFactory = new ModelFactoryImpl();
 
-        this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
-        GradleReader2 gr = new GradleReader2();
-        gr.setModelFactory(modelFactory);
-        gr.setInputStreamFactory(new FileInputStreamFactory());
-        gr.readInventory("gradle2", "src/test/resources/licenseReport.json", this.application,
-                UsagePattern.DYNAMIC_LINKING, "maven",null);
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
+    GradleReader2 gr = new GradleReader2();
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("gradle2", "src/test/resources/licenseReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
+        "maven", null);
 
+  }
+
+  @Test
+  public void findArtifact() {
+
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getGroupId().equals("org.apache.xmlbeans") && //
+          ap.getArtifactId().equals("xmlbeans") && //
+          ap.getVersion().equals("3.0.2")) {
+        found = true;
+        break;
+      }
     }
+    assertTrue(found);
+  }
 
-    @Test
-    public void findArtifact() {
+  @Test
+  public void readFileAndCheckSize() {
 
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getGroupId().equals("org.apache.xmlbeans") && //
-                    ap.getArtifactId().equals("xmlbeans") && //
-                    ap.getVersion().equals("3.0.2")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
+    LOG.info(this.application.toString());
+    assertEquals(15, this.application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void testFindLicense() {
+
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("vavr-jackson")
+          && ap.getRawLicenses().get(0).getDeclaredLicense().equals("The Apache Software License, Version 2.0")) {
+        found = true;
+        break;
+      }
     }
+    assertTrue(found);
+  }
 
-    @Test
-    public void readFileAndCheckSize() {
+  @Test
+  public void testFindLicense2() {
 
-        LOG.info(this.application.toString());
-        assertEquals(15, this.application.getApplicationComponents().size());
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("curvesapi")
+          && ap.getRawLicenses().get(0).getDeclaredLicense().equals("BSD License")) {
+        found = true;
+        break;
+      }
     }
+    assertTrue(found);
+  }
 
-    @Test
-    public void testFindLicense() {
+  @Test
+  public void testFindLicense3() {
 
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("vavr-jackson") && ap.getRawLicenses().get(0).getDeclaredLicense()
-                    .equals("The Apache Software License, Version 2.0")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("jackson-core") && ap.getVersion().equals("2.9.4")
+          && ap.getRawLicenses().get(0).getDeclaredLicense().equals("The Apache Software License, Version 2.0")) {
+        found = true;
+        break;
+      }
     }
-
-    @Test
-    public void testFindLicense2() {
-
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("curvesapi")
-                    && ap.getRawLicenses().get(0).getDeclaredLicense().equals("BSD License")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
-    }
-
-    @Test
-    public void testFindLicense3() {
-
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("jackson-core") && ap.getVersion().equals("2.9.4") && ap.getRawLicenses()
-                    .get(0).getDeclaredLicense().equals("The Apache Software License, Version 2.0")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
-    }
+    assertTrue(found);
+  }
 }

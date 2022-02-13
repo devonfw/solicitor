@@ -14,116 +14,116 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
 
-    private String declaredLicense;
+  private String declaredLicense;
 
-    private String licenseUrl;
+  private String licenseUrl;
 
-    private String trace;
+  private String trace;
 
-    private boolean specialHandling;
+  private boolean specialHandling;
 
-    private ApplicationComponent applicationComponent;
+  private ApplicationComponent applicationComponent;
 
-    /** {@inheritDoc} */
-    @Override
-    protected ApplicationComponent doGetParent() {
+  /** {@inheritDoc} */
+  @Override
+  protected ApplicationComponent doGetParent() {
 
-        return this.applicationComponent;
+    return this.applicationComponent;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @JsonIgnore
+  public ApplicationComponent getApplicationComponent() {
+
+    return this.applicationComponent;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String[] getDataElements() {
+
+    return new String[] { this.declaredLicense, this.licenseUrl, this.trace };
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getDeclaredLicense() {
+
+    return this.declaredLicense;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String[] getHeadElements() {
+
+    return new String[] { "declaredLicense", "licenseUrl", "trace" };
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getLicenseUrl() {
+
+    return this.licenseUrl;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getTrace() {
+
+    return this.trace;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isSpecialHandling() {
+
+    return this.specialHandling;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setApplicationComponent(ApplicationComponent applicationComponent) {
+
+    if (this.applicationComponent != null) {
+      throw new IllegalStateException("Once the ApplicationComponentImpl is set it can not be changed");
     }
+    this.applicationComponent = applicationComponent;
+    applicationComponent.addRawLicense(this);
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    @JsonIgnore
-    public ApplicationComponent getApplicationComponent() {
+  /** {@inheritDoc} */
+  @Override
+  public void setDeclaredLicense(String declaredLicense) {
 
-        return this.applicationComponent;
-    }
+    this.declaredLicense = declaredLicense;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public String[] getDataElements() {
+  /** {@inheritDoc} */
+  @Override
+  public void setLicenseUrl(String licenseUrl) {
 
-        return new String[] { this.declaredLicense, this.licenseUrl, this.trace };
-    }
+    this.licenseUrl = licenseUrl;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getDeclaredLicense() {
+  /** {@inheritDoc} */
+  @Override
+  public void setSpecialHandling(boolean specialHandling) {
 
-        return this.declaredLicense;
-    }
+    this.specialHandling = specialHandling;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public String[] getHeadElements() {
+  /** {@inheritDoc} */
+  @Override
+  public void setTrace(String trace) {
 
-        return new String[] { "declaredLicense", "licenseUrl", "trace" };
-    }
+    this.trace = trace;
+  }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getLicenseUrl() {
+  /** {@inheritDoc} */
+  @Override
+  public void completeData() {
 
-        return this.licenseUrl;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getTrace() {
-
-        return this.trace;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isSpecialHandling() {
-
-        return this.specialHandling;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setApplicationComponent(ApplicationComponent applicationComponent) {
-
-        if (this.applicationComponent != null) {
-            throw new IllegalStateException("Once the ApplicationComponentImpl is set it can not be changed");
-        }
-        this.applicationComponent = applicationComponent;
-        applicationComponent.addRawLicense(this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setDeclaredLicense(String declaredLicense) {
-
-        this.declaredLicense = declaredLicense;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setLicenseUrl(String licenseUrl) {
-
-        this.licenseUrl = licenseUrl;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSpecialHandling(boolean specialHandling) {
-
-        this.specialHandling = specialHandling;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTrace(String trace) {
-
-        this.trace = trace;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void completeData() {
-
-    }
+  }
 
 }

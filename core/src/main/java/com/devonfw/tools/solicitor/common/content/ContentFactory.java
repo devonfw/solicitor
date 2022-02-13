@@ -8,18 +8,18 @@ package com.devonfw.tools.solicitor.common.content;
  */
 public interface ContentFactory<C extends Content> {
 
-    /**
-     * Create content from a given string.
-     *
-     * @param string the string representation of the content
-     * @return the content object
-     */
-    C fromString(String string);
+  /**
+   * Create content from a given string.
+   *
+   * @param string the string representation of the content
+   * @return the content object
+   */
+  C fromString(String string);
 
-    /**
-     * Create an empty content object.
-     *
-     * @return the empty content object
-     */
-    C emptyContent();
+  /**
+   * Create an empty content object.
+   *
+   * @return the empty content object
+   */
+  C emptyContent();
 }

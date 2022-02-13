@@ -23,108 +23,106 @@ import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
 public class NpmLicenseCrawlerReaderTests {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NpmLicenseCrawlerReaderTests.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NpmLicenseCrawlerReaderTests.class);
 
-    private Application application;
+  private Application application;
 
-    public NpmLicenseCrawlerReaderTests() {
+  public NpmLicenseCrawlerReaderTests() {
 
-        ModelFactory modelFactory = new ModelFactoryImpl();
-        this.application =
-                modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
-        NpmLicenseCrawlerReader nr = new NpmLicenseCrawlerReader();
-        nr.setDeprecationChecker(new DeprecationChecker() {
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+    NpmLicenseCrawlerReader nr = new NpmLicenseCrawlerReader();
+    nr.setDeprecationChecker(new DeprecationChecker() {
 
-            @Override
-            public void check(boolean warnOnly, String detailsString) {
+      @Override
+      public void check(boolean warnOnly, String detailsString) {
 
-                // do nothing...
-            }
-        });
-        nr.setModelFactory(modelFactory);
-        nr.setInputStreamFactory(new FileInputStreamFactory());
-        nr.readInventory("npm", "src/test/resources/npmlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
-                "npm",null);
+        // do nothing...
+      }
+    });
+    nr.setModelFactory(modelFactory);
+    nr.setInputStreamFactory(new FileInputStreamFactory());
+    nr.readInventory("npm", "src/test/resources/npmlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING, "npm",
+        null);
+  }
+
+  @Test
+  public void readFileAndCheckSize() {
+
+    LOG.info(this.application.toString());
+    assertEquals(68, this.application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void testFindArtifact() {
+
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("to-fast-properties")) {
+        found = true;
+        break;
+      }
     }
+    assertTrue(found);
+  }
 
-    @Test
-    public void readFileAndCheckSize() {
+  @Test
+  public void testFindDiffrentLicense() {
 
-        LOG.info(this.application.toString());
-        assertEquals(68, this.application.getApplicationComponents().size());
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("aws-sign2")
+          && ap.getRawLicenses().get(0).getDeclaredLicense().equals("Apache-2.0")) {
+        found = true;
+        break;
+      }
     }
+    assertTrue(found);
+  }
 
-    @Test
-    public void testFindArtifact() {
+  @Test
+  public void testFindDiffrentLicense2() {
 
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("to-fast-properties")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("autoprefixer") && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
+        found = true;
+        break;
+      }
     }
+    assertTrue(found);
+  }
 
-    @Test
-    public void testFindDiffrentLicense() {
+  @Test
+  public void testFindDiffrentLicense3() {
 
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("aws-sign2")
-                    && ap.getRawLicenses().get(0).getDeclaredLicense().equals("Apache-2.0")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("yargs") && ap.getVersion().equals("9.0.1")
+          && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
+        found = true;
+        break;
+      }
     }
+    assertTrue(found);
+  }
 
-    @Test
-    public void testFindDiffrentLicense2() {
+  @Test
+  public void testFindLicense() {
 
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("autoprefixer")
-                    && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("tough-cookie")
+          && ap.getRawLicenses().get(0).getDeclaredLicense().equals("BSD-3-Clause")) {
+        found = true;
+        break;
+      }
     }
-
-    @Test
-    public void testFindDiffrentLicense3() {
-
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("yargs") && ap.getVersion().equals("9.0.1")
-                    && ap.getRawLicenses().get(0).getDeclaredLicense().equals("MIT")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
-    }
-
-    @Test
-    public void testFindLicense() {
-
-        List<ApplicationComponent> lapc = this.application.getApplicationComponents();
-        boolean found = false;
-        for (ApplicationComponent ap : lapc) {
-            if (ap.getArtifactId().equals("tough-cookie")
-                    && ap.getRawLicenses().get(0).getDeclaredLicense().equals("BSD-3-Clause")) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
-    }
+    assertTrue(found);
+  }
 }

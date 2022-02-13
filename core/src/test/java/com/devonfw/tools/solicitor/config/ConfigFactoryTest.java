@@ -12,17 +12,16 @@ import org.junit.Test;
  */
 public class ConfigFactoryTest {
 
-    /**
-     * Test method for
-     * {@link com.devonfw.tools.solicitor.config.ConfigFactory#getUrlPath(java.lang.String)}.
-     */
-    @Test
-    public void testGetUrlPath() {
+  /**
+   * Test method for {@link com.devonfw.tools.solicitor.config.ConfigFactory#getUrlPath(java.lang.String)}.
+   */
+  @Test
+  public void testGetUrlPath() {
 
-        assertEquals(".", ConfigFactory.getUrlPath("file:foo.txt"));
-        assertEquals(".", ConfigFactory.getUrlPath("classpath:some/path/foo.txt"));
-        assertEquals("some/path", ConfigFactory.getUrlPath("file:some/path/foo.txt"));
-        assertEquals(".", ConfigFactory.getUrlPath("some/path/foo.txt"));
-    }
+    assertEquals(".", ConfigFactory.getUrlPath("file:foo.txt"));
+    assertEquals(".", ConfigFactory.getUrlPath("classpath:some/path/foo.txt"));
+    assertEquals("some/path", ConfigFactory.getUrlPath("file:some/path/foo.txt"));
+    assertEquals(".", ConfigFactory.getUrlPath("some/path/foo.txt"));
+  }
 
 }

@@ -10,22 +10,22 @@ import com.devonfw.tools.solicitor.common.content.ContentFactory;
  */
 public class WebContentFactory implements ContentFactory<WebContent> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public WebContent fromString(String string) {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public WebContent fromString(String string) {
 
-        return new WebContent(string);
-    }
+    return new WebContent(string);
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public WebContent emptyContent() {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public WebContent emptyContent() {
 
-        return new WebContent(null);
-    }
+    return new WebContent(null);
+  }
 
 }

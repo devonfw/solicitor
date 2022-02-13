@@ -15,25 +15,24 @@ import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 @Component
 public class WriterFactory {
 
-    @Autowired
-    private Writer[] writers;
+  @Autowired
+  private Writer[] writers;
 
-    /**
-     * Find the right writer for the given type
-     * 
-     * @param type the type of template
-     * @return the appropriate {@link Writer}
-     * @throws SolicitorRuntimeException if no {@link Writer} could be found for
-     *         the given type
-     */
-    public Writer writerFor(String type) {
+  /**
+   * Find the right writer for the given type
+   * 
+   * @param type the type of template
+   * @return the appropriate {@link Writer}
+   * @throws SolicitorRuntimeException if no {@link Writer} could be found for the given type
+   */
+  public Writer writerFor(String type) {
 
-        for (Writer writer : writers) {
-            if (writer.accept(type)) {
-                return writer;
-            }
-        }
-        throw new SolicitorRuntimeException("No Writer defined for type '" + type + "'");
+    for (Writer writer : writers) {
+      if (writer.accept(type)) {
+        return writer;
+      }
     }
+    throw new SolicitorRuntimeException("No Writer defined for type '" + type + "'");
+  }
 
 }
