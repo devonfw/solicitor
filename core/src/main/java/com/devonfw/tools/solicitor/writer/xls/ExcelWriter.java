@@ -113,7 +113,7 @@ public class ExcelWriter implements Writer {
     for (Sheet sheet : wb) {
       for (Row row : sheet) {
         for (Cell cell : row) {
-          if (cell.getCellTypeEnum() == CellType.STRING) {
+          if (cell.getCellType() == CellType.STRING) {
             String cellText = cell.getStringCellValue();
             for (String tableLabel : tableLabels) {
               if (cellText != null && cellText.contains("#" + tableLabel + "#")) {
@@ -157,7 +157,7 @@ public class ExcelWriter implements Writer {
       }
       // replace the placeholders
       for (Cell oneCell : row) {
-        if (oneCell.getCellTypeEnum() == CellType.STRING) {
+        if (oneCell.getCellType() == CellType.STRING) {
           String text = oneCell.getStringCellValue();
           String oldModelText = text;
           boolean hasChanged = false;
@@ -244,7 +244,7 @@ public class ExcelWriter implements Writer {
       try (OutputStream fileOut = new FileOutputStream(target)) {
         wb.write(fileOut);
       }
-    } catch (IOException | EncryptedDocumentException | InvalidFormatException e) {
+    } catch (IOException | EncryptedDocumentException e) {
       throw new SolicitorRuntimeException("Processing of XLS report failed", e);
     }
 
