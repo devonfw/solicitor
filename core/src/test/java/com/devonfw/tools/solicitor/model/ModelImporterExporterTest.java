@@ -3,19 +3,16 @@ package com.devonfw.tools.solicitor.model;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 
 /**
  * Tests of {@link ModelImporterExporter}.
  *
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ModelImporterExporterTest {
 
@@ -25,10 +22,14 @@ public class ModelImporterExporterTest {
   /**
    * Test method for {@link com.devonfw.tools.solicitor.model.ModelImporterExporter#loadModel(java.lang.String)}.
    */
-  @Test(expected = SolicitorRuntimeException.class)
+  @Test
   public void testLoadModelVersion1() {
 
-    this.mie.loadModel("src/test/resources/models/model_version_1.json");
+	  SolicitorRuntimeException thrown = Assertions.assertThrows(SolicitorRuntimeException.class, () ->{
+		    this.mie.loadModel("src/test/resources/models/model_version_1.json");
+	  });
+	  
+	  //TODO here still Assertions.assertEquals("msg",exception.getMessage()); ?
   }
 
   /**
