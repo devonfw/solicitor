@@ -29,7 +29,6 @@ public class ModelImporterExporterTest {
 		    this.mie.loadModel("src/test/resources/models/model_version_1.json");
 	  });
 	  
-	  //TODO here still Assertions.assertEquals("msg",exception.getMessage()); ?
   }
 
   /**
