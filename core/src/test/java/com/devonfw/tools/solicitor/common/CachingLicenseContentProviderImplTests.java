@@ -4,10 +4,11 @@
 
 package com.devonfw.tools.solicitor.common;
 
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Disabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public class CachingLicenseContentProviderImplTests {
   private static final Logger LOG = LoggerFactory.getLogger(CachingLicenseContentProviderImplTests.class);
 
   @Test
-  @Ignore
+  @Disabled
   public void readFile() {
 
     DirectUrlWebContentProvider licenseContentProvider = new DirectUrlWebContentProvider(false);

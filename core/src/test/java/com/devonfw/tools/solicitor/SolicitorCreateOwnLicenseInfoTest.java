@@ -4,11 +4,9 @@
 
 package com.devonfw.tools.solicitor;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
 
@@ -17,7 +15,6 @@ import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
  * solicitor_licenseinfo.html file which is included in the distribution.
  */
 @SpringBootTest(properties = { "webcontent.skipdownload=true" })
-@RunWith(SpringRunner.class)
 public class SolicitorCreateOwnLicenseInfoTest {
 
   @Autowired
