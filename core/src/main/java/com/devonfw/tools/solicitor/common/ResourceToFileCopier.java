@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.config.ConfigFactory;
@@ -28,6 +29,12 @@ public class ResourceToFileCopier {
 
   @Autowired
   ConfigFactory configFactory;
+
+  @Value("${solicitor.extension-userguide-source}")
+  String extensionUserguideSource;
+
+  @Value("${solicitor.extension-userguide-target}")
+  String extensionUserguideTarget;
 
   /**
    * Represents a single copy operation to be performed
@@ -200,10 +207,11 @@ public class ResourceToFileCopier {
 
     switch (resourceGroup) {
       case USERGUIDE:
-        new CopySequenceBuilder()
+        CopySequenceBuilder csb1 = new CopySequenceBuilder()
             .withCopyOperation("classpath:solicitor_userguide.pdf", "target/solicitor_userguide.pdf")
-            .withCopyOperation("classpath:solicitor_licenseinfo.html", "target/solicitor_licenseinfo.html")
-            .replaceInTarget("target", targetDir).execute();
+            .withCopyOperation("classpath:solicitor_licenseinfo.html", "target/solicitor_licenseinfo.html");
+        optionallyAddExtensionUserguide(csb1);
+        csb1.replaceInTarget("target", targetDir).execute();
         returnString = "solicitor_userguide.pdf";
         break;
       case PROJECT_FILES:
@@ -241,6 +249,26 @@ public class ResourceToFileCopier {
     }
 
     return returnString;
+  }
+
+  /**
+   * Optionally add Extension user guide to the list of documents to be extracted
+   *
+   * @param csb builder to add the dcouemnt to
+   */
+  private void optionallyAddExtensionUserguide(CopySequenceBuilder csb) {
+
+    boolean sourceDefined = this.extensionUserguideSource != null && !this.extensionUserguideSource.isEmpty();
+    boolean targetDefined = this.extensionUserguideTarget != null && !this.extensionUserguideTarget.isEmpty();
+
+    if (sourceDefined != targetDefined) {
+      throw new SolicitorRuntimeException(
+          "Properties solicitor.extension-userguide-source and solicitor.extension-userguide-target "
+              + "need to be either both defined or both undefined");
+    }
+    if (sourceDefined && targetDefined) {
+      csb.withCopyOperation(this.extensionUserguideSource, this.extensionUserguideTarget);
+    }
   }
 
   /**

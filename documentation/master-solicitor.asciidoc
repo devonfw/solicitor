@@ -510,7 +510,7 @@ The following 5 columns need to be contained in order (separated with ";"):
 * license name
 * license URL
 
-Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.: 
+Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.:
 
 ----
 "readers" : [ {
@@ -1309,6 +1309,8 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 Changes in 1.4.0::
 * https://github.com/devonfw/solicitor/issues/108:
 Updated spring boot framework, drools rule engine and other used components to latest versions.
+* https://github.com/devonfw/solicitor/issues/110:
+Allow an additional user guide to be extracted when using an extension.
 
 Changes in 1.3.0::
 * New report _ScancodeDownloadScript.vm_ to compile copyright information using https://github.com/nexB/scancode-toolkit[ScanCode].
@@ -1325,7 +1327,7 @@ for cleanup. A warning message will be written in this case (SOLI-050).
 * https://github.com/devonfw/solicitor/issues/103:
 Changed structure of Solicitor source code repository to maven multi module structure.
 * https://github.com/devonfw/solicitor/issues/7:
-Allow more flexible CSV file format within the CsvReader. 
+Allow more flexible CSV file format within the CsvReader.
 * https://github.com/devonfw/solicitor/issues/78: Introduce new suffix _(REGEX)_ in decision
 tables to mark regular expressions. Using this suffix avoids breaking any sorting when using
 mixed verbatim strings and regex patterns. The old prefix syntax _REGEX:_ has been deprecated.
