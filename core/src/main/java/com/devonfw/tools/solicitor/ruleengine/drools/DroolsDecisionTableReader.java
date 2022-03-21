@@ -12,6 +12,7 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.io.ResourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,7 +63,12 @@ public class DroolsDecisionTableReader implements DroolsRulesReader {
     dt.setSourcePath(ruleUuid);
     dt.setSourcePath(ruleUuid);
     dt.setResourceType(ResourceType.DTABLE);
-    dt.setConfiguration(new DecisionTableConfigurationImpl()); // if this is
+    
+    DecisionTableConfigurationImpl dtcfg = new DecisionTableConfigurationImpl();
+    if(ruleSource.endsWith("csv")) {
+    	dtcfg.setInputType(DecisionTableInputType.CSV);
+    }
+    dt.setConfiguration(dtcfg); // if this is
                                                                // not done
                                                                // then the
                                                                // system
