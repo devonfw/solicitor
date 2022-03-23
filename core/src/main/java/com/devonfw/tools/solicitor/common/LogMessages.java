@@ -73,7 +73,7 @@ public enum LogMessages {
   SHORTENING_XLS_CELL_CONTENT(49, "Shortening text content for XLS"), //
   REPLACING_EXCESSIVE_HTML_CONTENT(50,
       "At least one license text contained a large amount of raw HTML and was substituted by placeholder text '{}'"), //
-  MULTIPLE_DECISIONTABLES(51, "Multiple decision tables in both .xls and .csv format. Priortizing '{}.xls'.");
+  MULTIPLE_DECISIONTABLES(51, "Multiple decision tables in both .xls and .csv format. Prioritizing '{}.xls'.");
 
   private final String message;
 

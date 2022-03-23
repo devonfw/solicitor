@@ -25,7 +25,7 @@ import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
  */
 @Component
 public class DroolsDecisionTableReader implements DroolsRulesReader {
-	
+
   @Autowired
   private InputStreamFactory inputStreamFactory;
 
@@ -53,30 +53,23 @@ public class DroolsDecisionTableReader implements DroolsRulesReader {
 
     baseModel.addRuleTemplate(ruleUuid, templateUuid, 2, 1);
     Resource dt;
-  
+
     try {
-      dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(ruleSource));
+      dt = ResourceFactory.newInputStreamResource(this.inputStreamFactory.createInputStreamFor(ruleSource));
     } catch (IOException e) {
-      throw new SolicitorRuntimeException("Could not open decision table resource '" + ruleSource + "'for reading");
+      throw new SolicitorRuntimeException("Could not open decision table resource '" + ruleSource + "' for reading");
     }
-    // Resource dt = ResourceFactory.newClassPathResource(ruleSource,
-    // getClass());
     dt.setSourcePath(ruleUuid);
     dt.setResourceType(ResourceType.DTABLE);
-    
+
     DecisionTableConfigurationImpl dtcfg = new DecisionTableConfigurationImpl();
-    if(ruleSource.endsWith("csv")) {
+    if (ruleSource.endsWith("csv")) {
       dtcfg.setInputType(DecisionTableInputType.CSV);
     }
-    dt.setConfiguration(dtcfg); // if this is
-                                                               // not done
-                                                               // then the
-                                                               // system
-                                                               // fails to
-    // compile the rules
+    dt.setConfiguration(dtcfg);
     resources.add(dt);
     try {
-      dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(templateSource));
+      dt = ResourceFactory.newInputStreamResource(this.inputStreamFactory.createInputStreamFor(templateSource));
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not open rule template resource '" + templateSource + "'for reading");
     }
