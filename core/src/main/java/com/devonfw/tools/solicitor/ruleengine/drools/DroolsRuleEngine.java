@@ -76,7 +76,7 @@ public class DroolsRuleEngine implements RuleEngine {
   }
 
   /**
-   * Exceute the rules defined by a single RuleConfig. This includes building up the {@link KieSession}, adding all
+   * Execute the rules defined by a single RuleConfig. This includes building up the {@link KieSession}, adding all
    * rules, adding all facts (the model) and firing all rules. If the RuleConfig defines the rule group as optional and
    * the rule source does not exist the execution will be skipped.
    *
@@ -85,6 +85,8 @@ public class DroolsRuleEngine implements RuleEngine {
    * @return the number of rules which fired
    */
   private int executeRuleGroup(ModelRoot modelRoot, RuleConfig rc) {
+
+    determineFinalRuleSourceName(rc);
 
     if (rc.isOptional() && !this.inputStreamFactory.isExisting(rc.getRuleSource())) {
       LOG.info(LogMessages.SKIPPING_RULEGROUP.msg(), rc.getRuleGroup(), rc.getRuleSource());
@@ -103,6 +105,26 @@ public class DroolsRuleEngine implements RuleEngine {
     LOG.info(LogMessages.RULE_GROUP_FINISHED.msg(), rc.getRuleGroup(), count, endTime - startTime);
     ksession.dispose();
     return count;
+  }
+
+  /**
+   * Determine the final rule source name. If the resource given by {@link RuleConfig#getRuleSource()} exists then take
+   * this. Otherwise check for alternatives by appending xls or csv suffix (with xls taking priority over csv).
+   *
+   * @param rc the configuration of the rule
+   */
+  private void determineFinalRuleSourceName(RuleConfig rc) {
+
+    if (!this.inputStreamFactory.isExisting(rc.getRuleSource())) {
+      if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".xls")) {
+        if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".csv")) {
+          LOG.warn(LogMessages.MULTIPLE_DECISIONTABLES.msg(), rc.getRuleSource());
+        }
+        rc.setRuleSource(rc.getRuleSource() + ".xls");
+      } else if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".csv")) {
+        rc.setRuleSource(rc.getRuleSource() + ".csv");
+      }
+    }
   }
 
   /**

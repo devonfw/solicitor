@@ -12,6 +12,7 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.io.ResourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,29 +53,26 @@ public class DroolsDecisionTableReader implements DroolsRulesReader {
 
     baseModel.addRuleTemplate(ruleUuid, templateUuid, 2, 1);
     Resource dt;
+
     try {
-      dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(ruleSource));
+      dt = ResourceFactory.newInputStreamResource(this.inputStreamFactory.createInputStreamFor(ruleSource));
     } catch (IOException e) {
-      throw new SolicitorRuntimeException("Could not open decision table xls resource '" + ruleSource + "'for reading");
+      throw new SolicitorRuntimeException("Could not open decision table resource '" + ruleSource + "' for reading");
     }
-    // Resource dt = ResourceFactory.newClassPathResource(ruleSource,
-    // getClass());
-    dt.setSourcePath(ruleUuid);
     dt.setSourcePath(ruleUuid);
     dt.setResourceType(ResourceType.DTABLE);
-    dt.setConfiguration(new DecisionTableConfigurationImpl()); // if this is
-                                                               // not done
-                                                               // then the
-                                                               // system
-                                                               // fails to
-    // compile the rules
+
+    DecisionTableConfigurationImpl dtcfg = new DecisionTableConfigurationImpl();
+    if (ruleSource.endsWith("csv")) {
+      dtcfg.setInputType(DecisionTableInputType.CSV);
+    }
+    dt.setConfiguration(dtcfg);
     resources.add(dt);
     try {
-      dt = ResourceFactory.newInputStreamResource(inputStreamFactory.createInputStreamFor(templateSource));
+      dt = ResourceFactory.newInputStreamResource(this.inputStreamFactory.createInputStreamFor(templateSource));
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not open rule template resource '" + templateSource + "'for reading");
     }
-    dt.setSourcePath(templateUuid);
     dt.setSourcePath(templateUuid);
     dt.setResourceType(ResourceType.DRT);
     resources.add(dt);
