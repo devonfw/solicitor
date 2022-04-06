@@ -219,7 +219,7 @@ public class ConfigFactory {
   /**
    * Merges the two given configs. If the project config does not define rules then the rule config from the base config
    * will be taken. The same applies for the writer config. All other config parameters will be taken from the project
-   * config in any case.
+   * config in any case. In case of additional writers in the project config, they will be added to the active writers.
    *
    * @param projectConfig the project specific configuration
    * @param baseConfig the base configuration
@@ -240,6 +240,14 @@ public class ConfigFactory {
     } else {
       LOG.info(LogMessages.TAKING_WRITER_CONFIG.msg(), CONFIG_PROJECT);
     }
+
+    if (projectConfig.getAdditionalWriters() != null) {
+      if(!projectConfig.getAdditionalWriters().isEmpty()) {
+	    LOG.info(LogMessages.ADDING_ADDITIONALWRITER_CONFIG.msg(), CONFIG_PROJECT);
+        projectConfig.addAdditionalWriters(projectConfig.getAdditionalWriters());
+      }  
+    }
+
     return projectConfig;
   }
 
