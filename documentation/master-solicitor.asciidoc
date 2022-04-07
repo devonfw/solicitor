@@ -411,6 +411,17 @@ The writer configuration defines how the processed data will be exported and/or 
 <5> reference to SQL statements used to transform the internal data model to data tables used for reporting
 <6> _placeholder patterns might be used here_
 
+In the project configuration file, additional project specific writers can be configured which work parallel to the default writers. For that, a section `additionalWriters` needs to be added which has the same attributes as the standard `writers` configuration.
+
+[listing]
+  "additionalWriters" : [ {
+    "type" : 
+    ...
+    "dataTables" : {
+        ...
+    }
+  } ]
+
 For details on the writer configuration see <<Reporting and Creating output documents>>.
 
 === Starting a new project
@@ -1317,6 +1328,8 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* https://github.com/devonfw/solicitor/issues/113:
+Allow project specific writers to be defined without overriding default writers.
 * https://github.com/devonfw/solicitor/issues/15:
 Enable Decision Tables to be alternatively defined as CSV.
 Allow dynamic determination of applicable format by specifying resource names without file extension.
