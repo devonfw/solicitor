@@ -312,6 +312,7 @@ public class SolicitorConfig {
    * @param additionalWriters the appended values of the field writers
    */
   public void addAdditionalWriters(List<WriterConfig> additionalWriters) {
+
     this.writers.addAll(additionalWriters);
   }
 

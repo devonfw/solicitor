@@ -243,7 +243,7 @@ public class ConfigFactory {
 
     if (projectConfig.getAdditionalWriters() != null) {
       if(!projectConfig.getAdditionalWriters().isEmpty()) {
-	    LOG.info(LogMessages.ADDING_ADDITIONALWRITER_CONFIG.msg(), CONFIG_PROJECT);
+        LOG.info(LogMessages.ADDING_ADDITIONALWRITER_CONFIG.msg(), CONFIG_PROJECT);
         projectConfig.addAdditionalWriters(projectConfig.getAdditionalWriters());
       }  
     }
