@@ -10,15 +10,7 @@
 # Furthermore two folders get created: Source (which contains all sourcefiles of downloaded artifacts) and scancodeOutput (which holds all individual scanned copyright information for each artifact)
 # All artifacts that could not be downloaded are listed in need-to-retrieve-manually.txt. If futher scancode-toolkit scans are necessary after the source download has been completed once, you can also just run the scancodeScan.cmd script.
 
-
-#[[if [ -n "$1" ]]]#
-then
-	#[[scancodePATH=$1]]#
-else
-	read -p "Enter scancode path: " scancodePATH
-fi
-
-mkdir Source &> /dev/null
+mkdir Source
 cd Source
 #[[SD=$(pwd)]]#
 echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manually.txt
@@ -30,9 +22,9 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 	#if ( $artifact.artifactId.toString().contains("/") )
 		cutArtifact='${artifact.artifactId}'
 
-		if [[ ! -d "#[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version" ]]
+		if [ ! -d "#[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version" ]
 		then
-			mkdir #[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version &> /dev/null
+			mkdir #[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version
 			cd #[[${cutArtifact%/*}+${cutArtifact#*/}]]#-$artifact.version
 			#if ( $artifact.repoType == "maven" )
 				curl -# https://repo1.maven.org/maven2/$artifact.groupIdT/#[[${cutArtifact#*/}]]#/$artifact.version/#[[${cutArtifact#*/}]]#-$artifact.version-sources.jar -o $artifact.groupId--#[[${cutArtifact#*/}]]#-$artifact.version-sources.jar
@@ -72,9 +64,9 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 			#end
 		fi	
 	#else
-		if [[ ! -d "$artifact.artifactId-$artifact.version" ]]
+		if [ ! -d "$artifact.artifactId-$artifact.version" ]
 		then
-			mkdir $artifact.artifactId-$artifact.version &> /dev/null
+			mkdir $artifact.artifactId-$artifact.version
 			cd $artifact.artifactId-$artifact.version
 			#if ( $artifact.repoType == "maven" )
 				curl -# https://repo1.maven.org/maven2/$artifact.groupIdT/$artifact.artifactId/$artifact.version/$artifact.artifactId-$artifact.version-sources.jar -o $artifact.groupId--$artifact.artifactId-$artifact.version-sources.jar
@@ -130,4 +122,4 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 
 cd ..
 mv Source/need-to-retrieve-manually.txt need-to-retrieve-manually.txt
-#[[start scancodeScan.cmd $scancodePATH]]#
+#[[sh scancodeScan.sh]]#

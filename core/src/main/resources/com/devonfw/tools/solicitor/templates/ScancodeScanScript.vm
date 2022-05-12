@@ -1,42 +1,42 @@
-SET beginning=%CD%
+beginning=$(pwd)
 mkdir scancodeOutput
-SET so=%CD%\scancodeOutput
+so=$(pwd)/scancodeOutput
 echo {"artifacts": [ > scancodeOutput/scancodeOut.json
-SET dir=%CD%\Source
-SET scan=%1
-
+dir=$(pwd)/Source
 
 #foreach ($artifact in $ARTIFACTS)
-cd %beginning%
-cd %scan%
+cd $beginning
 	#if ( $artifact.artifactId.toString().contains("/") )
-		SET art=$artifact.artifactId-$artifact.version
-		#[[SET cutArt=%art:/=+%]]#
-		if not exist %beginning%/scancodeOutput/%cutArt%.json ( 
-			start /wait cmd /c "call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/%cutArt%.json --only-findings %dir%/%cutArt%"
-		)
-		cd %so%
-		type %cutArt%.json >> scancodeOut.json
-		if exist %beginning%/scancodeOutput/%cutArt%.json (
-		<NUL set /p =",">> scancodeOut.json
-		)
+		art=$artifact.artifactId-$artifact.version
+		#[[cutArt=$art:/=+]]#
+		if [ ! -f $so/$cutArt.json ] 
+		then
+			scancode -c -n 16 --json-pp $so/$cutArt.json --only-findings $dir/$cutArt
+		fi
+		cd $so
+		cat $cutArt.json >> scancodeOut.json
+		if [ -f $so/$cutArt.json ]
+		then
+			printf "\n," >> scancodeOut.json
+		fi
 	#else
 	
-		if not exist %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json ( 
-			start /wait cmd /c "call scancode -c -n 16 --json-pp %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json --only-findings %dir%/$artifact.artifactId-$artifact.version"
-		)
-		cd %so%
-		type $artifact.artifactId-${artifact.version}.json >> scancodeOut.json
-		if exist %beginning%/scancodeOutput/$artifact.artifactId-${artifact.version}.json (
-		<NUL set /p =",">> scancodeOut.json
-		)
+		if [ ! -f $so/$artifact.artifactId-${artifact.version}.json ]
+		then
+			scancode -c -n 16 --json-pp $so/$artifact.artifactId-${artifact.version}.json --only-findings $dir/$artifact.artifactId-$artifact.version
+		fi
+		cd $so
+		cat $artifact.artifactId-${artifact.version}.json >> scancodeOut.json
+		if [ -f $so/$artifact.artifactId-${artifact.version}.json ]
+		then
+			printf "\n," >> scancodeOut.json
+		fi
 	#end
 #end
-<NUL set /p ="END">> scancodeOut.json
-FINDSTR /V ",END" scancodeOut.json>scancodeOutput.json
-echo } >> scancodeOutput.json
-del scancodeOut.json
-cd %so%
-echo ]}>> scancodeOutput.json
-move scancodeOutput.json %beginning%
+printf "END" >> scancodeOut.json
+grep -v ",END" scancodeOut.json > scancodeOutput.json
+rm scancodeOut.json
+cd $so
+echo ]} >> scancodeOutput.json
+mv scancodeOutput.json $beginning
 
