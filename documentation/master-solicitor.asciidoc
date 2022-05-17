@@ -1263,7 +1263,7 @@ Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized
 === ScancodeDownloadScript.vm
 This template creates a script file for using https://github.com/nexB/scancode-toolkit[ScanCode] to create a JSON document which contains copyright information (statements, holders, authors) about each artifact within a project. Copyright information
 is displayed on file level. The output format being a JSON allows for further usage and processing as we store it in a valid syntax with an array of artifacts that contain all infos.
-The copyright scanner used for this report is scancode-toolkit-21.8.4. Usage information can be found in the created scancode_project.sh script after running solicitor.
+Usage information can be found in the created "scancode_projectname.sh" script after running solicitor.
 
 NOTE: This report is an experimental feature and might be changed or removed in future versions without any notice.
 

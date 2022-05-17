@@ -1,14 +1,14 @@
 beginning=$(pwd)
 mkdir scancodeOutput
 so=$(pwd)/scancodeOutput
-echo {"artifacts": [ > scancodeOutput/scancodeOut.json
+echo {\"artifacts\": [ > scancodeOutput/scancodeOut.json
 dir=$(pwd)/Source
 
 #foreach ($artifact in $ARTIFACTS)
 cd $beginning
 	#if ( $artifact.artifactId.toString().contains("/") )
 		art=$artifact.artifactId-$artifact.version
-		#[[cutArt=$art:/=+]]#
+		cutArt=#[[${art%/*}+${art#*/}]]#
 		if [ ! -f $so/$cutArt.json ] 
 		then
 			scancode -c -n 16 --json-pp $so/$cutArt.json --only-findings $dir/$cutArt
