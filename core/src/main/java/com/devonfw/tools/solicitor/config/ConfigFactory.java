@@ -92,18 +92,18 @@ public class ConfigFactory {
   public ModelRoot createConfig(String url) {
 
     LOG.info(LogMessages.READING_CONFIG.msg(), CONFIG_PROJECT, url);
-    SolicitorConfig projectConfig = configReader.readConfig(url);
-    LOG.info(LogMessages.READING_CONFIG.msg(), CONFIG_BASE, baseConfigUrl);
-    SolicitorConfig baseConfig = configReader.readConfig(baseConfigUrl);
+    SolicitorConfig projectConfig = this.configReader.readConfig(url);
+    LOG.info(LogMessages.READING_CONFIG.msg(), CONFIG_BASE, this.baseConfigUrl);
+    SolicitorConfig baseConfig = this.configReader.readConfig(this.baseConfigUrl);
 
     SolicitorConfig sc = mergeConfigs(projectConfig, baseConfig);
 
-    ModelRoot modelRoot = modelFactory.newModelRoot();
+    ModelRoot modelRoot = this.modelFactory.newModelRoot();
 
     Map<String, String> placeHolderMap = createPlaceholderMap(url, sc);
 
     LOG.info(LogMessages.CREATING_ENGAGEMENT.msg(), sc.getEngagementName());
-    Engagement engagement = modelFactory.newEngagement(sc.getEngagementName(), sc.getEngagementType(),
+    Engagement engagement = this.modelFactory.newEngagement(sc.getEngagementName(), sc.getEngagementType(),
         sc.getClientName(), sc.getGoToMarketModel());
     engagement.setModelRoot(modelRoot);
     engagement.setContractAllowsOss(sc.isContractAllowsOss());
@@ -111,8 +111,8 @@ public class ConfigFactory {
     engagement.setCustomerProvidesOss(sc.isCustomerProvidesOss());
     for (ApplicationConfig ac : sc.getApplications()) {
       LOG.info(LogMessages.CREATING_APPLICATION.msg(), ac.getName());
-      Application app = modelFactory.newApplication(ac.getName(), ac.getReleaseId(), "-UNDEFINED-", ac.getSourceRepo(),
-          ac.getProgrammingEcosystem());
+      Application app = this.modelFactory.newApplication(ac.getName(), ac.getReleaseId(), "-UNDEFINED-",
+          ac.getSourceRepo(), ac.getProgrammingEcosystem());
       app.setEngagement(engagement);
       for (ReaderConfig rc : ac.getReaders()) {
         SolicitorSetup.ReaderSetup rs = new SolicitorSetup.ReaderSetup();
@@ -123,11 +123,11 @@ public class ConfigFactory {
         rs.setRepoType(rc.getRepoType());
         rs.setConfiguration(rc.getConfiguration());
         rs = resolvePlaceholdersInReader(rs, placeHolderMap);
-        solicitorSetup.getReaderSetups().add(rs);
+        this.solicitorSetup.getReaderSetups().add(rs);
       }
     }
-    solicitorSetup.setRuleSetups(resolvePlaceholdersInRules(sc.getRules(), placeHolderMap));
-    solicitorSetup.setWriterSetups(resolvePlaceholdersInWriters(sc.getWriters(), placeHolderMap));
+    this.solicitorSetup.setRuleSetups(resolvePlaceholdersInRules(sc.getRules(), placeHolderMap));
+    this.solicitorSetup.setWriterSetups(resolvePlaceholdersInWriters(sc.getWriters(), placeHolderMap));
     return modelRoot;
   }
 
@@ -219,7 +219,7 @@ public class ConfigFactory {
   /**
    * Merges the two given configs. If the project config does not define rules then the rule config from the base config
    * will be taken. The same applies for the writer config. All other config parameters will be taken from the project
-   * config in any case.
+   * config in any case. In case of additional writers in the project config, they will be added to the active writers.
    *
    * @param projectConfig the project specific configuration
    * @param baseConfig the base configuration
@@ -240,6 +240,17 @@ public class ConfigFactory {
     } else {
       LOG.info(LogMessages.TAKING_WRITER_CONFIG.msg(), CONFIG_PROJECT);
     }
+
+    if (projectConfig.getAdditionalWriters() != null) {
+      if (!projectConfig.getAdditionalWriters().isEmpty()) {
+        LOG.info(LogMessages.ADDING_ADDITIONALWRITER_CONFIG.msg(), CONFIG_PROJECT);
+        List<WriterConfig> extendedWriterList = new ArrayList<>();
+        extendedWriterList.addAll(projectConfig.getWriters());
+        extendedWriterList.addAll(projectConfig.getAdditionalWriters());
+        projectConfig.setWriters(extendedWriterList);
+      }
+    }
+
     return projectConfig;
   }
 
@@ -254,9 +265,9 @@ public class ConfigFactory {
     // preserve order and avoid duplicates
     LinkedHashSet<String> result = new LinkedHashSet<>();
 
-    result.add(baseConfigUrl);
+    result.add(this.baseConfigUrl);
 
-    SolicitorConfig baseConfig = configReader.readConfig(baseConfigUrl);
+    SolicitorConfig baseConfig = this.configReader.readConfig(this.baseConfigUrl);
     result.addAll(findResourcesInRules(baseConfig.getRules()));
     result.addAll(findResourcesInWriters(baseConfig.getWriters()));
 
