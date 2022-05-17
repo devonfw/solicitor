@@ -53,6 +53,9 @@ public class SolicitorConfig {
   @JsonProperty
   private List<WriterConfig> writers = new ArrayList<>();
 
+  @JsonProperty
+  private List<WriterConfig> additionalWriters = new ArrayList<>();
+
   /**
    * This method gets the field <code>applications</code>.
    *
@@ -141,6 +144,16 @@ public class SolicitorConfig {
   public List<WriterConfig> getWriters() {
 
     return this.writers;
+  }
+
+  /**
+   * This method gets the field <code>additionalWriters</code>.
+   *
+   * @return the field additionalWriters
+   */
+  public List<WriterConfig> getAdditionalWriters() {
+
+    return this.additionalWriters;
   }
 
   /**
@@ -291,6 +304,16 @@ public class SolicitorConfig {
   public void setWriters(List<WriterConfig> writers) {
 
     this.writers = writers;
+  }
+
+  /**
+   * This method sets the field <code>additionalWriters</code>
+   *
+   * @param additionalWriters new value of the field additionalWriters
+   */
+  public void setAdditionalWriters(List<WriterConfig> additionalWriters) {
+
+    this.additionalWriters = additionalWriters;
   }
 
 }

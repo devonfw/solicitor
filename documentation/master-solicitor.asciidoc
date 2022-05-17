@@ -261,13 +261,15 @@ The config file has the following skeleton:
   .
   "applications" : [ ... ], <2>
   "rules" : [ ... ],  <3>
-  "writers" : [ ... ] <4>
+  "writers" : [ ... ], <4>
+  "additionalWriters" : [ ...] <5>
 }
 
 <1> The leading data defines the engagement master data, see <<Header and Engagement Master Data>>
 <2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Applications>>
 <3> `rules` references the rules to apply to the imported data, see <<Business Rules>>
 <4> `writers` configures how the processed data should be exported, see <<Writers and Reporting>>
+<5> `additionalWriters` defines optional additional project specific writers without overwriting already defined writers, see <<Writers and Reporting>>
 
 NOTE: The following section describes all sections of the _Solicitor_ configuration file format. Often the configuration of `writers` and especially `rules` will be identical for projects. To facilitate the project specific configuration setup _Solicitor_ internally provides a base configuration which contains reasonable defaults for the `rules` and `writers` section. If the project specific configuration file omits the `rules` and/or `writers` sections then the corresponding settings from the base configuration will be taken. For details see <<Default Base Configuration>>.
 
@@ -410,6 +412,21 @@ The writer configuration defines how the processed data will be exported and/or 
 <4> some textual description
 <5> reference to SQL statements used to transform the internal data model to data tables used for reporting
 <6> _placeholder patterns might be used here_
+
+If a `writers` section is defined in the project configuration then it will replace the writer configuration given in the
+builtin default configuration.
+If you want to just _add_ additional project specific writers then you might define them in the (optional)
+`additionalWriters` section of the project configuration file. These get processed
+additionally to the default writers. The section `additionalWriters` has the same attributes as the standard `writers` configuration.
+
+[listing]
+  "additionalWriters" : [ {
+    "type" : 
+    ...
+    "dataTables" : {
+        ...
+    }
+  } ]
 
 For details on the writer configuration see <<Reporting and Creating output documents>>.
 
@@ -1318,6 +1335,10 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 
 Changes in 1.4.0::
 * Experimental scancode-toolkit integration changed to using Bash scripting.
+* Ruleset change: For GPL/LGPL-Licenses use `...-only`   or `...-or-later` IDs instead
+of the deprecated ones like `GPL-3.0`.
+* https://github.com/devonfw/solicitor/issues/113:
+Allow project specific writers (`additionalWriters`) to be defined without overriding default writers.
 * https://github.com/devonfw/solicitor/issues/15:
 Enable Decision Tables to be alternatively defined as CSV.
 Allow dynamic determination of applicable format by specifying resource names without file extension.
