@@ -52,7 +52,7 @@ public class SolicitorConfig {
 
   @JsonProperty
   private List<WriterConfig> writers = new ArrayList<>();
-  
+
   @JsonProperty
   private List<WriterConfig> additionalWriters = new ArrayList<>();
 
@@ -145,7 +145,7 @@ public class SolicitorConfig {
 
     return this.writers;
   }
-  
+
   /**
    * This method gets the field <code>additionalWriters</code>.
    *
@@ -305,15 +305,15 @@ public class SolicitorConfig {
 
     this.writers = writers;
   }
-  
-  /**
-   * This method appends the field <code>additionalWriters</code>.
-   *
-   * @param additionalWriters the appended values of the field writers
-   */
-  public void addAdditionalWriters(List<WriterConfig> additionalWriters) {
 
-    this.writers.addAll(additionalWriters);
+  /**
+   * This method sets the field <code>additionalWriters</code>
+   *
+   * @param additionalWriters new value of the field additionalWriters
+   */
+  public void setAdditionalWriters(List<WriterConfig> additionalWriters) {
+
+    this.additionalWriters = additionalWriters;
   }
 
 }
