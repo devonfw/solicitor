@@ -1317,6 +1317,7 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* Experimental scancode-toolkit integration changed to using Bash scripting.
 * https://github.com/devonfw/solicitor/issues/15:
 Enable Decision Tables to be alternatively defined as CSV.
 Allow dynamic determination of applicable format by specifying resource names without file extension.
