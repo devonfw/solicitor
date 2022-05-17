@@ -1334,6 +1334,8 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* Ruleset change: For GPL/LGPL-Licenses use `...-only`   or `...-or-later` IDs instead
+of the deprecated ones like `GPL-3.0`.
 * https://github.com/devonfw/solicitor/issues/113:
 Allow project specific writers (`additionalWriters`) to be defined without overriding default writers.
 * https://github.com/devonfw/solicitor/issues/15:
