@@ -16,6 +16,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -54,7 +55,7 @@ public class MavenReader extends AbstractReader implements Reader {
     int licenses = 0;
     InputStream is;
     try {
-      is = inputStreamFactory.createInputStreamFor(sourceUrl);
+      is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
     } catch (IOException e1) {
       throw new SolicitorRuntimeException("Could not open inventory source '" + sourceUrl + "' for reading", e1);
     }
@@ -77,6 +78,8 @@ public class MavenReader extends AbstractReader implements Reader {
       appComponent.setVersion(dep.getVersion());
       appComponent.setUsagePattern(usagePattern);
       appComponent.setRepoType(repoType);
+      appComponent.setPackageUrl(
+          PackageURLHelper.fromMavenCoordinates(dep.getGroupId(), dep.getArtifactId(), dep.getVersion()).toString());
       components++;
       if (dep.getLicenses().isEmpty()) {
         // in case no license is found insert an empty entry

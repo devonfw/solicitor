@@ -5,38 +5,22 @@ echo {\"artifacts\": [ > scancodeOutput/scancodeOut.json
 dir=$(pwd)/Source
 
 #foreach ($artifact in $ARTIFACTS)
-cd $beginning
-	#if ( $artifact.artifactId.toString().contains("/") )
-		art=$artifact.artifactId-$artifact.version
-		cutArt=#[[${art%/*}+${art#*/}]]#
-		if [ ! -f $so/$cutArt.json ] 
-		then
-			scancode -c -n 16 --json-pp $so/$cutArt.json --only-findings $dir/$cutArt
-		fi
-		cd $so
-		cat $cutArt.json >> scancodeOut.json
-		if [ -f $so/$cutArt.json ]
-		then
-			printf "\n," >> scancodeOut.json
-		fi
-	#else
-	
-		if [ ! -f $so/$artifact.artifactId-${artifact.version}.json ]
-		then
-			scancode -c -n 16 --json-pp $so/$artifact.artifactId-${artifact.version}.json --only-findings $dir/$artifact.artifactId-$artifact.version
-		fi
-		cd $so
-		cat $artifact.artifactId-${artifact.version}.json >> scancodeOut.json
-		if [ -f $so/$artifact.artifactId-${artifact.version}.json ]
-		then
-			printf "\n," >> scancodeOut.json
-		fi
-	#end
+if [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ]
+then
+	if [ -d $dir/$purlhandler.pathFor($artifact.packageUrl)/sources ]
+	then
+		scancode -c -n 16 --json-pp $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json --only-findings $dir/$purlhandler.pathFor($artifact.packageUrl)/sources
+	fi
+	cat $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json >> $so/scancodeOut.json
+	if [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ]
+	then
+		printf "\n," >> $so/scancodeOut.json
+	fi
+fi
 #end
-printf "END" >> scancodeOut.json
-grep -v ",END" scancodeOut.json > scancodeOutput.json
-rm scancodeOut.json
-cd $so
-echo ]} >> scancodeOutput.json
-mv scancodeOutput.json $beginning
+printf "END" >> $so/scancodeOut.json
+grep -v ",END" $so/scancodeOut.json > $so/scancodeOutput.json
+rm $so/scancodeOut.json
+echo ]} >> $so/scancodeOutput.json
+mv $so/scancodeOutput.json $beginning
 

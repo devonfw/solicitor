@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -55,7 +56,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     try {
-      Map l = mapper.readValue(inputStreamFactory.createInputStreamFor(sourceUrl), Map.class);
+      Map l = mapper.readValue(this.inputStreamFactory.createInputStreamFor(sourceUrl), Map.class);
       for (Object key : l.keySet()) {
         String name = (String) key;
         Map attributes = (Map) l.get(key);
@@ -98,6 +99,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
         appComponent.setRepoType(repoType);
+        appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(name).toString());
         if (licenseList.isEmpty()) {
           // add empty raw license if no license info attached
           addRawLicense(appComponent, null, null, sourceUrl);

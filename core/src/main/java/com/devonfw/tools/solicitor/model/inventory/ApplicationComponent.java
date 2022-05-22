@@ -88,6 +88,16 @@ public interface ApplicationComponent {
   String getRepoType();
 
   /**
+   * This methods gets the field <code>packageUrl</code>. This is a technology neutral identifier for the
+   * {@link ApplicationComponent}.
+   *
+   * @see <a href="https://github.com/package-url/purl-spec">purl-spec</a>
+   *
+   * @return the field packageUrl
+   */
+  public String getPackageUrl();
+
+  /**
    * This method gets the field <code>ossModified</code>.
    *
    * @return the field ossModified
@@ -149,6 +159,16 @@ public interface ApplicationComponent {
    * @param repoType the new value of the field repoType
    */
   void setRepoType(String repoType);
+
+  /**
+   * This method sets the field <code>packageUrl</code>.
+   *
+   * @param packageUrl the new value of the field packageUrl.
+   *
+   * @see <a href="https://github.com/package-url/purl-spec">purl-spec</a>
+   *
+   */
+  public void setPackageUrl(String packageUrl);
 
   /**
    * Complete the data of this object by setting members which are derived from other members.

@@ -36,6 +36,8 @@ public class ModelImporterExporter {
 
   private static final int LOWEST_VERSION_WITH_GUESSED_LICENSE_URL = 3;
 
+  private static final int LOWEST_VERSION_WITH_PACKAGE_URL = 4;
+
   @Autowired
   private ModelFactory modelFactory;
 
@@ -111,6 +113,10 @@ public class ModelImporterExporter {
       String artifactId = applicationComponentNode.get("artifactId").asText(null);
       String version = applicationComponentNode.get("version").asText(null);
       String repoType = applicationComponentNode.get("repoType").asText(null);
+      String packageUrl = null;
+      if (readModelVersion >= LOWEST_VERSION_WITH_PACKAGE_URL) {
+        packageUrl = applicationComponentNode.get("packageUrl").asText(null);
+      }
       JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
       JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
 
@@ -123,6 +129,7 @@ public class ModelImporterExporter {
       applicationComponent.setArtifactId(artifactId);
       applicationComponent.setVersion(version);
       applicationComponent.setRepoType(repoType);
+      applicationComponent.setPackageUrl(packageUrl);
 
       readNormalizedLicenses(applicationComponent, normalizedLicensesNode, readModelVersion);
       readRawLicenses(applicationComponent, rawLicensesNode, readModelVersion);

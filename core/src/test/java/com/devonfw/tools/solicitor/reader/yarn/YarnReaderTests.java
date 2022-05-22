@@ -47,6 +47,7 @@ public class YarnReaderTests {
       if (ap.getArtifactId().equals("test") && //
           ap.getVersion().equals("11.0.0")) {
         found = true;
+        assertEquals("pkg:npm/test@11.0.0", ap.getPackageUrl());
         break;
       }
     }

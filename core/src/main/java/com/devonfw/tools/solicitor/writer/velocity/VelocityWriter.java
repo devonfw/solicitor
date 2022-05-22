@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
 
@@ -33,9 +34,12 @@ public class VelocityWriter implements Writer {
   @Autowired
   private InputStreamFactory inputStreamFactory;
 
+  @Autowired
+  private AllKindsPackageURLHandler packageURLHandler;
+
   /**
    * {@inheritDoc}
-   * 
+   *
    * Accepted type is "velo".
    */
 
@@ -62,13 +66,14 @@ public class VelocityWriter implements Writer {
       context.put(entry.getKey(), entry.getValue());
     }
     context.put("esc", new EscapeTool());
+    context.put("purlhandler", this.packageURLHandler);
 
     // read the template as a string (including the template as a property
     // when initializing the velocity engine doesn't work anymore with
     // springboot)
 
     String templateString;
-    try (InputStream inp = inputStreamFactory.createInputStreamFor(templateSource)) {
+    try (InputStream inp = this.inputStreamFactory.createInputStreamFor(templateSource)) {
       templateString = IOHelper.readStringFromInputStream(inp);
 
     } catch (IOException e) {

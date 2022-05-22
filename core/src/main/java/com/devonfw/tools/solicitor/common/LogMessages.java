@@ -74,7 +74,10 @@ public enum LogMessages {
   REPLACING_EXCESSIVE_HTML_CONTENT(50,
       "At least one license text contained a large amount of raw HTML and was substituted by placeholder text '{}'"), //
   MULTIPLE_DECISIONTABLES(51, "Multiple decision tables in both .xls and .csv format. Prioritizing '{}.xls'."), //
-  ADDING_ADDITIONALWRITER_CONFIG(52, "Merging config: Adding additional writers to base config from {}");
+  ADDING_ADDITIONALWRITER_CONFIG(52, "Merging config: Adding additional writers to base config from {}"), //
+  NOT_A_VALID_NPM_PACKAGE_IDENTIFIER(53,
+      "{} is not a valid identifier for an NPM package"), NOT_A_VALID_NPM_PACKAGE_NAME(54,
+          "{} is not a valid name for an NPM package");
 
   private final String message;
 

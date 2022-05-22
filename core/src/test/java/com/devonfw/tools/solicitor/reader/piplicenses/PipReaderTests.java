@@ -47,6 +47,7 @@ public class PipReaderTests {
       if (ap.getArtifactId().equals("test") && //
           ap.getVersion().equals("2021.1")) {
         found = true;
+        assertEquals("pkg:pypi/test@2021.1", ap.getPackageUrl());
         break;
       }
     }

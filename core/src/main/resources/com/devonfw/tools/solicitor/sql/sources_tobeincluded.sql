@@ -7,6 +7,7 @@ select distinct
 	NVL(ac."artifactId", 'NA') as "artifactId",
 	NVL(ac."version", 'NA' ) as "version",
 	NVL(ac."repoType", 'NA' ) as "repoType",
+	NVL(ac."packageUrl", 'NA' ) as "packageUrl",
 	REGEXP_REPLACE(NVL(ac."groupId", 'NA'),'\.','/') as "groupIdT",
 	GROUP_CONCAT(DISTINCT l."includeSource" ORDER BY l."includeSource" DESC SEPARATOR ', ') as "includeSource",
 	GROUP_CONCAT(DISTINCT l."effectiveNormalizedLicense" ORDER BY l."effectiveNormalizedLicense" DESC SEPARATOR ', ') as "effectiveNormalizedLicense"
@@ -23,7 +24,8 @@ group by
 	"groupId",
 	"artifactId",
 	"version",
-	"repoType"
+	"repoType",
+	"packageUrl"
 order by
 	"applicationName",
 	"groupId",
