@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -15,6 +16,8 @@ import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.packageurl.MalformedPackageURLException;
+import com.github.packageurl.PackageURL;
 
 /**
  * Implementation of the {@link ApplicationComponent} model object interface.
@@ -36,6 +39,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   private String version;
 
   private String repoType;
+
+  private String packageUrl;
 
   private List<NormalizedLicense> normalizedLicenses = new ArrayList<>();
 
@@ -81,7 +86,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getDataElements() {
 
-    return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getOssHomepage(),
+    return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl(), getOssHomepage(),
     getUsagePattern().toString(), isOssModified() ? "true" : "false" };
   }
 
@@ -96,7 +101,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getHeadElements() {
 
-    return new String[] { "groupId", "artifactId", "version", "repoType", "ossHomepage", "usagePattern",
+    return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "usagePattern",
     "ossModified" };
   }
 
@@ -140,6 +145,13 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public String getRepoType() {
 
     return this.repoType;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getPackageUrl() {
+
+    return this.packageUrl;
   }
 
   /** {@inheritDoc} */
@@ -207,6 +219,21 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void setRepoType(String repoType) {
 
     this.repoType = repoType;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setPackageUrl(String packageUrl) {
+
+    // Assures we have the canonical representation and the packageUrl is valid;
+    if (packageUrl != null) {
+      try {
+        this.packageUrl = new PackageURL(packageUrl).toString();
+      } catch (MalformedPackageURLException e) {
+        throw new SolicitorRuntimeException("The given packageUrl '" + packageUrl + "' has an invalid format", e);
+      }
+    }
+    this.packageUrl = packageUrl;
   }
 
   /** {@inheritDoc} */

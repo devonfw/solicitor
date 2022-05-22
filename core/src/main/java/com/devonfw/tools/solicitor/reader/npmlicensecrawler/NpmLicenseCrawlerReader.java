@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.DeprecationChecker;
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -63,14 +64,14 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
       String repoType, Map<String, String> configuration) {
 
     if (SUPPORTED_TYPE_DEPRECATED.equals(type)) {
-      deprecationChecker.check(true, "Use of type 'npm' is deprecated. Change type in config to '" + SUPPORTED_TYPE
+      this.deprecationChecker.check(true, "Use of type 'npm' is deprecated. Change type in config to '" + SUPPORTED_TYPE
           + "'. See https://github.com/devonfw/solicitor/issues/62");
     }
     int components = 0;
     int licenses = 0;
     InputStream is;
     try {
-      is = inputStreamFactory.createInputStreamFor(sourceUrl);
+      is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
 
       java.io.Reader reader = new InputStreamReader(is);
 
@@ -91,6 +92,8 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
         appComponent.setGroupId("");
         appComponent.setOssHomepage(record.get(2));
         appComponent.setRepoType(repoType);
+        appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(record.get(0)).toString());
+
         // merge ApplicationComponentImpl with same key if they appear
         // on subsequent lines (multilicensing)
         if (lastAppComponent != null && lastAppComponent.getGroupId().equals(appComponent.getGroupId())

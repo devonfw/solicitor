@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.maven;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.devonfw.tools.solicitor.common.FileInputStreamFactory;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
+import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 
@@ -33,6 +35,19 @@ public class MavenReaderTests {
         "maven", null);
     LOG.info(application.toString());
     assertEquals(95, application.getApplicationComponents().size());
-  }
 
+    boolean found = false;
+    for (ApplicationComponent ap : application.getApplicationComponents()) {
+      if (ap.getGroupId().equals("org.springframework.boot") && //
+          ap.getArtifactId().equals("spring-boot-starter-logging") && //
+          ap.getVersion().equals("2.1.4.RELEASE")) {
+        found = true;
+        assertEquals("pkg:maven/org.springframework.boot/spring-boot-starter-logging@2.1.4.RELEASE",
+            ap.getPackageUrl());
+        break;
+      }
+    }
+    assertTrue(found);
+
+  }
 }

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -89,6 +90,7 @@ public class YarnReader extends AbstractReader implements Reader {
       appComponent.setGroupId("");
       appComponent.setOssHomepage(homePage);
       appComponent.setRepoType(repoType);
+      appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(name, version).toString());
 
       addRawLicense(appComponent, license, licenseUrl, sourceUrl);
     }

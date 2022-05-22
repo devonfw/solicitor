@@ -61,6 +61,7 @@ public class NpmLicenseCrawlerReaderTests {
     for (ApplicationComponent ap : lapc) {
       if (ap.getArtifactId().equals("to-fast-properties")) {
         found = true;
+        assertEquals("pkg:npm/to-fast-properties@1.0.3", ap.getPackageUrl());
         break;
       }
     }

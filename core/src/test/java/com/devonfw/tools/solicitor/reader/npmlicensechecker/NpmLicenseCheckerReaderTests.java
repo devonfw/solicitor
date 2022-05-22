@@ -47,6 +47,7 @@ public class NpmLicenseCheckerReaderTests {
       if (ap.getArtifactId().equals("foo") && //
           ap.getVersion().equals("0.0.1")) {
         found = true;
+        assertEquals("pkg:npm/foo@0.0.1", ap.getPackageUrl());
         break;
       }
     }

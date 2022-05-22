@@ -55,6 +55,7 @@ public class GradleReaderTests {
     for (ApplicationComponent ap : lapc) {
       if (ap.getArtifactId().equals("org.apache.xmlbeans:xmlbeans:3.0.2")) {
         found = true;
+        assertEquals("pkg:maven/org.apache.xmlbeans/xmlbeans@3.0.2", ap.getPackageUrl());
         break;
       }
     }

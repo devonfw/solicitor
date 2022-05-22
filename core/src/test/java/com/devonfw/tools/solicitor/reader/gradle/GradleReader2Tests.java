@@ -4,7 +4,6 @@
 
 package com.devonfw.tools.solicitor.reader.gradle;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -49,6 +48,7 @@ public class GradleReader2Tests {
           ap.getArtifactId().equals("xmlbeans") && //
           ap.getVersion().equals("3.0.2")) {
         found = true;
+        assertEquals("pkg:maven/org.apache.xmlbeans/xmlbeans@3.0.2", ap.getPackageUrl());
         break;
       }
     }

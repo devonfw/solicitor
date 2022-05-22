@@ -10,7 +10,8 @@ select
     "applicationName", 
 	"groupId",
 	"artifactId",
-	"version" , 
+	"version" ,
+	"packageUrl",
 	"effectiveNormalizedLicenses",
 	"licenseCount"
 
@@ -18,7 +19,8 @@ from (
 	select
 		ac."groupId",
 		ac."artifactId",
-		ac."version", 
+		ac."version",
+		ac."packageUrl",
 		a."applicationName", 
 		GROUP_CONCAT(l."effectiveNormalizedLicense" ORDER BY "effectiveNormalizedLicense" ASC SEPARATOR ', ') as "effectiveNormalizedLicenses",
 		count(*) as "licenseCount"
@@ -34,6 +36,7 @@ from (
 		"groupId",
 		"artifactId",
 		"version",
+		"packageUrl",
 		"applicationName" 
 )
 where

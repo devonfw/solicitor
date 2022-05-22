@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -98,6 +99,8 @@ public class GradleReader2 extends AbstractReader implements Reader {
       appComponent.setOssHomepage(dep.getUrl());
       appComponent.setUsagePattern(usagePattern);
       appComponent.setRepoType(repoType);
+      appComponent.setPackageUrl(
+          PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1], dependencyParts[2]).toString());
       if (dep.getLicenses().isEmpty()) {
         // in case no license is found insert an empty entry
         addRawLicense(appComponent, null, null, sourceUrl);

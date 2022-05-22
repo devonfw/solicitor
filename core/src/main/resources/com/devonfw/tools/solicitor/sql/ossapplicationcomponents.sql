@@ -4,7 +4,8 @@ select
 	GROUP_CONCAT(DISTINCT a."applicationName" ORDER BY "applicationName" DESC SEPARATOR ', ') as APPS, 
 	GROUP_CONCAT(DISTINCT ac."version" ORDER BY "version" DESC SEPARATOR ', ') as "version" , 
 	ac."groupId", 
-	ac."artifactId", 
+	ac."artifactId",
+	ac."packageUrl",
 	l."effectiveNormalizedLicense", 
 	l."effectiveNormalizedLicenseUrl", 
 	l."effectiveNormalizedLicenseContent",
@@ -19,7 +20,8 @@ where
 	l."effectiveNormalizedLicenseType" like 'OSS-%' 
 group by 
 	"groupId", 
-	"artifactId", 
+	"artifactId",
+	"packageUrl",
 	"effectiveNormalizedLicense", 
 	"effectiveNormalizedLicenseUrl", 
 	"effectiveNormalizedLicenseContent",
