@@ -1337,6 +1337,7 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* Added Solicitor Logo and code for creating variants / animation.
 * https://github.com/devonfw/solicitor/issues/117: New attribute `packageUrl` in `ApplicationComponent`.
 * Experimental scancode-toolkit integration changed to using Bash scripting.
 * Ruleset change: For GPL/LGPL-Licenses use `...-only`   or `...-or-later` IDs instead
