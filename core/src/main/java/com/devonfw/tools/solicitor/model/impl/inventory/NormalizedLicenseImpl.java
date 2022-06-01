@@ -126,12 +126,12 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   public String[] getDataElements() {
 
     return new String[] { this.declaredLicense, this.licenseUrl, getDeclaredLicenseContent(),
-    this.normalizedLicenseType, this.normalizedLicense, this.normalizedLicenseUrl, this.effectiveNormalizedLicenseType,
-    this.effectiveNormalizedLicense, this.effectiveNormalizedLicenseUrl, getEffectiveNormalizedLicenseContent(),
-    this.legalPreApproved, this.copyLeft, this.licenseCompliance, this.licenseRefUrl, getLicenseRefContent(),
-    this.includeLicense, this.includeSource, this.reviewedForRelease, this.comments, this.legalApproved,
-    this.legalComments, this.trace, this.guessedLicenseUrl, this.guessedLicenseUrlAuditInfo,
-    getGuessedLicenseContent() };
+    this.normalizedLicenseType, this.normalizedLicense, this.normalizedLicenseUrl, getNormalizedLicenseContent(),
+    this.effectiveNormalizedLicenseType, this.effectiveNormalizedLicense, this.effectiveNormalizedLicenseUrl,
+    getEffectiveNormalizedLicenseContent(), this.legalPreApproved, this.copyLeft, this.licenseCompliance,
+    this.licenseRefUrl, getLicenseRefContent(), this.includeLicense, this.includeSource, this.reviewedForRelease,
+    this.comments, this.legalApproved, this.legalComments, this.trace, this.guessedLicenseUrl,
+    this.guessedLicenseUrlAuditInfo, getGuessedLicenseContent() };
   }
 
   /** {@inheritDoc} */
@@ -185,11 +185,11 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   public String[] getHeadElements() {
 
     return new String[] { "declaredLicense", "licenseUrl", "declaredLicenseContent", "normalizedLicenseType",
-    "normalizedLicense", "normalizedLicenseUrl", "effectiveNormalizedLicenseType", "effectiveNormalizedLicense",
-    "effectiveNormalizedLicenseUrl", "effectiveNormalizedLicenseContent", "legalPreApproved", "copyLeft",
-    "licenseCompliance", "licenseRefUrl", "licenseRefContent", "includeLicense", "includeSource", "reviewedForRelease",
-    "comments", "legalApproved", "legalComments", "trace", "guessedLicenseUrl", "guessedLicenseUrlAuditInfo",
-    "guessedLicenseContent" };
+    "normalizedLicense", "normalizedLicenseUrl", "normalizedLicenseContent", "effectiveNormalizedLicenseType",
+    "effectiveNormalizedLicense", "effectiveNormalizedLicenseUrl", "effectiveNormalizedLicenseContent",
+    "legalPreApproved", "copyLeft", "licenseCompliance", "licenseRefUrl", "licenseRefContent", "includeLicense",
+    "includeSource", "reviewedForRelease", "comments", "legalApproved", "legalComments", "trace", "guessedLicenseUrl",
+    "guessedLicenseUrlAuditInfo", "guessedLicenseContent" };
   }
 
   /** {@inheritDoc} */
@@ -287,6 +287,15 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   public String getNormalizedLicenseUrl() {
 
     return this.normalizedLicenseUrl;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @JsonIgnore
+  public String getNormalizedLicenseContent() {
+
+    return LicenseTextHelper
+        .replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.normalizedLicenseUrl).getContent());
   }
 
   /** {@inheritDoc} */

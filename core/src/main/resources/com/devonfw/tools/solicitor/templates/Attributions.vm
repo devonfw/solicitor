@@ -1,0 +1,163 @@
+## template
+
+ <!DOCTYPE html>
+<html>
+<body>
+
+## styling (table)
+
+<style>
+
+table {
+  width:auto;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+tr:nth-child(even) {
+  background-color: #eee;
+}
+tr:nth-child(odd) {
+ background-color: #fff;
+}
+th {
+  background-color: lightblue;
+  color: black;
+}
+td.licenses {
+  white-space: nowrap;
+}
+</style>
+
+
+<h1>Thirdparty Components</h1>
+THE FOLLOWING SETS FORTH ATTRIBUTION NOTICES FOR THIRD PARTY SOFTWARE THAT MAY BE CONTAINED IN PORTIONS OF THE $ENGAGEMENT.getDataRow(0).engagementName PRODUCT.
+<p/>
+This document has 3 sections:
+<ul>
+<li><a href="#components">Component / License overview</a>: Lists all components with their associated licenses, link to the source code and given copyright information</li>
+<li><a href="#license_texts">License texts</a>: Gives all license texts applicable for the components</li>
+<li>Further <a href="#notices">attribution notices</a>: Gives further attribution notices applicable to components</li>
+</ul>
+
+<h2 id="components">Component / License overview</h2>
+
+The following table lists all third party Open Source Components that may be contained in this product. Besides name and version the table lists:
+<ul>
+<li>the URL of the Source-Code-Repository for downloading the source code</li>
+<li>the names of the OSS licenses attached to the component; in case that the component is dual-/multilicensed <i>(NA)</i> indicates that the component is herein distributed under an alternative license and the license does not apply in the context of this distribution</li>
+<li>copyright information given in the third party component; in case that no direct copyright notices are given then author/contributor information might be given if available</li>
+</ul>
+
+<p/>
+<table>
+	## head row
+  <tr>
+		<th>Name</th>
+		<th>Version</th>
+		<th>Source-Core-Repository</th>
+		<th>Licenses</th>
+		<th>Copyrights (or Authors/Contributors)</th>
+  </tr>
+	## content
+
+
+	#foreach ($license in $NONCOMMERCIALCOMPONENTS)
+		<tr>
+		#set( $aid  = $license.artifactId )
+		#set( $gid  = $license.groupId )
+		#set( $ver  = $license.version )
+		#set( $apps = $license.APPS )
+		<td>$license.artifactId</td> ## application component name
+		<td>$license.version</td> ## application component version
+		<td>$license.ossHomepage</td>
+		<td class="licenses">
+		#foreach($ac in $NONCOMMERCIALCOMPONENTS_LICENSES )
+			#if( $aid == $ac.artifactId && $gid == $ac.groupId && $ver == $ac.version )
+##				#set( $key = "${gid}${aid}${ac.normalizedLicense}" ) ## this is not necessarily sufficient as uinque id because version is missing
+##				<a href="#$esc.hash($key)">$ac.normalizedLicense</a> ## linking does not work currently
+				$ac.normalizedLicense
+				#if( $ac.effectiveNormalizedLicense == "Ignore" && $ac.effectiveNormalizedLicense != $ac.normalizedLicense)
+				<i>(NA)</i>
+				#end
+				<br/>
+			#end
+		#end
+		</td>
+		<td class="copyrights">$esc.newLinesAsBreaks($esc.html($license.copyrights))</td> ## copyrights
+		</tr>
+	#end
+
+</table>
+
+
+<h2 id="license_texts">License texts</h2>
+
+<p>
+This section lists all license texts that might be applicable for the third party open source components contained in this product. Each section lists:
+<ul>
+<li>the unique license text (or text referencing the license)</li>
+<li>the licenses given or referenced in this text (see note below)</li>
+<li>the components for which this text applies</li>
+</ul> 
+Note that not every license given or referenced in below texts necessarily applies in the
+context of the distribution of this product: See the table in <a href="#components">Component / 
+License overview</a> for licenses which might not apply due to selected dual-/multi-licensing
+options.
+</p>
+
+
+#foreach($ul in $UNIQUELICENSES)
+  #set($nlc = $ul.normalizedLicenseContent)
+<hr/>
+
+<p>
+	#if ($nlc)
+		<table border="1">
+		<tr><td>
+		<pre>$esc.html($esc.wrap100to80($nlc))</pre>
+		</td></tr>
+		</table>
+	#else
+		<i>Es liegt kein Lizenztext vor.</i>
+	#end
+</p>
+<p>
+<b>Defined/referenced license(s):</b> $ul.normalizedLicense
+<br/>
+<b>Applicable component(s):</b> $ul.artifact
+</p>
+#end
+<hr/>
+<hr/>
+
+<h2 id="notices">Attribution Notices</h2>
+The following additional attribution notices are given within NOTICE files and are reproduced here as required in the license conditions.
+
+#foreach($nf in $NOTICEFILES)
+<hr/>
+<p>
+<b>Component(s)</b>: $nf.artifact
+</p>
+<p>
+	#if ($nf.noticeFileContent)
+		<table border="1">
+		<tr><td>
+		<pre>$esc.html($nf.noticeFileContent)</pre>
+		</td></tr>
+		</table>
+	#else
+		<i>Es liegt kein Notice-File vor</i>
+	#end
+</p>
+
+#end
+
+
+</body>
+</html>

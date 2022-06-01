@@ -25,6 +25,11 @@ public interface ApplicationComponent {
   void addRawLicense(RawLicense rawLicense);
 
   /**
+   * Removes all raw licenses. Might be used if resetting license information is required.
+   */
+  void removeAllRawLicenses();
+
+  /**
    * This method gets the field <code>application</code>.
    *
    * @return the field application
@@ -58,6 +63,20 @@ public interface ApplicationComponent {
    * @return the field ossHomepage
    */
   String getOssHomepage();
+
+  /**
+   * This method gets the field <code>noticeFileUrl</code>.
+   *
+   * @return the field noticeFileUrl
+   */
+  String getNoticeFileUrl();
+
+  /**
+   * This method gets the field <code>noticeFileContent</code>.
+   *
+   * @return the field noticeFileContent
+   */
+  String getNoticeFileContent();
 
   /**
    * This method gets an unmodifiable copy of the field <code>rawLicenses</code>.
@@ -104,6 +123,8 @@ public interface ApplicationComponent {
    */
   boolean isOssModified();
 
+  String getCopyrights();
+
   /**
    * Sets the {@link Application}.
    *
@@ -133,6 +154,13 @@ public interface ApplicationComponent {
   void setOssHomepage(String ossHomepage);
 
   /**
+   * This method sets the field <code>noticeFileUrl</code>.
+   *
+   * @param noticeFileUrl the new value of the field noticeFileUrl
+   */
+  void setNoticeFileUrl(String noticeFileUrl);
+
+  /**
    * This method sets the field <code>ossModified</code>.
    *
    * @param ossModified the new value of the field ossModified
@@ -159,6 +187,13 @@ public interface ApplicationComponent {
    * @param repoType the new value of the field repoType
    */
   void setRepoType(String repoType);
+
+  /**
+   * This method sets the field <code>copyrights</code>.
+   *
+   * @param copyrights the new value of the field copyrights
+   */
+  void setCopyrights(String copyrights);
 
   /**
    * This method sets the field <code>packageUrl</code>.

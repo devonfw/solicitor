@@ -75,9 +75,15 @@ public enum LogMessages {
       "At least one license text contained a large amount of raw HTML and was substituted by placeholder text '{}'"), //
   MULTIPLE_DECISIONTABLES(51, "Multiple decision tables in both .xls and .csv format. Prioritizing '{}.xls'."), //
   ADDING_ADDITIONALWRITER_CONFIG(52, "Merging config: Adding additional writers to base config from {}"), //
-  NOT_A_VALID_NPM_PACKAGE_IDENTIFIER(53,
-      "{} is not a valid identifier for an NPM package"), NOT_A_VALID_NPM_PACKAGE_NAME(54,
-          "{} is not a valid name for an NPM package");
+  NOT_A_VALID_NPM_PACKAGE_IDENTIFIER(53, "{} is not a valid identifier for an NPM package"), //
+  NOT_A_VALID_NPM_PACKAGE_NAME(54, "{} is not a valid name for an NPM package"), //
+  SCANCODE_PROCESSOR_STARTING(54,
+      "Experimental feature ACTIVE: Start enriching the inventory data with Scancode data (as far as available)"), //
+  SCANCODE_FEATURE_DEACTIVATED(55,
+      "The experimental feature for enriching the inventory with scancode data is DEACTIVATED"), //
+  SCANCODE_INFO_READ(56, "Scancode information was read for {} out of {} ApplicationComponents"), //
+  CURATIONS_NOT_EXISTING(57, "Curations file '{}' not found. No curations will be applied."), //
+  CURATIONS_PROCESSING(58, "Curations file '{}' exists. Applying curations.");
 
   private final String message;
 

@@ -28,6 +28,12 @@ public class RuleConfig {
   @JsonProperty
   private String description;
 
+  @JsonProperty
+  private boolean deprecationWarnOnly;
+
+  @JsonProperty
+  private String deprecationDetails;
+
   /**
    * This method gets the field <code>ruleGroup</code>.
    *
@@ -89,6 +95,22 @@ public class RuleConfig {
   }
 
   /**
+   * @return deprecationWarnOnly
+   */
+  public boolean getDeprecationWarnOnly() {
+
+    return this.deprecationWarnOnly;
+  }
+
+  /**
+   * @return deprecationDetails
+   */
+  public String getDeprecationDetails() {
+
+    return this.deprecationDetails;
+  }
+
+  /**
    * This method sets the field <code>ruleGroup</code>.
    *
    * @param ruleGroup the new value of the field ruleGroup
@@ -147,4 +169,21 @@ public class RuleConfig {
 
     this.optional = optional;
   }
+
+  /**
+   * @param deprecationWarnOnly new value of {@link #getDeprecationWarnOnly}.
+   */
+  public void setDeprecationWarnOnly(boolean deprecationWarnOnly) {
+
+    this.deprecationWarnOnly = deprecationWarnOnly;
+  }
+
+  /**
+   * @param deprecationDetails new value of {@link #getDeprecationDetails}.
+   */
+  public void setDeprecationDetails(String deprecationDetails) {
+
+    this.deprecationDetails = deprecationDetails;
+  }
+
 }

@@ -76,7 +76,11 @@ public class YarnReader extends AbstractReader implements Reader {
 
       // check whether VendorUrl is included in input file or not
       if (attributes.size() == 6) {
-        homePage = attributes.get(4);
+        if (attributes.get(4) != null && !attributes.get(4).isBlank()) {
+          homePage = attributes.get(4);
+        } else {
+          homePage = repo;
+        }
       } else if (attributes.size() == 5) {
         homePage = repo;
       }

@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.devonfw.tools.solicitor.common.LicenseTextHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.common.content.ContentProvider;
+import com.devonfw.tools.solicitor.common.content.web.WebContent;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -32,6 +35,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private String ossHomepage;
 
+  private String noticeFileUrl;
+
   private String groupId;
 
   private String artifactId;
@@ -42,9 +47,13 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private String packageUrl;
 
+  private String copyrights;
+
   private List<NormalizedLicense> normalizedLicenses = new ArrayList<>();
 
   private List<RawLicense> rawLicenses = new ArrayList<>();
+
+  private ContentProvider<WebContent> licenseContentProvider;
 
   /** {@inheritDoc} */
   @Override
@@ -58,6 +67,12 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void addRawLicense(RawLicense rawLicense) {
 
     this.rawLicenses.add(rawLicense);
+  }
+
+  @Override
+  public void removeAllRawLicenses() {
+
+    this.rawLicenses = new ArrayList<>();
   }
 
   /** {@inheritDoc} */
@@ -87,7 +102,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public String[] getDataElements() {
 
     return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl(), getOssHomepage(),
-    getUsagePattern().toString(), isOssModified() ? "true" : "false" };
+    getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(), isOssModified() ? "true" : "false",
+    getCopyrights() };
   }
 
   /** {@inheritDoc} */
@@ -101,8 +117,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getHeadElements() {
 
-    return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "usagePattern",
-    "ossModified" };
+    return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "noticeFileUrl",
+    "noticeFileContent", "usagePattern", "ossModified", "copyrights" };
   }
 
   /** {@inheritDoc} */
@@ -117,6 +133,22 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public String getOssHomepage() {
 
     return this.ossHomepage;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getNoticeFileUrl() {
+
+    return this.noticeFileUrl;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @JsonIgnore
+  public String getNoticeFileContent() {
+
+    return LicenseTextHelper
+        .replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.noticeFileUrl).getContent());
   }
 
   /** {@inheritDoc} */
@@ -161,6 +193,17 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     return this.ossModified;
   }
 
+  /**
+   * This method gets the field <code>licenseContentProvider</code>.
+   *
+   * @return the field licenseContentProvider
+   */
+  @JsonIgnore
+  public ContentProvider<WebContent> getLicenseContentProvider() {
+
+    return this.licenseContentProvider;
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setApplication(Application application) {
@@ -191,6 +234,13 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void setOssHomepage(String ossHomepage) {
 
     this.ossHomepage = ossHomepage;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setNoticeFileUrl(String noticeFileUrl) {
+
+    this.noticeFileUrl = noticeFileUrl;
   }
 
   /** {@inheritDoc} */
@@ -247,6 +297,30 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
       normalizedLicense.completeData();
     }
 
+  }
+
+  @Override
+  public String getCopyrights() {
+
+    return this.copyrights;
+  }
+
+  @Override
+  public void setCopyrights(String copyrights) {
+
+    this.copyrights = copyrights;
+    // TODO Auto-generated method stub
+
+  }
+
+  /**
+   * This method sets the field <code>licenseContentProvider</code>.
+   *
+   * @param licenseContentProvider the new value of the field licenseContentProvider
+   */
+  public void setLicenseContentProvider(ContentProvider<WebContent> licenseContentProvider) {
+
+    this.licenseContentProvider = licenseContentProvider;
   }
 
 }

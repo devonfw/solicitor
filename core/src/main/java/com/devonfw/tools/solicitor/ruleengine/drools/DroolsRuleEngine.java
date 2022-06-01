@@ -23,9 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.InventoryProcessor;
 import com.devonfw.tools.solicitor.SolicitorSetup;
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.config.RuleConfig;
@@ -43,6 +46,7 @@ import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
  *
  */
 @Component
+@Order(InventoryProcessor.RULE_ENGINE)
 public class DroolsRuleEngine implements RuleEngine {
 
   private static final Logger LOG = LoggerFactory.getLogger(DroolsRuleEngine.class);
@@ -59,13 +63,16 @@ public class DroolsRuleEngine implements RuleEngine {
   @Autowired
   private SolicitorSetup setup;
 
+  @Autowired
+  private DeprecationChecker deprecationChecker;
+
   /**
    * {@inheritDoc}
    *
    * Each set of rules given by a RuleConfig (e.g. a single decision table) will be executed in a separate Kie session.
    */
   @Override
-  public void executeRules(ModelRoot modelRoot) {
+  public void processInventory(ModelRoot modelRoot) {
 
     int rulesFired = 0;
     for (RuleConfig rc : this.setup.getRuleSetups()) {
@@ -91,6 +98,11 @@ public class DroolsRuleEngine implements RuleEngine {
     if (rc.isOptional() && !this.inputStreamFactory.isExisting(rc.getRuleSource())) {
       LOG.info(LogMessages.SKIPPING_RULEGROUP.msg(), rc.getRuleGroup(), rc.getRuleSource());
       return 0;
+    }
+
+    // check if this rule group was marked as deprecated
+    if (rc.getDeprecationDetails() != null && !rc.getDeprecationDetails().isBlank()) {
+      this.deprecationChecker.check(rc.getDeprecationWarnOnly(), rc.getDeprecationDetails());
     }
 
     KieSession ksession = prepareSession(rc);

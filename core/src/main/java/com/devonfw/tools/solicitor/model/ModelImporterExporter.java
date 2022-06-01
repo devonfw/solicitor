@@ -117,6 +117,10 @@ public class ModelImporterExporter {
       if (readModelVersion >= LOWEST_VERSION_WITH_PACKAGE_URL) {
         packageUrl = applicationComponentNode.get("packageUrl").asText(null);
       }
+      JsonNode copyrightNode = applicationComponentNode.get("copyrights");
+      String copyrights = copyrightNode != null ? copyrightNode.asText(null) : null;
+      JsonNode noticeFileUrlNode = applicationComponentNode.get("noticeFileUrl");
+      String noticeFileUrl = noticeFileUrlNode != null ? noticeFileUrlNode.asText(null) : null;
       JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
       JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
 
@@ -130,6 +134,8 @@ public class ModelImporterExporter {
       applicationComponent.setVersion(version);
       applicationComponent.setRepoType(repoType);
       applicationComponent.setPackageUrl(packageUrl);
+      applicationComponent.setCopyrights(copyrights);
+      applicationComponent.setNoticeFileUrl(noticeFileUrl);
 
       readNormalizedLicenses(applicationComponent, normalizedLicensesNode, readModelVersion);
       readRawLicenses(applicationComponent, rawLicensesNode, readModelVersion);
@@ -267,6 +273,8 @@ public class ModelImporterExporter {
       String declaredLicense = rawLicenseNode.get("declaredLicense").asText(null);
       String licenseUrl = rawLicenseNode.get("licenseUrl").asText(null);
       String trace = rawLicenseNode.get("trace").asText(null);
+      JsonNode originNode = rawLicenseNode.get("origin");
+      String origin = originNode != null ? originNode.asText(null) : null;
       boolean specialHandling = rawLicenseNode.get("specialHandling").asBoolean();
 
       RawLicense rawLicense = this.modelFactory.newRawLicense();
@@ -274,6 +282,7 @@ public class ModelImporterExporter {
       rawLicense.setDeclaredLicense(declaredLicense);
       rawLicense.setLicenseUrl(licenseUrl);
       rawLicense.setTrace(trace);
+      rawLicense.setOrigin(origin);
       rawLicense.setSpecialHandling(specialHandling);
 
     }

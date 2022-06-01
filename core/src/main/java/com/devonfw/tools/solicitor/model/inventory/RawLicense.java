@@ -34,6 +34,13 @@ public interface RawLicense {
   String getTrace();
 
   /**
+   * This method gets the field <code>origin</code>.
+   *
+   * @return the field origin
+   */
+  String getOrigin();
+
+  /**
    * This method gets the field <code>specialHandling</code>.
    *
    * @return the field specialHandling
@@ -74,6 +81,13 @@ public interface RawLicense {
    * @param trace the new value of the field trace
    */
   void setTrace(String trace);
+
+  /**
+   * This method sets the field <code>origin</code>.
+   *
+   * @param origin the new value of the field origin
+   */
+  void setOrigin(String origin);
 
   /**
    * Complete the data of this object by setting members which are derived from other members.

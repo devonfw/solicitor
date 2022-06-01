@@ -149,6 +149,9 @@ The internal business data model consists of 6 entities:
 | version | String | component identifier: Version
 | repoType | String | component identifier: RepoType
 | packageUrl | String | the https://github.com/package-url/purl-spec[Package URL] as an technology neutral component identifier
+| noticeFileUrl | String | URL referencing a NOTICE file to be included in the attributions (optional, see <<Experimental Scancode Integration>>)
+| noticeFileContent | String | resolved content of noticeFileUrl (optional, see <<Experimental Scancode Integration>>)
+| copyrights | String | Copyright statements found in the components metadata / code (optional, see <<Experimental Scancode Integration>>)
 |===
 
 ==== RawLicense
@@ -158,6 +161,7 @@ The internal business data model consists of 6 entities:
 | declaredLicense | String | name of the declared license
 | licenseUrl | String | URL of the declared license
 | trace | String | detail info of history of this data record
+| origin | String | origin of the raw license data; either the lowercase classname of the Reader or "scancode" if licensedata was taken from scancode results
 | specialHandling | boolean | _(for controlling rule processing)_
 |===
 
@@ -171,6 +175,7 @@ The internal business data model consists of 6 entities:
 | normalizedLicenseType | String | type of the license, see <<License types>>
 | normalizedLicense | String | name of the license in normalized form (SPDX-Id) or special "pseudo license id", see <<Pseudo License Ids>>
 | normalizedLicenseUrl | String | URL pointing to a normalized form of the license
+| normalizedLicenseContent | String | resolved content of normalizedLicenseUrl
 | normalizedLicenseType | String | type of the license, see <<License types>>
 | effectiveNormalizedLicenseType | String | type of the effective license, see <<License types>>| effectiveNormalizedLicense | String | effective normalized license (SPDX-Id) or "pseudo license id"; this is the information after selecting the right license in case of multi licensing or any license override due to a component being redistributed under a different license
 | effectiveNormalizedLicenseUrl | String | URL pointing to the effective normalized license
@@ -354,10 +359,12 @@ They are defined as a sequence of rule templates and corresponding XLS (or CSV) 
   "rules" : [ {
     "type" : "dt", <1>
     "optional" : false, <2>
-    "ruleSource" : "classpath:samples/LicenseAssignmentSample.xls", <3> <7>
-    "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignment.drt", <4> <7>
-    "ruleGroup" : "LicenseAssignment", <5>
-    "description" : "setting license in case that no one was detected" <6>
+    "ruleSource" : "classpath:samples/LicenseAssignmentV2Sample.xls", <3> <9>
+    "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignmentV2.drt", <4> <9>
+    "ruleGroup" : "LicenseAssignmentV2", <5>
+    "description" : "setting license in case that no one was detected", <6>
+    "deprecationWarnOnly" : true, <7>
+    "deprecationDetails" : "This decision table should be migrated to ..." <8>
   },
   .
   .
@@ -381,7 +388,10 @@ resources by appending suffixes _xls_ and _csv_.
 <4> location of the drools rule template to be used to define the rules together with the decision table data
 <5> id of the group of rules; used to reference it e.g. when doing logging
 <6> some textual description of the rule group
-<7> _placeholder patterns might be used here_
+<7> flag to control which level of deprecation (see <<Feature Deprecation>>) applies to this rule group; optional and only applicable if `deprecationDetails` is also defined.
+<8> optional value; if set then the use of the defined decision table is deprecated; the
+given string will be given as part of the log message
+<9> _placeholder patterns might be used here_
 
 When running, _Solicitor_ will execute the rules of each rule group separately and in the order
 given by the configuration. Only if there are no more rules to fire in a group _Solicitor_ will
@@ -422,7 +432,7 @@ additionally to the default writers. The section `additionalWriters` has the sam
 
 [listing]
   "additionalWriters" : [ {
-    "type" : 
+    "type" :
     ...
     "dataTables" : {
         ...
@@ -591,7 +601,7 @@ These configurations may also be used to overwrite options of a https://commons.
 Important: In case that a component has multiple licenses attached, there needs to be a separate
 line in the csv file for each license.
 
-WARNING: The CSV reader currently does not fill the attribute `packageUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read bythe CSV reader.  
+WARNING: The CSV reader currently does not fill the attribute `packageUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read bythe CSV reader.
 
 === NPM
 
@@ -887,6 +897,8 @@ The phase itself consists of two decision tables / rule groups:
 ==== Decision Table: Explicitely setting Licenses
 With this decision table is is possible to explicitely assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next rule group.
 
+Decision table data: `LicenseAssignmentV2*.xls/csv`
+
 * LHS conditions:
 ** `Engagement.clientName`
 ** `Engagement.engagementName`
@@ -894,6 +906,7 @@ With this decision table is is possible to explicitely assign NormalizedLicenses
 ** `ApplicationComponent.groupId` icon:magic[]
 ** `ApplicationCompomnent.artifactId` icon:magic[]
 ** `ApplicationComponent.version` icon:magic[]
+** `RawLicense.origin` icon:magic[] (new with "V2" version of rules)
 ** `RawLicense.declaredLicense` icon:magic[]
 ** `RawLicense.url` icon:magic[]
 
@@ -907,8 +920,16 @@ icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
 All RawLicenses which are in scope of fired rules will be marked so that they do not get reprocessed by the following decision table.
 
+NOTE: With the "V2" version of rules the additional field/condition `origin` was introduced.
+This can be used to fire rules only if the raw license data was obtained from a specific data source.
+Its primary intention is to distinguish between data obtained via normal readers or from Scancode data.
+Decision table data for the new data structure is named `LicenseAssignmentV2*.xls/csv`.
+The old decision table structure `LicenseAssignment*.xls/csv` is deprecated but for compatibility reasons still supported.   
+
 ==== Decision Table: Detecting Licenses from Imported Data
 With this decision table the license info from the RawLicense is mapped to the NormalizedLicense. This is based on the name and/or URL of the license as imported via the readers.
+
+Decision table data: `LicenseNameMapping*.xls/csv`
 
 * LHS conditions:
 ** `RawLicense.declaredLicense` icon:magic[]
@@ -927,6 +948,8 @@ This phase consists of two decision tables.
 
 ==== Choosing specific License in case of Multi-Licensing
 This group of rules has the speciality that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as `Ignored`.
+
+Decision table data: `MultiLicenseSelection*.xls/csv`
 
 * LHS conditions:
 ** `ApplicationComponent.groupId` icon:magic[]
@@ -949,6 +972,8 @@ It is important to note that the rules only match, if all licenses given in the 
 
 The second decision table in this group is used to define the `effectiveNormalizedLicense` (if not already handled by the decision table before).
 
+Decision table data: `LicenseSelection*.xls/csv`
+
 * LHS conditions:
 ** `ApplicationComponent.groupId` icon:magic[]
 ** `ApplicationComponent.artifactId` icon:magic[]
@@ -970,6 +995,8 @@ The third phase ist the legal evaluation of the licenses and the check, whether 
 ==== Pre-Evaluation based on common rules
 Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furtheron they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the `effectiveNormalizedLicense` and do not consider any project, application of component information.
 
+Decision table data: `LegalPreEvaluation*.xls/csv`
+
 * LHS condition:
 ** `NormalizedLicense.effectiveNormalizedLicenseType`
 ** `NormalizedLicense.effectiveNormalizedLicense`
@@ -985,6 +1012,8 @@ Within the pre evaluation the license info is checked against standard OSS usage
 ==== Final evaluation
 The decision table for final legal evaluation defines all rules which are needed
 to create the result of the legal evaluation. Rules here might be general for all projects or even very specific to a project if the rule can not be applied to other projects.
+
+Decision table data: `LegalEvaluation*.xls/csv`
 
 * LHS condition:
 ** `Engagement.clientName`
@@ -1220,6 +1249,122 @@ The following features are deprecated via the above mechanism:
 * Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58
 * Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see https://github.com/devonfw/solicitor/issues/78
+* Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 1 from Version 1.4.0 on
+
+== Experimental Scancode Integration
+
+Starting from version 1.4.0 _Solicitor_ can be integrated with the tool https://github.com/nexB/scancode-toolkit[ScanCode] to include detailed information gathered from
+the "deep license scan" performed by ScanCode. This includes detected Licenses, Copyrights and Notice-Files.
+
+WARNING: The current integration with ScanCode is experimental: The used ScanCode parameters, interfacing and curations logic and all parts of the data persistence are experimental and thus might result in insufficient quality of results. The current workflow and implementation is subject to change in future versions without further notice.
+
+=== General workflow
+The general workflow when integrating with ScanCode consists of the following 3 steps:
+
+. Execute _Solicitor_ in a "classic" way i.e. just based on the data provided via the Readers as described in
+<<Reading License Information with Readers>>. Besides the normal reports/documents generated this will also
+create scripts for downloading the needed OSS source codes and run Scancode.
+. Download source codes and run ScanCode by executing the generated scripts. The downloadad sources and ScanCode results will be saved to a directory tree in the local filesytem.
+. Execute _Solicitor_ a second time. For all ApplicationComponents where ScanCode information is available
+(stored in the local directory tree) the license data as obtained from the Readers is replaced by this information. The data model is enriched with the found copyright and notice file information. Reports (see <<Reporting and Creating output documents>>) are now based on the ScanCode data (where available).
+
+=== Prerequisites
+
+==== Bash
+The scripts generated by _Solicitor_ to download sources and run ScanCode are in Bash syntax.
+So either run it on a system using natively Bash (linux) or install an appropriate environment (e.g. Git Bash) if you are using a windows environment.
+
+==== ScanCode
+Download and install ScanCode from https://github.com/nexB/scancode-toolkit/releases.
+Make sure that the executable is included in the search PATH for executables.
+
+==== Activate feature
+As the ScanCode integration is still experimental it is currently deactivated by default.
+To enable it set system property `solicitor.feature-flag.scancode=true`.
+(See <<Built in Default Properties>> for information how to do so.)
+If this feature flag is not activated then _Solicitor_ will not try to attempt to read ScanCode information from the local file system.
+
+=== Detailed workflow
+==== Solicitor 1st run
+Execute _Solicitor_ in a classic way. As part of the report creation step this will generate two scripts:
+
+* `output/scancode_PROJECTNAME.sh` (for downloading the sources, also calls `scancodeScan.sh`)
+* `output/scancodeScan.sh` (for running ScanCode on the downloaded sources)
+
+Scripts will include all ApplicationComponents with exception of those where `normalizedLicenseType` was set to `COMMERCIAL`.   
+
+==== Download Sources and run Scancode
+Change to directory `output` and execute `sh scancode_PROJECTNAME.sh`.
+This will download all sources and process them via ScanCode.
+This might take several hours to complete.
+Results are stored in subdirectory `Source` of the directory `output` and is organized in a tree structure given by the https://github.com/package-url/purl-spec[PackageURL] of the ApplicationComponents.
+
+==== Solicitor 2nd run
+Execute _Solicitor_ a second time.
+After reading the component/license information from the Readers (but before starting the rule engine)
+_Solicitor_ will try to look up ScanCode information from the directory tree in `output/Sources` for all processed ApplicationComponents. If information is found for an ApplicationsComponent the following is done:
+
+* License information (including URL of license text) as obtained from the Readers is replaced by the license info found by ScanCode
+* Copyrights are taken from ScanCode results
+* Info on NOTICE file is taken from the ScanCode results
+* If the ScanCode results contain information about a project URL then this is stored as `ossHomepage` 
+
+==== Output
+Main target of the additional information obtained from ScanCode is currently the new report `Attributions_PROJECTNAME.html` which lists
+
+* all ApplicationComponents (excluding those which are not OSS licensed)
+* with all found copyrights
+* and all licenses
+* including all different license texts
+* and contents of all found NOTICE files
+
+=== Correcting data
+The data obtained from ScanCode might be affected by false positives (wrongly detected a license or copyright) or false negatives (missed to detect a license or copyright).
+To compensate such defects there are two mechanisms:
+Applying Curation information from a "curations" file or changing the License information via the decision table rules.
+
+==== Curations file
+To define curations you might create a file `output/curations.yaml` containing the following structure:
+
+[source,yaml]
+----
+artifacts: 
+  - name: pkg/npm/@somescope/somepackage/1.2.3                  <1>
+    url: https://github.com/foo/bar                             <2>
+    licenses:                                                   <3>
+      - license: MIT                                            <4> 
+        url: https://raw.githubusercontent.com/foo/bar/LICENSE  <5> 
+    copyrights:                                                 <6>
+      - (c) 2021 Donald Duck                                    <7>
+      - "(c) 2019 Mickey Mouse <http://mickey.mouse>"           <8>
+  - name: pkg/npm/@anotherscope/anotherpackage/4.5.6            <9>
+.
+.
+.
+----
+<1> Path of the package information as used in the file tree. Derived from the PackageURL.
+<2> URL of the project, will be stored as `ossHomepage`. (Optional: no change if not existing.) 
+<3> Licenses to set. Optional. If defined then all found licenses will be replaced by the list of licenses given here.
+<4> SPDX identifier of license.
+<5> URL pointing to license text.
+<6> Copyrights to set. Optional. If defined then all found copyrights will be replaced by the list of copyrights given here.
+<7> A single copyright.
+<8> Another copyright. Note that due to YAML syntax any string containing `:` needs to be enclosed with parantheses
+<9> Further packages to follow.
+
+==== Decision table rules
+As for license information obtained from the Readers the license information from ScanCode can also be altered using decision table rules. A new attribute `origin` was introduced in the `RawLicense` entity as well as condition field in decision table `LicenseAssignmentV2*.xls/csv`. The `origin` attribute in `Rawlicense` either contains the string `scancode` if the license information came from ScanCode or it contains the (lowercase) class name of the used Reader.
+
+Using the <<Extended comparison syntax>> it is possible to qualify whether a rule should apply for licenses found by ScanCode or not:
+
+[cols="1,2",options="header"]
+|====================
+|Value of condition Origin          | rule applies for ...
+|`scancode`      | ... licenses obtained from ScanCode information  
+|`NOT:scancode`  | ... licenses obtained from normal Readers 
+| _(empty)_      | ... in both cases 
+|====================
+
 
 [appendix]
 == Default Base Configuration
@@ -1229,7 +1374,7 @@ of the _Solicitor_ configuration file which will be used if the project specific
 [source,json]
 .Default Configuration
 ----
-include::files/solicitor_base.cfg[lines=23..169]
+include::files/solicitor_base.cfg[lines=23..220]
 ----
 
 [appendix]
@@ -1280,12 +1425,12 @@ Similar to the above but uses guessed license URLs and content, see <<Guessing o
 This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:
 Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized Licenses, License Count.
 
-=== ScancodeDownloadScript.vm
-This template creates a script file for using https://github.com/nexB/scancode-toolkit[ScanCode] to create a JSON document which contains copyright information (statements, holders, authors) about each artifact within a project. Copyright information
-is displayed on file level. The output format being a JSON allows for further usage and processing as we store it in a valid syntax with an array of artifacts that contain all infos.
-Usage information can be found in the created "scancode_projectname.sh" script after running solicitor.
+=== ScancodeScript.vm, ScancodeScanScript.vm
+These templates create script files for downloading package sources and using https://github.com/nexB/scancode-toolkit[ScanCode] to do a "deep license scan"
+for finding licenses, copyright information (statements, holders, authors)
+and NOTICE files for each artifact within a project. See <<Experimental Scancode Integration>>.
 
-NOTE: This report is an experimental feature and might be changed or removed in future versions without any notice.
+NOTE: Generating these scripts is an experimental feature and might be changed or removed in future versions without any notice.
 
 [appendix]
 == Extending Solicitor
@@ -1337,6 +1482,10 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* Initial version of experimental scancode integration. See <<Experimental Scancode Integration>>.
+* New decision table structure `LicenseAssignmentV2` with additional condition `origin`.
+Old structure deprecated but still supported.
+Migrate existing project decision tables by renaming `LicenseAssignmentProject.xls` to  `LicenseAssignmentV2Project.xls` and introducing a new (empty) column `Origin` between existing columns `OSS Version` and `Declared License`.
 * Added Solicitor Logo and code for creating variants / animation.
 * https://github.com/devonfw/solicitor/issues/117: New attribute `packageUrl` in `ApplicationComponent`.
 * Experimental scancode-toolkit integration changed to using Bash scripting.

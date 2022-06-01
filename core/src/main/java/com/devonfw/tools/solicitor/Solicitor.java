@@ -26,7 +26,6 @@ import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.ReaderFactory;
-import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
 import com.devonfw.tools.solicitor.writer.WriterFacade;
 
 /**
@@ -52,7 +51,7 @@ public class Solicitor {
   private ReaderFactory readerFactory;
 
   @Autowired
-  private RuleEngine ruleEngine;
+  private InventoryProcessor[] inventoryProcessors;
 
   @Autowired
   private WriterFacade writerFacade;
@@ -114,7 +113,7 @@ public class Solicitor {
       modelRoot = this.modelImporterExporter.loadModel(clo.pathForLoad);
     } else {
       readInventory();
-      this.ruleEngine.executeRules(modelRoot);
+      runInventoryProcessors(modelRoot);
       modelRoot.completeData();
     }
     if (clo.save) {
@@ -148,6 +147,17 @@ public class Solicitor {
           throw sre;
         }
       }
+    }
+
+  }
+
+  /**
+   * Execute the inventoryProcessors.
+   */
+  private void runInventoryProcessors(ModelRoot modelRoot) {
+
+    for (InventoryProcessor inventoryProcessor : this.inventoryProcessors) {
+      inventoryProcessor.processInventory(modelRoot);
     }
   }
 

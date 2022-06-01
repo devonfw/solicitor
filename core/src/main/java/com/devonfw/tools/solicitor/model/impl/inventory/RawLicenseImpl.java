@@ -20,6 +20,8 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
 
   private String trace;
 
+  private String origin;
+
   private boolean specialHandling;
 
   private ApplicationComponent applicationComponent;
@@ -43,7 +45,7 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   @Override
   public String[] getDataElements() {
 
-    return new String[] { this.declaredLicense, this.licenseUrl, this.trace };
+    return new String[] { this.declaredLicense, this.licenseUrl, this.trace, this.origin };
   }
 
   /** {@inheritDoc} */
@@ -57,7 +59,7 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   @Override
   public String[] getHeadElements() {
 
-    return new String[] { "declaredLicense", "licenseUrl", "trace" };
+    return new String[] { "declaredLicense", "licenseUrl", "trace", "origin" };
   }
 
   /** {@inheritDoc} */
@@ -72,6 +74,13 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   public String getTrace() {
 
     return this.trace;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getOrigin() {
+
+    return this.origin;
   }
 
   /** {@inheritDoc} */
@@ -118,6 +127,13 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   public void setTrace(String trace) {
 
     this.trace = trace;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setOrigin(String origin) {
+
+    this.origin = origin;
   }
 
   /** {@inheritDoc} */
