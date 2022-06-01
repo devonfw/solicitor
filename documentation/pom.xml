@@ -152,7 +152,10 @@
               <outputFile>solicitor_userguide.pdf</outputFile>
               <backend>pdf</backend>
               <sourceHighlighter>coderay</sourceHighlighter>
+              <doctype>book</doctype>
               <attributes>
+                <pdf-stylesdir>${project.basedir}/theme</pdf-stylesdir>
+                <pdf-style>solicitor</pdf-style>
                 <icons>font</icons>
                 <pagenums/>
                 <toc/>
