@@ -54,6 +54,7 @@ public final class LicenseTextHelper {
    * @param stringToBeWrapped the string that should be line wrapped
    * @param maxAllowedWidth the maximum allowed line width without wrapping
    * @param wrapWidth the new line length when doing wrapping
+   * @return the wrapped string
    */
   public static String wrapIfNecessary(String stringToBeWrapped, int maxAllowedWidth, int wrapWidth) {
 

@@ -153,6 +153,8 @@ public class Solicitor {
 
   /**
    * Execute the inventoryProcessors.
+   *
+   * @param modelRoot the root of the data model
    */
   private void runInventoryProcessors(ModelRoot modelRoot) {
 

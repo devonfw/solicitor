@@ -95,14 +95,18 @@ public class RuleConfig {
   }
 
   /**
+   * Gets deprecationWarnOnly.
+   *
    * @return deprecationWarnOnly
    */
-  public boolean getDeprecationWarnOnly() {
+  public boolean isDeprecationWarnOnly() {
 
     return this.deprecationWarnOnly;
   }
 
   /**
+   * Gets deprecationDetails.
+   *
    * @return deprecationDetails
    */
   public String getDeprecationDetails() {
@@ -171,7 +175,9 @@ public class RuleConfig {
   }
 
   /**
-   * @param deprecationWarnOnly new value of {@link #getDeprecationWarnOnly}.
+   * Set deprecationWarnOnly.
+   *
+   * @param deprecationWarnOnly new value of deprecationWarnOnly.
    */
   public void setDeprecationWarnOnly(boolean deprecationWarnOnly) {
 

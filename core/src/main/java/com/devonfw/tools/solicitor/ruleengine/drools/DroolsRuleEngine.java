@@ -102,7 +102,7 @@ public class DroolsRuleEngine implements RuleEngine {
 
     // check if this rule group was marked as deprecated
     if (rc.getDeprecationDetails() != null && !rc.getDeprecationDetails().isBlank()) {
-      this.deprecationChecker.check(rc.getDeprecationWarnOnly(), rc.getDeprecationDetails());
+      this.deprecationChecker.check(rc.isDeprecationWarnOnly(), rc.getDeprecationDetails());
     }
 
     KieSession ksession = prepareSession(rc);

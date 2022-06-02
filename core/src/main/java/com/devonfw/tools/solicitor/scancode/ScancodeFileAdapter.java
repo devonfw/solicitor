@@ -53,6 +53,8 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
   }
 
   /**
+   * Sets repoBasePath.
+   *
    * @param repoBasePath new value of repoBasePath.
    */
   @Value("${solicitor.scancode.repo-base-path}")
@@ -62,6 +64,8 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
   }
 
   /**
+   * Sets curationsFileName.
+   *
    * @param curationsFileName new value of curationsFileName.
    */
   @Value("${solicitor.scancode.curations-filename}")
@@ -71,6 +75,8 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
   }
 
   /**
+   * Sets minLicenseScore.
+   *
    * @param minLicenseScore new value of minLicenseScore.
    */
   @Value("${solicitor.scancode.min-license-score}")
@@ -80,6 +86,8 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
   }
 
   /**
+   * Sets minLicensefilePercentage.
+   *
    * @param minLicensefilePercentage new value of minLicensefilePercentage.
    */
   @Value("${solicitor.scancode.min-licensefile-percentage}")
