@@ -1432,6 +1432,10 @@ and NOTICE files for each artifact within a project. See <<Experimental Scancode
 
 NOTE: Generating these scripts is an experimental feature and might be changed or removed in future versions without any notice.
 
+=== Attributions.vm
+This template creates an attributions document which lists all used OSS components with their licenses, license texts and found copyrights information as well as found information from NOTICE files.
+The template is part of the <<Experimental Scancode Integration>> and requires ScanCode to be used to collect all necessary information.
+
 [appendix]
 == Extending Solicitor
 `Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
