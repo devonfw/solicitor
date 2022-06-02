@@ -222,8 +222,8 @@ public class ResourceToFileCopier {
                 "new_project/rules/LegalEvaluationProject.xls")
             .withCopyOperation("classpath:starters/rules/LegalPreEvaluationProject.xls",
                 "new_project/rules/LegalPreEvaluationProject.xls")
-            .withCopyOperation("classpath:starters/rules/LicenseAssignmentProject.xls",
-                "new_project/rules/LicenseAssignmentProject.xls")
+            .withCopyOperation("classpath:starters/rules/LicenseAssignmentV2Project.xls",
+                "new_project/rules/LicenseAssignmentV2Project.xls")
             .withCopyOperation("classpath:starters/rules/LicenseNameMappingProject.xls",
                 "new_project/rules/LicenseNameMappingProject.xls")
             .withCopyOperation("classpath:starters/rules/LicenseSelectionProject.xls",

@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.apache.velocity.tools.generic.EscapeTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

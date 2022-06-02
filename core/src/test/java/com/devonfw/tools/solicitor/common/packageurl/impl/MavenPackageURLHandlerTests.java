@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -41,5 +42,14 @@ class MavenPackageURLHandlerTests {
 
     MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
     assertEquals("pkg/maven/com/someorg/someprod/4.5.35", handler.pathFor("pkg:maven/com.someorg/someprod@4.5.35"));
+  }
+
+  @Test
+  void testPathForFailsForForgedPackageName() {
+
+    MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      handler.pathFor("pkg:maven/com.someorg/some..prod@4.5.35");
+    });
   }
 }

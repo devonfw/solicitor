@@ -90,7 +90,10 @@ public class ModelFactoryImpl extends ModelFactory {
   @Override
   public ApplicationComponent newApplicationComponent() {
 
-    return new ApplicationComponentImpl();
+    ApplicationComponentImpl result = new ApplicationComponentImpl();
+    result.setLicenseContentProvider(this.licenseContentProvider);
+    return result;
+
   }
 
   /** {@inheritDoc} */

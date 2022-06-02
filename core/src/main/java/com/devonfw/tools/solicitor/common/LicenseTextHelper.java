@@ -1,5 +1,6 @@
 package com.devonfw.tools.solicitor.common;
 
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,4 +47,35 @@ public final class LicenseTextHelper {
 
   }
 
+  /**
+   * Checks if the lines of the given text exceed the max allowed width. If yes the wrap the text to the given width. If
+   * not then return the original text.
+   *
+   * @param stringToBeWrapped the string that should be line wrapped
+   * @param maxAllowedWidth the maximum allowed line width without wrapping
+   * @param wrapWidth the new line length when doing wrapping
+   * @return the wrapped string
+   */
+  public static String wrapIfNecessary(String stringToBeWrapped, int maxAllowedWidth, int wrapWidth) {
+
+    if (stringToBeWrapped == null) {
+      return stringToBeWrapped;
+    }
+
+    String[] lines = stringToBeWrapped.split("\r\n|\r|\n");
+    boolean needsWrapping = false;
+    for (String line : lines) {
+      if (line.length() > maxAllowedWidth) {
+        needsWrapping = true;
+      }
+    }
+    if (!needsWrapping) {
+      return stringToBeWrapped;
+    } else {
+      for (int i = 0; i < lines.length; i++) {
+        lines[i] = WordUtils.wrap(lines[i], wrapWidth);
+      }
+      return String.join(System.lineSeparator(), lines);
+    }
+  }
 }

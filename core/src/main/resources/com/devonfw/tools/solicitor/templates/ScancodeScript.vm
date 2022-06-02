@@ -5,10 +5,8 @@
 #
 # In order to use this function properly, a correct setup of scancode-toolkit is necessary. Download and install the newest version of scancode here: https://github.com/nexB/scancode-toolkit/releases
 # It is important to note that scancode has to be put in the PATH variable and you are able to call the tool from everywhere in your system.
-# After setting it up correctly, you just have to run the generated "scancode_projectname.sh" script to automatically create a list of copyrights and their holders called scancodeOutput.json
-# Furthermore a folder "Source" gets created which contains all source files of downloaded artifacts and the individual scancode output of the artifacts.
-# All artifacts that could not be downloaded are listed in need-to-retrieve-manually.txt. If further scancode-toolkit scans are necessary after the source download has been completed once,
-# you can also just run the scancodeScan.sh script.
+# After setting it up correctly, you just have to run the generated "scancode_projectname.sh" script to automatically download package sources, scan them via scancode and store
+# the results in directory tree within folder "Source".
 
 mkdir Source
 cd Source

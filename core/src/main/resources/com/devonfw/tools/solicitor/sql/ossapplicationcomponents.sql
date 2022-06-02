@@ -6,6 +6,7 @@ select
 	ac."groupId", 
 	ac."artifactId",
 	ac."packageUrl",
+	ac."copyrights",
 	l."effectiveNormalizedLicense", 
 	l."effectiveNormalizedLicenseUrl", 
 	l."effectiveNormalizedLicenseContent",
@@ -20,8 +21,9 @@ where
 	l."effectiveNormalizedLicenseType" like 'OSS-%' 
 group by 
 	"groupId", 
-	"artifactId",
+	"artifactId", 
 	"packageUrl",
+	"copyrights",
 	"effectiveNormalizedLicense", 
 	"effectiveNormalizedLicenseUrl", 
 	"effectiveNormalizedLicenseContent",

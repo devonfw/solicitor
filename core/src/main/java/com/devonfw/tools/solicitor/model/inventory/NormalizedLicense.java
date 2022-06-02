@@ -154,6 +154,13 @@ public interface NormalizedLicense {
   String getNormalizedLicenseUrl();
 
   /**
+   * Gets the content referenced by {@link #getNormalizedLicenseUrl()}
+   *
+   * @return the referenced content.
+   */
+  String getNormalizedLicenseContent();
+
+  /**
    * This method gets the field <code>reviewedForRelease</code>.
    *
    * @return the field reviewedForRelease

@@ -1,3 +1,4 @@
+scancodeoptions="--processes 16 --copyright --only-findings --license --license-text --consolidate"
 beginning=$(pwd)
 mkdir scancodeOutput
 so=$(pwd)/scancodeOutput
@@ -6,18 +7,18 @@ dir=$(pwd)/Source
 
 #foreach ($artifact in $ARTIFACTS)
 if [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ]
-then
+		then
 	if [ -d $dir/$purlhandler.pathFor($artifact.packageUrl)/sources ]
-	then
-		scancode -c -n 16 --json-pp $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json --only-findings $dir/$purlhandler.pathFor($artifact.packageUrl)/sources
-	fi
+		then
+		scancode $scancodeoptions --json-pp $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json $dir/$purlhandler.pathFor($artifact.packageUrl)/sources
+		fi
 	cat $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json >> $so/scancodeOut.json
 	if [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ]
-	then
+		then
 		printf "\n," >> $so/scancodeOut.json
-	fi
-fi
-#end
+		fi
+		fi
+	#end
 printf "END" >> $so/scancodeOut.json
 grep -v ",END" $so/scancodeOut.json > $so/scancodeOutput.json
 rm $so/scancodeOut.json

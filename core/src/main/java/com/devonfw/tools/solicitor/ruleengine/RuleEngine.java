@@ -4,18 +4,11 @@
 
 package com.devonfw.tools.solicitor.ruleengine;
 
-import com.devonfw.tools.solicitor.model.ModelRoot;
+import com.devonfw.tools.solicitor.InventoryProcessor;
 
 /**
  * Interface of a rule engine which works on the data of the Solicitor data model.
  */
-public interface RuleEngine {
-
-  /**
-   * Executes all rules.
-   *
-   * @param modelRoot the {@link ModelRoot} which is the root objects of the data model to be processed.
-   */
-  public void executeRules(ModelRoot modelRoot);
+public interface RuleEngine extends InventoryProcessor {
 
 }

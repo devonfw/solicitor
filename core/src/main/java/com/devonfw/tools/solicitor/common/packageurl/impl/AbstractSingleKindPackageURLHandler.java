@@ -30,7 +30,11 @@ public abstract class AbstractSingleKindPackageURLHandler extends AbstractPackag
     sb.append(purl.getName()).append("/");
     sb.append(purl.getVersion());
 
-    return sb.toString();
+    String result = sb.toString();
+    if (result.contains("..")) {
+      throw new IllegalArgumentException("A path constructed for a packageUrl must never contain '..' : " + result);
+    }
+    return result;
   }
 
   @Override
