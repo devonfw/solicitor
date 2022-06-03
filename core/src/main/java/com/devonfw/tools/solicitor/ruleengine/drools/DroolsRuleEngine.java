@@ -101,7 +101,7 @@ public class DroolsRuleEngine implements RuleEngine {
     }
 
     // check if this rule group was marked as deprecated
-    if (rc.getDeprecationDetails() != null && !rc.getDeprecationDetails().isBlank()) {
+    if (rc.getDeprecationDetails() != null && !rc.getDeprecationDetails().isEmpty()) {
       this.deprecationChecker.check(rc.isDeprecationWarnOnly(), rc.getDeprecationDetails());
     }
 
