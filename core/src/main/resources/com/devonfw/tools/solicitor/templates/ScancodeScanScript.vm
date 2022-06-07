@@ -6,19 +6,22 @@ echo {\"artifacts\": [ > scancodeOutput/scancodeOut.json
 dir=$(pwd)/Source
 
 #foreach ($artifact in $ARTIFACTS)
-if [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ]
-		then
-	if [ -d $dir/$purlhandler.pathFor($artifact.packageUrl)/sources ]
-		then
+if [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ] || [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed ]
+then
+	rm $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed
+	rm $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json
+	if [ -d $dir/$purlhandler.pathFor($artifact.packageUrl)/sources ] && [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/sources.completed ]
+	then
 		scancode $scancodeoptions --json-pp $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json $dir/$purlhandler.pathFor($artifact.packageUrl)/sources
-		fi
+		touch $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed
+	fi
+fi
+if 	[ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ] && [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed ]
 	cat $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json >> $so/scancodeOut.json
-	if [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ]
-		then
-		printf "\n," >> $so/scancodeOut.json
-		fi
-		fi
-	#end
+	printf "\n," >> $so/scancodeOut.json
+fi
+#end
+	
 printf "END" >> $so/scancodeOut.json
 grep -v ",END" $so/scancodeOut.json > $so/scancodeOutput.json
 rm $so/scancodeOut.json
