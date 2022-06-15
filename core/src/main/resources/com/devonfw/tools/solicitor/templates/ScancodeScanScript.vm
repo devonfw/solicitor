@@ -17,6 +17,7 @@ then
 	fi
 fi
 if 	[ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ] && [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed ]
+then	
 	cat $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json >> $so/scancodeOut.json
 	printf "\n," >> $so/scancodeOut.json
 fi
