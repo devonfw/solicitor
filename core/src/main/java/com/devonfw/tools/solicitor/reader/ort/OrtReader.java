@@ -63,44 +63,52 @@ public class OrtReader extends AbstractReader implements Reader {
       for (int i = 0; i < packages.size(); i++) {
     	Map iterator = (Map) packages.get(i);
     	Map singlePackage = (Map) iterator.get("package");
-		String id = (String) singlePackage.get("id"); //TODO can resolve groupid, artifactdi, version and repotype from id
+		String id = (String) singlePackage.get("id");
 		Map vcsProcessed = (Map) singlePackage.get("vcs_processed");
 		String repo = (String) vcsProcessed.get("url");
-		//String licenseUrl = estimateLicenseUrl(repo, path, licenseFile);
+		//String licenseUrl = estimateLicenseUrl(repo, path, licenseFile); TODO create new license guessing algorithm
 		String pURL = (String) singlePackage.get("purl");
+		
+		//TODO make new entry in data model / inventory for these
 		Map binaryArtifact = (Map) singlePackage.get("binary_artifact");
 		String binaryURL = (String) binaryArtifact.get("url");
 		Map sourceArtifact = (Map) singlePackage.get("source_artifact");
 		String sourceURL = (String) sourceArtifact.get("url");
+		
 		String homePage = (String) singlePackage.get("homepage_url");
 		if (homePage == null || homePage.isEmpty()) {
 		  homePage = repo;
 		}
 
-        List lic = (List) singlePackage.get("declared_licenses");
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
         appComponent.setApplication(application);
         componentCount++;
-        //TODO resolve id into name function
-        appComponent.setArtifactId(id);
-        //appComponent.setVersion(version);
+        
+        // resolve id into groupId/artifactId/version/repoType
+        String[] resolvedId = id.split(":");
+        String trueRepoType = resolvedId[0];
+        String groupId = resolvedId[1]; //TODO check what happens with artifacts without groupId
+        String artifactId = resolvedId[2];
+        String version = resolvedId[3];
+        
+        appComponent.setGroupId(groupId);
+        appComponent.setArtifactId(artifactId);
+        appComponent.setVersion(version);
         appComponent.setUsagePattern(usagePattern);
-        appComponent.setGroupId("test");
-        appComponent.setVersion("0.0");
         appComponent.setOssHomepage(homePage);
-        appComponent.setRepoType(repoType);
+        appComponent.setRepoType(trueRepoType);
         appComponent.setPackageUrl(pURL);
         
+        // manage multiple declared licenses
+        //TODO license identifier from already processed not declared? e.g. LGPL without version in declared, but 2.1 in processed
+        //TODO need to figure out license URL
+        List lic = (List) singlePackage.get("declared_licenses");
         if (lic.isEmpty()) {
           // add empty raw license if no license info attached
           addRawLicense(appComponent, null, null, sourceUrl);
         } else {
           for (Object cl : lic) {
-              System.out.println("full case" + cl.toString());
-              System.out.println((String)cl);
-
-
             licenseCount++;
             addRawLicense(appComponent, cl.toString(), null, sourceUrl);
           }
@@ -111,8 +119,8 @@ public class OrtReader extends AbstractReader implements Reader {
       throw new SolicitorRuntimeException("Could not read ort license inventory source '" + sourceUrl + "'", e);
     }
 
-  }
-
+  } 
+  
   // estimates license location in github links based on local file location
   private String estimateLicenseUrl(String repo, String path) {
 
