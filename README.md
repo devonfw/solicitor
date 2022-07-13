@@ -14,6 +14,7 @@ for the project. Text or spreadsheet (Excel) based reports might be created to d
   * Yarn
   * Pip
   * CSV (e.g. for manual entry of data)
+  * OSS Review Toolkit - Analyzer (ORT)
 * Rules processing (using Drools Rule Engine) controls the the different phases:
   * Normalizing / Enhancing of license information
   * Handling of multilicensing (including selection of applicable licenses) and re-licensing

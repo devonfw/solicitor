@@ -5,7 +5,6 @@
 package com.devonfw.tools.solicitor.reader.ort;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -57,8 +55,6 @@ public class OrtReader extends AbstractReader implements Reader {
       Map analyzer = (Map) l.get("analyzer");
       Map result = (Map) analyzer.get("result");
       List packages = (List) result.get("packages");  
-      System.out.println("packages" + packages.toString());
-
 
       for (int i = 0; i < packages.size(); i++) {
     	Map iterator = (Map) packages.get(i);
@@ -66,20 +62,12 @@ public class OrtReader extends AbstractReader implements Reader {
 		String id = (String) singlePackage.get("id");
 		Map vcsProcessed = (Map) singlePackage.get("vcs_processed");
 		String repo = (String) vcsProcessed.get("url");
-		//String licenseUrl = estimateLicenseUrl(repo, path, licenseFile); TODO create new license guessing algorithm
 		String pURL = (String) singlePackage.get("purl");
-		
-		//TODO make new entry in data model / inventory for these
-		Map binaryArtifact = (Map) singlePackage.get("binary_artifact");
-		String binaryURL = (String) binaryArtifact.get("url");
-		Map sourceArtifact = (Map) singlePackage.get("source_artifact");
-		String sourceURL = (String) sourceArtifact.get("url");
 		
 		String homePage = (String) singlePackage.get("homepage_url");
 		if (homePage == null || homePage.isEmpty()) {
 		  homePage = repo;
 		}
-
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
         appComponent.setApplication(application);
@@ -88,7 +76,7 @@ public class OrtReader extends AbstractReader implements Reader {
         // resolve id into groupId/artifactId/version/repoType
         String[] resolvedId = id.split(":");
         String trueRepoType = resolvedId[0];
-        String groupId = resolvedId[1]; //TODO check what happens with artifacts without groupId
+        String groupId = resolvedId[1];
         String artifactId = resolvedId[2];
         String version = resolvedId[3];
         
@@ -101,8 +89,6 @@ public class OrtReader extends AbstractReader implements Reader {
         appComponent.setPackageUrl(pURL);
         
         // manage multiple declared licenses
-        //TODO license identifier from already processed not declared? e.g. LGPL without version in declared, but 2.1 in processed
-        //TODO need to figure out license URL
         List lic = (List) singlePackage.get("declared_licenses");
         if (lic.isEmpty()) {
           // add empty raw license if no license info attached
@@ -118,32 +104,5 @@ public class OrtReader extends AbstractReader implements Reader {
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read ort license inventory source '" + sourceUrl + "'", e);
     }
-
   } 
-  
-  // estimates license location in github links based on local file location
-  private String estimateLicenseUrl(String repo, String path) {
-
-    if (repo == null || repo.isEmpty()) {
-      return null;
-    }
-    if (path == null || path.isEmpty()) {
-      return repo;
-    }
-
-    if (repo.contains("github.com")) {
-      String licenseRelative = path.substring(path.lastIndexOf("\\") + 1);
-      if (repo.endsWith("/")) {
-        repo = repo.substring(0, repo.length() - 1);
-      }
-      if (repo.contains("github.com")) {
-        repo = repo.replace("git://", "https://");
-        repo = repo.replace("github.com", "raw.githubusercontent.com");
-        repo = repo.concat("/master/" + licenseRelative);
-        return repo;
-      }
-    }
-    return repo;
-  }
-
 }

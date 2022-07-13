@@ -1,0 +1,107 @@
+{
+  "repository" : {
+    "vcs" : {
+      "type" : "",
+      "url" : "",
+      "revision" : "",
+      "path" : ""
+    },
+    "vcs_processed" : {
+      "type" : "",
+      "url" : "",
+      "revision" : "",
+      "path" : ""
+    },
+    "config" : { }
+  },
+  "analyzer" : {
+    "start_time" : "testStartTime",
+    "end_time" : "testEndTime",
+    "environment" : {
+      "ort_version" : "23ca00df86",
+      "java_version" : "11.0.15",
+      "os" : "Linux",
+      "processors" : 4,
+      "max_memory" : 1631584256,
+      "variables" : {
+        "JAVA_HOME" : "/opt/java/openjdk",
+        "ANDROID_HOME" : "/opt/android-sdk",
+        "GOPATH" : "/tmp/go"
+      },
+      "tool_versions" : {
+        "NPM" : "8.5.0"
+      }
+    },
+    "config" : {
+      "allow_dynamic_versions" : false
+    },
+    "result" : {
+      "projects" : [ {
+        "id" : "Maven:groupId:artifactId:version",
+        "definition_file_path" : "",
+        "declared_licenses" : [ ],
+        "declared_licenses_processed" : { },
+        "vcs" : {
+          "type" : "",
+          "url" : "",
+          "revision" : "",
+          "path" : ""
+        },
+        "vcs_processed" : {
+          "type" : "",
+          "url" : "",
+          "revision" : "",
+          "path" : ""
+        },
+        "homepage_url" : "",
+        "scope_names" : [ "compile" ]
+      },
+      "packages" : [ {
+        "package" : {
+          "id" : "Maven:testGroupId:testArtifactId:testVersion",
+          "purl" : "pkg:maven/testGroupId/testArtifactId@testVersion",
+          "authors" : [ "testAuthor" ],
+          "declared_licenses" : [ "Apache License, Version 2.0" ],
+          "declared_licenses_processed" : {
+            "spdx_expression" : "Apache-2.0",
+            "mapped" : {
+              "Apache License, Version 2.0" : "Apache-2.0"
+            }
+          },
+          "description" : "testDescription",
+          "homepage_url" : "https://test.com/test",
+          "binary_artifact" : {
+            "url" : "https://repo.maven.apache.org/maven2/testGroupId/testArtifactId/testVersion/testArtifactId-testVersion.jar",
+            "hash" : {
+              "value" : "testHash",
+              "algorithm" : "SHA-1"
+            }
+          },
+          "source_artifact" : {
+            "url" : "https://repo.maven.apache.org/maven2/testGroupId/testArtifactId/testVersion/testArtifactId-testVersion-sources.jar",
+            "hash" : {
+              "value" : "testHash2",
+              "algorithm" : "SHA-1"
+            }
+          },
+          "vcs" : {
+            "type" : "",
+            "url" : "",
+            "revision" : "",
+            "path" : ""
+          },
+          "vcs_processed" : {
+            "type" : "Git",
+            "url" : "https://github.com/testproject.git",
+            "revision" : "",
+            "path" : "testproject"
+          }
+        },
+        "curations" : [ ]
+      }],
+      "issues" : {}    
+  ]},
+  "scanner" : null,
+  "advisor" : null,
+  "evaluator" : null
+}
