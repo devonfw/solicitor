@@ -1486,6 +1486,7 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* Added support for API changes of new scancode release (v31) https://github.com/nexB/scancode-toolkit/releases/tag/v31.0.1.
 * Initial version of experimental scancode integration. See <<Experimental Scancode Integration>>.
 * New decision table structure `LicenseAssignmentV2` with additional condition `origin`.
 Old structure deprecated but still supported.
