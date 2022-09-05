@@ -1489,6 +1489,7 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* Added support for API changes of new scancode release (v31) https://github.com/nexB/scancode-toolkit/releases/tag/v31.0.1.
 * https://github.com/devonfw/solicitor/issues/124: Added documentation of '--production' option for npm-license-checker plugin. 
 * https://github.com/devonfw/solicitor/issues/125: Deprecated usage of npm-license-crawler.
 * Stability and data corruption safety for bash scripts of scancode integration.
