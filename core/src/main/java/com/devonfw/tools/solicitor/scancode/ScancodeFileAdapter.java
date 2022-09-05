@@ -153,7 +153,11 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
               + this.packageURLHandler.pathFor(packageUrl) + "/" + file.get("path").asText(), 100.0);
         }
         for (JsonNode cr : file.get("copyrights")) {
-          componentScancodeInfos.addCopyright(cr.get("value").asText());
+          if(cr.has("copyright")) {
+            componentScancodeInfos.addCopyright(cr.get("copyright").asText());
+          } else {
+        	componentScancodeInfos.addCopyright(cr.get("value").asText());
+          }
         }
 
         for (JsonNode li : file.get("licenses")) {
@@ -248,7 +252,7 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
    *
    * @param packageUrl package url of the package
    * @param licenseFilePath the original path or URL
-   * @return the adjustes patjh or url as a url
+   * @return the adjusted path or url as a url
    */
   private String normalizeLicenseUrl(String packageUrl, String licenseFilePath) {
 
