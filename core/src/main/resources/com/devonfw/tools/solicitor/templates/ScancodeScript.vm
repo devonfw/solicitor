@@ -20,7 +20,13 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 	if [ ! -d "$purlhandler.pathFor($artifact.packageUrl)" ]
 	then
 		mkdir -p $purlhandler.pathFor($artifact.packageUrl)
+	fi
+	if [ ! -f "$purlhandler.pathFor($artifact.packageUrl)/sources.completed" ] || [ ! -d "$purlhandler.pathFor($artifact.packageUrl)/sources" ]
+	then
 		cd $purlhandler.pathFor($artifact.packageUrl)
+		rm sources.completed
+		rm -r sources
+		rm sources.jar
 		curl -# $purlhandler.sourceDownloadUrlFor($artifact.packageUrl) -o sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
 		#if ( $purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "jar" )
 		unzip -q -d sources sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
@@ -41,6 +47,7 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 			#[[cd $SD]]#
 			echo "Artifact $purlhandler.sourceDownloadUrlFor($artifact.packageUrl)" >> need-to-retrieve-manually.txt
 		else
+			touch sources.completed
 			#[[cd $SD]]#
 		fi
 	fi
