@@ -605,9 +605,47 @@ WARNING: The CSV reader currently does not fill the attribute `packageUrl`. Any 
 
 === NPM
 
-For NPM based projects either the NPM License Crawler (https://www.npmjs.com/package/npm-license-crawler) or the NPM License Checker (https://www.npmjs.com/package/license-checker) might be used. The NPM License Crawler can process several node packages in one run.
+For NPM based projects, the NPM License Checker (https://www.npmjs.com/package/license-checker) plugin can be used. The NPM License Crawler plugin is deprecated.
+
+==== NPM License Checker
+
+To install the NPM License Checker the following command needs to be executed.
+
+----
+npm i license-checker -g
+----
+
+To get the licenses, the checker needs to be executed like the following example. We require JSON output here with "--json" and developer dependencies can/should be excluded with "--production".
+
+----
+license-checker --production --json > /path/to/licenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::files/licensesNpmLicenseChecker.json[]
+
+----
+
+
+Source: https://www.npmjs.com/package/license-checker
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm-license-checker",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "npm"
+} ]
+----
 
 ==== NPM License Crawler
+
+WARNING: This reader is deprecated and should no longer be used. It requires a specific dependency (license-checker) which is not available on official npm repositories anymore and scans additional developer dependencies. Use <<NPM License Checker>> (with --production option) instead. See <<List of Deprecated Features>>. 
 
 To install the NPM License Crawler the following command needs to be executed.
 
@@ -638,42 +676,6 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "npm-license-crawler-csv",
   "source" : "file:path/to/licenses.csv",
-  "usagePattern" : "DYNAMIC_LINKING",
-  "repoType" : "npm"
-} ]
-----
-
-==== NPM License Checker
-
-To install the NPM License Checker the following command needs to be executed.
-
-----
-npm i license-checker -g
-----
-
-To get the licenses, the checker needs to be executed like the following example (we require JSON output here)
-
-----
-license-checker --json > /path/to/licenses.json
-----
-
-The export should look like the following
-
-[source]
-----
-include::files/licensesNpmLicenseChecker.json[]
-
-----
-
-
-Source: https://www.npmjs.com/package/license-checker
-
-In _Solicitor_ the data is read with the following part of the config
-
-----
-"readers" : [ {
-  "type" : "npm-license-checker",
-  "source" : "file:path/to/licenses.json",
   "usagePattern" : "DYNAMIC_LINKING",
   "repoType" : "npm"
 } ]
@@ -1246,8 +1248,9 @@ wrong/misleading output) the first stage of deprecation will be skipped.
 === List of Deprecated Features
 The following features are deprecated via the above mechanism:
 
+* Reader of type "npm-license-crawler-csv" (use Reader of type "npm-license-checker" instead); Stage 1 from Version 1.4.0 on; see https://github.com/devonfw/solicitor/issues/125
 * Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58
-* Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
+* Reader of type "npm"; Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see https://github.com/devonfw/solicitor/issues/78
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 1 from Version 1.4.0 on
 
@@ -1486,6 +1489,8 @@ java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other argum
 == Release Notes
 
 Changes in 1.4.0::
+* https://github.com/devonfw/solicitor/issues/124: Added documentation of '--production' option for npm-license-checker plugin. 
+* https://github.com/devonfw/solicitor/issues/125: Deprecated usage of npm-license-crawler.
 * Stability and data corruption safety for bash scripts of scancode integration.
 * Initial version of experimental scancode integration. See <<Experimental Scancode Integration>>.
 * New decision table structure `LicenseAssignmentV2` with additional condition `origin`.
