@@ -61,12 +61,12 @@ public class OrtReader extends AbstractReader implements Reader {
     	Map singlePackage = (Map) iterator.get("package");
 		String id = (String) singlePackage.get("id");
 		Map vcsProcessed = (Map) singlePackage.get("vcs_processed");
-		String repo = (String) vcsProcessed.get("url");
+		String licenseUrl = (String) vcsProcessed.get("url");
 		String pURL = (String) singlePackage.get("purl");
 		
 		String homePage = (String) singlePackage.get("homepage_url");
 		if (homePage == null || homePage.isEmpty()) {
-		  homePage = repo;
+		  homePage = licenseUrl;
 		}
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
@@ -92,11 +92,11 @@ public class OrtReader extends AbstractReader implements Reader {
         List lic = (List) singlePackage.get("declared_licenses");
         if (lic.isEmpty()) {
           // add empty raw license if no license info attached
-          addRawLicense(appComponent, null, null, sourceUrl);
+          addRawLicense(appComponent, null, licenseUrl, sourceUrl);
         } else {
           for (Object cl : lic) {
             licenseCount++;
-            addRawLicense(appComponent, cl.toString(), null, sourceUrl);
+            addRawLicense(appComponent, cl.toString(), licenseUrl, sourceUrl);
           }
         }     
       doLogging(sourceUrl, application, componentCount, licenseCount);

@@ -49,7 +49,7 @@
         },
         "vcs_processed" : {
           "type" : "",
-          "url" : "",
+          "url" : "ssh://git@github.com/hamcrest/JavaHamcrest.git",
           "revision" : "",
           "path" : ""
         },
@@ -92,7 +92,7 @@
           },
           "vcs_processed" : {
             "type" : "Git",
-            "url" : "https://github.com/testproject.git",
+            "url" : "ssh://git@github.com/hamcrest/JavaHamcrest.git",
             "revision" : "",
             "path" : "testproject"
           }
