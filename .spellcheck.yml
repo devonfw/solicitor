@@ -4,6 +4,7 @@ matrix:
     lang: en
     d: en_US
     run-together: true
+    run-together-limit: 4
   sources:
   - documentation/*.asciidoc 
   dictionary:
