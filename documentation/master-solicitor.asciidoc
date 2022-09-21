@@ -11,7 +11,7 @@
 SPDX-License-Identifier: Apache-2.0
 
 == Introduction
-Todays software projects often make use of large amounts of Open Source software. Being
+Today's software projects often make use of large amounts of Open Source software. Being
 compliant with the license obligations of the used software components is a prerequisite for every such project. This results in different requirements that the project might need to fulfill. Those requirements can be grouped into two main categories:
 
 * Things that need to be done to actually fulfill license obligations
@@ -26,14 +26,14 @@ While working on these easy looking tasks, they might get complex due to various
 
 * The number of open source components might be quite large (>> 100 for a typical webapplication based on state of the art programming frameworks)
 * Agile development and rapid changes of used components result in frequent changes of the inventory
-* Open Source usage scenarios and license obligations might be OK in one context (e.g. in the relation between a software developer and his client) but might be completely inacceptable in another context (e.g. when the client distributes the same software to end customers)
-* Legal interpretation of license conditions often differ from organisation to organisation and result in different compliance rules to be respected.
+* Open Source usage scenarios and license obligations might be OK in one context (e.g. in the relation between a software developer and his client) but might be completely unacceptable in another context (e.g. when the client distributes the same software to end customers)
+* Legal interpretation of license conditions often differ from organization to organization and result in different compliance rules to be respected.
 * License information for components is often not available in a standardized form which would allow automatic processing
 * Tools for supporting the license management processes are often specific to a technology or build tool and do not support all aspects of OSS license management.
 
 Of course there are specific commercial tool suites which address the IP rights and license domain. But due to high complexity and license costs those tools are out of reach for most projects - at least for permanent use.
 
-_Solicitor_ tries to address some of the issues hightlighted above. In its initial version it is a tool for programmatically executing a process which was originally defined as an Excel-supported manual process.
+_Solicitor_ tries to address some of the issues highlighted above. In its initial version it is a tool for programmatically executing a process which was originally defined as an Excel-supported manual process.
 
 When running _Solicitor_ three subsequent processing steps are executed:
 
@@ -67,7 +67,7 @@ In the _normalization_ step the license information is completed and unified.
 Information not contained in the raw data is added.
 Where possible the applicable licenses are expressed by https://spdx.org/[SPDX-IDs].
 
-Many open source compontents are available via multi licensing models.
+Many open source components are available via multi licensing models.
 Within _qualification_ the finally applicable licenses are selected.
 
 In the _legal assessment_ the compliance of applicable licenses will be checked based on generic rules defined in company wide policies and possibly project specific project specific extensions.
@@ -82,7 +82,7 @@ image:solution.png[width=100%,scaledwidth=100%]
 
 There are three major technical components: The _reader_ and _writer_ components are performing import and export of data. The business logic - doing _normalization_, _qualification_ and _legal assessment_ is done by a _rule engine_. Rules are mainly defined via _decision tables_. _Solicitor_ comes with a starting set of rules for _normalization_ and _qualification_ but these rulesets need to be extended within the projects. Rules for legal evaluation need to be completely defined by the user.
 
-_Solicitor_ is working without additional persisted data: When being executed it generates the output direcly from the read input data after processing the business rules.
+_Solicitor_ is working without additional persisted data: When being executed it generates the output directly from the read input data after processing the business rules.
 
 === Data Model
 
@@ -121,7 +121,7 @@ The internal business data model consists of 6 entities:
 | engagementType | EngagementType | the engagement type; possible values: INTERN, EXTERN
 | clientName | String | name of the client
 | goToMarketModel | GoToMarketModel | the go-to-market-model; possible values: LICENSE
-| contractAllowsOss | boolean | does the contract explicitely allow OSS?
+| contractAllowsOss | boolean | does the contract explicitly allow OSS?
 | ossPolicyFollowed | boolean | is the companies OSS policy followed?
 | customerProvidesOss | boolean | does the customer provide the OSS?
 |===
@@ -242,13 +242,13 @@ To get an overview of the available command line options use
 [listing]
 java -jar solicitor.jar -h
 
-.Adressing of resources
+.Addressing of resources
 ****
-For unique adressing of resources *to be read* (configuration files, input data, rule templates and decision tables) _Solicitor_ makes use of the Spring ResourceLoader functionality, see https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#resources-resourceloader . This allows to load from the classpath, the filesystem or even via http get.
+For unique addressing of resources *to be read* (configuration files, input data, rule templates and decision tables) _Solicitor_ makes use of the Spring ResourceLoader functionality, see https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#resources-resourceloader . This allows to load from the classpath, the filesystem or even via http get.
 
 If you want to reference a file in the filesystem you need to write it as follows: `file:path/to/file.txt`
 
-Note that this only applies to resources being read. Output files are adressed without that prefix.
+Note that this only applies to resources being read. Output files are addressed without that prefix.
 ****
 
 === Project Configuration File
@@ -286,7 +286,7 @@ should be given relative to the location of the configuration file this might be
 using the special placeholder `${cfgdir}` as described in the following.
 
 ==== Placeholders within the configuration file
-Within certain parts of the configuration file (path and filenames) special placeholders might be used to parameterize the configuration. These areas are explicitely marked in the following
+Within certain parts of the configuration file (path and filenames) special placeholders might be used to parameterize the configuration. These areas are explicitly marked in the following
 description.
 
 These placeholders are available:
@@ -315,12 +315,12 @@ The leading section of the config file defines some metadata and the engagement 
 <4> the engagement type; possible values: INTERN, EXTERN
 <5> name of the client (any string)
 <6> the go-to-market-model; possible values: LICENSE
-<7> does the contract explicitely allow OSS? (boolean)
+<7> does the contract explicitly allow OSS? (boolean)
 <8> is the companies OSS policy followed? (boolean)
 <9> does the customer provide the OSS? (boolean)
 
 ==== Applications
-Within this section the different applications (=deliverables) of the engagement are defined. Furtheron for each application at least one reader needs to be defined which imports the component and license information.
+Within this section the different applications (=deliverables) of the engagement are defined. Furthermore, for each application at least one reader needs to be defined which imports the component and license information.
 
 [listing]
  "applications" : [ {
@@ -375,7 +375,7 @@ They are defined as a sequence of rule templates and corresponding XLS (or CSV) 
     "ruleSource" : "classpath:samples/LegalEvaluationSample.xls",
     "templateSource" : "classpath:com/.../rules/rule_templates/LegalEvaluation.drt",
     "ruleGroup" : "LegalEvaluation",
-    "decription" : "final legal evaluation based on the rules defined by legal"
+    "description" : "final legal evaluation based on the rules defined by legal"
   } ],
 
 <1> type of the rule; only possible value: `dt` which stands for "decision table"
@@ -383,7 +383,7 @@ They are defined as a sequence of rule templates and corresponding XLS (or CSV) 
 data (given by `ruleSource`) does not exist; if set to `false` a missing XLS/CSV table will result
 in program termination
 <3> location of the tabular decision table data. This might either point directly to the XLS or CSV file
-or only give the resource name without suffix. In this case _Solictor_ will dynamically test for existing
+or only give the resource name without suffix. In this case _Solicitor_ will dynamically test for existing
 resources by appending suffixes _xls_ and _csv_.
 <4> location of the drools rule template to be used to define the rules together with the decision table data
 <5> id of the group of rules; used to reference it e.g. when doing logging
@@ -449,7 +449,7 @@ To simplify setting up a new project _Solicitor_ provides an option to create a 
 java -jar solicitor.jar -wiz some/directory/path
 
 Besides the necessary configuration file this includes also empty XLS or CSV files for defining project
-specific rules which amend the builtin rules. Furtheron a sample `license.xml` file is provided to
+specific rules which amend the builtin rules. Furthermore, a sample `license.xml` file is provided to
 directly enable execution of solicitor and check functionality.
 
 This configuration then serves as starting point for project specific configuration.
@@ -917,7 +917,7 @@ is defined by the sequence of declaration in the config file. Processing of the 
 be finished when there are no more rules to fire in that group. Processing of the next group will then start. Rule groups which have been finished processing will not be resumed even if rules within that group might have been activated again due to changes of the facts.
 
 === Extended comparison syntax
-By default any condtions given in the fields of decision tables are simple textual comparisons: The condition
+By default any conditions given in the fields of decision tables are simple textual comparisons: The condition
 is true if the property of the model is identical to the given value in the XLS (or CSV) sheet.
 
 Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:
@@ -940,8 +940,8 @@ In this phase the license data imported via the readers is cleaned and normalize
 
 The phase itself consists of two decision tables / rule groups:
 
-==== Decision Table: Explicitely setting Licenses
-With this decision table is is possible to explicitely assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next rule group.
+==== Decision Table: Explicitly setting Licenses
+With this decision table is is possible to explicitly assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next rule group.
 
 Decision table data: `LicenseAssignmentV2*.xls/csv`
 
@@ -950,7 +950,7 @@ Decision table data: `LicenseAssignmentV2*.xls/csv`
 ** `Engagement.engagementName`
 ** `Application.applicationName`
 ** `ApplicationComponent.groupId` icon:magic[]
-** `ApplicationCompomnent.artifactId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[]
 ** `ApplicationComponent.version` icon:magic[]
 ** `RawLicense.origin` icon:magic[] (new with "V2" version of rules)
 ** `RawLicense.declaredLicense` icon:magic[]
@@ -993,7 +993,7 @@ Within this phase the actually applicable licenses will be selected for each com
 This phase consists of two decision tables.
 
 ==== Choosing specific License in case of Multi-Licensing
-This group of rules has the speciality that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as `Ignored`.
+This group of rules has the specialty that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as `Ignored`.
 
 Decision table data: `MultiLicenseSelection*.xls/csv`
 
@@ -1036,10 +1036,10 @@ icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
 === Phase 3: Legal evaluation
 
-The third phase ist the legal evaluation of the licenses and the check, whether OSS usage is according to defined legal policies. Again this phase comprises two decision tables.
+The third phase is the legal evaluation of the licenses and the check, whether OSS usage is according to defined legal policies. Again this phase comprises two decision tables.
 
 ==== Pre-Evaluation based on common rules
-Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furtheron they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the `effectiveNormalizedLicense` and do not consider any project, application of component information.
+Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furthermore, they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the `effectiveNormalizedLicense` and do not consider any project, application of component information.
 
 Decision table data: `LegalPreEvaluation*.xls/csv`
 
@@ -1088,7 +1088,7 @@ groups to be processed in sequence. When using the builtin default base configur
 To use your own rule data there are three approaches:
 
 * Include your own `rules` section in the project configuration file (so not inheriting from the builtin base configuration file) and reference your own decision tables there.
-* Create your own "Solicitor Extension" which might completely redefine/replace the buitin `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
+* Create your own "Solicitor Extension" which might completely redefine/replace the builtin `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
 * Make use of the optional project specific decision tables which are defined in the default base configuration: For every builtin decision table there is an optional external decision table (expected in the filesystem) which will be checked for existence. If such external decision table exists it will be processed first - before processing the builtin decision table. Thus is it possible to amend / override the builtin rules by project specific rules. When you create the starter configuration of your project as described in <<Starting a new project>>, those project specific decision tables are automatically created.
 
 == Reporting and Creating output documents
@@ -1127,14 +1127,14 @@ is done:
 * a `rowCount` column is added to the result which gives the position of the entry in the result set (starting with 1).
 * Columns named `ID_<TABLENAME>` are replaced with columns named `OBJ_<TABLENAME>`. The fields of those columns are filled with the corresponding original model objects (java objects).
 
-WARNING: The result table column `OBJ_<TABLENAME>` gives access to the native Solicitor data model (java objects), e.g. in the Velocity writer. As this breaks the decoupling done via the SQL database using this feature is explicitely discouraged. It should only be used with high caution and in exceptional situations. The feature might be discontinued in future versions without prior notice.
+WARNING: The result table column `OBJ_<TABLENAME>` gives access to the native Solicitor data model (java objects), e.g. in the Velocity writer. As this breaks the decoupling done via the SQL database using this feature is explicitly discouraged. It should only be used with high caution and in exceptional situations. The feature might be discontinued in future versions without prior notice.
 
 === Determining difference to previously stored model
 
 When using the command line option `-d` _Solicitor_ can determine difference information between two different data models (e.g. the difference between the licenses of the current release and a former release.) The difference is calculated on the result of the above described SQL statements:
 
 * First the internal reporting database is created for the current data model and all defined SQL statements are executed
-* Then the internal database is recreated for the "old" data model and all defined SQL stements are executed again
+* Then the internal database is recreated for the "old" data model and all defined SQL statements are executed again
 * Finally for each defined result table the difference between the current result and the "old" result
 is calculated
 
@@ -1148,7 +1148,7 @@ The correlation algorithm will first try to match rows using `CORR_KEY_0`. It wi
 * there are no unmatched "new" rows OR
 * there are no unmatched "old" rows
 
-The result of the correlation / difference calulation is stored in the reporting table data structure. For each row the status is accessible if
+The result of the correlation / difference calculation is stored in the reporting table data structure. For each row the status is accessible if
 
 * The row is "new" (did not exist in the old data)
 * The row is unchanged (no changes in the field values representing the properties of the _Solicitor_ data model)
@@ -1159,7 +1159,7 @@ For each field of "changed" or "unchanged" rows the following status is availabl
 * Field is "changed"
 * Field is "unchanged"
 
-For each field of such rows it is furtheron possible to access the new and the old field value.
+For each field of such rows it is further on possible to access the new and the old field value.
 
 === Sample SQL statement
 
@@ -1175,7 +1175,7 @@ NOTE: Above example also shows how the case sensitive column names have to be ha
 
 === Writers
 
-The above dscribed SQL processing is identical for all Writers. Writers only differ in the
+The above described SQL processing is identical for all Writers. Writers only differ in the
 way how the output document is created based on a template and the reporting table data
 obtained by the SQL transformation.
 
@@ -1188,7 +1188,7 @@ directly put to the into Velocity Context.
 For further information see the
 
 * Velocity Documentation
-* The _Solicitor_ JavaDoc (which also includes datails on how to access the diff information for rows and fields of reporting data tables)
+* The _Solicitor_ JavaDoc (which also includes details on how to access the diff information for rows and fields of reporting data tables)
 * The samples included in _Solicitor_
 
 ==== Excel Writer
@@ -1206,7 +1206,7 @@ reporting data tables as defined in the Writer configuration like e.g.:
 Whenever such a string is found in a cell this indicates that this row is a template row. For each entry in the respective resporting data table a copy of this row is created and the attribute replacement will be done with the data from that reporting table. (The pattern `\#...#` will be removed when copying.)
 
 ===== Attribute replacement
-Within each row which was copied in the previous step the templating logic searches for the string pattern `$someAttributeName$` where `someAttributeName` corresponds to the column names of the reporting table. Any such occurence is replaced with the corresponding data value.
+Within each row which was copied in the previous step the templating logic searches for the string pattern `$someAttributeName$` where `someAttributeName` corresponds to the column names of the reporting table. Any such occurrence is replaced with the corresponding data value.
 
 ===== Representation of Diff Information
 In case that a difference processing (new vs. old model data) was done this will be represented
@@ -1311,7 +1311,7 @@ The general workflow when integrating with ScanCode consists of the following 3 
 . Execute _Solicitor_ in a "classic" way i.e. just based on the data provided via the Readers as described in
 <<Reading License Information with Readers>>. Besides the normal reports/documents generated this will also
 create scripts for downloading the needed OSS source codes and run Scancode.
-. Download source codes and run ScanCode by executing the generated scripts. The downloadad sources and ScanCode results will be saved to a directory tree in the local filesytem.
+. Download source codes and run ScanCode by executing the generated scripts. The downloaded sources and ScanCode results will be saved to a directory tree in the local filesystem.
 . Execute _Solicitor_ a second time. For all ApplicationComponents where ScanCode information is available
 (stored in the local directory tree) the license data as obtained from the Readers is replaced by this information. The data model is enriched with the found copyright and notice file information. Reports (see <<Reporting and Creating output documents>>) are now based on the ScanCode data (where available).
 
@@ -1396,7 +1396,7 @@ artifacts:
 <5> URL pointing to license text.
 <6> Copyrights to set. Optional. If defined then all found copyrights will be replaced by the list of copyrights given here.
 <7> A single copyright.
-<8> Another copyright. Note that due to YAML syntax any string containing `:` needs to be enclosed with parantheses
+<8> Another copyright. Note that due to YAML syntax any string containing `:` needs to be enclosed with parentheses
 <9> Further packages to follow.
 
 ==== Decision table rules
@@ -1487,7 +1487,7 @@ The template is part of the <<Experimental Scancode Integration>> and requires S
 == Extending Solicitor
 `Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
 be required to correct, supplement and extend this data sets and templates. This can be done straightforward
-by creating copies of the appropriate resources (rule data XLS/CSV and template files), adopting them and furtheron referencing those copies instead of the original resources from the project configuration file.
+by creating copies of the appropriate resources (rule data XLS/CSV and template files), adopting them and further on referencing those copies instead of the original resources from the project configuration file.
 
 Even though this approach is possible it will result in hard to maintain configurations,
 especially in the case of multiple projects using `Solicitor` in parallel.

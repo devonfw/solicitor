@@ -3,6 +3,7 @@ matrix:
   aspell:
     lang: en
     d: en_US
+    run-together: true
   sources:
   - documentation/*.asciidoc 
   dictionary:
