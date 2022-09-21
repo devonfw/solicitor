@@ -22,6 +22,7 @@ gradle
 http
 licenseRefUrl
 licenseToIgnoreN
+licenseurls
 linux
 natively
 nd
@@ -29,6 +30,7 @@ ort
 oss
 sql
 url
+urls
 velo
 venv
 zA
