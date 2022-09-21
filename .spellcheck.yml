@@ -5,6 +5,7 @@ matrix:
     d: en_US
     run-together: true
     run-together-limit: 4
+    run-together-min: 2
   sources:
   - documentation/*.asciidoc 
   dictionary:
