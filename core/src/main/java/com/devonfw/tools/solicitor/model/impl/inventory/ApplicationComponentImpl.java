@@ -35,6 +35,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private String ossHomepage;
 
+  private String sourceRepoUrl;
+
   private String noticeFileUrl;
 
   private String groupId;
@@ -102,8 +104,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public String[] getDataElements() {
 
     return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl(), getOssHomepage(),
-    getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(), isOssModified() ? "true" : "false",
-    getCopyrights() };
+    getSourceRepoUrl(), getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(),
+    isOssModified() ? "true" : "false", getCopyrights() };
   }
 
   /** {@inheritDoc} */
@@ -117,8 +119,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getHeadElements() {
 
-    return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "noticeFileUrl",
-    "noticeFileContent", "usagePattern", "ossModified", "copyrights" };
+    return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "sourceRepoUrl",
+    "noticeFileUrl", "noticeFileContent", "usagePattern", "ossModified", "copyrights" };
   }
 
   /** {@inheritDoc} */
@@ -133,6 +135,13 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public String getOssHomepage() {
 
     return this.ossHomepage;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getSourceRepoUrl() {
+
+    return this.sourceRepoUrl;
   }
 
   /** {@inheritDoc} */
@@ -234,6 +243,13 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void setOssHomepage(String ossHomepage) {
 
     this.ossHomepage = ossHomepage;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setSourceRepoUrl(String sourceRepoUrl) {
+
+    this.sourceRepoUrl = sourceRepoUrl;
   }
 
   /** {@inheritDoc} */

@@ -153,10 +153,10 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
               + this.packageURLHandler.pathFor(packageUrl) + "/" + file.get("path").asText(), 100.0);
         }
         for (JsonNode cr : file.get("copyrights")) {
-          if(cr.has("copyright")) {
+          if (cr.has("copyright")) {
             componentScancodeInfos.addCopyright(cr.get("copyright").asText());
           } else {
-        	componentScancodeInfos.addCopyright(cr.get("value").asText());
+            componentScancodeInfos.addCopyright(cr.get("value").asText());
           }
         }
 
@@ -226,7 +226,7 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
             }
             if (curations.get("url") != null) {
               String url = curations.get("url").asText();
-              oneComponent.setUrl(url);
+              oneComponent.setSourceRepoUrl(url);
             }
             if (curations.get("licenses") != null) {
               oneComponent.clearLicenses();

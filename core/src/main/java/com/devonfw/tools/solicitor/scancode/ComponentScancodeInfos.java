@@ -82,6 +82,8 @@ public class ComponentScancodeInfos {
 
   private String url;
 
+  private String sourceRepoUrl;
+
   private double minLicensefilePercentage;
 
   private double minLicenseScore;
@@ -223,5 +225,25 @@ public class ComponentScancodeInfos {
   public void setUrl(String url) {
 
     this.url = url;
+  }
+
+  /**
+   * Gets the source-Core-Repository-url
+   *
+   * @return sourceRepoUrl to the license text
+   */
+  public String getSourceRepoUrl() {
+
+    return this.sourceRepoUrl;
+  }
+
+  /**
+   * Sets the source-Core-Repository-url
+   *
+   * @param sourceRepoUrl new value of {@link #getSourceRepoUrl()}.
+   */
+  public void setSourceRepoUrl(String sourceRepoUrl) {
+
+    this.sourceRepoUrl = sourceRepoUrl;
   }
 }
