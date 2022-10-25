@@ -265,7 +265,7 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
             }
             if (curations.get("url") != null) {
               String url = curations.get("url").asText();
-              oneComponent.setUrl(url);
+              oneComponent.setSourceRepoUrl(url);
             }
             if (curations.get("licenses") != null) {
               oneComponent.clearLicenses();

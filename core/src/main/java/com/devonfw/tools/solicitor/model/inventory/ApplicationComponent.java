@@ -65,6 +65,13 @@ public interface ApplicationComponent {
   String getOssHomepage();
 
   /**
+   * This method gets the field <code>sourceRepoUrl</code>.
+   *
+   * @return the field sourceRepoUrl
+   */
+  String getSourceRepoUrl();
+
+  /**
    * This method gets the field <code>noticeFileUrl</code>.
    *
    * @return the field noticeFileUrl
@@ -154,11 +161,18 @@ public interface ApplicationComponent {
   void setOssHomepage(String ossHomepage);
 
   /**
-   * This method sets the field <code>noticeFileUrl</code>.
+   * This method sets the field <code>ossHomepage</code>.
    *
-   * @param noticeFileUrl the new value of the field noticeFileUrl
+   * @param ossHomepage the new value of the field ossHomepage
    */
-  void setNoticeFileUrl(String noticeFileUrl);
+  void setSourceRepoUrl(String ossHomepage);
+
+  /**
+   * This method sets the field <code>sourceRepoUrl</code>.
+   *
+   * @param sourceRepoUrl the new value of the field sourceRepoUrl
+   */
+  void setNoticeFileUrl(String sourceRepoUrl);
 
   /**
    * This method sets the field <code>ossModified</code>.

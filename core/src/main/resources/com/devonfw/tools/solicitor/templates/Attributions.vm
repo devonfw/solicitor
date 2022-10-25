@@ -75,7 +75,7 @@ The following table lists all third party Open Source Components that may be con
 		#set( $apps = $license.APPS )
 		<td>$license.artifactId</td> ## application component name
 		<td>$license.version</td> ## application component version
-		<td>$license.ossHomepage</td>
+		<td>$license.sourceRepoUrl</td>
 		<td class="licenses">
 		#foreach($ac in $NONCOMMERCIALCOMPONENTS_LICENSES )
 			#if( $aid == $ac.artifactId && $gid == $ac.groupId && $ver == $ac.version )
@@ -104,9 +104,9 @@ This section lists all license texts that might be applicable for the third part
 <li>the unique license text (or text referencing the license)</li>
 <li>the licenses given or referenced in this text (see note below)</li>
 <li>the components for which this text applies</li>
-</ul> 
+</ul>
 Note that not every license given or referenced in below texts necessarily applies in the
-context of the distribution of this product: See the table in <a href="#components">Component / 
+context of the distribution of this product: See the table in <a href="#components">Component /
 License overview</a> for licenses which might not apply due to selected dual-/multi-licensing
 options.
 </p>
