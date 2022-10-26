@@ -144,6 +144,7 @@ The internal business data model consists of 6 entities:
 | usagePattern | UsagePattern | possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
 | ossModified | boolean | is the OSS modified?
 | ossHomepage | String | URL of the OSS homepage
+| sourceRepoUrl | String | URL of the Source-Code-Repo
 | groupId | String | component identifier: maven group
 | artifactId | String | component identifier: maven artifactId
 | version | String | component identifier: Version
