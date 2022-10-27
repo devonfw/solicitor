@@ -1,0 +1,128 @@
+## SPDX-License-Identifier: Apache-2.0
+
+## template
+
+ <!DOCTYPE html>
+<html>
+<body>
+
+## styling (table)
+
+<style>
+
+table {
+  width:auto;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+tr:nth-child(even) {
+  background-color: #eee;
+}
+tr:nth-child(odd) {
+ background-color: #fff;
+}
+th {
+  background-color: lightblue;
+  color: black;
+}
+ul, ol, li {
+	margin: 10px 0 10px 0;
+}
+</style>
+
+<h1>$ENGAGEMENT.getDataRow(0).engagementName License Information</h1>
+
+<p>Version: $MODELROOT.getDataRow(0).solicitorVersion (Git-Hash: $MODELROOT.getDataRow(0).solicitorGitHash), created: $MODELROOT.getDataRow(0).executionTime</p>
+
+<p>The source code of Solicitor as published on (<a href="https://github.com/devonfw/solicitor">https://github.com/devonfw/solicitor</a>) is licensed
+under Apache 2.0 license (<a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>). However the executable
+JAR file of Solicitor includes a number of other open source components as dependencies where other licenses might apply.</p>
+
+
+<h2>Overview of components distributed with the executable JAR and their applicable licenses</h2>
+
+<p>The following table gives an overview over the libraries included in / distributed with the Solicitor executable JAR and the license under which they
+are distributed. In case that a library is listed with multiple licenses then all given licenses apply and need to be observed.</p> 
+
+<p>All listed components are used/included in their original form as available e.g. from the <a href="http://mvnrepository.com/">Maven Central Repository</a>.</p>
+
+<p>Full license texts are given further down.</p>
+
+<table>
+	## head row
+  <tr>
+		<th>Group Id</th>
+		<th>Artifact Id</th>
+		<th>Version</th>
+		<th>distributed under License</th>
+		<th>License Url</th>
+  </tr>
+	## content
+
+	#foreach ($license in $OSSLICENSES)
+			<tr>
+				<td>$license.groupId</td> ## application component group id
+				<td>$license.artifactId</td> ## application component name
+				<td>$license.version</td> ## application component version
+				<td>$license.effectiveNormalizedLicense</td> ## license name
+				<td>$license.effectiveNormalizedLicenseUrl</td> ## license url
+			</tr>
+	#end
+
+</table>
+
+
+
+<h2>License texts</h2>
+
+## overview, which components use a specific license (bullet point list)
+
+#foreach($ul in $UNIQUELICENSES)
+  #set($nl = $ul.effectiveNormalizedLicense)
+  #set($nlu = $ul.effectiveNormalizedLicenseUrl)
+  #set($nlc = $ul.effectiveNormalizedLicenseContent)
+  #set($unlc = $ul.unifiedEffectiveNormalizedLicenseContent)
+<hr/>
+<h3>$nl</h3>
+<p>
+The component(s) (GroupId/ArtifactId/Version): 
+		<ul>
+		#foreach($ac in $OSSLICENSES )
+			#set( $aid  = $ac.artifactId )
+			#set( $gid  = $ac.groupId )
+			#set( $ver  = $ac.version )
+			#set( $apps = $ac.APPS )
+			#set( $enl  = $ac.effectiveNormalizedLicense )
+			#set( $enlu = $ac.effectiveNormalizedLicenseUrl )
+			#set( $enlc = $ac.effectiveNormalizedLicenseContent )
+			#set( $uenlc = $ac.unifiedEffectiveNormalizedLicenseContent )
+			#if( $enl == $nl && $uenlc == $unlc )
+			<li>$gid/$aid/$ver</li>
+			#end
+		#end
+		</ul>
+are at least partly licensed via the following license of type $nl:
+</p>
+<p>
+		#if ($nlc)
+		<table border="1">
+		<tr><td>
+			<pre>$esc.html($nlc)</pre>
+ 		</td></tr>
+		</table>
+		#else
+			<i>No license text available.</i>
+		#end
+		<br/>
+URL(s) leading to the above given license text: $nlu 
+</p>
+#end
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+﻿groupId;artifactId;version;license;licenseUrl
+org.eclipse;albireo;0.0.3;Eclipse Public License - v 1.0;https://www.eclipse.org/legal/epl-v10.html
+org.antlr.runtime;'antlr!'';4.6.0;BSD;https://www.antlr.org/license.html
+org.eclipse.equinox.p2;Equinox p2 Provisioning for IDEs;2.3.2;Eclipse Public License - v 1.0;http://www.eclipse.org/legal/epl-v10.html
+org.springframework;spring;5.0.6;Apache 2;https://www.apache.org/licenses/LICENSE-2.0
+
+org.eclipse.xtend;xtend;2.2.0;MIT;https://spdx.org/licenses/MIT#licenseText
+
+#this is a comment

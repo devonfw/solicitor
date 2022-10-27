@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: Apache-2.0
+
+template header
+ruleId
+declared
+url
+type
+normalized
+
+package com.devonfw.tools.solicitor.rules;
+
+import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense
+import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent
+import com.devonfw.tools.solicitor.model.inventory.RawLicense
+import com.devonfw.tools.solicitor.ruleengine.drools.AuditEntryBuilder;
+import com.devonfw.tools.solicitor.ruleengine.drools.ModelHelper;
+
+template "NameNormalizer"
+
+rule "Name Normalization @{ruleId}" salience -@{row.rowNumber}
+    when
+        $ac : ApplicationComponent()
+        $rl : RawLicense(
+            specialHandling == false,
+        	ModelHelper.match(declaredLicense, "@{declared}" ), 
+        	ModelHelper.match(licenseUrl, "@{url}" ),
+        	$licUrl : licenseUrl,
+        	applicationComponent == $ac )
+        	not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalized}" ) )
+    then
+        NormalizedLicense normalizedLicense = ModelHelper.newNormalizedLicense($rl ); 
+        normalizedLicense.setNormalizedLicenseType("@{type}");
+        normalizedLicense.setNormalizedLicense("@{normalized}");
+        normalizedLicense.setNormalizedLicenseUrl($licUrl);
+
+		// Create trace entry        
+        AuditEntryBuilder aeb = AuditEntryBuilder.instance();
+        aeb.withRuleId("@{ruleId}")
+        .withMatching("declaredLicense", "@{declared}" )
+        .withMatching("licenseUrl", "@{url}" )
+        .withSetting("normalizedLicenseType", "@{type}" )
+        .withSetting("normalizedLicense", "@{normalized}" )
+        .withSetting("normalizedLicenseUrl", $licUrl, "taking data from input" )
+        .nop();
+        ModelHelper.appendTraceToNormalizedLicense(normalizedLicense, aeb.build()); 
+
+        insert(normalizedLicense);
+        $rl.setSpecialHandling(true);
+        update($rl);
+        
+end
+end template
