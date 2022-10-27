@@ -638,7 +638,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "npm-license-checker",
   "source" : "file:path/to/licenses.json",
-  "usagePattern" : "DYNAMIC_LINKING",
+  "usagePattern" : "STATIC_LINKING",
   "repoType" : "npm"
 } ]
 ----
@@ -676,7 +676,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "npm-license-crawler-csv",
   "source" : "file:path/to/licenses.csv",
-  "usagePattern" : "DYNAMIC_LINKING",
+  "usagePattern" : "STATIC_LINKING",
   "repoType" : "npm"
 } ]
 ----
