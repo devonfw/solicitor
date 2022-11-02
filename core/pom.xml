@@ -15,7 +15,7 @@
   <artifactId>solicitor-core</artifactId>
   <version>1.4.0-SNAPSHOT</version>
 
-  <name>Solicitor Core (Main Application)</name>
+  <name>Solicitor Core (Main Library)</name>
   <description>A tool for rule based checking of license conditions in software projects.</description>
   <licenses>
     <license>
@@ -164,7 +164,6 @@
   </dependencies>
 
   <build>
-    <finalName>solicitor</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -220,13 +219,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <layout>ZIP</layout>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
