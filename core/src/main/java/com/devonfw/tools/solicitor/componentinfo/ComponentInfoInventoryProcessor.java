@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.scancode;
+package com.devonfw.tools.solicitor.componentinfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +15,16 @@ import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
-import com.devonfw.tools.solicitor.scancode.ComponentScancodeInfos.LicenseInfo;
 
 /**
- * An {@link InventoryProcessor} which looks up license information for the found application components / packages in
- * the scancode file store. If license information is found then the license, copyright and notice file information of
- * the model will be replaced by the data obtained from scancode.
+ * An {@link InventoryProcessor} which looks up license information for the found application components / packages at
+ * some external data source , e.g. a scancode file store. If license information is found then the license, copyright
+ * and notice file information of the model will be replaced by the data obtained from this source.
  *
  */
 @Component
 @Order(InventoryProcessor.BEFORE_RULE_ENGINE)
-public class ScancodeInventoryProcessor implements InventoryProcessor {
+public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
   private static class Statistics {
     public int componentsTotal;
@@ -44,11 +43,11 @@ public class ScancodeInventoryProcessor implements InventoryProcessor {
    */
   private static final String ORIGIN_SCANCODE = "scancode";
 
-  private static final Logger LOG = LoggerFactory.getLogger(ScancodeInventoryProcessor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ComponentInfoInventoryProcessor.class);
 
   private boolean featureFlag = false;
 
-  private ScancodeAdapter scancodeAdapter;
+  private ComponentInfoAdapter scancodeAdapter;
 
   private ModelFactory modelFactory;
 
@@ -66,7 +65,7 @@ public class ScancodeInventoryProcessor implements InventoryProcessor {
   /**
    * The constructor.
    */
-  public ScancodeInventoryProcessor() {
+  public ComponentInfoInventoryProcessor() {
 
   }
 
@@ -101,10 +100,10 @@ public class ScancodeInventoryProcessor implements InventoryProcessor {
     statistics.componentsTotal = 1;
 
     if (ac.getPackageUrl() != null) {
-      ComponentScancodeInfos componentScancodeInfos;
+      ComponentInfo componentScancodeInfos;
       try {
-        componentScancodeInfos = this.scancodeAdapter.getComponentScancodeInfos(ac.getPackageUrl());
-      } catch (ScancodeException e) {
+        componentScancodeInfos = this.scancodeAdapter.getComponentInfo(ac.getPackageUrl());
+      } catch (ComponentInfoAdapterException e) {
         throw new SolicitorRuntimeException("Exception when reading scancode file", e);
       }
       if (componentScancodeInfos != null) {
@@ -115,8 +114,8 @@ public class ScancodeInventoryProcessor implements InventoryProcessor {
           ac.setNoticeFileUrl(componentScancodeInfos.getNoticeFilePath());
         }
 
-        for (LicenseInfo li : componentScancodeInfos.getLicenses().values()) {
-          addRawLicense(ac, li.spdxid, li.licenseFilePath, ORIGIN_SCANCODE);
+        for (LicenseInfo li : componentScancodeInfos.getLicenses()) {
+          addRawLicense(ac, li.getSpdxid(), li.getLicenseFilePath(), ORIGIN_SCANCODE);
         }
         String copyrights = String.join("\n", componentScancodeInfos.getCopyrights());
         ac.setCopyrights(copyrights);
@@ -131,19 +130,6 @@ public class ScancodeInventoryProcessor implements InventoryProcessor {
       // can this happen?
     }
     return statistics;
-  }
-
-  /**
-   * Performs logging.
-   *
-   * @param sourceUrl the URL from where the inventory data was read
-   * @param application the application
-   * @param readComponents number of read ApplicationComponents
-   * @param readLicenses number of read RawLicenses
-   */
-  public void doLogging(String sourceUrl, Application application, int readComponents, int readLicenses) {
-
-    LOG.info(LogMessages.READING_INVENTORY.msg(), readComponents, readLicenses, application.getName(), sourceUrl);
   }
 
   /**
@@ -185,7 +171,7 @@ public class ScancodeInventoryProcessor implements InventoryProcessor {
    * @param scancodeAdapter new value of <code>scancodeAdapter</code>.
    */
   @Autowired
-  public void setScancodeAdapter(ScancodeAdapter scancodeAdapter) {
+  public void setScancodeAdapter(ComponentInfoAdapter scancodeAdapter) {
 
     this.scancodeAdapter = scancodeAdapter;
   }
