@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  * information as a {@link ComponentInfo} object.
  */
 @Component
+@Order(ComponentInfoAdapter.DEFAULT_PRIO)
 public class ScancodeFileAdapter implements ComponentInfoAdapter {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScancodeFileAdapter.class);
@@ -44,6 +46,10 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
 
   private boolean curationsExistenceLogged;
 
+  private boolean featureFlag = false;
+
+  private boolean featureLogged = false;
+
   @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
 
@@ -53,6 +59,17 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
 
   public ScancodeFileAdapter() {
 
+  }
+
+  /**
+   * Sets the feature flag for activating/deactivating this feature.
+   *
+   * @param featureFlag the flag
+   */
+  @Value("${solicitor.feature-flag.scancode}")
+  public void setFeatureFlag(boolean featureFlag) {
+
+    this.featureFlag = featureFlag;
   }
 
   /**
@@ -106,20 +123,39 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
    * @param packageUrl The identifier of the package for which information is requested
    * @return the data derived from the scancode results after applying any defined curations. <code>null</code> is
    *         returned if no data is available,
-   * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no data available
-   *         no exception will be thrown. Instead <code>null</code> will be return in such a case.
+   * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
+   *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   @Override
   public ComponentInfo getComponentInfo(String packageUrl) throws ComponentInfoAdapterException {
 
-    ScancodeComponentInfo componentScancodeInfos = determineScancodeInformation(packageUrl);
-    if (componentScancodeInfos == null) {
+    if (isFeatureActive()) {
+
+      ScancodeComponentInfo componentScancodeInfos = determineScancodeInformation(packageUrl);
+      if (componentScancodeInfos == null) {
+        return null;
+      }
+      applyCurations(packageUrl, componentScancodeInfos);
+
+      return componentScancodeInfos;
+
+    } else {
       return null;
     }
-    applyCurations(packageUrl, componentScancodeInfos);
 
-    return componentScancodeInfos;
+  }
 
+  private boolean isFeatureActive() {
+
+    if (!this.featureLogged) {
+      if (this.featureFlag) {
+        LOG.warn(LogMessages.SCANCODE_PROCESSOR_STARTING.msg());
+      } else {
+        LOG.info(LogMessages.SCANCODE_FEATURE_DEACTIVATED.msg());
+      }
+      this.featureLogged = true;
+    }
+    return this.featureFlag;
   }
 
   /**
@@ -127,8 +163,8 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
    *
    * @param packageUrl The package url of the package
    * @return the read scancode information, <code>null</code> if no information was found
-   * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no data available
-   *         no exception will be thrown. Instead <code>null</code> will be return in such a case.
+   * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
+   *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   private ScancodeComponentInfo determineScancodeInformation(String packageUrl) throws ComponentInfoAdapterException {
 
