@@ -3,7 +3,7 @@ package com.devonfw.tools.solicitor.componentinfo;
 import java.util.Collection;
 
 /**
- * Data structure which holds information about a component which comes from an external data source, e.g. the results
+ * Data structure which holds information about a component which comes from an external data source, like the results
  * of a scancode scan.
  *
  */
