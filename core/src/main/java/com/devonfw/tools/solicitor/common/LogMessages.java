@@ -81,7 +81,7 @@ public enum LogMessages {
       "Experimental feature ACTIVE: Start enriching the inventory data with Scancode data (as far as available)"), //
   SCANCODE_FEATURE_DEACTIVATED(55,
       "The experimental feature for enriching the inventory with scancode data is DEACTIVATED"), //
-  SCANCODE_INFO_READ(56, "Scancode information was read for {} out of {} ApplicationComponents"), //
+  COMPONENT_INFO_READ(56, "External component information was read for {} out of {} ApplicationComponents"), //
   CURATIONS_NOT_EXISTING(57, "Curations file '{}' not found. No curations will be applied."), //
   CURATIONS_PROCESSING(58, "Curations file '{}' exists. Applying curations.");
 

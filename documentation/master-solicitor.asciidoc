@@ -1528,11 +1528,31 @@ The Extension will be activated by referencing it as follows when starting _Soli
 [listing]
 java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other arguments>
 
+=== Java Extensions
+It is also possible to extend the functionality of _Solicitor_ within an extension by implementing Spring Beans
+which implement certain interfaces. As the resources contained in the extension are included into _Solicitors_  classpath those beans
+might be discovered through the Spring component scan mechanism and thus be activated.
+
+NOTE: The Spring components scanning mechanisms by default searches only in package `com.devonfw.tools.solicitor` (and subpackages). You either need to define the extension classes in these packages or create a specific configuration class in this package which has an
+appropriate `@ComponentScan` annotation which points to your packages.
+
+WARNING: Extending Solicitor via Java is an advanced topic. Only the Interfaces given below should be used. Even those should
+be regarded as unstable and might change without notice. For any details on the interfaces see the _Solicitor_ source code and corresponding Javadoc.
+
+==== Extension Interfaces
+===== `com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter` 
+A spring bean implementing this interface might provide `ComponentInfo`/`LicenseInfo` data for `ApplicationComponents` identified
+by their packageUrl. (The buildin implementation of this interface is reading such component info from scancode result files
+from the local file system, see <<Experimental Scancode Integration>>.) Alternative implementations might e.g. get this information
+from a corporate server or even a public service available on the internet.
+
 
 [appendix]
 == Release Notes
 
 Changes in 1.4.0::
+* https://github.com/devonfw/solicitor/issues/139: Provide extension interface to allow reading information about components/licenses
+from alternative sources. See <<Extension Interfaces>>.
 * https://github.com/devonfw/solicitor/issues/137: Internal restructuration of Solicitor modules which allows Solicitor code to be used as dependency in other projects.
 * https://github.com/devonfw/solicitor/issues/129: Added spellcheck support within documentation for run-together words like camel cased ones.
 * https://github.com/devonfw/solicitor/issues/130: Fixed a bug where the guessedLicenseUrl and guessedLicenseUrlAuditInfo fields were not filled correctly in the aggregated inventory.

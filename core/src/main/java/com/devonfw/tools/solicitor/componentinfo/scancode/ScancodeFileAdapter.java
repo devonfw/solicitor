@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.scancode;
+package com.devonfw.tools.solicitor.componentinfo.scancode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,10 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -20,10 +24,11 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
  * Adapter for reading Scancode information for a package from a file, applying any given curations and returning the
- * information as a {@link ComponentScancodeInfos} object.
+ * information as a {@link ComponentInfo} object.
  */
 @Component
-public class ScancodeFileAdapter implements ScancodeAdapter {
+@Order(ComponentInfoAdapter.DEFAULT_PRIO)
+public class ScancodeFileAdapter implements ComponentInfoAdapter {
 
   private static final Logger LOG = LoggerFactory.getLogger(ScancodeFileAdapter.class);
 
@@ -41,6 +46,10 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
 
   private boolean curationsExistenceLogged;
 
+  private boolean featureFlag = false;
+
+  private boolean featureLogged = false;
+
   @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
 
@@ -50,6 +59,17 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
 
   public ScancodeFileAdapter() {
 
+  }
+
+  /**
+   * Sets the feature flag for activating/deactivating this feature.
+   *
+   * @param featureFlag the flag
+   */
+  @Value("${solicitor.feature-flag.scancode}")
+  public void setFeatureFlag(boolean featureFlag) {
+
+    this.featureFlag = featureFlag;
   }
 
   /**
@@ -98,25 +118,44 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
 
   /**
    * Retrieves the Scancode information and curations for a package identified by the given package URL. Returns the
-   * data as a {@link ComponentScancodeInfos} object.
+   * data as a {@link ScancodeComponentInfo} object.
    *
    * @param packageUrl The identifier of the package for which information is requested
    * @return the data derived from the scancode results after applying any defined curations. <code>null</code> is
    *         returned if no data is available,
-   * @throws ScancodeException if there was an exception when reading the data. In case that there is no data available
-   *         no exception will be thrown. Instead <code>null</code> will be return in such a case.
+   * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
+   *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   @Override
-  public ComponentScancodeInfos getComponentScancodeInfos(String packageUrl) throws ScancodeException {
+  public ComponentInfo getComponentInfo(String packageUrl) throws ComponentInfoAdapterException {
 
-    ComponentScancodeInfos componentScancodeInfos = determineScancodeInformation(packageUrl);
-    if (componentScancodeInfos == null) {
+    if (isFeatureActive()) {
+
+      ScancodeComponentInfo componentScancodeInfos = determineScancodeInformation(packageUrl);
+      if (componentScancodeInfos == null) {
+        return null;
+      }
+      applyCurations(packageUrl, componentScancodeInfos);
+
+      return componentScancodeInfos;
+
+    } else {
       return null;
     }
-    applyCurations(packageUrl, componentScancodeInfos);
 
-    return componentScancodeInfos;
+  }
 
+  private boolean isFeatureActive() {
+
+    if (!this.featureLogged) {
+      if (this.featureFlag) {
+        LOG.warn(LogMessages.SCANCODE_PROCESSOR_STARTING.msg());
+      } else {
+        LOG.info(LogMessages.SCANCODE_FEATURE_DEACTIVATED.msg());
+      }
+      this.featureLogged = true;
+    }
+    return this.featureFlag;
   }
 
   /**
@@ -124,12 +163,12 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
    *
    * @param packageUrl The package url of the package
    * @return the read scancode information, <code>null</code> if no information was found
-   * @throws ScancodeException if there was an exception when reading the data. In case that there is no data available
-   *         no exception will be thrown. Instead <code>null</code> will be return in such a case.
+   * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
+   *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
-  private ComponentScancodeInfos determineScancodeInformation(String packageUrl) throws ScancodeException {
+  private ScancodeComponentInfo determineScancodeInformation(String packageUrl) throws ComponentInfoAdapterException {
 
-    ComponentScancodeInfos componentScancodeInfos = new ComponentScancodeInfos(this.minLicenseScore,
+    ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefilePercentage);
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
     String path = this.repoBasePath + "/" + packagePathPart + "/scancode.json";
@@ -153,10 +192,10 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
               + this.packageURLHandler.pathFor(packageUrl) + "/" + file.get("path").asText(), 100.0);
         }
         for (JsonNode cr : file.get("copyrights")) {
-          if(cr.has("copyright")) {
+          if (cr.has("copyright")) {
             componentScancodeInfos.addCopyright(cr.get("copyright").asText());
           } else {
-        	componentScancodeInfos.addCopyright(cr.get("value").asText());
+            componentScancodeInfos.addCopyright(cr.get("value").asText());
           }
         }
 
@@ -178,7 +217,7 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
           componentScancodeInfos.getNoticeFilePath() != null ? 1 : 0);
 
     } catch (IOException e) {
-      throw new ScancodeException("Could not read Scancode JSON", e);
+      throw new ComponentInfoAdapterException("Could not read Scancode JSON", e);
     }
     return componentScancodeInfos;
   }
@@ -189,10 +228,10 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
    *
    * @param packageUrl the identifier of the package
    * @param componentScancodeInfos the componentScancodeInfos to curate
-   * @throws ScancodeException if the curations could not be read
+   * @throws ComponentInfoAdapterException if the curations could not be read
    */
-  private void applyCurations(String packageUrl, ComponentScancodeInfos componentScancodeInfos)
-      throws ScancodeException {
+  private void applyCurations(String packageUrl, ScancodeComponentInfo componentScancodeInfos)
+      throws ComponentInfoAdapterException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
 
@@ -216,7 +255,7 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
         for (JsonNode curations : curationsObj.get("artifacts")) {
           String component = curations.get("name").asText();
           if (component.equals(packagePathPart)) {
-            ComponentScancodeInfos oneComponent = componentScancodeInfos;
+            ScancodeComponentInfo oneComponent = componentScancodeInfos;
             if (curations.get("copyrights") != null) {
               oneComponent.clearCopyrights();
               int authorCount = curations.get("copyrights").size();
@@ -240,7 +279,7 @@ public class ScancodeFileAdapter implements ScancodeAdapter {
         }
 
       } catch (IOException e) {
-        throw new ScancodeException("Could not read Curations JSON", e);
+        throw new ComponentInfoAdapterException("Could not read Curations JSON", e);
       }
 
     }
