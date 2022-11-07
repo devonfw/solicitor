@@ -3,22 +3,21 @@
  */
 package com.devonfw.tools.solicitor.licensetexts;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.devonfw.tools.solicitor.SolicitorVersion;
-import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
+
+import reactor.core.publisher.Mono;
 
 /**
  * A {@link LicenseUrlGuesser} which tries to strategically find a possible better license URL.
@@ -33,7 +32,10 @@ public class StrategyLicenseUrlGuesser implements LicenseUrlGuesser {
   
   @Value("${solicitor.githubtoken}")
   private String token;
+  
+  private WebClient client = WebClient.create("https://api.github.com");
 
+		
   /**
    * The constructor.
    *
@@ -170,42 +172,46 @@ public class StrategyLicenseUrlGuesser implements LicenseUrlGuesser {
 
   //tries to get github license file location based of vsc-link 
   public String githubAPILicenseUrl(String link, String token) {
-
+	  
+	String fallbackLink = link;
+	  
     String result = "";
     if (link.contains("github.com")) {
       if (link.endsWith(".git")) {
         link = link.substring(0, link.length() - 4);
-    }
-    link = link.replace("git://", "https://");
-    link = link.replace("ssh://", "https://");
-    link = link.replace("git@", "");
-    if (!link.contains("api.github.com")) {
-      link = link.replace("github.com/", "api.github.com/repos/");
-      link = link.concat("/license");
-    }
-  
-    String command = "curl -H \"Accept: application/vnd.github+json\" -H \"Authorization: token "+ token + "\" -i " + link;
-    ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-    try {
-      Process process = processBuilder.start();
-      InputStream inputStream = process.getInputStream();
-      result = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-        if (result.contains("download_url")) {
-          result = result.substring(result.indexOf("\"download_url\": "));
-          result = result.substring(17,result.indexOf(",")-1);
-        }
-        if (result.contains("\"message\": \"Moved Permanently\"")) {
-          String tempLink = result.substring(result.indexOf("\"url\": "));
-          tempLink = tempLink.substring(17,result.indexOf(",")-1);
-          result = githubAPILicenseUrl(tempLink, token);
-        }
-        if (result.contains("\"message\": \"Not Found\"")) {
-           result = link;
-         }
-      } catch (IOException e) {
-        throw new SolicitorRuntimeException("Could not handle command call for api request'" + command + "'", e);
       }
+	  link = link.replace("git://", "");
+	  link = link.replace("ssh://", "");
+	  link = link.replace("git@", "");
+	  link = link.replace("https://", "");
+      link = link.replace("api.github.com/", "");
+      link = link.replace("github.com/", "");
+
+      //TODO it should be better to parse the response directly into a JSON object, not string
+	  result = client.get()
+			  .uri("/repos/" + link + "/license")			 
+			  .header("Accept", "application/vnd.github+json")
+			  .header("Authorization", "Bearer " + token)
+			  .accept(MediaType.APPLICATION_JSON)
+			  .retrieve()
+			  .onStatus(status -> status.isError(), 
+                      response -> Mono.empty()) 
+			  .bodyToMono(String.class)
+			  .block(); //TODO this blocks the thread probably
+	    
+	  if (result.contains("download_url")) {
+	    result = result.substring(result.indexOf("\"download_url\":"));
+	    result = result.substring(16,result.indexOf(",")-1);
+	  }
+	  if (result.contains("\"message\":\"Moved Permanently\"")) {
+	    String tempLink = result.substring(result.indexOf("\"url\":"));
+        tempLink = tempLink.substring(7,result.indexOf(",")-1);
+	    result = githubAPILicenseUrl(tempLink, token);
+	  }
+	  if (result.contains("\"message\":\"Not Found\"")) {
+	    result = fallbackLink;
+	  }
     }
-    return result;
-  }  
+    return result;  
+  }
 }
