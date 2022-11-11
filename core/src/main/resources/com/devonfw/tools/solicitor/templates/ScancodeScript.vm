@@ -17,40 +17,44 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 #foreach ($artifact in $ARTIFACTS)
 # Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version -- License(s): $artifact.effectiveNormalizedLicense -- includeSource: $artifact.includeSource
 
-	if [ ! -d "$purlhandler.pathFor($artifact.packageUrl)" ]
-	then
-		mkdir -p $purlhandler.pathFor($artifact.packageUrl)
-	fi
-	if [ ! -f "$purlhandler.pathFor($artifact.packageUrl)/sources.completed" ] || [ ! -d "$purlhandler.pathFor($artifact.packageUrl)/sources" ]
-	then
-		cd $purlhandler.pathFor($artifact.packageUrl)
-		rm sources.completed
-		rm -r sources
-		rm sources.jar
-		curl -# $purlhandler.sourceDownloadUrlFor($artifact.packageUrl) -o sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
-		#if ( $purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "jar" )
-		unzip -q -d sources sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
-		#elseif($purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "tgz")
-		mkdir sources
-		tar -xvzf sources.tgz -C sources
-		#elseif($purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "tar.gz")
-		mkdir sources
-		tar -xvzf sources.tar.gz -C sources
-		#else
-		unzip -q nonexisting
-		#end
-		if [ $? -ne 0 ]
+	#if ( $artifact.packageUrl == "NA" )
+		echo "Artifact Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version" >> need-to-retrieve-manually.txt
+	#else
+		if [ ! -d "$purlhandler.pathFor($artifact.packageUrl)" ]
 		then
-			touch sources.failed
-			rm sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
-			rm -r sources
-			#[[cd $SD]]#
-			echo "Artifact $purlhandler.sourceDownloadUrlFor($artifact.packageUrl)" >> need-to-retrieve-manually.txt
-		else
-			touch sources.completed
-			#[[cd $SD]]#
+			mkdir -p $purlhandler.pathFor($artifact.packageUrl)
 		fi
-	fi
+		if [ ! -f "$purlhandler.pathFor($artifact.packageUrl)/sources.completed" ] || [ ! -d "$purlhandler.pathFor($artifact.packageUrl)/sources" ]
+		then
+			cd $purlhandler.pathFor($artifact.packageUrl)
+			rm sources.completed
+			rm -r sources
+			rm sources.jar
+			curl -# $purlhandler.sourceDownloadUrlFor($artifact.packageUrl) -o sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
+			#if ( $purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "jar" )
+			unzip -q -d sources sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
+			#elseif($purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "tgz")
+			mkdir sources
+			tar -xvzf sources.tgz -C sources
+			#elseif($purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "tar.gz")
+			mkdir sources
+			tar -xvzf sources.tar.gz -C sources
+			#else
+			unzip -q nonexisting
+			#end
+			if [ $? -ne 0 ]
+			then
+				touch sources.failed
+				rm sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
+				rm -r sources
+				#[[cd $SD]]#
+				echo "Artifact $purlhandler.sourceDownloadUrlFor($artifact.packageUrl)" >> need-to-retrieve-manually.txt
+			else
+				touch sources.completed
+				#[[cd $SD]]#
+			fi
+		fi
+	#end
 #end
 
 cd ..
