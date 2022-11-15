@@ -1550,6 +1550,9 @@ from a corporate server or even a public service available on the internet.
 [appendix]
 == Release Notes
 
+Changes in 1.5.0::
+
+
 Changes in 1.4.0::
 * https://github.com/devonfw/solicitor/issues/141: Improved robustness of report generation in cases where PackageURL can not be determined (e.g. if data originates from CSV reader).
 * https://github.com/devonfw/solicitor/issues/139: Provide extension interface to allow reading information about components/licenses
