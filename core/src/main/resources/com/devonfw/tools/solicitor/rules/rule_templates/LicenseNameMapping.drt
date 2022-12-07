@@ -22,18 +22,19 @@ rule "Name Normalization @{ruleId}" salience -@{row.rowNumber}
         $ac : ApplicationComponent()
         $rl : RawLicense(
             specialHandling == false,
-        	ModelHelper.match(declaredLicense, "@{declared}" ), 
-        	ModelHelper.match(licenseUrl, "@{url}" ),
-        	$licUrl : licenseUrl,
-        	applicationComponent == $ac )
-        	not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalized}" ) )
+            ModelHelper.match(declaredLicense, "@{declared}" ),
+            ModelHelper.match(licenseUrl, "@{url}" ),
+            $decLicense : declaredLicense,
+            $licUrl : licenseUrl,
+            applicationComponent == $ac )
+        not( NormalizedLicense(applicationComponent == $ac, declaredLicense == $decLicense, licenseUrl == $licUrl, normalizedLicense == "@{normalized}" ) )
     then
         NormalizedLicense normalizedLicense = ModelHelper.newNormalizedLicense($rl ); 
         normalizedLicense.setNormalizedLicenseType("@{type}");
         normalizedLicense.setNormalizedLicense("@{normalized}");
         normalizedLicense.setNormalizedLicenseUrl($licUrl);
 
-		// Create trace entry        
+        // Create trace entry        
         AuditEntryBuilder aeb = AuditEntryBuilder.instance();
         aeb.withRuleId("@{ruleId}")
         .withMatching("declaredLicense", "@{declared}" )

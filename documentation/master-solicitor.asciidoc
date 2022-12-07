@@ -1551,7 +1551,7 @@ from a corporate server or even a public service available on the internet.
 == Release Notes
 
 Changes in 1.5.0::
-
+* https://github.com/devonfw/solicitor/issues/6: Fixed the bug by allowing multiple `NormalizedLicense` entries with same id per `ApplicationComponent`  if the declared license differs. This allows to assign multiple licenses of same type (e.g. MIT) to a component and also will allow multiple "UNKNOWN" licenses to be reported for the same component. Note that as a side effect additional and unexpected `NormalizedLicense` entries might now be created. This might be caused from multiple `LicenseAssignment*.xls` rules firing for different `RawLicense` entries in the same `ApplicationComponent` and resulting in identical `NormalizedLicense` id. In this case it is necessary to restrict those different rules to only fire for specific `RawLicense` entries. 
 
 Changes in 1.4.0::
 * https://github.com/devonfw/solicitor/issues/141: Improved robustness of report generation in cases where PackageURL can not be determined (e.g. if data originates from CSV reader).

@@ -76,10 +76,11 @@ rule "License Assignment @{ruleId} - add given NormalizedLicense" salience -@{ro
         $rl : RawLicense(  
           specialHandling == false,
         	ModelHelper.match( declaredLicense, "@{declaredLicense}" ),
-        	$licUrl : licenseUrl,
+            $decLicense : declaredLicense,
+            $licUrl : licenseUrl,
         	ModelHelper.match( licenseUrl, "@{url}" ), 
         	applicationComponent == $ac )
-        not( NormalizedLicense(applicationComponent == $ac, normalizedLicense == "@{normalizedLicense}") )  // differs from above
+        not( NormalizedLicense(applicationComponent == $ac, declaredLicense == $decLicense, licenseUrl == $licUrl, normalizedLicense == "@{normalizedLicense}") )  // differs from above
         	
     then
         NormalizedLicense normalizedLicense = ModelHelper.newNormalizedLicense($rl );
