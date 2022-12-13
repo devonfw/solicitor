@@ -284,7 +284,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   /**
-   * Gets the path to the notice file (if any)
+   * Gets the path to the notice file (if any).
    *
    * @return path to the notice file
    */
@@ -295,9 +295,9 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   /**
-   * Gets the url to the license text
+   * Gets the url of the projects homepage.
    *
-   * @return url to the license text
+   * @return url to the projects homepage
    */
   @Override
   public String getUrl() {
@@ -306,7 +306,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   /**
-   * Sets the url to the license text
+   * Sets the url of the projects homepage.
    *
    * @param url new value of {@link #getUrl()}.
    */
@@ -316,17 +316,18 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   /**
-   * Gets the source-Core-Repository-url
+   * Gets the url of the source code repository.
    *
    * @return sourceRepoUrl to the license text
    */
+  @Override
   public String getSourceRepoUrl() {
 
     return this.sourceRepoUrl;
   }
 
   /**
-   * Sets the source-Core-Repository-url
+   * Sets the url of the source code repository.
    *
    * @param sourceRepoUrl new value of {@link #getSourceRepoUrl()}.
    */

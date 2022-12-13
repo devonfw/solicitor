@@ -6,6 +6,7 @@ select
 	ac."groupId", 
 	ac."artifactId",
 	ac."ossHomepage",
+	ac."sourceRepoUrl",
 	ac."copyrights"
 from 
 	APPLICATION a, 
@@ -19,6 +20,7 @@ group by
 	"groupId", 
 	"artifactId",
 	"ossHomepage",
+	"sourceRepoUrl",
 	"copyrights"
 order by 
 	"groupId", 

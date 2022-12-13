@@ -106,12 +106,26 @@ public class NpmLicenseCheckerReaderTests {
   }
 
   @Test
-  public void testHomepageFromRepo() {
+  public void testHomepageNotGiven() {
 
     List<ApplicationComponent> lapc = this.application.getApplicationComponents();
     boolean found = false;
     for (ApplicationComponent ap : lapc) {
-      if (ap.getArtifactId().equals("foo-bar") && ap.getOssHomepage().equals("https://github.com/nobody/foo-bar")) {
+      if (ap.getArtifactId().equals("foo-bar") && ap.getOssHomepage() == null) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
+  }
+
+  @Test
+  public void testSourceRepoFromRepo() {
+
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("foo") && ap.getSourceRepoUrl().equals("https://github.com/somebody/foo")) {
         found = true;
         break;
       }

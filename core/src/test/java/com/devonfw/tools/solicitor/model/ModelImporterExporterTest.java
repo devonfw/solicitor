@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 
 /**
@@ -25,10 +26,10 @@ public class ModelImporterExporterTest {
   @Test
   public void testLoadModelVersion1() {
 
-	  SolicitorRuntimeException thrown = Assertions.assertThrows(SolicitorRuntimeException.class, () ->{
-		    this.mie.loadModel("src/test/resources/models/model_version_1.json");
-	  });
-	  
+    SolicitorRuntimeException thrown = Assertions.assertThrows(SolicitorRuntimeException.class, () -> {
+      this.mie.loadModel("src/test/resources/models/model_version_1.json");
+    });
+
   }
 
   /**
@@ -47,6 +48,24 @@ public class ModelImporterExporterTest {
   public void testLoadModelVersion3() {
 
     this.mie.loadModel("src/test/resources/models/model_version_3.json");
+  }
+
+  /**
+   * Test method for {@link com.devonfw.tools.solicitor.model.ModelImporterExporter#loadModel(java.lang.String)}.
+   */
+  @Test
+  public void testLoadModelVersion4() {
+
+    this.mie.loadModel("src/test/resources/models/model_version_4.json");
+  }
+
+  /**
+   * Test method for {@link com.devonfw.tools.solicitor.model.ModelImporterExporter#loadModel(java.lang.String)}.
+   */
+  @Test
+  public void testLoadModelVersion5() {
+
+    this.mie.loadModel("src/test/resources/models/model_version_5.json");
   }
 
   /**
