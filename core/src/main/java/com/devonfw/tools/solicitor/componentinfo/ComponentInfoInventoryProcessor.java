@@ -110,6 +110,10 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         if (componentInfo.getUrl() != null) {
           ac.setOssHomepage(componentInfo.getUrl());
         }
+        // check whether Source Reop Url is included in input file or not
+        if (componentInfo.getSourceRepoUrl() != null) {
+          ac.setSourceRepoUrl(componentInfo.getSourceRepoUrl());
+        }
       } else {
         // no ComponentInfos info found for ac
       }

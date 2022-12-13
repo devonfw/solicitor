@@ -13,7 +13,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Engagement;
  */
 public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
 
-  private static final int DEFAULT_MODEL_VERSION = 4;
+  private static final int DEFAULT_MODEL_VERSION = 5;
 
   private String executionTime;
 

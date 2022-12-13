@@ -90,6 +90,35 @@ public class YarnReaderTests {
   }
 
   @Test
+  public void testSourceRepoUrlWhichIsGiven() {
+
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("@test/testing")
+          && ap.getSourceRepoUrl().equals("https://yarnpkg.com/package/@test/testing")) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
+  }
+
+  @Test
+  public void testHomepageWhichIsNotGiven() {
+
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("@test/testing") && ap.getOssHomepage().equals("")) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
+  }
+
+  @Test
   public void testLicenseUrlWhichIsGiven() {
 
     List<ApplicationComponent> lapc = this.application.getApplicationComponents();

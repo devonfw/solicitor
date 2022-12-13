@@ -78,11 +78,7 @@ public class YarnReader extends AbstractReader implements Reader {
       if (attributes.size() == 6) {
         if (attributes.get(4) != null && !attributes.get(4).isEmpty()) {
           homePage = attributes.get(4);
-        } else {
-          homePage = repo;
         }
-      } else if (attributes.size() == 5) {
-        homePage = repo;
       }
 
       ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
@@ -93,6 +89,7 @@ public class YarnReader extends AbstractReader implements Reader {
       appComponent.setUsagePattern(usagePattern);
       appComponent.setGroupId("");
       appComponent.setOssHomepage(homePage);
+      appComponent.setSourceRepoUrl(repo);
       appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(name, version).toString());
 

@@ -31,10 +31,17 @@ public interface ComponentInfo {
   String getNoticeFilePath();
 
   /**
-   * Gets the url to the license text
+   * Gets the url of the projects homepage,
    *
-   * @return url to the license text
+   * @return url to the projects homepage
    */
   String getUrl();
+
+  /**
+   * Gets the url of the source code repository.
+   *
+   * @return sourceRepoUrl to the license text
+   */
+  String getSourceRepoUrl();
 
 }

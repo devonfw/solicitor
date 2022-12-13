@@ -31,10 +31,10 @@ import com.devonfw.tools.solicitor.reader.npmlicensechecker.NpmLicenseCheckerRea
  * A {@link Reader} which reads data produced by the <a href="https://www.npmjs.com/package/npm-license-crawler">NPM
  * License Crawler</a>.
  * <p>
- * <b>This reader requires a specific version of license-checker which is not released in the official npm repositories but is only 
- * available via Github. This might result in difficulties in environments which have only limited access to internet resources.
- * Additionally, developer dependencies cannot be excluded as the --production option seemingly does not work properly.
- * Use {@link NpmLicenseCheckerReader} instead.</b>
+ * <b>This reader requires a specific version of license-checker which is not released in the official npm repositories
+ * but is only available via Github. This might result in difficulties in environments which have only limited access to
+ * internet resources. Additionally, developer dependencies cannot be excluded as the --production option seemingly does
+ * not work properly. Use {@link NpmLicenseCheckerReader} instead.</b>
  */
 @Component
 public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
@@ -68,9 +68,10 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, Map<String, String> configuration) {
-	this.deprecationChecker.check(true,
-	    "Use of Reader of type '"+ SUPPORTED_TYPE +"' is deprecated, use 'npm-license-checker' instead. See https://github.com/devonfw/solicitor/issues/125");
-		    
+
+    this.deprecationChecker.check(true, "Use of Reader of type '" + SUPPORTED_TYPE
+        + "' is deprecated, use 'npm-license-checker' instead. See https://github.com/devonfw/solicitor/issues/125");
+
     if (SUPPORTED_TYPE_DEPRECATED.equals(type)) {
       this.deprecationChecker.check(true, "Use of type 'npm' is deprecated. Change type in config to '" + SUPPORTED_TYPE
           + "'. See https://github.com/devonfw/solicitor/issues/62");
@@ -98,7 +99,7 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
         appComponent.setVersion(module[module.length - 1]);
         appComponent.setUsagePattern(usagePattern);
         appComponent.setGroupId("");
-        appComponent.setOssHomepage(record.get(2));
+        appComponent.setSourceRepoUrl(record.get(2));
         appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(record.get(0)).toString());
 
