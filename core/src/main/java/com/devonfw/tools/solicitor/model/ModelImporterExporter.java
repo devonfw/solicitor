@@ -38,6 +38,8 @@ public class ModelImporterExporter {
 
   private static final int LOWEST_VERSION_WITH_PACKAGE_URL = 4;
 
+  private static final int LOWEST_VERSION_WITH_SOURCE_REPO_URL = 5;
+
   @Autowired
   private ModelFactory modelFactory;
 
@@ -109,6 +111,10 @@ public class ModelImporterExporter {
       String usagePattern = applicationComponentNode.get("usagePattern").asText(null);
       boolean ossModified = applicationComponentNode.get("ossModified").asBoolean();
       String ossHomepage = applicationComponentNode.get("ossHomepage").asText(null);
+      String sourceRepoUrl = null;
+      if (readModelVersion >= LOWEST_VERSION_WITH_SOURCE_REPO_URL) {
+        sourceRepoUrl = applicationComponentNode.get("sourceRepoUrl").asText(null);
+      }
       String groupId = applicationComponentNode.get("groupId").asText(null);
       String artifactId = applicationComponentNode.get("artifactId").asText(null);
       String version = applicationComponentNode.get("version").asText(null);
@@ -129,6 +135,7 @@ public class ModelImporterExporter {
       applicationComponent.setUsagePattern(UsagePattern.valueOf(usagePattern));
       applicationComponent.setOssModified(ossModified);
       applicationComponent.setOssHomepage(ossHomepage);
+      applicationComponent.setSourceRepoUrl(sourceRepoUrl);
       applicationComponent.setGroupId(groupId);
       applicationComponent.setArtifactId(artifactId);
       applicationComponent.setVersion(version);

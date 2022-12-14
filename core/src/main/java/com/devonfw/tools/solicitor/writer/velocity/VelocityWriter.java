@@ -56,7 +56,8 @@ public class VelocityWriter implements Writer {
   @Override
   public void writeReport(String templateSource, String target, Map<String, DataTable> dataTables) {
 
-    // initialize velocity runtime engine
+    // (re)initialize velocity runtime engine
+    Velocity.reset();
     Velocity.init();
 
     // set up the context

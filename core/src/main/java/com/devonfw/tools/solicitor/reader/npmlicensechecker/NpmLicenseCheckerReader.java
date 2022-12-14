@@ -65,9 +65,6 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         String licenseFile = (String) attributes.get("licenseFile");
         String licenseUrl = estimateLicenseUrl(repo, path, licenseFile);
         String homePage = (String) attributes.get("url");
-        if (homePage == null || homePage.isEmpty()) {
-          homePage = repo;
-        }
 
         Object lic = attributes.get("licenses");
         List<String> licenseList;
@@ -98,6 +95,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         appComponent.setUsagePattern(usagePattern);
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
+        appComponent.setSourceRepoUrl(repo);
         appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(name).toString());
         if (licenseList.isEmpty()) {

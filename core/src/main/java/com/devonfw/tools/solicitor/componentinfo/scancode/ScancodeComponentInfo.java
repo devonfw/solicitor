@@ -1,47 +1,49 @@
-package com.devonfw.tools.solicitor.scancode;
+package com.devonfw.tools.solicitor.componentinfo.scancode;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
+import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
+
 /**
  * Data structure for holding the scan information from scancode for a single package.
  */
-public class ComponentScancodeInfos {
+public class ScancodeComponentInfo implements ComponentInfo {
 
   /**
    * Holds the info about a single found license.
    */
-  public class LicenseInfo {
+  public class ScancodeLicenseInfo implements LicenseInfo {
 
     /**
      * Id for of the license.
      */
-    public String id;
+    private String id;
 
     /**
      * SPDX-ID of the license.
      */
-    public String spdxid;
+    private String spdxid;
 
     /**
      * The score of the license.
      */
-    public double licenseScore;
+    private double licenseScore;
 
     /**
      * Path to the license file.
      */
-    public String licenseFilePath;
+    private String licenseFilePath;
 
     /**
      * The score of the license file.
      */
-    public double licenseFileScore;
+    private double licenseFileScore;
 
     /**
      * The constructor.
@@ -53,14 +55,14 @@ public class ComponentScancodeInfos {
      * @param licenseFilePath the path to the license file
      * @param licenseFileScore the score of the license file
      */
-    public LicenseInfo(String id, String spdxid, String defaultUrl, double licenseScore, String licenseFilePath,
+    public ScancodeLicenseInfo(String id, String spdxid, String defaultUrl, double licenseScore, String licenseFilePath,
         double licenseFileScore) {
 
       super();
       this.id = id;
       this.spdxid = spdxid;
       this.licenseScore = licenseScore;
-      if (licenseFileScore >= ComponentScancodeInfos.this.minLicensefilePercentage) {
+      if (licenseFileScore >= ScancodeComponentInfo.this.minLicensefilePercentage) {
         this.licenseFilePath = licenseFilePath;
         this.licenseFileScore = licenseFileScore;
       } else {
@@ -68,19 +70,103 @@ public class ComponentScancodeInfos {
         this.licenseFileScore = 0.0;
       }
     }
+
+    /**
+     * @return id
+     */
+    public String getId() {
+
+      return this.id;
+    }
+
+    /**
+     * @return spdxid
+     */
+    @Override
+    public String getSpdxid() {
+
+      return this.spdxid;
+    }
+
+    /**
+     * @return licenseScore
+     */
+    public double getLicenseScore() {
+
+      return this.licenseScore;
+    }
+
+    /**
+     * @return licenseFilePath
+     */
+    @Override
+    public String getLicenseFilePath() {
+
+      return this.licenseFilePath;
+    }
+
+    /**
+     * @return licenseFileScore
+     */
+    public double getLicenseFileScore() {
+
+      return this.licenseFileScore;
+    }
+
+    /**
+     * @param id new value of {@link #getId}.
+     */
+    public void setId(String id) {
+
+      this.id = id;
+    }
+
+    /**
+     * @param spdxid new value of {@link #getSpdxid}.
+     */
+    public void setSpdxid(String spdxid) {
+
+      this.spdxid = spdxid;
+    }
+
+    /**
+     * @param licenseScore new value of {@link #getLicenseScore}.
+     */
+    public void setLicenseScore(double licenseScore) {
+
+      this.licenseScore = licenseScore;
+    }
+
+    /**
+     * @param licenseFilePath new value of {@link #getLicenseFilePath}.
+     */
+    public void setLicenseFilePath(String licenseFilePath) {
+
+      this.licenseFilePath = licenseFilePath;
+    }
+
+    /**
+     * @param licenseFileScore new value of {@link #getLicenseFileScore}.
+     */
+    public void setLicenseFileScore(double licenseFileScore) {
+
+      this.licenseFileScore = licenseFileScore;
+    }
   }
 
   private static final double MIN_NOTICEFILE_PERCENTAGE = 0.0;
 
   private SortedSet<String> copyrights = new TreeSet<>();
 
-  private SortedMap<String, LicenseInfo> licenses = new TreeMap<>();
+  private SortedMap<String, ScancodeLicenseInfo> licenses = new TreeMap<>();
 
   private double noticeFileScore = 0;
 
   private String noticeFilePath = null;
 
   private String url;
+
+  private String sourceRepoUrl;
 
   private double minLicensefilePercentage;
 
@@ -92,7 +178,7 @@ public class ComponentScancodeInfos {
    * @param minLicenseScore the minimum score to take license findings into account
    * @param minLicensefilePercentage the minimum percentage of license text to possibly use file as license file
    */
-  public ComponentScancodeInfos(double minLicenseScore, double minLicensefilePercentage) {
+  public ScancodeComponentInfo(double minLicenseScore, double minLicensefilePercentage) {
 
     super();
     this.minLicenseScore = minLicenseScore;
@@ -114,6 +200,7 @@ public class ComponentScancodeInfos {
    *
    * @return the copyrights
    */
+  @Override
   public Collection<String> getCopyrights() {
 
     return Collections.unmodifiableCollection(this.copyrights);
@@ -142,22 +229,22 @@ public class ComponentScancodeInfos {
       double fileScore) {
 
     if (this.licenses.containsKey(licenseId)) {
-      LicenseInfo existingLicenseInfo = this.licenses.get(licenseId);
+      ScancodeLicenseInfo existingLicenseInfo = this.licenses.get(licenseId);
 
-      double resultingScore = Math.max(existingLicenseInfo.licenseScore, score);
-      String resultingFilePath = existingLicenseInfo.licenseFilePath;
-      double resultingFileScore = existingLicenseInfo.licenseFileScore;
-      if (fileScore > existingLicenseInfo.licenseFileScore) {
+      double resultingScore = Math.max(existingLicenseInfo.getLicenseScore(), score);
+      String resultingFilePath = existingLicenseInfo.getLicenseFilePath();
+      double resultingFileScore = existingLicenseInfo.getLicenseFileScore();
+      if (fileScore > existingLicenseInfo.getLicenseFileScore()) {
         resultingFilePath = filePath;
         resultingFileScore = fileScore;
       }
-      this.licenses.put(licenseId, new LicenseInfo(licenseId, licenseName, licenseDefaultUrl, resultingScore,
+      this.licenses.put(licenseId, new ScancodeLicenseInfo(licenseId, licenseName, licenseDefaultUrl, resultingScore,
           resultingFilePath, resultingFileScore));
 
     } else {
       if (score >= this.minLicenseScore) {
         this.licenses.put(licenseId,
-            new LicenseInfo(licenseId, licenseName, licenseDefaultUrl, score, filePath, fileScore));
+            new ScancodeLicenseInfo(licenseId, licenseName, licenseDefaultUrl, score, filePath, fileScore));
       }
     }
   }
@@ -167,9 +254,10 @@ public class ComponentScancodeInfos {
    *
    * @return all licenses
    */
-  public Map<String, LicenseInfo> getLicenses() {
+  @Override
+  public Collection<ScancodeLicenseInfo> getLicenses() {
 
-    return Collections.unmodifiableSortedMap(this.licenses);
+    return Collections.unmodifiableSortedMap(this.licenses).values();
   }
 
   /**
@@ -196,32 +284,55 @@ public class ComponentScancodeInfos {
   }
 
   /**
-   * Gets the path to the notice file (if any)
+   * Gets the path to the notice file (if any).
    *
    * @return path to the notice file
    */
+  @Override
   public String getNoticeFilePath() {
 
     return this.noticeFilePath;
   }
 
   /**
-   * Gets the url to the license text
+   * Gets the url of the projects homepage.
    *
-   * @return url to the license text
+   * @return url to the projects homepage
    */
+  @Override
   public String getUrl() {
 
     return this.url;
   }
 
   /**
-   * Sets the url to the license text
+   * Sets the url of the projects homepage.
    *
    * @param url new value of {@link #getUrl()}.
    */
   public void setUrl(String url) {
 
     this.url = url;
+  }
+
+  /**
+   * Gets the url of the source code repository.
+   *
+   * @return sourceRepoUrl to the license text
+   */
+  @Override
+  public String getSourceRepoUrl() {
+
+    return this.sourceRepoUrl;
+  }
+
+  /**
+   * Sets the url of the source code repository.
+   *
+   * @param sourceRepoUrl new value of {@link #getSourceRepoUrl()}.
+   */
+  public void setSourceRepoUrl(String sourceRepoUrl) {
+
+    this.sourceRepoUrl = sourceRepoUrl;
   }
 }

@@ -6,21 +6,25 @@ echo {\"artifacts\": [ > scancodeOutput/scancodeOut.json
 dir=$(pwd)/Source
 
 #foreach ($artifact in $ARTIFACTS)
-if [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ] || [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed ]
-then
-	rm $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed
-	rm $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json
-	if [ -d $dir/$purlhandler.pathFor($artifact.packageUrl)/sources ] && [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/sources.completed ]
-	then
-		scancode $scancodeoptions --json-pp $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json $dir/$purlhandler.pathFor($artifact.packageUrl)/sources
-		touch $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed
-	fi
-fi
-if 	[ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ] && [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed ]
-then	
-	cat $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json >> $so/scancodeOut.json
-	printf "\n," >> $so/scancodeOut.json
-fi
+	#if ( $artifact.packageUrl == "NA" )
+		echo "PackageUrl is missing for Artifact Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version -- NO DATA TO SCAN"
+	#else
+		if [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ] || [ ! -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed ]
+		then
+			rm $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed
+			rm $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json
+			if [ -d $dir/$purlhandler.pathFor($artifact.packageUrl)/sources ] && [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/sources.completed ]
+			then
+				scancode $scancodeoptions --json-pp $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json $dir/$purlhandler.pathFor($artifact.packageUrl)/sources
+				touch $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed
+			fi
+		fi
+		if 	[ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json ] && [ -f $dir/$purlhandler.pathFor($artifact.packageUrl)/scancodeScan.completed ]
+		then	
+			cat $dir/$purlhandler.pathFor($artifact.packageUrl)/scancode.json >> $so/scancodeOut.json
+			printf "\n," >> $so/scancodeOut.json
+		fi
+	#end
 #end
 	
 printf "END" >> $so/scancodeOut.json

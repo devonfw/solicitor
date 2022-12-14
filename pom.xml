@@ -4,7 +4,7 @@
 
   <groupId>com.devonfw.tools</groupId>
   <artifactId>solicitor-aggregator</artifactId>
-  <version>1.4.0-SNAPSHOT</version>
+  <version>1.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Solicitor Aggregator</name>
@@ -21,6 +21,7 @@
   <modules>
     <module>documentation</module>
     <module>core</module>
+    <module>app</module>
     <module>logo</module>
   </modules>
 
