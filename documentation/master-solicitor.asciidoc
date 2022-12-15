@@ -706,7 +706,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "yarn",
   "source" : "file:path/to/yarnlicenses.json",
-  "usagePattern" : "DYNAMIC_LINKING",
+  "usagePattern" : "STATIC_LINKING",
   "repoType" : "yarn"
 } ]
 ----
