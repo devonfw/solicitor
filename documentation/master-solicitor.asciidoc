@@ -1547,9 +1547,13 @@ by their packageUrl. (The buildin implementation of this interface is reading su
 from the local file system, see <<Experimental Scancode Integration>>.) Alternative implementations might e.g. get this information
 from a corporate server or even a public service available on the internet.
 
+===== `com.devonfw.tools.solicitor.lifecycle.SolicitorLifecycleListener` 
+Spring beans implementing this interface will be called at certain points in the _Solicitor_ processing lifecycle. See the Javadoc for details. Implementations should preferably use `com.devonfw.tools.solicitor.lifecycle.AbstractSolicitorLifecycleListener` as base class which contains NOOP functionality for all methods which might be overridden as required.
 
 [appendix]
 == Release Notes
+Changes in 1.7.0::
+* https://github.com/devonfw/solicitor/issues/152: Enhancements for using java code in extensions.
 
 Changes in 1.6.0::
 * https://github.com/devonfw/solicitor/issues/146: Fixed the bug which prevented already defined velocity macro with same name to be redefined in different template.
