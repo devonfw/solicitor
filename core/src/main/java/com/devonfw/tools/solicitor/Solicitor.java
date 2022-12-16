@@ -20,6 +20,7 @@ import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier.ResourceGroup;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.config.ConfigFactory;
+import com.devonfw.tools.solicitor.lifecycle.LifecycleListenerHolder;
 import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -61,6 +62,9 @@ public class Solicitor {
 
   @Autowired
   private ModelImporterExporter modelImporterExporter;
+
+  @Autowired
+  private LifecycleListenerHolder lifecycleListenerHolder;
 
   private boolean tolerateMissingInput = false;
 
@@ -108,6 +112,7 @@ public class Solicitor {
   private void mainProcessing(CommandLineOptions clo) {
 
     ModelRoot modelRoot = this.configFactory.createConfig(clo.configUrl);
+    this.lifecycleListenerHolder.modelRootInitialized(modelRoot);
     if (clo.load) {
       LOG.info(LogMessages.LOADING_DATAMODEL.msg(), clo.pathForLoad);
       modelRoot = this.modelImporterExporter.loadModel(clo.pathForLoad);
@@ -126,6 +131,7 @@ public class Solicitor {
       oldModelRoot = this.modelImporterExporter.loadModel(clo.pathForDiff);
     }
     this.writerFacade.writeResult(modelRoot, oldModelRoot);
+    this.lifecycleListenerHolder.endOfMainProcessing(modelRoot);
   }
 
   /**
