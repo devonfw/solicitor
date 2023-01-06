@@ -163,6 +163,7 @@
       <artifactId>solicitor-documentation</artifactId>
       <version>${project.version}</version>
       <type>pdf</type>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
