@@ -159,11 +159,33 @@ public class SolicitorSetup {
     }
   }
 
+  private String engagementName;
+
   private List<ReaderSetup> readerSetups = new ArrayList<>();
 
   private List<RuleConfig> ruleSetups = new ArrayList<>();
 
   private List<WriterConfig> writerSetups = new ArrayList<>();
+
+  /**
+   * This method gets the field <code>engagementName</code>.
+   *
+   * @return engagementName the engagement name
+   */
+  public String getEngagementName() {
+
+    return this.engagementName;
+  }
+
+  /**
+   * This method sets the field <code>engagementName</code>.
+   *
+   * @param engagementName the engagement name to set
+   */
+  public void setEngagementName(String engagementName) {
+
+    this.engagementName = engagementName;
+  }
 
   /**
    * This method gets the field <code>readerSetups</code>.
