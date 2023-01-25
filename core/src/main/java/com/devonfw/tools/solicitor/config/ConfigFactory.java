@@ -103,6 +103,7 @@ public class ConfigFactory {
     Map<String, String> placeHolderMap = createPlaceholderMap(url, sc);
 
     LOG.info(LogMessages.CREATING_ENGAGEMENT.msg(), sc.getEngagementName());
+    this.solicitorSetup.setEngagementName(sc.getEngagementName());
     Engagement engagement = this.modelFactory.newEngagement(sc.getEngagementName(), sc.getEngagementType(),
         sc.getClientName(), sc.getGoToMarketModel());
     engagement.setModelRoot(modelRoot);
