@@ -41,6 +41,11 @@ public class ScancodeComponentInfo implements ComponentInfo {
     private String licenseFilePath;
 
     /**
+     * Text of license.
+     */
+    private String givenLicenseText;
+
+    /**
      * The score of the license file.
      */
     private double licenseFileScore;
@@ -53,10 +58,11 @@ public class ScancodeComponentInfo implements ComponentInfo {
      * @param defaultUrl the default URL of the license text
      * @param licenseScore the score for the license
      * @param licenseFilePath the path to the license file
+     * @param givenLicenseText the given license text (might be <code>null</code>)
      * @param licenseFileScore the score of the license file
      */
     public ScancodeLicenseInfo(String id, String spdxid, String defaultUrl, double licenseScore, String licenseFilePath,
-        double licenseFileScore) {
+        String givenLicenseText, double licenseFileScore) {
 
       super();
       this.id = id;
@@ -65,6 +71,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
       if (licenseFileScore >= ScancodeComponentInfo.this.minLicensefilePercentage) {
         this.licenseFilePath = licenseFilePath;
         this.licenseFileScore = licenseFileScore;
+        this.givenLicenseText = givenLicenseText;
       } else {
         this.licenseFilePath = defaultUrl;
         this.licenseFileScore = 0.0;
@@ -103,6 +110,15 @@ public class ScancodeComponentInfo implements ComponentInfo {
     public String getLicenseFilePath() {
 
       return this.licenseFilePath;
+    }
+
+    /**
+     * @return givenLicenseText
+     */
+    @Override
+    public String getGivenLicenseText() {
+
+      return this.givenLicenseText;
     }
 
     /**
@@ -146,12 +162,21 @@ public class ScancodeComponentInfo implements ComponentInfo {
     }
 
     /**
+     * @param givenLicenseText new value of {@link #getGivenLicenseText}.
+     */
+    public void setGivenLicenseText(String givenLicenseText) {
+
+      this.givenLicenseText = givenLicenseText;
+    }
+
+    /**
      * @param licenseFileScore new value of {@link #getLicenseFileScore}.
      */
     public void setLicenseFileScore(double licenseFileScore) {
 
       this.licenseFileScore = licenseFileScore;
     }
+
   }
 
   private static final double MIN_NOTICEFILE_PERCENTAGE = 0.0;
@@ -163,6 +188,8 @@ public class ScancodeComponentInfo implements ComponentInfo {
   private double noticeFileScore = 0;
 
   private String noticeFilePath = null;
+
+  private String noticeFileContent;
 
   private String url;
 
@@ -223,28 +250,31 @@ public class ScancodeComponentInfo implements ComponentInfo {
    * @param licenseDefaultUrl the url of the generic license text
    * @param score the score of the license finding
    * @param filePath path to the license file
+   * @param givenLicenseText the license text
    * @param fileScore score of the license file
    */
   public void addLicense(String licenseId, String licenseName, String licenseDefaultUrl, double score, String filePath,
-      double fileScore) {
+      String givenLicenseText, double fileScore) {
 
     if (this.licenses.containsKey(licenseId)) {
       ScancodeLicenseInfo existingLicenseInfo = this.licenses.get(licenseId);
 
       double resultingScore = Math.max(existingLicenseInfo.getLicenseScore(), score);
       String resultingFilePath = existingLicenseInfo.getLicenseFilePath();
+      String resultingGivenText = existingLicenseInfo.getGivenLicenseText();
       double resultingFileScore = existingLicenseInfo.getLicenseFileScore();
       if (fileScore > existingLicenseInfo.getLicenseFileScore()) {
         resultingFilePath = filePath;
         resultingFileScore = fileScore;
+        resultingGivenText = givenLicenseText;
       }
       this.licenses.put(licenseId, new ScancodeLicenseInfo(licenseId, licenseName, licenseDefaultUrl, resultingScore,
-          resultingFilePath, resultingFileScore));
+          resultingFilePath, resultingGivenText, resultingFileScore));
 
     } else {
       if (score >= this.minLicenseScore) {
-        this.licenses.put(licenseId,
-            new ScancodeLicenseInfo(licenseId, licenseName, licenseDefaultUrl, score, filePath, fileScore));
+        this.licenses.put(licenseId, new ScancodeLicenseInfo(licenseId, licenseName, licenseDefaultUrl, score, filePath,
+            givenLicenseText, fileScore));
       }
     }
   }
@@ -284,6 +314,14 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   /**
+   * @param noticeFileContent new value of {@link #getNoticeFileContent}.
+   */
+  public void setNoticeFileContent(String noticeFileContent) {
+
+    this.noticeFileContent = noticeFileContent;
+  }
+
+  /**
    * Gets the path to the notice file (if any).
    *
    * @return path to the notice file
@@ -294,13 +332,19 @@ public class ScancodeComponentInfo implements ComponentInfo {
     return this.noticeFilePath;
   }
 
+  @Override
+  public String getNoticeFileContent() {
+
+    return this.noticeFileContent;
+  }
+
   /**
    * Gets the url of the projects homepage.
    *
    * @return url to the projects homepage
    */
   @Override
-  public String getUrl() {
+  public String getHomepageUrl() {
 
     return this.url;
   }
@@ -308,9 +352,9 @@ public class ScancodeComponentInfo implements ComponentInfo {
   /**
    * Sets the url of the projects homepage.
    *
-   * @param url new value of {@link #getUrl()}.
+   * @param url new value of {@link #getHomepageUrl()}.
    */
-  public void setUrl(String url) {
+  public void setHomepageUrl(String url) {
 
     this.url = url;
   }
@@ -335,4 +379,5 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
     this.sourceRepoUrl = sourceRepoUrl;
   }
+
 }

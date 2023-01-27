@@ -16,4 +16,8 @@ public interface LicenseInfo {
    */
   String getLicenseFilePath();
 
+  /**
+   * @return the given license text (might be <code>null</code>)
+   */
+  String getGivenLicenseText();
 }

@@ -161,18 +161,25 @@ public interface ApplicationComponent {
   void setOssHomepage(String ossHomepage);
 
   /**
-   * This method sets the field <code>ossHomepage</code>.
-   *
-   * @param ossHomepage the new value of the field ossHomepage
-   */
-  void setSourceRepoUrl(String ossHomepage);
-
-  /**
    * This method sets the field <code>sourceRepoUrl</code>.
    *
    * @param sourceRepoUrl the new value of the field sourceRepoUrl
    */
-  void setNoticeFileUrl(String sourceRepoUrl);
+  void setSourceRepoUrl(String sourceRepoUrl);
+
+  /**
+   * This method sets the field <code>noticeFileUrl</code>.
+   *
+   * @param noticeFileUrl the new value of the field noticeFileUrl
+   */
+  void setNoticeFileUrl(String noticeFileUrl);
+
+  /**
+   * This method sets the field <code>noticeFileContent</code>.
+   *
+   * @param noticeFileContent the new value of the field noticeFileContent
+   */
+  void setNoticeFileContent(String noticeFileContent);
 
   /**
    * This method sets the field <code>ossModified</code>.

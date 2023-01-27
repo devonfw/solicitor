@@ -39,6 +39,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private String noticeFileUrl;
 
+  private String noticeFileContentKey;
+
   private String groupId;
 
   private String artifactId;
@@ -156,8 +158,17 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @JsonIgnore
   public String getNoticeFileContent() {
 
-    return LicenseTextHelper
-        .replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.noticeFileUrl).getContent());
+    return LicenseTextHelper.replaceLongHtmlContent(retrieveTextFromPool(this.noticeFileContentKey));
+  }
+
+  /**
+   * Gets the text pool key of {@link #getNoticeFileContent()}
+   *
+   * @return the text pool key
+   */
+  public String getNoticeFileContentKey() {
+
+    return this.noticeFileContentKey;
   }
 
   /** {@inheritDoc} */
@@ -259,6 +270,24 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     this.noticeFileUrl = noticeFileUrl;
   }
 
+  @Override
+  public void setNoticeFileContent(String noticeFileContent) {
+
+    this.noticeFileContentKey = storeTextInPool(noticeFileContent);
+
+  }
+
+  /**
+   * Sets the text pool key of {@link #getNoticeFileContent()}
+   *
+   * @param noticeFileContentKey the key to set
+   */
+  public void setNoticeFileContentKey(String noticeFileContentKey) {
+
+    this.noticeFileContentKey = noticeFileContentKey;
+
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setOssModified(boolean ossModified) {
@@ -313,6 +342,10 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
       normalizedLicense.completeData();
     }
 
+    if (this.noticeFileContentKey == null) {
+      setNoticeFileContent(this.licenseContentProvider.getContentForUri(this.noticeFileUrl).getContent());
+    }
+
   }
 
   @Override
@@ -325,7 +358,6 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void setCopyrights(String copyrights) {
 
     this.copyrights = copyrights;
-    // TODO Auto-generated method stub
 
   }
 

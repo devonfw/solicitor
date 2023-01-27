@@ -9,6 +9,11 @@ import java.util.NoSuchElementException;
 public interface TextPool {
 
   /**
+   * The key used for <code>null</code> values.
+   */
+  static String NULL_KEY = "NULL_KEY";
+
+  /**
    * Store a text in the pool.
    *
    * @param text the text to store in the pool; might be <code>null</code>

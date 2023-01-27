@@ -12,9 +12,6 @@ import org.apache.commons.codec.digest.DigestUtils;
  */
 public class TextPoolImpl implements TextPool {
 
-  /** The key used for <code>null</code> values. */
-  private static final String NULL_KEY = "NULL_KEY";
-
   private Map<String, String> dataMap;
 
   /**

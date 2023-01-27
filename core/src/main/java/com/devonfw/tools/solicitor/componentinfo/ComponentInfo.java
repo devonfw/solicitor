@@ -31,11 +31,18 @@ public interface ComponentInfo {
   String getNoticeFilePath();
 
   /**
+   * Gets the contents of the notice file (if any)
+   *
+   * @return contents of the notice file
+   */
+  String getNoticeFileContent();
+
+  /**
    * Gets the url of the projects homepage,
    *
    * @return url to the projects homepage
    */
-  String getUrl();
+  String getHomepageUrl();
 
   /**
    * Gets the url of the source code repository.
