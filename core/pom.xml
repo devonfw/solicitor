@@ -159,6 +159,11 @@
       <version>1.4.1</version>
     </dependency>
     <dependency>
+      <groupId>com.auth0</groupId>
+      <artifactId>java-jwt</artifactId>
+      <version>4.2.1</version>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>solicitor-documentation</artifactId>
       <version>${project.version}</version>
