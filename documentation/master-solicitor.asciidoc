@@ -1555,6 +1555,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.8.0::
 * https://github.com/devonfw/solicitor/issues/154: Corrected dependency declaration for solicitor-core.jar.
 * https://github.com/devonfw/solicitor/issues/156: Included engagement name as member in class SolicitorSetup.
+* https://github.com/devonfw/solicitor/issues/158: Include library com.auth0/java-jwt to make it available for extensions. 
 
 Changes in 1.7.0::
 * https://github.com/devonfw/solicitor/issues/152: Enhancements for using java code in extensions.
