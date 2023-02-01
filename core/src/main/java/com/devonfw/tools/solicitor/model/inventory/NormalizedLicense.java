@@ -224,6 +224,13 @@ public interface NormalizedLicense {
   void setDeclaredLicense(String declaredLicense);
 
   /**
+   * This method sets the field <code>declaredLicenseContent</code>.
+   *
+   * @param declaredLicenseContent
+   */
+  void setDeclaredLicenseContent(String declaredLicenseContent);
+
+  /**
    * This method sets the field <code>effectiveNormalizedLicense</code>.
    *
    * @param effectiveNormalizedLicense the new value of the field effectiveNormalizedLicense
@@ -236,6 +243,13 @@ public interface NormalizedLicense {
    * @param effectiveNormalizedLicenseType the new value of the field effectiveNormalizedLicenseType
    */
   void setEffectiveNormalizedLicenseType(String effectiveNormalizedLicenseType);
+
+  /**
+   * Sets the effectiveNormalizedLicenseContent.
+   *
+   * @param effectiveNormalizedLicenseContent the content to set
+   */
+  void setEffectiveNormalizedLicenseContent(String effectiveNormalizedLicenseContent);
 
   /**
    * This method sets the field <code>effectiveNormalizedLicenseUrl</code>.
@@ -294,6 +308,13 @@ public interface NormalizedLicense {
   void setLicenseRefUrl(String licenseRefUrl);
 
   /**
+   * This method sets the field <code>licenseRefContent</code>.
+   *
+   * @param licenseRefContent
+   */
+  void setLicenseRefContent(String licenseRefContent);
+
+  /**
    * This method sets the field <code>licenseUrl</code>.
    *
    * @param licenseUrl the new value of the field licenseUrl
@@ -322,6 +343,13 @@ public interface NormalizedLicense {
   void setNormalizedLicenseUrl(String normalizedLicenseUrl);
 
   /**
+   * This method sets the field <code>normalizedLicenseContent</code>.
+   *
+   * @param normalizedLicenseContent
+   */
+  void setNormalizedLicenseContent(String normalizedLicenseContent);
+
+  /**
    * This method sets the field <code>reviewedForRelease</code>.
    *
    * @param reviewedForRelease the new value of the field reviewedForRelease
@@ -343,6 +371,13 @@ public interface NormalizedLicense {
   void setGuessedLicenseUrl(String guessedLicenseUrl);
 
   /**
+   * This method sets the field <code>guessedLicenseContent</code>
+   *
+   * @param guessedLicenseContent
+   */
+  void setGuessedLicenseContent(String guessedLicenseContent);
+
+  /**
    * This method sets the field <code>guessedLicenseUrlAuditInfo</code>
    *
    * @param guessedLicenseUrlAuditInfo the new value of the field guessedLicenseUrlAuditInfo
@@ -353,4 +388,5 @@ public interface NormalizedLicense {
    * Complete the data of this object by setting members which are derived from other members.
    */
   public void completeData();
+
 }

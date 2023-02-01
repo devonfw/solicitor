@@ -13,7 +13,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Engagement;
  */
 public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
 
-  private static final int DEFAULT_MODEL_VERSION = 5;
+  private static final int DEFAULT_MODEL_VERSION = 6;
 
   private String executionTime;
 
@@ -35,6 +35,8 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
 
   private Engagement engagement;
 
+  private TextPool textPool;
+
   /**
    * Constructor.
    */
@@ -43,6 +45,8 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
     super();
     this.modelVersion = DEFAULT_MODEL_VERSION;
     this.executionTime = (new Date()).toString();
+    this.textPool = new TextPoolImpl();
+
   }
 
   /** {@inheritDoc} */
@@ -200,6 +204,23 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   public void setExtensionBuilddate(String extensionBuilddate) {
 
     this.extensionBuilddate = extensionBuilddate;
+  }
+
+  /**
+   * @return textPool
+   */
+  @Override
+  public TextPool getEffectiveTextPool() {
+
+    return this.textPool;
+  }
+
+  /**
+   * @return textPool
+   */
+  public TextPool getTextPool() {
+
+    return this.textPool;
   }
 
   @Override

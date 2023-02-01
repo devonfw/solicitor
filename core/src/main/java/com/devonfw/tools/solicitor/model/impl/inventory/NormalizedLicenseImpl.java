@@ -28,17 +28,23 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
   private String licenseUrl;
 
+  private String declaredLicenseContentKey;
+
   private String normalizedLicenseType;
 
   private String normalizedLicense;
 
   private String normalizedLicenseUrl;
 
+  private String normalizedLicenseContentKey;
+
   private String effectiveNormalizedLicenseType;
 
   private String effectiveNormalizedLicense;
 
   private String effectiveNormalizedLicenseUrl; // really needed?
+
+  private String effectiveNormalizedLicenseContentKey;
 
   private String legalPreApproved;
 
@@ -47,6 +53,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   private String licenseCompliance;
 
   private String licenseRefUrl;
+
+  private String licenseRefContentKey;
 
   private String includeLicense;
 
@@ -63,6 +71,8 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   private String trace;
 
   private String guessedLicenseUrl;
+
+  private String guessedLicenseContentKey;
 
   private String guessedLicenseUrlAuditInfo;
 
@@ -146,8 +156,17 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   @JsonIgnore
   public String getDeclaredLicenseContent() {
 
-    return LicenseTextHelper
-        .replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.licenseUrl).getContent());
+    return LicenseTextHelper.replaceLongHtmlContent(retrieveTextFromPool(this.declaredLicenseContentKey));
+  }
+
+  /**
+   * Gets the text pool key of the {@link #getDeclaredLicenseContent()}.
+   *
+   * @return the key
+   */
+  public String getDeclaredLicenseContentKey() {
+
+    return this.declaredLicenseContentKey;
   }
 
   /** {@inheritDoc} */
@@ -162,8 +181,17 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   @JsonIgnore
   public String getEffectiveNormalizedLicenseContent() {
 
-    return LicenseTextHelper.replaceLongHtmlContent(
-        this.licenseContentProvider.getContentForUri(this.effectiveNormalizedLicenseUrl).getContent());
+    return LicenseTextHelper.replaceLongHtmlContent(retrieveTextFromPool(this.effectiveNormalizedLicenseContentKey));
+  }
+
+  /**
+   * Gets the text pool key of the {@link #getEffectiveNormalizedLicenseContent()}.
+   *
+   * @return the key
+   */
+  public String getEffectiveNormalizedLicenseContentKey() {
+
+    return this.effectiveNormalizedLicenseContentKey;
   }
 
   /** {@inheritDoc} */
@@ -250,8 +278,17 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   @JsonIgnore
   public String getLicenseRefContent() {
 
-    return LicenseTextHelper
-        .replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent());
+    return LicenseTextHelper.replaceLongHtmlContent(retrieveTextFromPool(this.licenseRefContentKey));
+  }
+
+  /**
+   * Gets the text pool key of the {@link #getLicenseRefContent()}.
+   *
+   * @return the key
+   */
+  public String getLicenseRefContentKey() {
+
+    return this.licenseRefContentKey;
   }
 
   /** {@inheritDoc} */
@@ -294,8 +331,17 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   @JsonIgnore
   public String getNormalizedLicenseContent() {
 
-    return LicenseTextHelper
-        .replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.normalizedLicenseUrl).getContent());
+    return LicenseTextHelper.replaceLongHtmlContent(retrieveTextFromPool(this.normalizedLicenseContentKey));
+  }
+
+  /**
+   * Gets the text pool key of the {@link #getNormalizedLicenseContent()}.
+   *
+   * @return the key
+   */
+  public String getNormalizedLicenseContentKey() {
+
+    return this.normalizedLicenseContentKey;
   }
 
   /** {@inheritDoc} */
@@ -338,8 +384,17 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   @JsonIgnore
   public String getGuessedLicenseContent() {
 
-    return LicenseTextHelper
-        .replaceLongHtmlContent(this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent());
+    return LicenseTextHelper.replaceLongHtmlContent(retrieveTextFromPool(this.guessedLicenseContentKey));
+  }
+
+  /**
+   * Gets the text pool key of the {@link #getGuessedLicenseContent()}.
+   *
+   * @return the key
+   */
+  public String getGuessedLicenseContentKey() {
+
+    return this.guessedLicenseContentKey;
   }
 
   /** {@inheritDoc} */
@@ -374,6 +429,27 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     this.declaredLicense = declaredLicense;
   }
 
+  /**
+   * Sets the declaredLicenseContent.
+   *
+   * @param declaredLicenseContent the content to set
+   */
+  @Override
+  public void setDeclaredLicenseContent(String declaredLicenseContent) {
+
+    this.declaredLicenseContentKey = storeTextInPool(declaredLicenseContent);
+  }
+
+  /**
+   * Sets the text pool key of the {@link #getDeclaredLicenseContent()}.
+   *
+   * @param declaredLicenseContentKey the key
+   */
+  public void setDeclaredLicenseContentKey(String declaredLicenseContentKey) {
+
+    this.declaredLicenseContentKey = declaredLicenseContentKey;
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setEffectiveNormalizedLicense(String effectiveNormalizedLicense) {
@@ -386,6 +462,27 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   public void setEffectiveNormalizedLicenseType(String effectiveNormalizedLicenseType) {
 
     this.effectiveNormalizedLicenseType = effectiveNormalizedLicenseType;
+  }
+
+  /**
+   * Sets the effectiveNormalizedLicenseContent.
+   *
+   * @param effectiveNormalizedLicenseContent the content to set
+   */
+  @Override
+  public void setEffectiveNormalizedLicenseContent(String effectiveNormalizedLicenseContent) {
+
+    this.effectiveNormalizedLicenseContentKey = storeTextInPool(effectiveNormalizedLicenseContent);
+  }
+
+  /**
+   * Sets the text pool key of the {@link #getEffectiveNormalizedLicenseContent()}.
+   *
+   * @param effectiveNormalizedLicenseContentKey the key
+   */
+  public void setEffectiveNormalizedLicenseContentKey(String effectiveNormalizedLicenseContentKey) {
+
+    this.effectiveNormalizedLicenseContentKey = effectiveNormalizedLicenseContentKey;
   }
 
   /** {@inheritDoc} */
@@ -464,6 +561,27 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     this.licenseRefUrl = licenseRefUrl;
   }
 
+  /**
+   * Sets the licenseRefContent.
+   *
+   * @param licenseRefContent the content to set
+   */
+  @Override
+  public void setLicenseRefContent(String licenseRefContent) {
+
+    this.licenseRefContentKey = storeTextInPool(licenseRefContent);
+  }
+
+  /**
+   * Sets the text pool key of the {@link #getLicenseRefContent()}.
+   *
+   * @param licenseRefContentKey the key
+   */
+  public void setLicenseRefContentKey(String licenseRefContentKey) {
+
+    this.licenseRefContentKey = licenseRefContentKey;
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setLicenseUrl(String licenseUrl) {
@@ -492,6 +610,27 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     this.normalizedLicenseUrl = normalizedLicenseUrl;
   }
 
+  /**
+   * Sets the normalizedLicenseContent.
+   *
+   * @param normalizedLicenseContent the content to set
+   */
+  @Override
+  public void setNormalizedLicenseContent(String normalizedLicenseContent) {
+
+    this.normalizedLicenseContentKey = storeTextInPool(normalizedLicenseContent);
+  }
+
+  /**
+   * Sets the text pool key of the {@link #getNormalizedLicenseContent()}.
+   *
+   * @param normalizedLicenseContentKey the key
+   */
+  public void setNormalizedLicenseContentKey(String normalizedLicenseContentKey) {
+
+    this.normalizedLicenseContentKey = normalizedLicenseContentKey;
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setReviewedForRelease(String reviewedForRelease) {
@@ -514,6 +653,27 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
   }
 
+  /**
+   * Sets the guessedLicenseContent.
+   *
+   * @param guessedLicenseContent the content to set
+   */
+  @Override
+  public void setGuessedLicenseContent(String guessedLicenseContent) {
+
+    this.guessedLicenseContentKey = storeTextInPool(guessedLicenseContent);
+  }
+
+  /**
+   * Sets the text pool key of the {@link #getGuessedLicenseContent()}.
+   *
+   * @param guessedLicenseContentKey the key
+   */
+  public void setGuessedLicenseContentKey(String guessedLicenseContentKey) {
+
+    this.guessedLicenseContentKey = guessedLicenseContentKey;
+  }
+
   /** {@inheritDoc} */
   @Override
   public void setGuessedLicenseUrlAuditInfo(String guessedLicenseUrlAuditInfo) {
@@ -525,11 +685,104 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   @Override
   public void completeData() {
 
-    this.guessedLicenseUrl = this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl)
-        .getGuessedUrl();
-    this.guessedLicenseUrlAuditInfo = this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl)
-        .getAuditInfo();
+    // following methods try to fill some data fields if they do not yet contain data
+    possiblyGuessLicenseUrl();
+    possiblyFillGuessedLicenseContent();
+    possiblyFillDeclaredLicenseContent();
+    possiblyFillNormalizedLicenseContent();
+    possiblyFillEffectiveNormalizedLicenseContent();
+    possiblyFillLicenseRefContent();
 
+  }
+
+  /**
+   * If the {@link #guessedLicenseUrl} is not yet set it will be tried to guess it. This includes also setting the
+   * {@link #guessedLicenseUrlAuditInfo}.
+   */
+  private void possiblyGuessLicenseUrl() {
+
+    // execute license guessing based on effectziveNormalizedLicensUrl
+    if (this.guessedLicenseUrl == null) {
+      GuessedLicenseUrlContent guessed = this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl);
+      this.guessedLicenseUrl = guessed.getGuessedUrl();
+      this.guessedLicenseUrlAuditInfo = guessed.getAuditInfo();
+    }
+  }
+
+  /**
+   * If the {@link #guessedLicenseContentKey} is not yet set (i.e. the content is not yet set) it will be attempted to
+   * fetch the content via the {@link #licenseContentProvider} and store it.
+   */
+  private void possiblyFillGuessedLicenseContent() {
+
+    if (this.guessedLicenseContentKey == null) {
+      setGuessedLicenseContent(this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent());
+    }
+  }
+
+  /**
+   * If the {@link #declaredLicenseContentKey} is not yet set(i.e. the content is not set yet) it will be attempted to
+   * fetch the content via the {@link #licenseContentProvider} and store it.
+   */
+  private void possiblyFillDeclaredLicenseContent() {
+
+    if (this.declaredLicenseContentKey == null) {
+      setDeclaredLicenseContent(this.licenseContentProvider.getContentForUri(this.licenseUrl).getContent());
+    }
+  }
+
+  /**
+   * If the {@link #normalizedLicenseContentKey} is not yet set (i.e. the content is not set yet) it will be attempted
+   * to fill the content. This is tried via two ways:
+   * <ul>
+   * <li>if {@link #normalizedLicenseUrl} equals {@link #licenseUrl} the {@link #getDeclaredLicenseContent()} will be
+   * taken</li>
+   * <li>otherwise the content will be fetched via the {@link #licenseContentProvider}</li>
+   * </ul>
+   */
+  private void possiblyFillNormalizedLicenseContent() {
+
+    if (this.normalizedLicenseContentKey == null) {
+      if (this.normalizedLicenseUrl != null && this.normalizedLicenseUrl.equals(this.licenseUrl)) {
+        setNormalizedLicenseContent(getDeclaredLicenseContent());
+      } else {
+        setNormalizedLicenseContent(
+            this.licenseContentProvider.getContentForUri(this.normalizedLicenseUrl).getContent());
+      }
+    }
+  }
+
+  /**
+   * If the {@link #effectiveNormalizedLicenseContentKey} is not yet set (i.e. the content is not set yet) it will be
+   * attempted to fill the content. This is tried via two ways:
+   * <ul>
+   * <li>if {@link #effectiveNormalizedLicenseUrl} equals {@link #normalizedLicenseUrl} the
+   * {@link #getNormalizedLicenseContent()} will be taken</li>
+   * <li>otherwise the content will be fetched via the {@link #licenseContentProvider}</li>
+   * </ul>
+   */
+  private void possiblyFillEffectiveNormalizedLicenseContent() {
+
+    if (this.effectiveNormalizedLicenseContentKey == null) {
+      if (this.effectiveNormalizedLicenseUrl != null
+          && this.effectiveNormalizedLicenseUrl.equals(this.normalizedLicenseUrl)) {
+        setEffectiveNormalizedLicenseContent(getNormalizedLicenseContent());
+      } else {
+        setEffectiveNormalizedLicenseContent(
+            this.licenseContentProvider.getContentForUri(this.effectiveNormalizedLicenseUrl).getContent());
+      }
+    }
+  }
+
+  /**
+   * If the {@link #licenseRefContentKey} is not yet set(i.e. the content is not set yet) it will be attempted to fetch
+   * the content via the {@link #licenseContentProvider} and store it.
+   */
+  private void possiblyFillLicenseRefContent() {
+
+    if (this.licenseRefContentKey == null) {
+      setLicenseRefContent(this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent());
+    }
   }
 
 }

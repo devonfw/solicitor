@@ -39,7 +39,7 @@ public abstract class AbstractModelObject {
   public AbstractModelObject() {
 
     synchronized (integerFormat) {
-      id = integerFormat.format(idSingleton++);
+      this.id = integerFormat.format(idSingleton++);
     }
   }
 
@@ -64,7 +64,7 @@ public abstract class AbstractModelObject {
 
   /**
    * Gets an array of Strings which are the names of the datafields contained in this object.
-   * 
+   *
    * @return the column name array
    */
   @JsonIgnore
@@ -72,13 +72,13 @@ public abstract class AbstractModelObject {
 
   /**
    * Gets the id of the model object.
-   * 
+   *
    * @return the id
    */
   @JsonIgnore
   public String getId() {
 
-    return id;
+    return this.id;
   }
 
   /**
@@ -92,4 +92,43 @@ public abstract class AbstractModelObject {
     return (AbstractModelObject) doGetParent();
   }
 
+  /**
+   * Gets the TextPool for effectively storing license and other texts. Recursively walks up the object tree up to the
+   * {@link ModelRootImpl}.
+   *
+   * @return the text pool of the model
+   */
+  @JsonIgnore
+  protected TextPool getEffectiveTextPool() {
+
+    if (getParent() == null) {
+      throw new IllegalStateException("Method might not be called unless object is linked to model tree");
+    }
+    return getParent().getEffectiveTextPool();
+
+  }
+
+  /**
+   * Stores a text in the text pool.
+   *
+   * @param text the text to store
+   * @return the associated key
+   * @see TextPool#store(String)
+   */
+  protected String storeTextInPool(String text) {
+
+    return getEffectiveTextPool().store(text);
+  }
+
+  /**
+   * Retrieves a text from the text pool
+   *
+   * @param key the key of the text
+   * @return the associated text
+   * @see TextPool#retrieve(String)
+   */
+  protected String retrieveTextFromPool(String key) {
+
+    return getEffectiveTextPool().retrieve(key);
+  }
 }
