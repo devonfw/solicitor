@@ -28,7 +28,6 @@ import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
-import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 
@@ -80,7 +79,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
+  public ApplicationImpl newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
       String programmingEcosystem) {
 
     return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
@@ -88,7 +87,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public ApplicationComponent newApplicationComponent() {
+  public ApplicationComponentImpl newApplicationComponent() {
 
     ApplicationComponentImpl result = new ApplicationComponentImpl();
     result.setLicenseContentProvider(this.licenseContentProvider);
@@ -98,7 +97,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public Engagement newEngagement(String engagementName, EngagementType engagementType, String clientName,
+  public EngagementImpl newEngagement(String engagementName, EngagementType engagementType, String clientName,
       GoToMarketModel goToMarketModel) {
 
     return new EngagementImpl(engagementName, engagementType, clientName, goToMarketModel);
@@ -106,9 +105,9 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public ModelRoot newModelRoot() {
+  public ModelRootImpl newModelRoot() {
 
-    ModelRoot modelRoot = new ModelRootImpl();
+    ModelRootImpl modelRoot = new ModelRootImpl();
     modelRoot.setSolicitorVersion(this.solicitorVersion.getVersion());
     modelRoot.setSolicitorGitHash(this.solicitorVersion.getGithash());
     modelRoot.setSolicitorBuilddate(this.solicitorVersion.getBuilddate());
@@ -121,7 +120,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public NormalizedLicense newNormalizedLicense() {
+  public NormalizedLicenseImpl newNormalizedLicense() {
 
     NormalizedLicenseImpl result = new NormalizedLicenseImpl();
     result.setLicenseContentProvider(this.licenseContentProvider);
@@ -131,7 +130,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public NormalizedLicense newNormalizedLicense(RawLicense rawLicense) {
+  public NormalizedLicenseImpl newNormalizedLicense(RawLicense rawLicense) {
 
     NormalizedLicenseImpl result = new NormalizedLicenseImpl(rawLicense);
     result.setLicenseContentProvider(this.licenseContentProvider);
@@ -141,7 +140,7 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public RawLicense newRawLicense() {
+  public RawLicenseImpl newRawLicense() {
 
     return new RawLicenseImpl();
   }
