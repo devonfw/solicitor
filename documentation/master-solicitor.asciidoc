@@ -161,6 +161,7 @@ The internal business data model consists of 6 entities:
 | Property | Type | Description
 | declaredLicense | String | name of the declared license
 | licenseUrl | String | URL of the declared license
+| declaredLicenseContent | String | license text as provided in the input data
 | trace | String | detail info of history of this data record
 | origin | String | origin of the raw license data; either the lowercase classname of the Reader or "scancode" if licensedata was taken from scancode results
 | specialHandling | boolean | _(for controlling rule processing)_
@@ -1557,6 +1558,7 @@ Changes in 1.8.0::
 * https://github.com/devonfw/solicitor/issues/156: Included engagement name as member in class SolicitorSetup.
 * https://github.com/devonfw/solicitor/issues/158: Include library com.auth0/java-jwt to make it available for extensions.
 * https://github.com/devonfw/solicitor/issues/160: License texts are now included in the data model json.
+* https://github.com/devonfw/solicitor/issues/162: Include added notice file content and license texts to the ComponentInfo interface.
 
 Changes in 1.7.0::
 * https://github.com/devonfw/solicitor/issues/152: Enhancements for using java code in extensions.
