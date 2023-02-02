@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.model.impl.inventory;
 
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
+import com.devonfw.tools.solicitor.model.impl.TextPool;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,6 +18,8 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   private String declaredLicense;
 
   private String licenseUrl;
+
+  private String declaredLicenseContentKey = TextPool.NULL_KEY;
 
   private String trace;
 
@@ -53,6 +56,24 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   public String getDeclaredLicense() {
 
     return this.declaredLicense;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @JsonIgnore
+  public String getDeclaredLicenseContent() {
+
+    return retrieveTextFromPool(this.declaredLicenseContentKey);
+  }
+
+  /**
+   * Gets the text pool key of the {@link #getDeclaredLicenseContent()}.
+   *
+   * @return the key
+   */
+  public String getDeclaredLicenseContentKey() {
+
+    return this.declaredLicenseContentKey;
   }
 
   /** {@inheritDoc} */
@@ -113,6 +134,23 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   public void setLicenseUrl(String licenseUrl) {
 
     this.licenseUrl = licenseUrl;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setDeclaredLicenseContent(String declaredLicenseContent) {
+
+    this.declaredLicenseContentKey = storeTextInPool(declaredLicenseContent);
+  }
+
+  /**
+   * Sets the text pool key of the {@link #getDeclaredLicenseContent()}.
+   *
+   * @param declaredLicenseContentKey the key
+   */
+  public void setDeclaredLicenseContentKey(String declaredLicenseContentKey) {
+
+    this.declaredLicenseContentKey = declaredLicenseContentKey;
   }
 
   /** {@inheritDoc} */

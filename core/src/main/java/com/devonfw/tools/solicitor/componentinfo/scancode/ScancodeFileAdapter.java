@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
@@ -52,6 +53,9 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
 
   @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
+
+  @Autowired
+  private DirectUrlWebContentProvider contentProvider;
 
   /**
    * The constructor.
@@ -207,10 +211,19 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
           double score = li.get("score").asDouble();
           String licenseFilePath = file.get("path").asText();
           licenseFilePath = normalizeLicenseUrl(packageUrl, licenseFilePath);
+          String givenLicenseText = null;
+          if (licenseFilePath != null && licenseFilePath.startsWith("file:")) {
+            givenLicenseText = this.contentProvider.getContentForUri(licenseFilePath).getContent();
+          }
 
           componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseFilePath,
-              file.get("percentage_of_license_text").asDouble());
+              givenLicenseText, file.get("percentage_of_license_text").asDouble());
         }
+      }
+      if (componentScancodeInfos.getNoticeFilePath() != null
+          && componentScancodeInfos.getNoticeFilePath().startsWith("file:")) {
+        componentScancodeInfos.setNoticeFileContent(
+            this.contentProvider.getContentForUri(componentScancodeInfos.getNoticeFilePath()).getContent());
       }
       LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
           componentScancodeInfos.getLicenses().size(), componentScancodeInfos.getCopyrights().size(),
@@ -272,7 +285,7 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
               for (JsonNode licenseNode : curations.get("licenses")) {
                 String license = licenseNode.get("license").asText();
                 String url = licenseNode.get("url").asText();
-                oneComponent.addLicense(license, license, "", 110, url, 110);
+                oneComponent.addLicense(license, license, "", 110, url, null, 110);
               }
             }
           }

@@ -101,14 +101,18 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
           ac.setNoticeFileUrl(componentInfo.getNoticeFilePath());
         }
 
+        if (componentInfo.getNoticeFileContent() != null) {
+          ac.setNoticeFileContent(componentInfo.getNoticeFileContent());
+        }
+
         for (LicenseInfo li : componentInfo.getLicenses()) {
-          addRawLicense(ac, li.getSpdxid(), li.getLicenseFilePath(), ORIGIN_COMPONENTINFO);
+          addRawLicense(ac, li.getSpdxid(), li.getLicenseFilePath(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
         }
         String copyrights = String.join("\n", componentInfo.getCopyrights());
         ac.setCopyrights(copyrights);
         // check whether VendorUrl is included in input file or not
-        if (componentInfo.getUrl() != null) {
-          ac.setOssHomepage(componentInfo.getUrl());
+        if (componentInfo.getHomepageUrl() != null) {
+          ac.setOssHomepage(componentInfo.getHomepageUrl());
         }
         // check whether Source Reop Url is included in input file or not
         if (componentInfo.getSourceRepoUrl() != null) {
@@ -130,14 +134,17 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * @param appComponent a {@link com.devonfw.tools.solicitor.model.inventory.ApplicationComponent} object.
    * @param name a {@link java.lang.String} object.
    * @param url a {@link java.lang.String} object.
+   * @param givenLicenseText a {@link java.lang.String} object.
    * @param origin a {@link java.lang.String} object.
    */
-  public void addRawLicense(ApplicationComponent appComponent, String name, String url, String origin) {
+  public void addRawLicense(ApplicationComponent appComponent, String name, String url, String givenLicenseText,
+      String origin) {
 
     RawLicense mlic = this.modelFactory.newRawLicense();
     mlic.setApplicationComponent(appComponent);
     mlic.setDeclaredLicense(name);
     mlic.setLicenseUrl(url);
+    mlic.setDeclaredLicenseContent(givenLicenseText);
     mlic.setOrigin(origin);
     String trace;
     trace = "+ Component/License info read from ComponentInfo data source";

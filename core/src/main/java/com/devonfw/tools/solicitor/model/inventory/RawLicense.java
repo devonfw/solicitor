@@ -27,6 +27,13 @@ public interface RawLicense {
   String getLicenseUrl();
 
   /**
+   * This method gets the field <code>declaredLicenseContent</code>.
+   *
+   * @return the field declaredLicenseContent
+   */
+  String getDeclaredLicenseContent();
+
+  /**
    * This method gets the field <code>trace</code>.
    *
    * @return the field trace
@@ -67,6 +74,13 @@ public interface RawLicense {
    * @param licenseUrl the new value of the field licenseUrl
    */
   void setLicenseUrl(String licenseUrl);
+
+  /**
+   * This method sets the field <code>declaredLicenseContent</code>.
+   *
+   * @param declaredLicenseContent the new value of the field declaredLicenseContent
+   */
+  void setDeclaredLicenseContent(String declaredLicenseContent);
 
   /**
    * This method sets the field <code>specialHandling</code>.

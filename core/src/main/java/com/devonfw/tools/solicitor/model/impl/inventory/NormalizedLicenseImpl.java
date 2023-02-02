@@ -99,6 +99,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     setApplicationComponent(rawLicense.getApplicationComponent());
     this.declaredLicense = rawLicense.getDeclaredLicense();
     this.licenseUrl = rawLicense.getLicenseUrl();
+    setDeclaredLicenseContent(rawLicense.getDeclaredLicenseContent());
     this.trace = rawLicense.getTrace();
   }
 
