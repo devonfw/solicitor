@@ -226,7 +226,7 @@ public interface NormalizedLicense {
   /**
    * This method sets the field <code>declaredLicenseContent</code>.
    *
-   * @param declaredLicenseContent
+   * @param declaredLicenseContent the content to set
    */
   void setDeclaredLicenseContent(String declaredLicenseContent);
 
@@ -310,7 +310,7 @@ public interface NormalizedLicense {
   /**
    * This method sets the field <code>licenseRefContent</code>.
    *
-   * @param licenseRefContent
+   * @param licenseRefContent the content to set
    */
   void setLicenseRefContent(String licenseRefContent);
 
@@ -345,7 +345,7 @@ public interface NormalizedLicense {
   /**
    * This method sets the field <code>normalizedLicenseContent</code>.
    *
-   * @param normalizedLicenseContent
+   * @param normalizedLicenseContent the content to set
    */
   void setNormalizedLicenseContent(String normalizedLicenseContent);
 
@@ -373,7 +373,7 @@ public interface NormalizedLicense {
   /**
    * This method sets the field <code>guessedLicenseContent</code>
    *
-   * @param guessedLicenseContent
+   * @param guessedLicenseContent the content to set
    */
   void setGuessedLicenseContent(String guessedLicenseContent);
 

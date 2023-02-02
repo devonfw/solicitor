@@ -26,7 +26,7 @@ public class TextPoolImpl implements TextPool {
   }
 
   /**
-   * @param dataMap new value of {@link #getdataMap}.
+   * @param dataMap new value of {@link #getDataMap}.
    */
   public void setDataMap(Map<String, String> dataMap) {
 
