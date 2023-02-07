@@ -44,7 +44,7 @@ public class TextPoolImpl implements TextPool {
 
     // special handling of null (null values never get stored in the map)
     if (text == null) {
-      return NULL_KEY;
+      return null;
     }
 
     String key = DigestUtils.sha256Hex(text);
@@ -59,10 +59,8 @@ public class TextPoolImpl implements TextPool {
   @Override
   public String retrieve(String key) {
 
+    // a null key represents a null string
     if (key == null) {
-      throw new NullPointerException("Key for pool must not be null");
-    }
-    if (NULL_KEY.equals(key)) {
       return null;
     }
     String result = this.dataMap.get(key);

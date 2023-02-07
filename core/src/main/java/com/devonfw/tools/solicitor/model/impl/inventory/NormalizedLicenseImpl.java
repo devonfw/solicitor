@@ -711,29 +711,29 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   }
 
   /**
-   * If the {@link #guessedLicenseContentKey} is not yet set (i.e. the content is not yet set) it will be attempted to
+   * If the {@link #getGuessedLicenseContent()} is not yet set (i.e. the content is not yet set) it will be attempted to
    * fetch the content via the {@link #licenseContentProvider} and store it.
    */
   private void possiblyFillGuessedLicenseContent() {
 
-    if (this.guessedLicenseContentKey == null) {
+    if (getGuessedLicenseContent() == null) {
       setGuessedLicenseContent(this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent());
     }
   }
 
   /**
-   * If the {@link #declaredLicenseContentKey} is not yet set(i.e. the content is not set yet) it will be attempted to
+   * If the {@link #getDeclaredLicenseContent} is not yet set(i.e. the content is not set yet) it will be attempted to
    * fetch the content via the {@link #licenseContentProvider} and store it.
    */
   private void possiblyFillDeclaredLicenseContent() {
 
-    if (this.declaredLicenseContentKey == null) {
+    if (getDeclaredLicenseContent() == null) {
       setDeclaredLicenseContent(this.licenseContentProvider.getContentForUri(this.licenseUrl).getContent());
     }
   }
 
   /**
-   * If the {@link #normalizedLicenseContentKey} is not yet set (i.e. the content is not set yet) it will be attempted
+   * If the {@link #getNormalizedLicenseContent()} is not yet set (i.e. the content is not set yet) it will be attempted
    * to fill the content. This is tried via two ways:
    * <ul>
    * <li>if {@link #normalizedLicenseUrl} equals {@link #licenseUrl} the {@link #getDeclaredLicenseContent()} will be
@@ -743,7 +743,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
    */
   private void possiblyFillNormalizedLicenseContent() {
 
-    if (this.normalizedLicenseContentKey == null) {
+    if (getNormalizedLicenseContent() == null) {
       if (this.normalizedLicenseUrl != null && this.normalizedLicenseUrl.equals(this.licenseUrl)) {
         setNormalizedLicenseContent(getDeclaredLicenseContent());
       } else {
@@ -754,7 +754,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   }
 
   /**
-   * If the {@link #effectiveNormalizedLicenseContentKey} is not yet set (i.e. the content is not set yet) it will be
+   * If the {@link #getEffectiveNormalizedLicenseContent()} is not yet set (i.e. the content is not set yet) it will be
    * attempted to fill the content. This is tried via two ways:
    * <ul>
    * <li>if {@link #effectiveNormalizedLicenseUrl} equals {@link #normalizedLicenseUrl} the
@@ -764,7 +764,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
    */
   private void possiblyFillEffectiveNormalizedLicenseContent() {
 
-    if (this.effectiveNormalizedLicenseContentKey == null) {
+    if (getEffectiveNormalizedLicenseContent() == null) {
       if (this.effectiveNormalizedLicenseUrl != null
           && this.effectiveNormalizedLicenseUrl.equals(this.normalizedLicenseUrl)) {
         setEffectiveNormalizedLicenseContent(getNormalizedLicenseContent());
@@ -776,12 +776,12 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   }
 
   /**
-   * If the {@link #licenseRefContentKey} is not yet set(i.e. the content is not set yet) it will be attempted to fetch
-   * the content via the {@link #licenseContentProvider} and store it.
+   * If the {@link #getLicenseRefContent()} is not yet set(i.e. the content is not set yet) it will be attempted to
+   * fetch the content via the {@link #licenseContentProvider} and store it.
    */
   private void possiblyFillLicenseRefContent() {
 
-    if (this.licenseRefContentKey == null) {
+    if (getLicenseRefContent() == null) {
       setLicenseRefContent(this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent());
     }
   }
