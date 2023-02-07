@@ -5,7 +5,6 @@
 package com.devonfw.tools.solicitor.model.impl.inventory;
 
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
-import com.devonfw.tools.solicitor.model.impl.TextPool;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,7 +18,7 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
 
   private String licenseUrl;
 
-  private String declaredLicenseContentKey = TextPool.NULL_KEY;
+  private String declaredLicenseContentKey;
 
   private String trace;
 

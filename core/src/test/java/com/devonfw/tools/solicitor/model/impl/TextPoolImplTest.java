@@ -17,9 +17,9 @@ class TextPoolImplTest {
   void testStoreAndRetrieveNull() {
 
     TextPool pool = new TextPoolImpl();
-    assertEquals("NULL_KEY", pool.store(null));
+    assertNull(pool.store(null));
 
-    assertNull(pool.retrieve("NULL_KEY"));
+    assertNull(pool.retrieve(null));
   }
 
   @Test
@@ -27,13 +27,6 @@ class TextPoolImplTest {
 
     TextPool pool = new TextPoolImpl();
     assertThrows(NoSuchElementException.class, () -> pool.retrieve("foo"));
-  }
-
-  @Test
-  void testThrowExceptionForNullKey() {
-
-    TextPool pool = new TextPoolImpl();
-    assertThrows(NullPointerException.class, () -> pool.retrieve(null));
   }
 
   @Test
