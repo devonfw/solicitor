@@ -16,7 +16,7 @@ public class GuessedLicenseUrlContentFactory implements ContentFactory<GuessedLi
   @Override
   public GuessedLicenseUrlContent fromString(String string) {
 
-    if (string == null || string.isEmpty()) {
+    if (string == null || string.trim().isEmpty()) {
       return emptyContent();
     }
 
