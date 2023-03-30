@@ -285,7 +285,12 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
               for (JsonNode licenseNode : curations.get("licenses")) {
                 String license = licenseNode.get("license").asText();
                 String url = licenseNode.get("url").asText();
-                oneComponent.addLicense(license, license, "", 110, url, null, 110);
+                String givenLicenseText = null;
+                if (url != null && url.startsWith("file:")) {
+                  givenLicenseText = this.contentProvider.getContentForUri(url).getContent();
+                }
+
+                oneComponent.addLicense(license, license, "", 110, url, givenLicenseText, 110);
               }
             }
           }
