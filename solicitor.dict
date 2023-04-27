@@ -34,3 +34,6 @@ urls
 velo
 venv
 zA
+auth
+jwt
+restructuration
