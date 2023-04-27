@@ -46,9 +46,9 @@ public class ScancodeComponentInfo implements ComponentInfo {
     private String givenLicenseText;
 
     /**
-     * The score of the license file.
+     * The score of the license file. This is measured as number of lines which contain license info
      */
-    private double licenseFileScore;
+    private int licenseFileScore;
 
     /**
      * The constructor.
@@ -59,22 +59,22 @@ public class ScancodeComponentInfo implements ComponentInfo {
      * @param licenseScore the score for the license
      * @param licenseFilePath the path to the license file
      * @param givenLicenseText the given license text (might be <code>null</code>)
-     * @param licenseFileScore the score of the license file
+     * @param licenseFileScore the score of the license file - number of lines with license info
      */
     public ScancodeLicenseInfo(String id, String spdxid, String defaultUrl, double licenseScore, String licenseFilePath,
-        String givenLicenseText, double licenseFileScore) {
+        String givenLicenseText, int licenseFileScore) {
 
       super();
       this.id = id;
       this.spdxid = spdxid;
       this.licenseScore = licenseScore;
-      if (licenseFileScore >= ScancodeComponentInfo.this.minLicensefilePercentage) {
+      if (licenseFileScore >= ScancodeComponentInfo.this.minLicensefileNumberOfLines) {
         this.licenseFilePath = licenseFilePath;
         this.licenseFileScore = licenseFileScore;
         this.givenLicenseText = givenLicenseText;
       } else {
         this.licenseFilePath = defaultUrl;
-        this.licenseFileScore = 0.0;
+        this.licenseFileScore = 0;
       }
     }
 
@@ -124,7 +124,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
     /**
      * @return licenseFileScore
      */
-    public double getLicenseFileScore() {
+    public int getLicenseFileScore() {
 
       return this.licenseFileScore;
     }
@@ -172,7 +172,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
     /**
      * @param licenseFileScore new value of {@link #getLicenseFileScore}.
      */
-    public void setLicenseFileScore(double licenseFileScore) {
+    public void setLicenseFileScore(int licenseFileScore) {
 
       this.licenseFileScore = licenseFileScore;
     }
@@ -195,7 +195,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private String sourceRepoUrl;
 
-  private double minLicensefilePercentage;
+  private int minLicensefileNumberOfLines;
 
   private double minLicenseScore;
 
@@ -203,13 +203,13 @@ public class ScancodeComponentInfo implements ComponentInfo {
    * The constructor.
    *
    * @param minLicenseScore the minimum score to take license findings into account
-   * @param minLicensefilePercentage the minimum percentage of license text to possibly use file as license file
+   * @param minLicensefileNumberOfLines the minimum number of licens text lines to possibly use file as license file
    */
-  public ScancodeComponentInfo(double minLicenseScore, double minLicensefilePercentage) {
+  public ScancodeComponentInfo(double minLicenseScore, int minLicensefileNumberOfLines) {
 
     super();
     this.minLicenseScore = minLicenseScore;
-    this.minLicensefilePercentage = minLicensefilePercentage;
+    this.minLicensefileNumberOfLines = minLicensefileNumberOfLines;
   }
 
   /**
@@ -251,10 +251,10 @@ public class ScancodeComponentInfo implements ComponentInfo {
    * @param score the score of the license finding
    * @param filePath path to the license file
    * @param givenLicenseText the license text
-   * @param fileScore score of the license file
+   * @param fileScore score of the license file - measured as number of lines which were detected as license text
    */
   public void addLicense(String licenseId, String licenseName, String licenseDefaultUrl, double score, String filePath,
-      String givenLicenseText, double fileScore) {
+      String givenLicenseText, int fileScore) {
 
     if (this.licenses.containsKey(licenseId)) {
       ScancodeLicenseInfo existingLicenseInfo = this.licenses.get(licenseId);
@@ -262,7 +262,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
       double resultingScore = Math.max(existingLicenseInfo.getLicenseScore(), score);
       String resultingFilePath = existingLicenseInfo.getLicenseFilePath();
       String resultingGivenText = existingLicenseInfo.getGivenLicenseText();
-      double resultingFileScore = existingLicenseInfo.getLicenseFileScore();
+      int resultingFileScore = existingLicenseInfo.getLicenseFileScore();
       if (fileScore > existingLicenseInfo.getLicenseFileScore()) {
         resultingFilePath = filePath;
         resultingFileScore = fileScore;

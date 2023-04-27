@@ -83,7 +83,10 @@ public enum LogMessages {
       "The experimental feature for enriching the inventory with scancode data is DEACTIVATED"), //
   COMPONENT_INFO_READ(56, "External component information was read for {} out of {} ApplicationComponents"), //
   CURATIONS_NOT_EXISTING(57, "Curations file '{}' not found. No curations will be applied."), //
-  CURATIONS_PROCESSING(58, "Curations file '{}' exists. Applying curations.");
+  CURATIONS_PROCESSING(58, "Curations file '{}' exists. Applying curations."), //
+  COMPONENTINFO_NO_LICENSES(59, "ComponentInfo for '{}' does not contain any license. Keeping licenses from Reader."), //
+  CLASSPATHEXCEPTION_WITHOUT_GPL(60, "ClassPathException was found but no GPL License exists for {}"), //
+  CLASSPATHEXCEPTION_MULTIPLE_GPL(61, "ClassPathException was found but there are multiple GPL Licenses for {}");
 
   private final String message;
 

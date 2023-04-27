@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +45,15 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
 
   private double minLicenseScore;
 
-  private double minLicensefilePercentage;
+  private int minLicensefileNumberOfLines;
 
   private boolean curationsExistenceLogged;
 
   private boolean featureFlag = false;
 
   private boolean featureLogged = false;
+
+  private double licenseToTextRatioToTakeCompleteFile = 90;
 
   @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
@@ -110,14 +114,14 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
   }
 
   /**
-   * Sets minLicensefilePercentage.
+   * Sets minLicensefileNumberOfLines.
    *
-   * @param minLicensefilePercentage new value of minLicensefilePercentage.
+   * @param minLicensefileNumberOfLines new value of minLicensefileNumberOfLines.
    */
-  @Value("${solicitor.scancode.min-licensefile-percentage}")
-  public void setMinLicensefilePercentage(double minLicensefilePercentage) {
+  @Value("${solicitor.scancode.min-licensefile-number-of-lines}")
+  public void setMinLicensefileNumberOfLines(int minLicensefileNumberOfLines) {
 
-    this.minLicensefilePercentage = minLicensefilePercentage;
+    this.minLicensefileNumberOfLines = minLicensefileNumberOfLines;
   }
 
   /**
@@ -173,7 +177,7 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
   private ScancodeComponentInfo determineScancodeInformation(String packageUrl) throws ComponentInfoAdapterException {
 
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
-        this.minLicensefilePercentage);
+        this.minLicensefileNumberOfLines);
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
     String path = this.repoBasePath + "/" + packagePathPart + "/scancode.json";
 
@@ -195,6 +199,8 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
           componentScancodeInfos.addNoticeFilePath("file:" + this.repoBasePath + "/"
               + this.packageURLHandler.pathFor(packageUrl) + "/" + file.get("path").asText(), 100.0);
         }
+        double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
+        boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
         for (JsonNode cr : file.get("copyrights")) {
           if (cr.has("copyright")) {
             componentScancodeInfos.addCopyright(cr.get("copyright").asText());
@@ -203,13 +209,64 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
           }
         }
 
+        // special handling for Classpath-exception-2.0
+        Map<String, String> spdxIdMap = new HashMap<>();
+        boolean classPathExceptionExists = false;
+        int numberOfGplLicenses = 0;
+        for (JsonNode li : file.get("licenses")) {
+          String licenseName = li.get("spdx_license_key").asText();
+          if ("Classpath-exception-2.0".equals(licenseName)) {
+            classPathExceptionExists = true;
+          }
+          if (!spdxIdMap.containsKey(licenseName)) {
+            spdxIdMap.put(licenseName, licenseName);
+            if (licenseName.startsWith("GPL")) {
+              numberOfGplLicenses++;
+            }
+          }
+        }
+        if (classPathExceptionExists) {
+          if (numberOfGplLicenses == 0) {
+            LOG.warn(LogMessages.CLASSPATHEXCEPTION_WITHOUT_GPL.msg(), packageUrl);
+          } else if (numberOfGplLicenses > 1) {
+            LOG.warn(LogMessages.CLASSPATHEXCEPTION_MULTIPLE_GPL.msg(), packageUrl);
+          } else {
+            LOG.debug("Adjusting GPL license to contain WITH Classpath-execption-2.0 for " + packageUrl);
+            for (String licenseName : spdxIdMap.keySet()) {
+              if (licenseName.startsWith("GPL")) {
+                spdxIdMap.put(licenseName, licenseName + " WITH Classpath-exception-2.0");
+              }
+            }
+            // do not output the Classpath-exception-2.0 as separate License
+            spdxIdMap.remove("Classpath-exception-2.0");
+          }
+        }
         for (JsonNode li : file.get("licenses")) {
           String licenseid = li.get("key").asText();
           String licenseName = li.get("spdx_license_key").asText();
+          String effectiveLicenseName = spdxIdMap.get(licenseName);
+          if (effectiveLicenseName == null) {
+            // not contained in map --> this must be the Classpath-exception-2.0
+            continue;
+          } else {
+            licenseName = effectiveLicenseName;
+            if (licenseName.endsWith("WITH Classpath-exception-2.0")) {
+              licenseid = licenseid + "WITH Classpath-exception-2.0";
+            }
+          }
           String licenseDefaultUrl = li.get("scancode_text_url").asText();
           licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
           double score = li.get("score").asDouble();
           String licenseFilePath = file.get("path").asText();
+          int startLine = li.get("start_line").asInt();
+          int endLine = li.get("end_line").asInt();
+          if (!takeCompleteFile) {
+            licenseFilePath += "#L" + startLine;
+            if (endLine != startLine) {
+              licenseFilePath += "-L" + endLine;
+            }
+          }
+
           licenseFilePath = normalizeLicenseUrl(packageUrl, licenseFilePath);
           String givenLicenseText = null;
           if (licenseFilePath != null && licenseFilePath.startsWith("file:")) {
@@ -217,9 +274,12 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
           }
 
           componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseFilePath,
-              givenLicenseText, file.get("percentage_of_license_text").asDouble());
+              givenLicenseText, endLine - startLine);
         }
       }
+      // if (componentScancodeInfos.getLicenses().size() == 0) {
+      // componentScancodeInfos.addLicense("unknown", "unknown", "", 100.0, "", "", 0);
+      // }
       if (componentScancodeInfos.getNoticeFilePath() != null
           && componentScancodeInfos.getNoticeFilePath().startsWith("file:")) {
         componentScancodeInfos.setNoticeFileContent(
@@ -290,7 +350,7 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
                   givenLicenseText = this.contentProvider.getContentForUri(url).getContent();
                 }
 
-                oneComponent.addLicense(license, license, "", 110, url, givenLicenseText, 110);
+                oneComponent.addLicense(license, license, "", 110, url, givenLicenseText, Integer.MAX_VALUE);
               }
             }
           }
@@ -317,7 +377,10 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
     if (licenseFilePath != null) {
       if (licenseFilePath.startsWith("http")) {
         // TODO
-        adjustedLicenseFilePath = licenseFilePath.replace("github.com", "raw.github.com").replace("/tree", "");
+        adjustedLicenseFilePath = licenseFilePath.replace(
+            "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses",
+            "https://scancode-licensedb.aboutcode.org");
+        adjustedLicenseFilePath = adjustedLicenseFilePath.replace("github.com", "raw.github.com").replace("/tree", "");
       } else {
         adjustedLicenseFilePath = "file:" + this.repoBasePath + "/" + this.packageURLHandler.pathFor(packageUrl) + "/"
             + licenseFilePath;
