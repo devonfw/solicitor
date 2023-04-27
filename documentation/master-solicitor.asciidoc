@@ -11,7 +11,7 @@
 SPDX-License-Identifier: Apache-2.0
 
 == Introduction
-Todayss software projects often make use of large amounts of Open Source software. Being
+Todayss software projectsdasfsdagvvcb oftxcvbcxvbenxcvbcxvbcvb make use of large amounts of Open Source software. Being
 compliant with the license obligations of the used software components is a prerequisite for every such project. This results in different requirements that the project might need to fulfill. Those requirements can be grouped into two main categories:
 
 * Things that need to be done to actually fulfill license obligations
