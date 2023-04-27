@@ -95,7 +95,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       }
       if (componentInfo != null) {
         statistics.componentsWithComponentInfo = 1;
-        ac.removeAllRawLicenses();
 
         if (componentInfo.getNoticeFilePath() != null) {
           ac.setNoticeFileUrl(componentInfo.getNoticeFilePath());
@@ -105,9 +104,16 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
           ac.setNoticeFileContent(componentInfo.getNoticeFileContent());
         }
 
-        for (LicenseInfo li : componentInfo.getLicenses()) {
-          addRawLicense(ac, li.getSpdxid(), li.getLicenseFilePath(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
+        if (componentInfo.getLicenses().size() > 0) {
+          ac.removeAllRawLicenses();
+          for (LicenseInfo li : componentInfo.getLicenses()) {
+            addRawLicense(ac, li.getSpdxid(), li.getLicenseFilePath(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
+          }
+        } else {
+          LOG.info(LogMessages.COMPONENTINFO_NO_LICENSES.msg(),
+              (ac.getGroupId() != null ? ac.getGroupId() + "/" : "") + ac.getArtifactId() + "/" + ac.getVersion());
         }
+
         String copyrights = String.join("\n", componentInfo.getCopyrights());
         ac.setCopyrights(copyrights);
         // check whether VendorUrl is included in input file or not
