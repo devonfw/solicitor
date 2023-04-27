@@ -1,0 +1,1671 @@
+= Solicitor User Guide
+:revnumber: {project-version}-{buildNumber}
+:revdate: {timestamp}
+:toclevels: 3
+:sectnums:
+:sectnumlevels: 3
+:imagesdir: images
+:icons: font
+:icon-set: fas
+
+SPDX-License-Identifier: Apache-2.0
+
+== Introduction
+Todayss software projects often make use of large amounts of Open Source software. Being
+compliant with the license obligations of the used software components is a prerequisite for every such project. This results in different requirements that the project might need to fulfill. Those requirements can be grouped into two main categories:
+
+* Things that need to be done to actually fulfill license obligations
+* Things that need to be done to monitor / report fulfillment of license obligations
+
+Most of the above activities share common points:
+
+* The need to have an inventory of used (open source) components and their licenses
+* Some rule based evaluation and reporting based on this inventory
+
+While working on these easy looking tasks, they might get complex due to various aspects:
+
+* The number of open source components might be quite large (>> 100 for a typical webapplication based on state of the art programming frameworks)
+* Agile development and rapid changes of used components result in frequent changes of the inventory
+* Open Source usage scenarios and license obligations might be OK in one context (e.g. in the relation between a software developer and his client) but might be completely unacceptable in another context (e.g. when the client distributes the same software to end customers)
+* Legal interpretation of license conditions often differ from organization to organization and result in different compliance rules to be respected.
+* License information for components is often not available in a standardized form which would allow automatic processing
+* Tools for supporting the license management processes are often specific to a technology or build tool and do not support all aspects of OSS license management.
+
+Of course there are specific commercial tool suites which address the IP rights and license domain. But due to high complexity and license costs those tools are out of reach for most projects - at least for permanent use.
+
+_Solicitor_ tries to address some of the issues highlighted above. In its initial version it is a tool for programmatically executing a process which was originally defined as an Excel-supported manual process.
+
+When running _Solicitor_ three subsequent processing steps are executed:
+
+* Creating an initial component and license inventory based on technology specific input files
+* Rule based normalization and evaluation of licenses
+* Generation of output documents
+
+WARNING: `Solicitor` comes with a set of *sample* rules for the normalization and evaluation of licenses.
+Even though these included rules are not "intentionally wrong" they are only samples and *you should never rely on these builtin rules without checking and possibly modifying their content and consulting your lawyer*.
+_Solicitor_ is a tool for technically supporting the management of OSS licenses within your project.
+_Solicitor_ neither gives legal advice nor is a replacement for a lawyer.
+
+=== Licensing of Solicitor
+The _Solicitor_ code and accompanying resources (including this userguide) as stored in the GIT Repository https://github.com/devonfw/solicitor are licensed as Open Source under Apache 2 license (https://www.apache.org/licenses/LICENSE-2.0).
+
+IMPORTANT: Specifically observe the "Disclaimer of Warranty" and "Limitation of Liability" which are part of the license.
+
+IMPORTANT: The executable JAR file which is created by the Maven based build process includes numerous other Open Source components which are subject to different Open Source licenses. Any distribution of the _Solicitor_ executable JAR file needs to comply with the license conditions of all those components.
+If you are running _Solicitor_ from the executable JAR you might use the `-eug` option to store detailed license information as file `solicitor_licenseinfo.html` in your current working directory (together with a copy of this user guide).
+
+== Architecture
+The following picture show a business oriented view of _Solicitor_.
+
+image:domain_model.png[width=50%,scaledwidth=50%]
+
+Raw data about the components and attached licenses within an application is gathered by _scanning_ with technology and build chain specific tools. This happens outside _Solicitor_.
+
+The _import_ step reads this data and transforms it into a common technology independent internal format.
+
+In the _normalization_ step the license information is completed and unified.
+Information not contained in the raw data is added.
+Where possible the applicable licenses are expressed by https://spdx.org/[SPDX-IDs].
+
+Many open source components are available via multi licensing models.
+Within _qualification_ the finally applicable licenses are selected.
+
+In the _legal assessment_ the compliance of applicable licenses will be checked based on generic rules defined in company wide policies and possibly project specific project specific extensions.
+Defining those rules is considered as "legal advice" and possibly needs to be done by lawyers which are authorized to do so.
+For this step _Solicitor_ only provides a framework / tool to support the process here but does not deliver any predefined rules.
+
+The final _export_ step produces documents based on the internal data model. This might be the list of licenses to be forwarded to the customer or a license compliance report. Data might also be fed into other systems.
+
+A more technical oriented view of _Solicitor_ is given below.
+
+image:solution.png[width=100%,scaledwidth=100%]
+
+There are three major technical components: The _reader_ and _writer_ components are performing import and export of data. The business logic - doing _normalization_, _qualification_ and _legal assessment_ is done by a _rule engine_. Rules are mainly defined via _decision tables_. _Solicitor_ comes with a starting set of rules for _normalization_ and _qualification_ but these rulesets need to be extended within the projects. Rules for legal evaluation need to be completely defined by the user.
+
+_Solicitor_ is working without additional persisted data: When being executed it generates the output directly from the read input data after processing the business rules.
+
+=== Data Model
+
+image:datamodel.png[width=50%,scaledwidth=50%]
+
+The internal business data model consists of 6 entities:
+
+* *`ModelRoot`*: root object of the business data model which holds metadata about the data processing
+* *`Engagement`*: the masterdata of the overall project
+* *`Application`*: a deliverable within the `Engagement`
+* *`ApplicationComponent`*: component within an `Application`
+* *`RawLicense`*: License info attached to an `ApplicationComponent` as it is read from the input data
+* *`NormalizedLicense`*: License info attached to an `ApplicationComponent` processed by the business rules
+
+
+==== ModelRoot
+[cols="3,1,6", options="header"]
+|===
+| Property | Type | Description
+| modelVersion | int | version number of the data model
+| executionTime | String | timestamp when the data was processed
+| solicitorVersion | String | Solicitor version which processed the model
+| solicitorGitHash | String | buildnumber / GitHash of the Solicitor build
+| solicitorBuilddate | String | build date of the Solicitor build
+| extensionArtifactId | String | artifactId of the active _Solicitor_ Extension ("NONE" if no extension)
+| extensionVersion | String | Version of the active Extension (or "NONE")
+| extensionGitHash | String | Buildnumber / GitHash of the Extension (or "NONE")
+| extensionBuilddate | String build date of the Extension (or "NONE")
+|===
+
+==== Engagement
+[cols="3,1,6", options="header"]
+|===
+| Property | Type | Description
+| engagementName | String | the engagement name
+| engagementType | EngagementType | the engagement type; possible values: INTERN, EXTERN
+| clientName | String | name of the client
+| goToMarketModel | GoToMarketModel | the go-to-market-model; possible values: LICENSE
+| contractAllowsOss | boolean | does the contract explicitly allow OSS?
+| ossPolicyFollowed | boolean | is the companies OSS policy followed?
+| customerProvidesOss | boolean | does the customer provide the OSS?
+|===
+
+==== Application
+[cols="3,1,6", options="header"]
+|===
+| Property | Type | Description
+| applicationName | String | the name of the application / deliverable
+| releaseId | String | version identifier of the application
+| releaseDate | Sting | release data of the application
+| sourceRepo | String | URL of the source repo of the application (should be an URL)
+| programmingEcosystem | String | programming ecosystem (e.g. Java8; Android/Java, iOS / Objective C)
+|===
+
+==== ApplicationComponent
+[cols="3,1,6", options="header"]
+|===
+| Property | Type | Description
+| usagePattern | UsagePattern | possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
+| ossModified | boolean | is the OSS modified?
+| ossHomepage | String | URL of the OSS homepage
+| sourceRepoUrl | String | URL of the Source-Code-Repo
+| groupId | String | component identifier: maven group
+| artifactId | String | component identifier: maven artifactId
+| version | String | component identifier: Version
+| repoType | String | component identifier: RepoType
+| packageUrl | String | the https://github.com/package-url/purl-spec[Package URL] as an technology neutral component identifier
+| noticeFileUrl | String | URL referencing a NOTICE file to be included in the attributions (optional, see <<Experimental Scancode Integration>>)
+| noticeFileContent | String | resolved content of noticeFileUrl (optional, see <<Experimental Scancode Integration>>)
+| copyrights | String | Copyright statements found in the components metadata / code (optional, see <<Experimental Scancode Integration>>)
+|===
+
+==== RawLicense
+[cols="3,1,6", options="header"]
+|===
+| Property | Type | Description
+| declaredLicense | String | name of the declared license
+| licenseUrl | String | URL of the declared license
+| declaredLicenseContent | String | license text as provided in the input data
+| trace | String | detail info of history of this data record
+| origin | String | origin of the raw license data; either the lowercase classname of the Reader or "scancode" if licensedata was taken from scancode results
+| specialHandling | boolean | _(for controlling rule processing)_
+|===
+
+==== NormalizedLicense
+[cols="3,1,6", options="header"]
+|===
+| Property | Type | Description
+| declaredLicense | String | name of the declared license (copied from RawLicense)
+| licenseUrl | String | URL of the declared license (copied from RawLicense
+| declaredLicenseContent | String | resolved content of licenseUrl
+| normalizedLicenseType | String | type of the license, see <<License types>>
+| normalizedLicense | String | name of the license in normalized form (SPDX-Id) or special "pseudo license id", see <<Pseudo License Ids>>
+| normalizedLicenseUrl | String | URL pointing to a normalized form of the license
+| normalizedLicenseContent | String | resolved content of normalizedLicenseUrl
+| normalizedLicenseType | String | type of the license, see <<License types>>
+| effectiveNormalizedLicenseType | String | type of the effective license, see <<License types>>| effectiveNormalizedLicense | String | effective normalized license (SPDX-Id) or "pseudo license id"; this is the information after selecting the right license in case of multi licensing or any license override due to a component being redistributed under a different license
+| effectiveNormalizedLicenseUrl | String | URL pointing to the effective normalized license
+| effectiveNormalizedLicenseContent | String | resolved content of effectiveNormalizedLicenseUrl
+| legalPreApproved | String | indicates whether the license is pre approved based on company standard policy
+| copyLeft | String | indicates the type of copyleft of the license
+| licenseCompliance | String | indicates if the license is compliant according to the default company policy
+| licenseRefUrl | String | URL to the reference license information (TBD)
+| licenseRefContent | String | resolved content of licenseRefUrl
+| includeLicense | String | does the license require to include the license text ?
+| includeSource | String | does the license require to deliver source code of OSS component ?
+| reviewedForRelease | String | for which release was the legal evaluation done?
+| comments | String | comments on the component/license (mainly as input to legal)
+| legalApproved | String | indicates whether this usage is legally approved
+| legalComments | String | comments from legal, possibly indicating additional conditions to be fulfilled
+| trace | String | detail info of history of this data record (rule executions)
+| guessedLicenseUrl | String | guessed (possibly improved) URL of the effective normalized license
+| guessedLicenseUrlAuditInfo | String | audit info which documents how the guessedLicenseUrl was guessed
+| guessedLicenseContent | String | resolved content of guessedLicenseUrl
+|===
+
+For the mechanism how _Solicitor_ resolves the content of URLs and how the result
+might be influenced see <<Resolving of License URLs>>.
+
+For a description of the URL guessing mechanism see <<Guessing of license URLs>>.
+
+===== License types
+Defines the type of license
+
+* `OSS-SPDX` - An OSS license which has a corresponding SPDX-Id
+* `OSS-OTHER` - An OSS license which has no SPDX-Id
+* `COMMERCIAL` - Commercial (non OSS) license; this might also include code which is owned by the project
+* `UNKNOWN`- License is unknown
+* `IGNORED`- license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License Type")
+
+===== Pseudo License Ids
+A "normalized" license id might be either a SPDX-Id or a "pseudo license id" which is used to indicate a specific situation. The following pseudo license ids are used:
+
+* `OSS specific` - a nonstandard OSS license which could not be mapped to a SPDX-Id
+* `PublicDomain` - any form of public domain which is not represented by an explicit SPDX-Id
+* `Ignored` - license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License")
+* `NonOSS` - commercial license, not OSS
+
+== Usage
+=== Executing Solicitor
+_Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java 8 or 11 runtime environment. If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw/solicitor .
+
+_Solicitor_ is executed with the following command:
+
+[listing]
+java -jar solicitor.jar -c <configfile>
+
+where `<configfile>` is to be replaced by the location of the <<Project Configuration File>>.
+
+To get a first idea on what _Solicitor_ does you might call
+
+[listing]
+java -jar solicitor.jar -c classpath:samples/solicitor_sample.cfg
+
+This executes _Solicitor_ with default configuration on it own list of internal components and produces sample output.
+
+To get an overview of the available command line options use
+
+[listing]
+java -jar solicitor.jar -h
+
+.Addressing of resources
+****
+For unique addressing of resources *to be read* (configuration files, input data, rule templates and decision tables) _Solicitor_ makes use of the Spring ResourceLoader functionality, see https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#resources-resourceloader . This allows to load from the classpath, the filesystem or even via http get.
+
+If you want to reference a file in the filesystem you need to write it as follows: `file:path/to/file.txt`
+
+Note that this only applies to resources being read. Output files are addressed without that prefix.
+****
+
+=== Project Configuration File
+The project configuration of _Solicitor_ is done via a configuration file in
+JSON format. This configuration file defines the engagements and applications master data, configures the readers for importing component and license information, references the business rules to be applied and defines the exports to be done.
+
+The config file has the following skeleton:
+
+[listing]
+{
+  "version" : 1,
+  "comment" : "Sample Solicitor configuration file",
+  "engagementName" : "devonfw", <1>
+  .
+  .
+  .
+  "applications" : [ ... ], <2>
+  "rules" : [ ... ],  <3>
+  "writers" : [ ... ], <4>
+  "additionalWriters" : [ ...] <5>
+}
+
+<1> The leading data defines the engagement master data, see <<Header and Engagement Master Data>>
+<2> `applications`  defines the applications within the engagement and configures the readers to import the component/license information, see <<Applications>>
+<3> `rules` references the rules to apply to the imported data, see <<Business Rules>>
+<4> `writers` configures how the processed data should be exported, see <<Writers and Reporting>>
+<5> `additionalWriters` defines optional additional project specific writers without overwriting already defined writers, see <<Writers and Reporting>>
+
+NOTE: The following section describes all sections of the _Solicitor_ configuration file format. Often the configuration of `writers` and especially `rules` will be identical for projects. To facilitate the project specific configuration setup _Solicitor_ internally provides a base configuration which contains reasonable defaults for the `rules` and `writers` section. If the project specific configuration file omits the `rules` and/or `writers` sections then the corresponding settings from the base configuration will be taken. For details see <<Default Base Configuration>>.
+
+WARNING: If locations of files are specified within the configuration files as relative
+pathnames then this is always evaluated relative to the current working directory (which
+might differ from the location of the configuration file). If some file location
+should be given relative to the location of the configuration file this might be done
+using the special placeholder `${cfgdir}` as described in the following.
+
+==== Placeholders within the configuration file
+Within certain parts of the configuration file (path and filenames) special placeholders might be used to parameterize the configuration. These areas are explicitly marked in the following
+description.
+
+These placeholders are available:
+
+* `${project}` - A simplified project name (taking the engagement name,
+removing all non-word characters and converting to lowercase).
+* `${cfgdir}` -  If the config file was loaded from the filesystem this denotes the directory where the config file resides, `.`  otherwise. This can be used to reference locations relative to the location of the config file.
+
+==== Header and Engagement Master Data
+The leading section of the config file defines some metadata and the engagement master data.
+
+[listing]
+  "version" : 1, <1>
+  "comment" : "Sample Solicitor configuration file", <2>
+  "engagementName" : "devonfw", <3>
+  "engagementType" : "INTERN", <4>
+  "clientName" : "none", <5>
+  "goToMarketModel" : "LICENSE", <6>
+  "contractAllowsOss" : true, <7>
+  "ossPolicyFollowed" : true, <8>
+  "customerProvidesOss" : false, <9>
+
+<1> version of the config file format (currently needs to be 1)
+<2> is a free text comment (no further function at the moment)
+<3> the engagement name (any string)
+<4> the engagement type; possible values: INTERN, EXTERN
+<5> name of the client (any string)
+<6> the go-to-market-model; possible values: LICENSE
+<7> does the contract explicitly allow OSS? (boolean)
+<8> is the companies OSS policy followed? (boolean)
+<9> does the customer provide the OSS? (boolean)
+
+==== Applications
+Within this section the different applications (=deliverables) of the engagement are defined. Furthermore, for each application at least one reader needs to be defined which imports the component and license information.
+
+[listing]
+ "applications" : [ {
+    "name" : "Devon4J", <1>
+    "releaseId" : "3.1.0-SNAPSHOT", <2>
+    "sourceRepo" : "https://github.com/devonfw/devon4j.git", <3>
+    "programmingEcosystem" : "Java8", <4>
+    "readers" : [ { <5>
+      "type" : "maven", <6>
+      "source" : "classpath:samples/licenses_devon4j.xml", <7> <10>
+      "usagePattern" : "DYNAMIC_LINKING", <8>
+      "repoType" : "maven" <9>
+    } ]
+  } ],
+
+<1> The name of the application / deliverable (any string)
+<2> Version identifier of the application (any string)
+<3> URL of the source repo of the application (string; should be an URL)
+<4> programming ecosystem (any string; e.g. Java8; Android/Java, iOS / Objective C)
+<5> multiple readers might be defined per application
+<6> the type of reader; for possible values see <<Reading License Information with Readers>>
+<7> location of the source file to read (ResourceLoader-URL)
+<8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
+<9> repoType: Repository to download the sources from: currently possible values: maven, npm, pip, yarn, ort; if omitted then "maven" will be taken as default
+<10> _placeholder patterns might be used here_
+
+
+The different readers are described in chapter <<Reading License Information with Readers>>
+
+==== Business Rules
+
+Business rules are executed within a https://www.drools.org/[Drools] rule engine.
+They are defined as a sequence of rule templates and corresponding XLS (or CSV) files which together represent decision tables.
+
+[listing]
+  "rules" : [ {
+    "type" : "dt", <1>
+    "optional" : false, <2>
+    "ruleSource" : "classpath:samples/LicenseAssignmentV2Sample.xls", <3> <9>
+    "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignmentV2.drt", <4> <9>
+    "ruleGroup" : "LicenseAssignmentV2", <5>
+    "description" : "setting license in case that no one was detected", <6>
+    "deprecationWarnOnly" : true, <7>
+    "deprecationDetails" : "This decision table should be migrated to ..." <8>
+  },
+  .
+  .
+  .
+,{
+    "type" : "dt",
+    "optional" : false,
+    "ruleSource" : "classpath:samples/LegalEvaluationSample.xls",
+    "templateSource" : "classpath:com/.../rules/rule_templates/LegalEvaluation.drt",
+    "ruleGroup" : "LegalEvaluation",
+    "description" : "final legal evaluation based on the rules defined by legal"
+  } ],
+
+<1> type of the rule; only possible value: `dt` which stands for "decision table"
+<2> if set to `true` the processing of this group of rules will be skipped if the XLS/CSV with table
+data (given by `ruleSource`) does not exist; if set to `false` a missing XLS/CSV table will result
+in program termination
+<3> location of the tabular decision table data. This might either point directly to the XLS or CSV file
+or only give the resource name without suffix. In this case _Solicitor_ will dynamically test for existing
+resources by appending suffixes _xls_ and _csv_.
+<4> location of the drools rule template to be used to define the rules together with the decision table data
+<5> id of the group of rules; used to reference it e.g. when doing logging
+<6> some textual description of the rule group
+<7> flag to control which level of deprecation (see <<Feature Deprecation>>) applies to this rule group; optional and only applicable if `deprecationDetails` is also defined.
+<8> optional value; if set then the use of the defined decision table is deprecated; the
+given string will be given as part of the log message
+<9> _placeholder patterns might be used here_
+
+When running, _Solicitor_ will execute the rules of each rule group separately and in the order
+given by the configuration. Only if there are no more rules to fire in a group _Solicitor_ will
+move to the next rule group and start firing those rules.
+
+Normally a project will only customize (part of) the data of the decision tables and thus will only change the `ruleSource` and the data in the XLS/CSV.
+All other configuration (the different templates and processing order) is part of the _Solicitor_ application itself and should not be changed by end users.
+
+See <<Working with Decision Tables>> and <<Standard Business Rules>> for further information on the business rules.
+
+==== Writers and Reporting
+The writer configuration defines how the processed data will be exported and/or reported.
+
+[listing]
+  "writers" : [ {
+    "type" : "xls", <1>
+    "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <6>
+    "target" : "OSS-Inventory-devonfw.xlsx", <3> <6>
+    "description" : "The XLS OSS-Inventory document", <4>
+    "dataTables" : { <5>
+      "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
+      "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql"
+    }
+  } ]
+
+<1> type of writer to be selected; possible values: `xls`, `velo`
+<2> path to the template to be used
+<3> location of the output file
+<4> some textual description
+<5> reference to SQL statements used to transform the internal data model to data tables used for reporting
+<6> _placeholder patterns might be used here_
+
+If a `writers` section is defined in the project configuration then it will replace the writer configuration given in the
+builtin default configuration.
+If you want to just _add_ additional project specific writers then you might define them in the (optional)
+`additionalWriters` section of the project configuration file. These get processed
+additionally to the default writers. The section `additionalWriters` has the same attributes as the standard `writers` configuration.
+
+[listing]
+  "additionalWriters" : [ {
+    "type" :
+    ...
+    "dataTables" : {
+        ...
+    }
+  } ]
+
+For details on the writer configuration see <<Reporting and Creating output documents>>.
+
+=== Starting a new project
+
+To simplify setting up a new project _Solicitor_ provides an option to create a project starter configuration in a given directory.
+
+[listing]
+java -jar solicitor.jar -wiz some/directory/path
+
+Besides the necessary configuration file this includes also empty XLS or CSV files for defining project
+specific rules which amend the builtin rules. Furthermore, a sample `license.xml` file is provided to
+directly enable execution of solicitor and check functionality.
+
+This configuration then serves as starting point for project specific configuration.
+
+=== Exporting the Builtin Configuration
+
+When working with _Solicitor_ it might be necessary to get access to the builtin base configuration, e.g. for reviewing the builtin sample rules or using builtin reporting templates as starting point for the creation of own templates.
+
+The command
+
+[listing]
+java -jar solicitor.jar -ec some/directory/path
+
+will export all internal configuration to the given directory. This includes:
+
+* The base configuration file, which defines standard settings inherited by the <<Project Configuration File>>
+* The Drools Rule Templates
+* The builtin decision tables which are referenced in the base configuration, see <<Standard Business Rules>>
+* The SQL statements which are used for <<SQL transformation and filtering>>
+* The referenced templates for the <<Velocity Writer>> and <<Excel Writer>>
+
+=== Configuration of Technical Properties
+Besides the project configuration done via the above described file there are a set of technical settings in _Solicitor_ which are done via properties. _Solicitor_ is implemented as a https://spring.io/projects/spring-boot[Spring Boot Application] and makes use
+of the https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config[standard configuration mechanism provided by the Spring Boot Platform] which provides several ways to define/override properties.
+
+The default property values are given in <<Built in Default Properties>>.
+
+In case that a property shall be overridden when executing _Solicitor_ this can easiest be done via the command line when executing
+_Solicitor_:
+
+[listing]
+java -Dsome.property.name1=value -Dsome.property.name2=another_value -jar solicitor.jar <any other arguments>
+
+== Reading License Information with Readers
+Different Readers are available to import raw component / license information for different
+technologies. This chapter describes how to setup the different build / dependency management systems to create the required input and how to configure the corresponding reader.
+
+=== Maven
+
+For the export of the licenses from a maven based project the license-maven-plugin is used, which can directly be called without the need to change anything in the pom.xml.
+
+To generate the input file required for _Solicitor_ the License Plugin needs to be executed with the following command:
+
+----
+mvn org.codehaus.mojo:license-maven-plugin:1.14:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
+----
+
+The generated output file named `licenses.xml` (in the directory specified in the
+plugin config) should look like the following:
+
+----
+include::files/licenses.xml[]
+----
+
+In _Solicitor_ the data is read with the following reader config:
+
+----
+"readers" : [ {
+  "type" : "maven",
+  "source" : "file:target/generated-resouces/licenses.xml",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+(the above assumes that _Solicitor_ is executed in the maven projects main directory)
+
+=== CSV
+The CSV input is normally manually generated and should look like this:
+
+[source]
+----
+include::files/csvlicenses.csv[]
+----
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+The following 5 columns need to be contained in order (separated with ";"):
+
+* groupId
+* artifactId
+* version
+* license name
+* license URL
+
+Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.:
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "configuration" : {
+	"charset" = "UTF-8",
+	"artifactId" : "0",
+	"version" : "1",
+	"format" : "EXCEL",
+	"skipHeaderRecord" : "true",
+	"delimiter" : ";"
+  }
+} ]
+----
+
+The minimum of following 2 configuration settings need to be contained:
+
+* artifactId
+* version
+
+With these settings one can specify the position of the value within the csv file.
+Additional positional settings include:
+
+* groupId
+* license
+* licenseUrl
+
+If a charset needs to be specified, one can use the following option:
+
+* charset (string, specified charset for reader e.g. UTF-8)
+
+Furthermore, one can configure a range of other csv structure options based on the https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html[Apache Commons CSV API]:
+
+* allowDuplicateHeaderNames (boolean)
+* allowMissingColumnNames (boolean)
+* autoFlush (boolean)
+* commentMarker (char)
+* delimiter (string)
+* escape (char)
+* ignoreEmptyLines (boolean)
+* ignoreHeaderCase (boolean)
+* ignoreSurroundingSpaces (boolean)
+* nullString (string)
+* quote (char)
+* recordSeparator (string)
+* skipHeaderRecord (boolean)
+* trailingDelimiter (boolean)
+* trim (boolean)
+
+These configurations may also be used to overwrite options of a https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html[predefined format], which can be set with:
+
+* format (string, predefined format e.g. EXCEL)
+
+Important: In case that a component has multiple licenses attached, there needs to be a separate
+line in the csv file for each license.
+
+WARNING: The CSV reader currently does not fill the attribute `packageUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read by the CSV reader.
+
+=== NPM
+
+For NPM based projects, the NPM License Checker (https://www.npmjs.com/package/license-checker) plugin can be used. The NPM License Crawler plugin is deprecated.
+
+==== NPM License Checker
+
+To install the NPM License Checker the following command needs to be executed.
+
+----
+npm i license-checker -g
+----
+
+To get the licenses, the checker needs to be executed like the following example. We require JSON output here with "--json" and developer dependencies can/should be excluded with "--production".
+
+----
+license-checker --production --json > /path/to/licenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::files/licensesNpmLicenseChecker.json[]
+
+----
+
+
+Source: https://www.npmjs.com/package/license-checker
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm-license-checker",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "STATIC_LINKING",
+  "repoType" : "npm"
+} ]
+----
+
+==== NPM License Crawler
+
+WARNING: This reader is deprecated and should no longer be used. It requires a specific dependency (license-checker) which is not available on official npm repositories anymore and scans additional developer dependencies. Use <<NPM License Checker>> (with --production option) instead. See <<List of Deprecated Features>>.
+
+To install the NPM License Crawler the following command needs to be executed.
+
+----
+npm i npm-license-crawler -g
+----
+
+To get the licenses, the crawler needs to be executed like the following example
+
+----
+npm-license-crawler --dependencies --csv licenses.csv
+----
+
+The export should look like the following (The csv file is "," separated)
+
+[source]
+----
+include::files/licenses.csv[]
+
+----
+
+
+Source: https://www.npmjs.com/package/npm-license-crawler
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm-license-crawler-csv",
+  "source" : "file:path/to/licenses.csv",
+  "usagePattern" : "STATIC_LINKING",
+  "repoType" : "npm"
+} ]
+----
+
+=== Yarn
+
+To generate the input file required for Solicitor, yarn needs to be executed with the following command within the directory that contains the project's package.json (we require JSON output here):
+
+----
+yarn licenses list --json > /path/to/yarnlicenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::files/yarnlicenses.json[]
+
+----
+
+Source: https://classic.yarnpkg.com/en/docs/cli/licenses/
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "yarn",
+  "source" : "file:path/to/yarnlicenses.json",
+  "usagePattern" : "STATIC_LINKING",
+  "repoType" : "yarn"
+} ]
+----
+
+=== Pip
+
+To generate the input file required for Solicitor, one has to follow two steps:
+
+* Capsulate software with all relevant dependencies/requirements in a virtual environment (venv)
+* Install the pip-licenses plugin within this virtual environment
+
+After that, we execute following command within the virtual environment to extract the input file (we require JSON output here):
+----
+pip-licenses --from=all --format=json --with-urls --with-license-file > piplicenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::files/piplicenses.json[]
+
+----
+
+Source: https://pypi.org/project/pip-licenses/
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "pip",
+  "source" : "file:path/to/piplicenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "pip"
+} ]
+----
+
+=== OSS Review Toolkit (ORT)
+
+In order to use the https://github.com/oss-review-toolkit/ort#analyzer[analyzer library of ORT], one must first install the software and run it to generate the result file.
+The detailed way on installing ORT can be found https://github.com/oss-review-toolkit/ort#installation[here] and a tutorial on how to run the analyzer library can be found https://github.com/oss-review-toolkit/ort/blob/main/docs/getting-started.md#4-run-the-analyzer-on-mime-types[here].
+
+Usually, the command to run the analyzer and get extract the result file from a project looks like this:
+----
+docker run -v C:\\path\\to\\project/:/project ort --info analyze -f JSON -i /project -o /project/ort/analyzer
+----
+
+Note that this command only works for the installation via https://www.docker.com/[Docker] and that we require JSON as the output format. For other installation methods, you need to adjust the command accordingly.
+
+It might also be necessary to set up a customized configuration for the analyzer. This can be achieved through a configuration file. The default path for that is the .ort/config/ directory below the current user's home directory. We can place a ort.conf file there, in which we can declare various configurations e.g. allowing dynamic versions in npm components via
+----
+analyzer {
+    allowDynamicVersions = true
+}
+----
+
+Further information about the configuration file can be found https://github.com/oss-review-toolkit/ort#configuration[here].
+
+The result file should look like the following
+
+[source]
+----
+include::files/analyzer-result.json[]
+
+----
+
+Source: https://github.com/oss-review-toolkit/ort#analyzer
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "ort",
+  "source" : "file:path/to/analyzer-result.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "ort"
+} ]
+----
+
+WARNING: The ORT reader currently does not yet fill the attribute `licenseUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read by the ORT reader.
+
+=== Gradle (Windows)
+
+For the export of the licenses from a Gradle based project the Gradle License Plugin is used.
+
+To install the plugin some changes need to be done in `build.gradle`, like following example
+----
+buildscript {
+  repositories {
+    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+  }
+
+  dependencies {
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5-SNAPSHOT'
+  }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'com.jaredsburrows.license'
+----
+
+Afterwards execute the following command in the console:
+
+For Windows (Java Application)
+----
+gradlew licenseReport
+----
+
+The Export should look like this:
+
+----
+include::files/licenses.json[]
+----
+
+
+Source: https://github.com/jaredsburrows/gradle-license-plugin
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "gradle2",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
+
+=== Gradle (Android)
+For the Export of the the Licenses from a Gradle based Android Projects the Gradle License Plugin is used.
+
+To install the Plugin some changes need to be done in the build.gradle of the Project, like following example
+----
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5'
+  }
+}
+----
+
+Also there is a change in the build.gradle of the App. Add the line in the second line
+----
+apply plugin: 'com.android.application'
+----
+
+Afterwards execute the following command in the Terminal of Android studio:
+For Windows(Android Application)
+----
+gradlew licenseDebugReport
+----
+The Export is in the following folder
+----
+$Projectfolder\app\build\reports\licenses
+----
+It should look like this:
+
+----
+include::files/licenseDebugReport.json[]
+----
+Source: https://github.com/jaredsburrows/gradle-license-plugin
+
+In Solicitor the Data is read with the following part of the config
+
+----
+"readers" : [ {
+      "type" : "gradle2",
+      "source" : "file:$/input/licenses.json",
+      "usagePattern" : "DYNAMIC_LINKING"
+   	} ]
+----
+
+NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
+
+
+== Working with Decision Tables
+
+Solicitor uses the Drools rule engine to execute business rules. Business rules are
+defined as "extended" decision tables. Each such decision table consists of two artifacts:
+
+* A rule template file in specific drools template format
+* An Excel 97 (XLS) table or CSV table which defines the decision table data.
+
+When processing, _Solicitor_ will internally use the rule template to create one or multiple rules for every record found in the Excel (or CSV) sheet.
+The following points are important here:
+
+* Rule templates:
+** Rule templates should be regarded as part of the _Solicitor_ implementation and should not be changed on an engagement level.
+* Excel decision table data
+** The file needs to be in Excel 97 format. File suffix needs to be _xls_.
+** The Excel tables might be extended or changed on a per project level.
+** The rules defined by the tabular data will have decreasing "salience" (priority) from top to bottom
+** In general multiple rules defined within a table might fire for the same data to be processed; the definition of the rules within the rule template will normally ensure that once a rule from the decision table was processed no other rule from that table will be processed for the same data
+** The excel tables contain header information in the first row which is only there for documentation purposes; the first row is completely ignored when creating rules from the xls
+** The rows starting from the second row contain decision table data
+** The first "empty" row (which does not contain data in any of the defined columns) ends the decision table
+** Decision tables might use multiple condition columns which define the data that a rule matches. Often such conditions are optional: If left free in the Excel table the condition will be omitted from the rule conditions. This allows to define very specific rules (which only fire on exact data patterns) or quite general rules which get activated on large groups of data. Defining general rules further down in the table (with lower salience/priority) ensures that more specific rules get fired earlier. This even allows to define a default rule at the end of the table which gets fired if no other rule could be applied.
+* CSV decision table data
+** The file suffix needs to be _csv_.
+** The same points as for the Excel decision table data apply here.
+** The CSV has to use a comma as delimiter.
+** All values in the CSV need to be surrounded by double quotation marks to escape the comma character.
+* _rule groups_: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same _rule group_. The order of execution of the _rule groups_
+is defined by the sequence of declaration in the config file. Processing of the current group will
+be finished when there are no more rules to fire in that group. Processing of the next group will then start. Rule groups which have been finished processing will not be resumed even if rules within that group might have been activated again due to changes of the facts.
+
+=== Extended comparison syntax
+By default any conditions given in the fields of decision tables are simple textual comparisons: The condition
+is true if the property of the model is identical to the given value in the XLS (or CSV) sheet.
+
+Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:
+
+* If the given value of the XLS (or CSV) field starts with the prefix `NOT:` then the outcome of the remaining condition is logically negated, i.e. this field condition is  `true` if the rest of the condition is NOT fulfilled.
+* A suffix of `(REGEX)` indicates that the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expression.
+* The prefix `RANGE:` indicates that the remainder of the field defines
+a https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/maven/artifact/versioning/VersionRange.html#createFromVersionSpec(java.lang.String)[Maven Version Range]. Using this makes only sense on the artifact version property.
+* If no such prefix is detected, then the behavior is identical to the normal (verbatim) comparison logic
+
+Fields which are subject to this extended syntax are marked explicitly in the following section.
+
+NOTE: The former prefix notation of `REGEX:` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
+
+== Standard Business Rules
+The processing of business rules is organized in different phases. Each phase might consist of multiple decision tables to be processed in order.
+
+=== Phase 1: Determining assigned Licenses
+In this phase the license data imported via the readers is cleaned and normalized. At the end of this phase the internal data model should clearly represent all components and their assigned licenses in normalized form.
+
+The phase itself consists of two decision tables / rule groups:
+
+==== Decision Table: Explicitly setting Licenses
+With this decision table is is possible to explicitly assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next rule group.
+
+Decision table data: `LicenseAssignmentV2*.xls/csv`
+
+* LHS conditions:
+** `Engagement.clientName`
+** `Engagement.engagementName`
+** `Application.applicationName`
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[]
+** `ApplicationComponent.version` icon:magic[]
+** `RawLicense.origin` icon:magic[] (new with "V2" version of rules)
+** `RawLicense.declaredLicense` icon:magic[]
+** `RawLicense.url` icon:magic[]
+
+* RHS result:
+** `NormalizedLicense.normalizedLicenseType`
+** `NormalizedLicense.normalizedLicense`
+** `NormalizedLicense.normalizedLicenseUrl`
+** `NormalizedLicense.comment`
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
+
+All RawLicenses which are in scope of fired rules will be marked so that they do not get reprocessed by the following decision table.
+
+NOTE: With the "V2" version of rules the additional field/condition `origin` was introduced.
+This can be used to fire rules only if the raw license data was obtained from a specific data source.
+Its primary intention is to distinguish between data obtained via normal readers or from Scancode data.
+Decision table data for the new data structure is named `LicenseAssignmentV2*.xls/csv`.
+The old decision table structure `LicenseAssignment*.xls/csv` is deprecated but for compatibility reasons still supported.
+
+==== Decision Table: Detecting Licenses from Imported Data
+With this decision table the license info from the RawLicense is mapped to the NormalizedLicense. This is based on the name and/or URL of the license as imported via the readers.
+
+Decision table data: `LicenseNameMapping*.xls/csv`
+
+* LHS conditions:
+** `RawLicense.declaredLicense` icon:magic[]
+** `RawLicense.url` icon:magic[]
+
+* RHS result:
+** `NormalizedLicense.normalizedLicenseType`
+** `NormalizedLicense.normalizedLicense`
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
+
+=== Phase 2: Selecting applicable Licenses
+Within this phase the actually applicable licenses will be selected for each component.
+
+This phase consists of two decision tables.
+
+==== Choosing specific License in case of Multi-Licensing
+This group of rules has the specialty that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as `Ignored`.
+
+Decision table data: `MultiLicenseSelection*.xls/csv`
+
+* LHS conditions:
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[]
+** `ApplicationComponent.version` icon:magic[]
+** `NormalizedLicense.normalizedLicense` (licenseToTake; mandatory)
+** `NormalizedLicense.normalizedLicense` (licenseToIgnore1; mandatory)
+** `NormalizedLicense.normalizedLicense` (licenseToIgnore2; optional)
+** `NormalizedLicense.normalizedLicense` (licenseToIgnore3; optional)
+
+* RHS result
+** license matching "licenseToTake" will get this value assigned to `effectiveNormalizedLicense`
+** licenses matching "licenseToIgnoreN" will get `IGNORED` assigned to `effectiveNormalizedLicenseType` `Ignored` assigned to `effectiveNormalizedLicense`
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
+
+It is important to note that the rules only match, if all licenses given in the conditions actually exist and are assigned to the same ApplicationComponent.
+
+==== Selecting / Overriding applicable License
+
+The second decision table in this group is used to define the `effectiveNormalizedLicense` (if not already handled by the decision table before).
+
+Decision table data: `LicenseSelection*.xls/csv`
+
+* LHS conditions:
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[]
+** `ApplicationComponent.version` icon:magic[]
+** `NormalizedLicense.normalizedLicenseType`
+** `NormalizedLicense.normalizedLicense`
+
+* RHS result:
+** `NormalizedLicense.effectiveNormalizedLicenseType` (if empty in the decision table then the value of `normalizedLicenseType` will be taken)
+** `NormalizedLicense.effectiveNormalizedLicense` (if empty in the decision table then the value of `normalizedLicense` will be taken)
+** `NormalizedLicense.effectiveNormalizedLicenseUrl` (if empty in the decision table then the value of `normalizedLicenseUrl` will be taken)
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
+
+=== Phase 3: Legal evaluation
+
+The third phase is the legal evaluation of the licenses and the check, whether OSS usage is according to defined legal policies. Again this phase comprises two decision tables.
+
+==== Pre-Evaluation based on common rules
+Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furthermore, they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the `effectiveNormalizedLicense` and do not consider any project, application of component information.
+
+Decision table data: `LegalPreEvaluation*.xls/csv`
+
+* LHS condition:
+** `NormalizedLicense.effectiveNormalizedLicenseType`
+** `NormalizedLicense.effectiveNormalizedLicense`
+
+* RHS result:
+** `NormalizedLicense.legalPreApproved`
+** `NormalizedLicense.copyLeft`
+** `NormalizedLicense.licenseCompliance`
+** `NormalizedLicense.licenseRefUrl`
+** `NormalizedLicense.includeLicense`
+** `NormalizedLicense.includeSource`
+
+==== Final evaluation
+The decision table for final legal evaluation defines all rules which are needed
+to create the result of the legal evaluation. Rules here might be general for all projects or even very specific to a project if the rule can not be applied to other projects.
+
+Decision table data: `LegalEvaluation*.xls/csv`
+
+* LHS condition:
+** `Engagement.clientName`
+** `Engagement.engagementName`
+** `Engagement.customerProvidesOss`
+** `Application.applicationName`
+** `ApplicationComponent.groupId` icon:magic[]
+** `ApplicationComponent.artifactId` icon:magic[]
+** `ApplicationComponent.version` icon:magic[]
+** `ApplicationComponent.usagePattern`
+** `ApplicationComponent.ossModified`
+** `NormalizedLicense.effectiveNormalizedLicenseType`
+** `NormalizedLicense.effectiveNormalizedLicense`
+
+* RHS result:
+** `NormalizedLicense.legalApproved`
+** `NormalizedLicense.legalComments`
+
+icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
+
+=== Amending the builtin decision tables with own rules
+
+The standard process as described before consists of 6 decision tables / rule
+groups to be processed in sequence. When using the builtin default base configuration all those decision tables use the internal sample data / rules as contained in _Solicitor_.
+
+To use your own rule data there are three approaches:
+
+* Include your own `rules` section in the project configuration file (so not inheriting from the builtin base configuration file) and reference your own decision tables there.
+* Create your own "Solicitor Extension" which might completely redefine/replace the builtin `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
+* Make use of the optional project specific decision tables which are defined in the default base configuration: For every builtin decision table there is an optional external decision table (expected in the filesystem) which will be checked for existence. If such external decision table exists it will be processed first - before processing the builtin decision table. Thus is it possible to amend / override the builtin rules by project specific rules. When you create the starter configuration of your project as described in <<Starting a new project>>, those project specific decision tables are automatically created.
+
+== Reporting and Creating output documents
+After applying the business rules the resulting data can can be used to create reports and
+other output documents.
+
+Creating such reports consists of three steps:
+
+* transform and filter the model data by using an embedded SQL database
+* determining difference to previously stored model (optional)
+* Template based reporting via
+** Velocity templates (for textual output like e.g. HTML)
+** Excel templates
+
+=== SQL transformation and filtering
+
+==== Database structure
+
+After the business rules have been processed (or a Solicitor data model has been loaded via
+command line option `-l`) the model data is stored in a dynamically created internal SQL database.
+
+* For each type of model object a separate table is created. The tablename is the name of model object type written in uppercase characters. (E.g. type `NormalizedLicense` stored in table `NORMALIZEDLICENSE`)
+* All properties of the model objects are stored as strings in fields named like the properties within the database table. Field names are case sensitive (see note below for handling this in SQL statements).
+* An additional primary key is defined for each table, named `ID_<TABLENAME>`.
+* For all model elements that belong to some parent in the object hierarchy (i.e. all objects except `ModelRoot`) a foreign key field is added named `PARENT_<TABLENAME>` which contains the unique key of the corresponding parent
+
+==== SQL queries for filtering and transformation
+
+Each Writer configuration (see <<Writers and Reporting>>) includes a section which references SQL select statements that are applied on the database data. The result of the SQL select statements is made accessible for the subsequent processing of the Writer via the dataTable name given in the configuration.
+
+==== Postprocessing of data selected from the database tables
+
+Before the result of the SQL select statement is handed over to the Writer the following postprocessing
+is done:
+
+* a `rowCount` column is added to the result which gives the position of the entry in the result set (starting with 1).
+* Columns named `ID_<TABLENAME>` are replaced with columns named `OBJ_<TABLENAME>`. The fields of those columns are filled with the corresponding original model objects (java objects).
+
+WARNING: The result table column `OBJ_<TABLENAME>` gives access to the native Solicitor data model (java objects), e.g. in the Velocity writer. As this breaks the decoupling done via the SQL database using this feature is explicitly discouraged. It should only be used with high caution and in exceptional situations. The feature might be discontinued in future versions without prior notice.
+
+=== Determining difference to previously stored model
+
+When using the command line option `-d` _Solicitor_ can determine difference information between two different data models (e.g. the difference between the licenses of the current release and a former release.) The difference is calculated on the result of the above described SQL statements:
+
+* First the internal reporting database is created for the current data model and all defined SQL statements are executed
+* Then the internal database is recreated for the "old" data model and all defined SQL statements are executed again
+* Finally for each defined result table the difference between the current result and the "old" result
+is calculated
+
+To correctly correlate corresponding rows of the two different versions of table data it is necessary to define explicit correlation keys for each table in the SQL select statement.
+It is possible to define up to 10 correlation keys named `CORR_KEY_X` with X in the range from 0 to 9. `CORR_KEY_0` has highest priority, `CORR_KEY_9` has lowest priority.
+
+The correlation algorithm will first try to match rows using `CORR_KEY_0`. It will then attempt to correlate unmatched rows using `CORR_KEY_1` e.t.c.. Correlation will stop, when
+
+* all correlations keys `CORR_KEY_0` to `CORR_KEY_9` have been processed OR
+* the required correlation key column does not exist in the SQL select result OR
+* there are no unmatched "new" rows OR
+* there are no unmatched "old" rows
+
+The result of the correlation / difference calculation is stored in the reporting table data structure. For each row the status is accessible if
+
+* The row is "new" (did not exist in the old data)
+* The row is unchanged (no changes in the field values representing the properties of the _Solicitor_ data model)
+* The row is changed (at least one field corresponding to the _Solicitor_ data model changed)
+
+For each field of "changed" or "unchanged" rows the following status is available:
+
+* Field is "changed"
+* Field is "unchanged"
+
+For each field of such rows it is further on possible to access the new and the old field value.
+
+=== Sample SQL statement
+
+The following shows a sample SQL statement showing some join over multiple tables and the use of
+correlations keys.
+
+[source,sql]
+----
+include::files/allden_normalizedlicenses.sql[]
+----
+
+NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL
+
+=== Writers
+
+The above described SQL processing is identical for all Writers. Writers only differ in the
+way how the output document is created based on a template and the reporting table data
+obtained by the SQL transformation.
+
+==== Velocity Writer
+
+The Velocity Writer uses the https://velocity.apache.org/[Apache Velocity Templating Engine]
+to create text based reports. The reporting data tables created by the SQL transformation are
+directly put to the into Velocity Context.
+
+For further information see the
+
+* Velocity Documentation
+* The _Solicitor_ JavaDoc (which also includes details on how to access the diff information for rows and fields of reporting data tables)
+* The samples included in _Solicitor_
+
+==== Excel Writer
+
+===== Using Placeholders in Excel Spreadsheets
+Within Excel spreadsheet templates there are two kinds of placeholders / markers possible, which control the processing:
+
+===== Iterator Control
+The templating logic searches within the XLSX workbook for fields containing the names of the
+reporting data tables as defined in the Writer configuration like e.g.:
+
+* `\#ENGAGEMENT#`
+* `\#LICENSE#`
+
+Whenever such a string is found in a cell this indicates that this row is a template row. For each entry in the respective resporting data table a copy of this row is created and the attribute replacement will be done with the data from that reporting table. (The pattern `\#...#` will be removed when copying.)
+
+===== Attribute replacement
+Within each row which was copied in the previous step the templating logic searches for the string pattern `$someAttributeName$` where `someAttributeName` corresponds to the column names of the reporting table. Any such occurrence is replaced with the corresponding data value.
+
+===== Representation of Diff Information
+In case that a difference processing (new vs. old model data) was done this will be represented
+as follows when using the XLS templating:
+
+* For rows that are "new" (so no corresponding old row available) an Excel note indicating that this row is new will be attached to the field that contained the `\#...#` placeholder.
+* Fields in non-new rows that have changed their value will be marked with an Excel note indicating the old value.
+
+== Resolving of License URLs
+
+Resolving of the content of license texts which are referenced by the URLs given in `NormalizedLicense.effectiveNormalizedLicenseUrl` and `NormalizedLicense.licenseRefUrl` is done in the following way:
+
+* If the content is found as a resource in the classpath under `licenses` this will be taken. (The _Solicitor_ application might include a set of often used license texts and thus it is not necessary to fetch those via the net.) If the classpath does not contain the content of the URL the next step is taken.
+* If the content is found as a file in subdirectory `licenses` of the current working directory this is taken. If no such file exists the content is fetched via the net. The result will be written to the file directory, so any content will only be fetched once. (The user might alter the files in that directory to change/correct its content.) A file of length zero indicates that no content could be fetched.
+
+The determined content is available as `NormalizedLicense.effectiveNormalizedLicenseContent` and `NormalizedLicense.licenseRefContent`
+
+=== Encoding of URLs
+When creating the resource or filename for given URLs in the above steps the following encoding scheme will be applied to ensure that always a valid name can be created:
+
+All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
+
+== Guessing of license URLs
+Fetching the license content `NormalizedLicense.effectiveNormalizedLicenseContent` based on the URL in `NormalizedLicense.effectiveNormalizedLicenseUrl` will often result in content which is in HTML format instead of plain text and is not properly rendered when included in reports.
+Sometimes the URL even does not point to the license text itself but just the homepage of the project.
+In general it is possible to manually correct this by editing the downloaded and cached content as described in the previous section. This approach might require a lot of manual work. _Solicitor_ therefore includes a mechanism named license url guessing which tries to guess an alternative license URL which should point to a representation of the content better suited for rendering.
+
+Currently license URL guessing is based solely on the URL given in `NormalizedLicense.effectiveNormalizedLicenseUrl`. It will try the following approaches:
+
+* If the original URL is a Github-URL and matches patterns which are known to return HTML-formatted content then the URL is rewritten to point to a raw version of the content.
+* If the original URL points to a Github project page (not to a file), then the algorithm will try different typical locations (like e.g. looking for file `LICENSE`). If found it will return this URL as result.
+* If no "better" URL could be guessed it will return the original URL.
+
+The result of the license URL guessing is available via three attributes:
+
+* `NormalizedLicense.guessedLicenseUrl`: The (possibly) improved URL pointing to the license text.
+* `NormalizedLicense.guessedLicenseUrlAuditInfo`: A text which gives info how the guessed url was determined (available for auditing purposes).
+* `NormalizedLicense.guessedLicenseContent`: The content downloaded from the guessed URL
+
+NOTE: Downloading the license content (also including the checking if a certain resource is available when trying different possible filenames) is done using the same (caching) mechanisms as downloading the content for other URLs, see the previous section.
+
+=== Caching of guessed URLs
+The information about guessed URLs for given original URLs (also including the audit info on the guessing process) uses a caching mechanism which is mainly identical to the caching of downloaded content. The files containing the cached data are stored in directory `licenseurls` (instead of `licenses` for the content itself).
+
+The file content looks as follows:
+
+[listing]
+https://raw.githubusercontent.com/some/project/master/LICENSE <1>
+-------------------------                                     <2>
+URL changed from https://github.com/some/project/blob/master/LICENSE to https://raw.githubusercontent.com/some/project/master/LICENSE <3>
+
+<1> the guessed URL
+<2> a line of dashes as separator
+<3> the audit info (might be multiple lines)
+
+It is possible to manually change this cached information and thus correct it - similar to manually correcting the license text as described above.
+
+WARNING: License guessing is a new feature as of `Solicitor` 1.3.0.
+The guessing algorithm might be modified in future versions without further notice which might result in different outcomes for the guessed URLs.
+
+== Feature Deprecation
+Within the lifecycle of the _Solicitor_ development features might be discontinued due
+to various reasons. In case that such discontinuation is expected to break existing projects
+a two stage deprecation mechanism is used:
+
+* Stage 1: Usage of a deprecated feature will produce a _warning only_ giving details on
+what needs to be changed.
+* Stage 2: When a deprecated feature is used _Solicitor_ by default will terminate with an error
+message giving information about the deprecation.
+
+By setting the property `solicitor.deprecated-features-allowed` to `true`
+(e.g. via the command line, see <<Configuration of Technical Properties>>), even in second stage
+the feature will still be available and only a warning will be logged. The project setup should in any
+case ASAP be changed to no longer use the feature as it might soon be removed without further
+notice.
+
+IMPORTANT: Enabling the use of deprecated feature via the above property should only be
+a temporary workaround and not a standard setting.
+
+NOTE: If usage of a feature should be discontinued immediately (e.g. because it might lead to
+wrong/misleading output) the first stage of deprecation will be skipped.
+
+=== List of Deprecated Features
+The following features are deprecated via the above mechanism:
+
+* Reader of type "npm-license-crawler-csv" (use Reader of type "npm-license-checker" instead); Stage 1 from Version 1.4.0 on; see https://github.com/devonfw/solicitor/issues/125
+* Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58
+* Reader of type "npm"; Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
+* "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see https://github.com/devonfw/solicitor/issues/78
+* Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 1 from Version 1.4.0 on
+
+== Experimental Scancode Integration
+
+Starting from version 1.4.0 _Solicitor_ can be integrated with the tool https://github.com/nexB/scancode-toolkit[ScanCode] to include detailed information gathered from
+the "deep license scan" performed by ScanCode. This includes detected Licenses, Copyrights and Notice-Files.
+
+WARNING: The current integration with ScanCode is experimental: The used ScanCode parameters, interfacing and curations logic and all parts of the data persistence are experimental and thus might result in insufficient quality of results. The current workflow and implementation is subject to change in future versions without further notice.
+
+=== General workflow
+The general workflow when integrating with ScanCode consists of the following 3 steps:
+
+. Execute _Solicitor_ in a "classic" way i.e. just based on the data provided via the Readers as described in
+<<Reading License Information with Readers>>. Besides the normal reports/documents generated this will also
+create scripts for downloading the needed OSS source codes and run Scancode.
+. Download source codes and run ScanCode by executing the generated scripts. The downloaded sources and ScanCode results will be saved to a directory tree in the local filesystem.
+. Execute _Solicitor_ a second time. For all ApplicationComponents where ScanCode information is available
+(stored in the local directory tree) the license data as obtained from the Readers is replaced by this information. The data model is enriched with the found copyright and notice file information. Reports (see <<Reporting and Creating output documents>>) are now based on the ScanCode data (where available).
+
+=== Prerequisites
+
+==== Bash
+The scripts generated by _Solicitor_ to download sources and run ScanCode are in Bash syntax.
+So either run it on a system using natively Bash (linux) or install an appropriate environment (e.g. Git Bash) if you are using a windows environment.
+
+==== ScanCode
+Download and install ScanCode from https://github.com/nexB/scancode-toolkit/releases.
+Make sure that the executable is included in the search PATH for executables.
+
+==== Activate feature
+As the ScanCode integration is still experimental it is currently deactivated by default.
+To enable it set system property `solicitor.feature-flag.scancode=true`.
+(See <<Built in Default Properties>> for information how to do so.)
+If this feature flag is not activated then _Solicitor_ will not try to attempt to read ScanCode information from the local file system.
+
+=== Detailed workflow
+==== Solicitor 1st run
+Execute _Solicitor_ in a classic way. As part of the report creation step this will generate two scripts:
+
+* `output/scancode_PROJECTNAME.sh` (for downloading the sources, also calls `scancodeScan.sh`)
+* `output/scancodeScan.sh` (for running ScanCode on the downloaded sources)
+
+Scripts will include all ApplicationComponents with exception of those where `normalizedLicenseType` was set to `COMMERCIAL`.
+
+==== Download Sources and run Scancode
+Change to directory `output` and execute `sh scancode_PROJECTNAME.sh`.
+This will download all sources and process them via ScanCode.
+This might take several hours to complete.
+Results are stored in subdirectory `Source` of the directory `output` and is organized in a tree structure given by the https://github.com/package-url/purl-spec[PackageURL] of the ApplicationComponents.
+
+==== Solicitor 2nd run
+Execute _Solicitor_ a second time.
+After reading the component/license information from the Readers (but before starting the rule engine)
+_Solicitor_ will try to look up ScanCode information from the directory tree in `output/Sources` for all processed ApplicationComponents. If information is found for an ApplicationsComponent the following is done:
+
+* License information (including URL of license text) as obtained from the Readers is replaced by the license info found by ScanCode
+* Copyrights are taken from ScanCode results
+* Info on NOTICE file is taken from the ScanCode results
+* If the ScanCode results contain information about a project URL then this is stored as `ossHomepage`
+
+==== Output
+Main target of the additional information obtained from ScanCode is currently the new report `Attributions_PROJECTNAME.html` which lists
+
+* all ApplicationComponents (excluding those which are not OSS licensed)
+* with all found copyrights
+* and all licenses
+* including all different license texts
+* and contents of all found NOTICE files
+
+=== Correcting data
+The data obtained from ScanCode might be affected by false positives (wrongly detected a license or copyright) or false negatives (missed to detect a license or copyright).
+To compensate such defects there are two mechanisms:
+Applying Curation information from a "curations" file or changing the License information via the decision table rules.
+
+==== Curations file
+To define curations you might create a file `output/curations.yaml` containing the following structure:
+
+[source,yaml]
+----
+artifacts:
+  - name: pkg/npm/@somescope/somepackage/1.2.3                  <1>
+    url: https://github.com/foo/bar                             <2>
+    licenses:                                                   <3>
+      - license: MIT                                            <4>
+        url: https://raw.githubusercontent.com/foo/bar/LICENSE  <5>
+    copyrights:                                                 <6>
+      - (c) 2021 Donald Duck                                    <7>
+      - "(c) 2019 Mickey Mouse <http://mickey.mouse>"           <8>
+  - name: pkg/npm/@anotherscope/anotherpackage/4.5.6            <9>
+.
+.
+.
+----
+<1> Path of the package information as used in the file tree. Derived from the PackageURL.
+<2> URL of the project, will be stored as `ossHomepage`. (Optional: no change if not existing.)
+<3> Licenses to set. Optional. If defined then all found licenses will be replaced by the list of licenses given here.
+<4> SPDX identifier of license.
+<5> URL pointing to license text.
+<6> Copyrights to set. Optional. If defined then all found copyrights will be replaced by the list of copyrights given here.
+<7> A single copyright.
+<8> Another copyright. Note that due to YAML syntax any string containing `:` needs to be enclosed with parentheses
+<9> Further packages to follow.
+
+==== Decision table rules
+As for license information obtained from the Readers the license information from ScanCode can also be altered using decision table rules. A new attribute `origin` was introduced in the `RawLicense` entity as well as condition field in decision table `LicenseAssignmentV2*.xls/csv`. The `origin` attribute in `Rawlicense` either contains the string `scancode` if the license information came from ScanCode or it contains the (lowercase) class name of the used Reader.
+
+Using the <<Extended comparison syntax>> it is possible to qualify whether a rule should apply for licenses found by ScanCode or not:
+
+[cols="1,2",options="header"]
+|====================
+|Value of condition Origin          | rule applies for ...
+|`scancode`      | ... licenses obtained from ScanCode information
+|`NOT:scancode`  | ... licenses obtained from normal Readers
+| _(empty)_      | ... in both cases
+|====================
+
+
+[appendix]
+== Default Base Configuration
+The builtin default base configuration contains settings for the `rules` and `writers` section
+of the _Solicitor_ configuration file which will be used if the project specific config file omits those sections.
+
+[source,json]
+.Default Configuration
+----
+include::files/solicitor_base.cfg[lines=23..220]
+----
+
+[appendix]
+== Built in Default Properties
+The following lists the default settings of technical properties as given by the built in `application.properties` file.
+
+If required these values might be overridden on the command line when starting `Solicitor`:
+
+[listing]
+java -Dpropertyname1=value1 -Dpropertyname2=value2 -jar solicitor.jar <any other arguments>
+
+
+[source,properties]
+.application.properties
+----
+include::files/application.properties[]
+----
+
+[appendix]
+== Reporting Templates
+
+
+
+There are different templates that can be used for reporting. For usage, the templates have to be specified in the “writers” section of the solicitor configuration file (see <<Writers and Reporting>>).
+In the default solicitor configuration all templates are specified. (see <<Appendix A: Default Base Configuration#>>)
+
+
+
+=== Solicitor_Output_Template_Sample.xlsx
+With this template a report in Excel format can be created. The spreadsheet contains data from the internal database (see <<Database structure>>) which can be fetched by specifying the path to the SQL statements files in the solicitor configuration file.
+
+
+
+=== Solicitor_Diff_Template_Sample.vm
+This template creates a HTML document which has a table containing the relevant data from the internal database. Cells that have been changed, compared to a previous solicitor run, are marked in a different color. For usage, the option -d <filename> needs to be appended with filename being saved_latest_model.json.
+
+
+
+=== Solicitor_Output_Template_Sample.vm
+This template creates an HTML document which has an overview of OSS components used in the project. The data is displayed in a table with the columns:
+Name, GroupId, Version, Application, License, LicenseUrl.
+
+=== Solicitor_Output_Template_Sample_v2.vm
+Similar to the above but uses guessed license URLs and content, see <<Guessing of license URLs>>.
+
+
+=== Quality_Report.vm
+This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:
+Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized Licenses, License Count.
+
+=== ScancodeScript.vm, ScancodeScanScript.vm
+These templates create script files for downloading package sources and using https://github.com/nexB/scancode-toolkit[ScanCode] to do a "deep license scan"
+for finding licenses, copyright information (statements, holders, authors)
+and NOTICE files for each artifact within a project. See <<Experimental Scancode Integration>>.
+
+NOTE: Generating these scripts is an experimental feature and might be changed or removed in future versions without any notice.
+
+=== Attributions.vm
+This template creates an attributions document which lists all used OSS components with their licenses, license texts and found copyrights information as well as found information from NOTICE files.
+The template is part of the <<Experimental Scancode Integration>> and requires ScanCode to be used to collect all necessary information.
+
+[appendix]
+== Extending Solicitor
+`Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
+be required to correct, supplement and extend this data sets and templates. This can be done straightforward
+by creating copies of the appropriate resources (rule data XLS/CSV and template files), adopting them and further on referencing those copies instead of the original resources from the project configuration file.
+
+Even though this approach is possible it will result in hard to maintain configurations,
+especially in the case of multiple projects using `Solicitor` in parallel.
+
+To support such scenarios `Solicitor` provides an easy extension mechanism which allows
+to package all those customized configurations into a single archive and reference it from the
+command line when starting `Solicitor`.
+
+This facilitates configuration management, distribution and deployment of such extensions.
+
+=== Format of the extension file
+The extensions might be provided as JAR file or even as a simple ZIP file. There is only
+one mandatory file which contains (at least metadata) about the extension and which needs
+to be included in this archive _in the root folder_.
+
+[source,properties]
+.application-extension.properties
+----
+include::files/application-extension.properties[]
+----
+
+This file is included via the standard Spring Boot profile mechanism. Besides containing
+naming and version info on the extension this file might override any
+property values defined within `Solicitor`.
+
+Any other resources (like rule data or templates) which need to be part of the Extension
+can be included in the archive as well - either in the root directory or any subdirectories.
+If the extension is active those resources will be available _on the classpath_ like any
+resources included in the _Solicitor_ jar.
+
+Overriding / redefining the default base configuration within the Extension enables to
+update all rule data and templates without the need to touch the projects configuration
+file.
+
+=== Activating the Extension
+The Extension will be activated by referencing it as follows when starting _Solicitor_:
+
+[listing]
+java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other arguments>
+
+=== Java Extensions
+It is also possible to extend the functionality of _Solicitor_ within an extension by implementing Spring Beans
+which implement certain interfaces. As the resources contained in the extension are included into _Solicitors_  classpath those beans
+might be discovered through the Spring component scan mechanism and thus be activated.
+
+NOTE: The Spring components scanning mechanisms by default searches only in package `com.devonfw.tools.solicitor` (and subpackages). You either need to define the extension classes in these packages or create a specific configuration class in this package which has an
+appropriate `@ComponentScan` annotation which points to your packages.
+
+WARNING: Extending Solicitor via Java is an advanced topic. Only the Interfaces given below should be used. Even those should
+be regarded as unstable and might change without notice. For any details on the interfaces see the _Solicitor_ source code and corresponding Javadoc.
+
+==== Extension Interfaces
+===== `com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter`
+A spring bean implementing this interface might provide `ComponentInfo`/`LicenseInfo` data for `ApplicationComponents` identified
+by their packageUrl. (The buildin implementation of this interface is reading such component info from scancode result files
+from the local file system, see <<Experimental Scancode Integration>>.) Alternative implementations might e.g. get this information
+from a corporate server or even a public service available on the internet.
+
+===== `com.devonfw.tools.solicitor.lifecycle.SolicitorLifecycleListener`
+Spring beans implementing this interface will be called at certain points in the _Solicitor_ processing lifecycle. See the Javadoc for details. Implementations should preferably use `com.devonfw.tools.solicitor.lifecycle.AbstractSolicitorLifecycleListener` as base class which contains NOOP functionality for all methods which might be overridden as required.
+
+[appendix]
+== Release Notes
+Changes in 1.9.0::
+* https://github.com/devonfw/solicitor/issues/167: Fixed a bug which prevented license URLs given in scancode curations (see <<Curations file>>) to be resolved properly when they point to the local file system (starting with `file:`).
+
+Changes in 1.8.1::
+* https://github.com/devonfw/solicitor/issues/164: Fixed a bug which might result in license texts not being retrieved.
+
+Changes in 1.8.0::
+* https://github.com/devonfw/solicitor/issues/154: Corrected dependency declaration for solicitor-core.jar.
+* https://github.com/devonfw/solicitor/issues/156: Included engagement name as member in class SolicitorSetup.
+* https://github.com/devonfw/solicitor/issues/158: Include library com.auth0/java-jwt to make it available for extensions.
+* https://github.com/devonfw/solicitor/issues/160: License texts are now included in the data model json.
+* https://github.com/devonfw/solicitor/issues/162: Include added notice file content and license texts to the ComponentInfo interface.
+
+Changes in 1.7.0::
+* https://github.com/devonfw/solicitor/issues/152: Enhancements for using java code in extensions.
+
+Changes in 1.6.0::
+* https://github.com/devonfw/solicitor/issues/146: Fixed the bug which prevented already defined velocity macro with same name to be redefined in different template.
+* https://github.com/devonfw/solicitor/issues/135: Introduce `sourceRepoUrl` as new property in `ApplicationComponent`. Depending on the kind of Reader either `ossHomepage` and/or `sourceRepoUrl` will be filled with data.
+* https://github.com/devonfw/solicitor/issues/149: Added name mappings so that for all SPDX-IDs used in the name mapping the SPDX-ID itself is also recognized and formally mapped.
+
+Changes in 1.5.0::
+* https://github.com/devonfw/solicitor/issues/6: Fixed the bug by allowing multiple `NormalizedLicense` entries with same id per `ApplicationComponent`  if the declared license differs. This allows to assign multiple licenses of same type (e.g. MIT) to a component and also will allow multiple "UNKNOWN" licenses to be reported for the same component. Note that as a side effect additional and unexpected `NormalizedLicense` entries might now be created. This might be caused from multiple `LicenseAssignment*.xls` rules firing for different `RawLicense` entries in the same `ApplicationComponent` and resulting in identical `NormalizedLicense` id. In this case it is necessary to restrict those different rules to only fire for specific `RawLicense` entries.
+
+Changes in 1.4.0::
+* https://github.com/devonfw/solicitor/issues/141: Improved robustness of report generation in cases where PackageURL can not be determined (e.g. if data originates from CSV reader).
+* https://github.com/devonfw/solicitor/issues/139: Provide extension interface to allow reading information about components/licenses
+from alternative sources. See <<Extension Interfaces>>.
+* https://github.com/devonfw/solicitor/issues/137: Internal restructuration of Solicitor modules which allows Solicitor code to be used as dependency in other projects.
+* https://github.com/devonfw/solicitor/issues/129: Added spellcheck support within documentation for run-together words like camel cased ones.
+* https://github.com/devonfw/solicitor/issues/130: Fixed a bug where the guessedLicenseUrl and guessedLicenseUrlAuditInfo fields were not filled correctly in the aggregated inventory.
+* Added reader for data generated by OSS Review Toolkit (ORT). See <<OSS Review Toolkit (ORT)>>.
+* Added support for API changes of new scancode release (v31) https://github.com/nexB/scancode-toolkit/releases/tag/v31.0.1.
+* https://github.com/devonfw/solicitor/issues/124: Added documentation of '--production' option for npm-license-checker plugin.
+* https://github.com/devonfw/solicitor/issues/125: Deprecated usage of npm-license-crawler.
+* Stability and data corruption safety for bash scripts of scancode integration.
+* Initial version of experimental scancode integration. See <<Experimental Scancode Integration>>.
+* New decision table structure `LicenseAssignmentV2` with additional condition `origin`.
+Old structure deprecated but still supported.
+Migrate existing project decision tables by renaming `LicenseAssignmentProject.xls` to  `LicenseAssignmentV2Project.xls` and introducing a new (empty) column `Origin` between existing columns `OSS Version` and `Declared License`.
+* Added Solicitor Logo and code for creating variants / animation.
+* https://github.com/devonfw/solicitor/issues/117: New attribute `packageUrl` in `ApplicationComponent`.
+* Experimental scancode-toolkit integration changed to using Bash scripting.
+* Ruleset change: For GPL/LGPL-Licenses use `...-only`   or `...-or-later` IDs instead
+of the deprecated ones like `GPL-3.0`.
+* https://github.com/devonfw/solicitor/issues/113:
+Allow project specific writers (`additionalWriters`) to be defined without overriding default writers.
+* https://github.com/devonfw/solicitor/issues/15:
+Enable Decision Tables to be alternatively defined as CSV.
+Allow dynamic determination of applicable format by specifying resource names without file extension.
+* https://github.com/devonfw/solicitor/issues/108:
+Updated spring boot framework, drools rule engine and other used components to latest versions.
+* https://github.com/devonfw/solicitor/issues/110:
+Allow an additional user guide to be extracted when using an extension.
+
+Changes in 1.3.0::
+* New report _ScancodeDownloadScript.vm_ to compile copyright information using https://github.com/nexB/scancode-toolkit[ScanCode].
+* https://github.com/devonfw/solicitor/issues/75:
+Added license URL guessing, see <<Guessing of license URLs>>.
+* https://github.com/devonfw/solicitor/issues/86:
+In case that downloading content for a given URL fails no WARN message with stacktrace will be shown any more.
+Instead there will be an info message (SOLI-047 or SOLI-048) indicating that the content could not be downloaded.
+This change is due to the fact that failed downloads are expected - especially with the new feature license URL guessing.
+* Readers for PIP and YARN added.
+* https://github.com/devonfw/solicitor/issues/101:
+If downloaded license texts contain large amounts of html formatted content they will be replaced by a placeholder indicating the need
+for cleanup. A warning message will be written in this case (SOLI-050).
+* https://github.com/devonfw/solicitor/issues/103:
+Changed structure of Solicitor source code repository to maven multi module structure.
+* https://github.com/devonfw/solicitor/issues/7:
+Allow more flexible CSV file format within the CsvReader.
+* https://github.com/devonfw/solicitor/issues/78: Introduce new suffix _(REGEX)_ in decision
+tables to mark regular expressions. Using this suffix avoids breaking any sorting when using
+mixed verbatim strings and regex patterns. The old prefix syntax _REGEX:_ has been deprecated.
+
+Changes in 1.2.3::
+* https://github.com/devonfw/solicitor/issues/97: Fixed the bug which made the GradleReader and GradleReader2 skip the first entry in the file.
+* https://github.com/devonfw/solicitor/issues/87: GradleReader and GradleReader2 no longer fail when reading files that contain no entry. Actually this was due to bug https://github.com/devonfw/solicitor/issues/97.
+
+Changes in 1.2.2::
+* Fixed bug which resulted in corrupt XLS report due to cell comment exceeding maximum allowed size.
+
+Changes in 1.2.1::
+* https://github.com/devonfw/solicitor/issues/94: Fixed by making sure that formulas get evaluated when opening the workbook with excel.
+* Fixed bug when reading saved data model for delta calculation. (`repoType` was not read correctly and resulted in always reporting a difference.)
+
+Changes in 1.2.0::
+* Added some license name mapping rules in LicenseNameMappingSample.xls.
+* https://github.com/devonfw/solicitor/issues/71:
+  New "Quality Report" which might be helpful in validating the outcome of the _Solicitor_ run.
+  Currently this report contains a list of all application components which have more than one effective license attached.
+  This might be helpful for spotting cases where appropriate rules for selecting the applicable license in case of dual-/multilicensing is missing.
+
+Changes in 1.1.1::
+* Corrected order of license name mapping which prevented Unlicense, The W3C License, WTFPL, Zlib and
+  Zope Public License 2.1 to be mapped.
+
+Changes in 1.1.0::
+* https://github.com/devonfw/solicitor/issues/67: Inclusion of detailed license information for the
+  dependencies included in the executable JAR. Use the '-eug' command line option to store this file
+  (together with a copy of the user guide) in the current work directory.
+* Additional rules for license name mappings in decision table LicenseNameMappingSample.xls.
+* https://github.com/devonfw/solicitor/pull/61: Solicitor can now run with Java 8 or Java 11.
+
+Changes in 1.0.8::
+* https://github.com/devonfw/solicitor/issues/62: New Reader of type `npm-license-checker`
+for reading component/license data collected by NPM License Checker (https://www.npmjs.com/package/license-checker).
+The type of the existing Reader for reading CSV data from the NPM License Crawler has been changed from `npm`
+to `npm-license-crawler-csv`. (`npm` is still available but deprecated.) Projects should adopt their Reader
+configuration and replace type `npm` by `npm-license-crawler-csv`.
+
+Changes in 1.0.7::
+* https://github.com/devonfw/solicitor/issues/56: Enable continuing analysis in
+multiapplication projects even is some license files are unavailable.
+* Described simplified usage of license-maven-plugin without need to change pom.xml. (Documentation only)
+* Ensure consistent sorting even in case that multiple "Ignored" licenses exist for a component
