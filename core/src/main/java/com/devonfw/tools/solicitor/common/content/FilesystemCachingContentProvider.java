@@ -65,22 +65,24 @@ public class FilesystemCachingContentProvider<C extends Content> extends Caching
 
     C result = super.loadFromNext(url);
 
-    File file = new File(this.resourceDirectory + "/" + getKey(url));
-    File targetDir = file.getParentFile();
-    try {
-      IOHelper.checkAndCreateLocation(file);
-    } catch (SolicitorRuntimeException e) {
-      LOG.error(LogMessages.COULD_NOT_CREATE_CACHE.msg(), targetDir.getAbsolutePath());
-      return result;
-    }
-    try (FileWriter fw = new FileWriter(file)) {
-      if (result != null && result.asString() != null) {
-        fw.append(result.asString());
+    if (!url.startsWith("file:")) {
+      // data of URLs which resolve to local file will not be cached
+      File file = new File(this.resourceDirectory + "/" + getKey(url));
+      File targetDir = file.getParentFile();
+      try {
+        IOHelper.checkAndCreateLocation(file);
+      } catch (SolicitorRuntimeException e) {
+        LOG.error(LogMessages.COULD_NOT_CREATE_CACHE.msg(), targetDir.getAbsolutePath());
+        return result;
       }
-    } catch (IOException e) {
-      LOG.error("Could not write data to file cache.");
+      try (FileWriter fw = new FileWriter(file)) {
+        if (result != null && result.asString() != null) {
+          fw.append(result.asString());
+        }
+      } catch (IOException e) {
+        LOG.error("Could not write data to file cache.");
+      }
     }
-
     return result;
   }
 
