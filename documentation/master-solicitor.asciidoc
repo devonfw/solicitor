@@ -1577,6 +1577,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.10.0::
 * https://github.com/devonfw/solicitor/issues/175: Introduce new properties `packageDownloadUrl` and `sourceDownloadUrl` in `ApplicationComponent`. Process file `origin.yaml` within <<Experimental Scancode Integration>> to be able to set these properties to non default values.  
+* https://github.com/devonfw/solicitor/issues/177: Contents of local resources (`file:`) are no longer cached in FilesystemCachingContentProvider.
 
 Changes in 1.9.0::
 * https://github.com/devonfw/solicitor/issues/171: Multiple improvements in processing of ScanCode results.
