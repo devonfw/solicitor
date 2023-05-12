@@ -1351,7 +1351,7 @@ This might take several hours to complete.
 Results are stored in subdirectory `Source` of the directory `output` and is organized in a tree structure given by the https://github.com/package-url/purl-spec[PackageURL] of the ApplicationComponents.
 
 ===== Origin file
-The Scancode integration scripts try to download ApplicationComponent sources from default URLs derived from the PackageUrl (e.g. Maven Central). In cases where the sources are not available at these locations, the download will fail (and the subequent source scan will be skipped). In this case it is possible to manually download the sources from some other location and store it in the directory structure. Restarting the Scancode integration script might then perform the source scan.
+The Scancode integration scripts try to download ApplicationComponent sources from default URLs derived from the PackageUrl (e.g. Maven Central). In cases where the sources are not available at these locations, the download will fail (and the subsequent source scan will be skipped). In this case it is possible to manually download the sources from some other location and store it in the directory structure. Restarting the Scancode integration script might then perform the source scan.
 
 To be able to document the (non default) origin of the ApplicationComponent sources a file `origin.yaml` is created in the components directory in the file system. If the failed source download has been performed manually it is possible to edit this file and correct the data given in this file. 
 
