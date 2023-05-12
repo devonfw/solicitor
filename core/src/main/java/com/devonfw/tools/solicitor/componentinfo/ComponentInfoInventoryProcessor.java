@@ -112,6 +112,11 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         } else {
           LOG.info(LogMessages.COMPONENTINFO_NO_LICENSES.msg(),
               (ac.getGroupId() != null ? ac.getGroupId() + "/" : "") + ac.getArtifactId() + "/" + ac.getVersion());
+          for (RawLicense rl : ac.getRawLicenses()) {
+            String trace = rl.getTrace() + System.lineSeparator()
+                + "+ ComponentInfo available but without license information - keeping data from Reader";
+            rl.setTrace(trace);
+          }
         }
 
         String copyrights = String.join("\n", componentInfo.getCopyrights());
@@ -124,6 +129,11 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         if (componentInfo.getSourceRepoUrl() != null) {
           ac.setSourceRepoUrl(componentInfo.getSourceRepoUrl());
         }
+
+        // always overwrite the download URLs - even if componentInfo does not contain any data
+        ac.setPackageDownloadUrl(componentInfo.getPackageDownloadUrl());
+        ac.setSourceDownloadUrl(componentInfo.getSourceDownloadUrl());
+
       } else {
         // no ComponentInfos info found for ac
       }

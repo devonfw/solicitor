@@ -199,6 +199,10 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private double minLicenseScore;
 
+  private String packageDownloadUrl;
+
+  private String sourceDownloadUrl;
+
   /**
    * The constructor.
    *
@@ -378,6 +382,48 @@ public class ScancodeComponentInfo implements ComponentInfo {
   public void setSourceRepoUrl(String sourceRepoUrl) {
 
     this.sourceRepoUrl = sourceRepoUrl;
+  }
+
+  /**
+   * Gets the url to download the package.
+   *
+   * @return url to download the package
+   */
+  @Override
+  public String getPackageDownloadUrl() {
+
+    return this.packageDownloadUrl;
+  }
+
+  /**
+   * Sets the url to download the package.
+   *
+   * @param packageDownloadUrl new value of {@link #getPackageDownloadUrl()}.
+   */
+  public void setPackageDownloadUrl(String packageDownloadUrl) {
+
+    this.packageDownloadUrl = packageDownloadUrl;
+  }
+
+  /**
+   * Gets the url to download the sources of the package.
+   *
+   * @return url to download the sources of the package
+   */
+  @Override
+  public String getSourceDownloadUrl() {
+
+    return this.sourceDownloadUrl;
+  }
+
+  /**
+   * Sets the url to download the sources of the package.
+   *
+   * @param sourceDownloadUrl new value of {@link #getSourceDownloadUrl()}.
+   */
+  public void setSourceDownloadUrl(String sourceDownloadUrl) {
+
+    this.sourceDownloadUrl = sourceDownloadUrl;
   }
 
 }

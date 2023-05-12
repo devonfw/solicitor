@@ -143,6 +143,7 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
       if (componentScancodeInfos == null) {
         return null;
       }
+      addOriginData(packageUrl, componentScancodeInfos);
       applyCurations(packageUrl, componentScancodeInfos);
 
       return componentScancodeInfos;
@@ -293,6 +294,50 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
       throw new ComponentInfoAdapterException("Could not read Scancode JSON", e);
     }
     return componentScancodeInfos;
+  }
+
+  /**
+   * Adds the data about the origin of the package which is (optionally) contained in file "origin.yaml"
+   *
+   * @param packageUrl the identifier of the package
+   * @param componentScancodeInfos the componentScancodeInfos to add the origin data to
+   * @throws ComponentInfoAdapterException if there was an error when reading the file
+   */
+  private void addOriginData(String packageUrl, ScancodeComponentInfo componentScancodeInfos)
+      throws ComponentInfoAdapterException {
+
+    String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
+    String path = this.repoBasePath + "/" + packagePathPart + "/origin.yaml";
+
+    File originFile = new File(path);
+    if (!originFile.exists()) {
+      LOG.debug("No origin info available for PackageURL '{}'", packageUrl);
+      return;
+    }
+    LOG.debug("Found origin info for PackageURL '{}'", packageUrl);
+
+    try (InputStream is = new FileInputStream(originFile)) {
+
+      JsonNode originYaml = yamlMapper.readTree(is);
+
+      String sourceDownloadUrl = originYaml.get("sourceDownloadUrl") != null
+          ? originYaml.get("sourceDownloadUrl").asText()
+          : null;
+      String packageDownloadUrl = originYaml.get("packageDownloadUrl") != null
+          ? originYaml.get("packageDownloadUrl").asText()
+          : null;
+      String note = originYaml.get("note") != null ? originYaml.get("note").asText() : null;
+      if (note != null) {
+        LOG.debug("Note: " + note);
+      }
+
+      componentScancodeInfos.setSourceDownloadUrl(sourceDownloadUrl);
+      componentScancodeInfos.setPackageDownloadUrl(packageDownloadUrl);
+
+    } catch (IOException e) {
+      throw new ComponentInfoAdapterException("Could not read origin.yaml", e);
+    }
+
   }
 
   /**

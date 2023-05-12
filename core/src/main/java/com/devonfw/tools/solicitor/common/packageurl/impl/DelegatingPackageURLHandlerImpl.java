@@ -40,6 +40,13 @@ public class DelegatingPackageURLHandlerImpl extends AbstractPackageURLHandler i
   }
 
   @Override
+  public String packageDownloadUrlFor(String packageUrl) {
+
+    PackageURL packageURL = parse(packageUrl);
+    return findApplicableSingleKindHandler(packageURL).packageDownloadUrlFor(packageUrl);
+  }
+
+  @Override
   public String pathFor(String packageUrl) {
 
     PackageURL packageURL = parse(packageUrl);

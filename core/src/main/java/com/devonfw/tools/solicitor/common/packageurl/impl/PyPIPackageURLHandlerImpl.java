@@ -46,6 +46,20 @@ public class PyPIPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
   }
 
   @Override
+  public String doPackageDownloadUrlFor(PackageURL purl) {
+
+    // Take the sdist - same as above
+    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
+    sb.append("source/");
+    sb.append(purl.getName().substring(0, 1)).append("/");
+    sb.append(purl.getName()).append("/");
+    sb.append(purl.getName()).append("-");
+    sb.append(purl.getVersion()).append(".tar.gz");
+
+    return sb.toString();
+  }
+
+  @Override
   public String doSourceArchiveSuffixFor(PackageURL purl) {
 
     return "tar.gz";

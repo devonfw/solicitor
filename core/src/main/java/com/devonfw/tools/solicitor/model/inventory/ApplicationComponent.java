@@ -133,6 +133,20 @@ public interface ApplicationComponent {
   String getCopyrights();
 
   /**
+   * Gets the url to download the package.
+   *
+   * @return url to download the package
+   */
+  public String getPackageDownloadUrl();
+
+  /**
+   * Gets the url to download the sources of the package.
+   *
+   * @return url to download the sources of the package
+   */
+  public String getSourceDownloadUrl();
+
+  /**
    * Sets the {@link Application}.
    *
    * @param application the application to which this {@link ApplicationComponent} belongs to.
@@ -225,6 +239,20 @@ public interface ApplicationComponent {
    *
    */
   public void setPackageUrl(String packageUrl);
+
+  /**
+   * Sets the url to download the package.
+   *
+   * @param packageDownloadUrl new value of {@link #getPackageDownloadUrl()}.
+   */
+  public void setPackageDownloadUrl(String packageDownloadUrl);
+
+  /**
+   * Sets the url to download the sources of the package.
+   *
+   * @param sourceDownloadUrl new value of {@link #getSourceDownloadUrl()}.
+   */
+  public void setSourceDownloadUrl(String sourceDownloadUrl);
 
   /**
    * Complete the data of this object by setting members which are derived from other members.

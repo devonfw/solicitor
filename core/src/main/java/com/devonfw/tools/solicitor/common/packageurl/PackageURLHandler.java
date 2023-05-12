@@ -14,6 +14,14 @@ public interface PackageURLHandler {
   String sourceDownloadUrlFor(String packageUrl);
 
   /**
+   * Get the URL for downloading the package referenced by the package URL.
+   *
+   * @param packageUrl the package URL of the package (stringified form)
+   * @return the URL to download the package
+   */
+  String packageDownloadUrlFor(String packageUrl);
+
+  /**
    * Return the (relative) path to be used when accessing the references package in some tree structure
    *
    * @param packageUrl the package URL of the package (stringified form)
