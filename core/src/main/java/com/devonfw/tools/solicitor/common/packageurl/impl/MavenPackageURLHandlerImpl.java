@@ -46,6 +46,19 @@ public class MavenPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
   }
 
   @Override
+  public String doPackageDownloadUrlFor(PackageURL purl) {
+
+    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
+    sb.append(purl.getNamespace().replace('.', '/')).append("/");
+    sb.append(purl.getName()).append("/");
+    sb.append(purl.getVersion()).append("/");
+    sb.append(purl.getName()).append("-").append(purl.getVersion());
+    sb.append(".jar");
+
+    return sb.toString();
+  }
+
+  @Override
   public String doSourceArchiveSuffixFor(PackageURL purl) {
 
     return "jar";

@@ -23,6 +23,12 @@ import com.devonfw.tools.solicitor.writer.Writer;
 public interface InventoryProcessor {
 
   /**
+   * Processing order: After the readers have read the raw data. Use in {@link Order} annotation of the implementing
+   * spring bean.
+   */
+  public static final int AFTER_READERS = 50;
+
+  /**
    * Processing order: Execute before rule engine. Use in {@link Order} annotation of the implementing spring bean.
    */
   public static final int BEFORE_RULE_ENGINE = 100;

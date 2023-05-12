@@ -53,6 +53,10 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private String copyrights;
 
+  private String packageDownloadUrl;
+
+  private String sourceDownloadUrl;
+
   private List<NormalizedLicense> normalizedLicenses = new ArrayList<>();
 
   private List<RawLicense> rawLicenses = new ArrayList<>();
@@ -107,7 +111,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
     return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl(), getOssHomepage(),
     getSourceRepoUrl(), getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(),
-    isOssModified() ? "true" : "false", getCopyrights() };
+    isOssModified() ? "true" : "false", getCopyrights(), getPackageDownloadUrl(), getSourceDownloadUrl() };
   }
 
   /** {@inheritDoc} */
@@ -122,7 +126,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public String[] getHeadElements() {
 
     return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "sourceRepoUrl",
-    "noticeFileUrl", "noticeFileContent", "usagePattern", "ossModified", "copyrights" };
+    "noticeFileUrl", "noticeFileContent", "usagePattern", "ossModified", "copyrights", "packageDownloadUrl",
+    "sourceDownloadUrl" };
   }
 
   /** {@inheritDoc} */
@@ -211,6 +216,20 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public boolean isOssModified() {
 
     return this.ossModified;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getPackageDownloadUrl() {
+
+    return this.packageDownloadUrl;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getSourceDownloadUrl() {
+
+    return this.sourceDownloadUrl;
   }
 
   /**
@@ -359,6 +378,20 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
     this.copyrights = copyrights;
 
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setPackageDownloadUrl(String packageDownloadUrl) {
+
+    this.packageDownloadUrl = packageDownloadUrl;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setSourceDownloadUrl(String sourceDownloadUrl) {
+
+    this.sourceDownloadUrl = sourceDownloadUrl;
   }
 
   /**

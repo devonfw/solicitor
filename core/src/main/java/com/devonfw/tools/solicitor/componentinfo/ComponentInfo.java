@@ -47,8 +47,21 @@ public interface ComponentInfo {
   /**
    * Gets the url of the source code repository.
    *
-   * @return sourceRepoUrl to the license text
+   * @return url to source code repository
    */
   String getSourceRepoUrl();
 
+  /**
+   * Gets the url for downloading the package/component.
+   *
+   * @return url to download the package
+   */
+  String getPackageDownloadUrl();
+
+  /**
+   * Gets the url for downloading the sources of the package/component.
+   *
+   * @return url to download the sources of the package/component
+   */
+  String getSourceDownloadUrl();
 }

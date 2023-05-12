@@ -28,8 +28,17 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
 		then
 			cd $purlhandler.pathFor($artifact.packageUrl)
 			rm sources.completed
+			rm sources.failed
 			rm -r sources
 			rm sources.jar
+			if [ ! -f origin.yaml ] 
+			then
+				echo "# This file contains metadata about the orgin of the package and the sources." > origin.yaml
+				echo "# This file was automatically created but might manually be edited if the contained data is not correct" >> origin.yaml
+				echo "sourceDownloadUrl: $purlhandler.sourceDownloadUrlFor($artifact.packageUrl)" >> origin.yaml
+				echo "packageDownloadUrl: $purlhandler.packageDownloadUrlFor($artifact.packageUrl)" >> origin.yaml
+				echo "# note: to add comments: write them here and remove the hash at the beginning of the line" >> origin.yaml
+			fi
 			curl -# $purlhandler.sourceDownloadUrlFor($artifact.packageUrl) -o sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)
 			#if ( $purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "jar" )
 			unzip -q -d sources sources.$purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)

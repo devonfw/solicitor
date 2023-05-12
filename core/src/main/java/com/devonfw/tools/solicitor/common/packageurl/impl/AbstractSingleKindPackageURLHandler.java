@@ -52,6 +52,21 @@ public abstract class AbstractSingleKindPackageURLHandler extends AbstractPackag
    */
   protected abstract String doSourceDownloadUrlFor(PackageURL purl);
 
+  @Override
+  public String packageDownloadUrlFor(String packageUrl) {
+
+    PackageURL purl = parsePackageURLAndCheckType(packageUrl);
+    return doPackageDownloadUrlFor(purl);
+  }
+
+  /**
+   * Returns the package download URL. To be implemented in subclasses.
+   *
+   * @param purl the package url
+   * @return the package download URL
+   */
+  protected abstract String doPackageDownloadUrlFor(PackageURL purl);
+
   /**
    * Parse the given String into a {@link PackageURL} and assures if it can be handled.
    *

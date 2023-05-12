@@ -47,6 +47,20 @@ public class NpmPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandle
   }
 
   @Override
+  protected String doPackageDownloadUrlFor(PackageURL purl) {
+
+    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
+    if (purl.getNamespace() != null) {
+      sb.append(purl.getNamespace()).append("/");
+    }
+    sb.append(purl.getName()).append("/-/");
+    sb.append(purl.getName()).append("-");
+    sb.append(purl.getVersion()).append(".tgz");
+
+    return sb.toString();
+  }
+
+  @Override
   protected String doSourceArchiveSuffixFor(PackageURL packageURL) {
 
     return "tgz";
