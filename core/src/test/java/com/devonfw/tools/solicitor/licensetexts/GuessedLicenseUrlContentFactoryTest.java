@@ -82,4 +82,18 @@ public class GuessedLicenseUrlContentFactoryTest {
     assertNull(result.getGuessedUrl());
     assertNull(result.getAuditInfo());
   }
+
+  /**
+   * Test method for
+   * {@link com.devonfw.tools.solicitor.licensetexts.GuessedLicenseUrlContentFactory#fromString(java.lang.String)}.
+   */
+  @Test
+  public void testFromStringWithWhitespaces() {
+
+    GuessedLicenseUrlContentFactory factory = new GuessedLicenseUrlContentFactory();
+
+    GuessedLicenseUrlContent result = factory.fromString("            ");
+    assertNull(result.getGuessedUrl());
+    assertNull(result.getAuditInfo());
+  }
 }
