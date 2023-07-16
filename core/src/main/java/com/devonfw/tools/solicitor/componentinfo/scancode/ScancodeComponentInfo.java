@@ -203,6 +203,10 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private String sourceDownloadUrl;
 
+  private String dataStatus;
+
+  private Collection<String> traceabilityNotes;
+
   /**
    * The constructor.
    *
@@ -426,4 +430,39 @@ public class ScancodeComponentInfo implements ComponentInfo {
     this.sourceDownloadUrl = sourceDownloadUrl;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getDataStatus() {
+
+    return this.dataStatus;
+  }
+
+  /**
+   * Gets the traceability notes of the component.
+   *
+   * @return the traceability notes
+   */
+  @Override
+  public Collection<String> getTraceabilityNotes() {
+
+    return this.traceabilityNotes;
+  }
+
+  /**
+   * @param dataStatus new value of {@link #getDataStatus}.
+   */
+  public void setDataStatus(String dataStatus) {
+
+    this.dataStatus = dataStatus;
+  }
+
+  /**
+   * @param traceabilityNotes new value of {@link #getTraceabilityNotes}.
+   */
+  public void setTraceabilityNotes(Collection<String> traceabilityNotes) {
+
+    this.traceabilityNotes = traceabilityNotes;
+  }
 }

@@ -64,4 +64,18 @@ public interface ComponentInfo {
    * @return url to download the sources of the package/component
    */
   String getSourceDownloadUrl();
+
+  /**
+   * This method gets the field <code>dataStatus</code>.
+   *
+   * @return the field dataStatus
+   */
+  String getDataStatus();
+
+  /**
+   * Gets the traceability notes of the component.
+   *
+   * @return the traceability notes
+   */
+  Collection<String> getTraceabilityNotes();
 }
