@@ -61,7 +61,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
             appComponent.setVersion(component.getVersion());
             appComponent.setUsagePattern(usagePattern);
             appComponent.setRepoType(repoType);
-            appComponent.setPackageUrl(component.getPurl());			// todo: check if this is the needed format
+            //appComponent.setPackageUrl(component.getPurl());			// todo: check if this is the needed format
             components++;
             
             System.out.println("groupID: " + component.getGroup() + "   artifactID: "+ component.getName() + "   version: " + component.getVersion() );
