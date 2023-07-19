@@ -64,21 +64,30 @@ public class CyclonedxReader extends AbstractReader implements Reader {
             appComponent.setPackageUrl(component.getPurl());			// todo: check if this is the needed format
             components++;
             
-            System.out.println(component.getGroup() + "     " + component.getName() + "    " + component.getVersion() );
+            System.out.println("groupID: " + component.getGroup() + "   artifactID: "+ component.getName() + "   version: " + component.getVersion() );
             System.out.println(component.getPurl());
-            if (component.getLicenseChoice().equals(null)) {
-                // in case no license is found insert an empty entry
+            
+            
+            // in case no license field is found, insert an empty entry
+            if (component.getLicenseChoice() == null) {	
                 addRawLicense(appComponent, null, null, sourceUrl);
-              } else {
-            	//Declared License can be written either in "name" or "id" field
-                for (org.cyclonedx.model.License lic : component.getLicenseChoice().getLicenses()) {
-                	if(lic.getName()!=null) {
-                    addRawLicense(appComponent, lic.getName(), lic.getUrl(), sourceUrl);
-                	}
-                	else if (lic.getId()!=null) {
-                        addRawLicense(appComponent, lic.getId(), lic.getUrl(), sourceUrl);
-                	}
-                  }
+              } 
+            else {
+                  // in case license field is found but empty, insert an empty entry. getLicenses returns List of license objects
+            	  if(component.getLicenseChoice().getLicenses() == null){		
+                      addRawLicense(appComponent, null, null, sourceUrl);
+            	  }
+            	  else {
+		            	//Declared License can be written either in "id" or "name" field. Prefer "id" as its written in SPDX format.
+		                for (org.cyclonedx.model.License lic : component.getLicenseChoice().getLicenses()) {
+		                	if (lic.getId()!=null && lic.getUrl()!=null) {
+		                        addRawLicense(appComponent, lic.getId(), lic.getUrl(), sourceUrl);
+		                	}
+		                	else if(lic.getName()!=null && lic.getUrl()!=null) {
+		                		addRawLicense(appComponent, lic.getName(), lic.getUrl(), sourceUrl);
+		                	}
+		                  }
+            	  }
               }
         }
 	    }
