@@ -80,10 +80,10 @@ public class CyclonedxReader extends AbstractReader implements Reader {
             	  else {
 		            	//Declared License can be written either in "id" or "name" field. Prefer "id" as its written in SPDX format.
 		                for (org.cyclonedx.model.License lic : component.getLicenseChoice().getLicenses()) {
-		                	if (lic.getId()!=null && lic.getUrl()!=null) {
+		                	if (lic.getId()!=null) {
 		                        addRawLicense(appComponent, lic.getId(), lic.getUrl(), sourceUrl);
 		                	}
-		                	else if(lic.getName()!=null && lic.getUrl()!=null) {
+		                	else if(lic.getName()!=null) {
 		                		addRawLicense(appComponent, lic.getName(), lic.getUrl(), sourceUrl);
 		                	}
 		                  }
