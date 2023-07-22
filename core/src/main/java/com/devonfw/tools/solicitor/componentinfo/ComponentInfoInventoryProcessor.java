@@ -1,5 +1,7 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +105,9 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
         // Set dataStatus and traceabilityNotes of the ApplicationComponent
         ac.setDataStatus(componentInfo.getDataStatus());
-        ac.setTraceabilityNotes(String.join(System.lineSeparator(), componentInfo.getTraceabilityNotes()));
+        // Format and set the traceabilityNotes in the ApplicationComponent
+        String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
+        ac.setTraceabilityNotes(formattedTraceabilityNotes);
 
         // Update the notice file URL and content if available
         if (componentInfo.getNoticeFilePath() != null) {
@@ -152,6 +156,33 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       // can this happen?
     }
     return statistics;
+  }
+
+  /**
+   * Formats the traceability notes from the given {@link ComponentInfo}.
+   *
+   * @param componentInfo The {@link ComponentInfo} containing the traceability notes.
+   * @return A formatted {@link String} representing the traceability notes, separated by bullet points.
+   */
+  private String formatTraceabilityNotes(ComponentInfo componentInfo) {
+
+    StringBuilder formattedNotes = new StringBuilder();
+
+    // Check if componentInfo contains any traceability notes
+    Collection<String> traceabilityNotes = componentInfo.getTraceabilityNotes();
+    if (!traceabilityNotes.isEmpty()) {
+      formattedNotes.append("TracabilityNotes:").append(System.lineSeparator());
+
+      // Append each traceability note with a bullet point
+      for (String note : traceabilityNotes) {
+        formattedNotes.append("- ").append(note).append(System.lineSeparator());
+      }
+
+      // Add a separator after each set of traceability notes
+      formattedNotes.append("----------").append(System.lineSeparator());
+    }
+
+    return formattedNotes.toString();
   }
 
   /**
