@@ -155,8 +155,8 @@ The internal business data model consists of 6 entities:
 | copyrights | String | Copyright statements found in the components metadata / code (optional, see <<Experimental Scancode Integration>>)
 | packageDownloadUrl | String | URL for downloading the component (optional, see <<Experimental Scancode Integration>>)
 | sourceDownloadUrl | String | URL for downloading the sources of the component (optional, see <<Experimental Scancode Integration>>)
-| dataStatus | String |  It represents the status of the data associated with the component.
-| traceabilityNotes | String |  It provides traceability notes related to the component.
+| dataStatus | String |  Represents the quality status of the data associated with the component. It indicates the reliability, accuracy, and completeness of the information related to the component. Possible values may include "Validated", "Incomplete", "Outdated", "Unverified", "Verified", or other relevant categories depending on the specific context and requirements.  
+| traceabilityNotes | String |   Provides traceability notes related to the component. These notes offer insights into various aspects of the component, including its source and origin, version changes, integration details, licensing information, contributors, compatibility, and change history.
 |===
 
 ==== RawLicense
