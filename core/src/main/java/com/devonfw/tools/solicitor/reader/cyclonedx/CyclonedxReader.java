@@ -7,12 +7,15 @@ import java.util.Map;
 import java.util.Set;
 
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLException;
+import com.devonfw.tools.solicitor.common.packageurl.impl.DelegatingPackageURLHandlerImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.cyclonedx.exception.ParseException;
 import org.cyclonedx.model.Bom;
@@ -25,6 +28,10 @@ public class CyclonedxReader extends AbstractReader implements Reader {
 	 */
 	public static final String SUPPORTED_TYPE = "cyclonedx";
 	
+    
+    @Autowired
+    private DelegatingPackageURLHandlerImpl delegatingPackageURLHandler;
+    
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> getSupportedTypes() {
@@ -61,12 +68,17 @@ public class CyclonedxReader extends AbstractReader implements Reader {
             appComponent.setVersion(component.getVersion());
             appComponent.setUsagePattern(usagePattern);
             appComponent.setRepoType(repoType);
-            //appComponent.setPackageUrl(component.getPurl());			// todo: check if this is the needed format
+            
+            String purl = component.getPurl();
+            try {
+	            if(!delegatingPackageURLHandler.sourceDownloadUrlFor(purl).isEmpty()) {
+	            	appComponent.setPackageUrl(purl);
+	            }
+            }catch (SolicitorPackageURLException ex) {
+            	System.out.println("Exception occurred for package: " + purl + " - " + ex.getMessage());
+       
+            }
             components++;
-            
-            System.out.println("groupID: " + component.getGroup() + "   artifactID: "+ component.getName() + "   version: " + component.getVersion() );
-            System.out.println(component.getPurl());
-            
             
             // in case no license field is found, insert an empty entry
             if (component.getLicenseChoice() == null) {	
