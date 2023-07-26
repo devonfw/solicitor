@@ -1,4 +1,5 @@
 package com.devonfw.tools.solicitor.model.impl;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +17,17 @@ class ApplicationComponentImplTest {
    */
   @BeforeEach
   public void setUp() {
+
     this.component = new ApplicationComponentImpl();
   }
 
   /**
-   * Tests the {@link ApplicationComponentImpl#setDataStatus(String)} and {@link ApplicationComponentImpl#getDataStatus()} methods.
+   * Tests the {@link ApplicationComponentImpl#setDataStatus(String)} and
+   * {@link ApplicationComponentImpl#getDataStatus()} methods.
    */
   @Test
   public void testDataStatus() {
+
     // Set dataStatus
     String dataStatus = "VALID";
     this.component.setDataStatus(dataStatus);
@@ -34,10 +38,12 @@ class ApplicationComponentImplTest {
   }
 
   /**
-   * Tests the {@link ApplicationComponentImpl#setTraceabilityNotes(String)} and {@link ApplicationComponentImpl#getTraceabilityNotes()} methods.
+   * Tests the {@link ApplicationComponentImpl#setTraceabilityNotes(String)} and
+   * {@link ApplicationComponentImpl#getTraceabilityNotes()} methods.
    */
   @Test
   public void testTraceabilityNotes() {
+
     // Set traceabilityNotes
     String traceabilityNotes = "Note 1, Note 2, Note 3";
     this.component.setTraceabilityNotes(traceabilityNotes);
@@ -46,4 +52,5 @@ class ApplicationComponentImplTest {
     String retrievedTraceabilityNotes = this.component.getTraceabilityNotes();
     Assertions.assertEquals(traceabilityNotes, retrievedTraceabilityNotes);
   }
+
 }
