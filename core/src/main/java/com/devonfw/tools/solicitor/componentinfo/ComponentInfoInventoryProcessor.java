@@ -164,24 +164,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * @param componentInfo The {@link ComponentInfo} containing the traceability notes.
    * @return A formatted {@link String} representing the traceability notes, separated by the long separator.
    */
-  // public String formatTraceabilityNotes(ComponentInfo componentInfo) {
-  //
-  // StringBuilder formattedNotes = new StringBuilder();
-  //
-  // // Check if componentInfo contains any traceability notes
-  // Collection<String> traceabilityNotes = componentInfo.getTraceabilityNotes();
-  // if (!traceabilityNotes.isEmpty()) {
-  // // Append each traceability note with the long separator
-  // for (String note : traceabilityNotes) {
-  // formattedNotes.append(note).append(System.lineSeparator());
-  // }
-  // // Add the long separator after all traceability notes
-  // formattedNotes.append("----------").append(System.lineSeparator());
-  // }
-  //
-  // return formattedNotes.toString();
-  // }
-
   public String formatTraceabilityNotes(ComponentInfo componentInfo) {
 
     StringBuilder formattedNotes = new StringBuilder();
@@ -201,44 +183,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
     return formattedNotes.toString();
   }
-
-  // public String formatTraceabilityNotes(ComponentInfo componentInfo) {
-  //
-  // StringBuilder formattedNotes = new StringBuilder();
-  //
-  // // Check if componentInfo contains any traceability notes
-  // Collection<String> traceabilityNotes = componentInfo.getTraceabilityNotes();
-  // if (!traceabilityNotes.isEmpty()) {
-  // for (String note : traceabilityNotes) {
-  // formattedNotes.append(note).append(System.lineSeparator());
-  // }
-  // // Add the long separator after all traceability notes except for the last one
-  // if (formattedNotes.length() > 0) {
-  // formattedNotes.append("----------").append(System.lineSeparator());
-  // }
-  // }
-  //
-  // return formattedNotes.toString();
-  // }
-
-  // public String formatTraceabilityNotes(ComponentInfo componentInfo) {
-  //
-  // StringBuilder formattedNotes = new StringBuilder();
-  //
-  // // Check if componentInfo contains any traceability notes
-  // Collection<String> traceabilityNotes = componentInfo.getTraceabilityNotes();
-  // if (!traceabilityNotes.isEmpty()) {
-  // for (String note : traceabilityNotes) {
-  // // Append each traceability note with the long separator
-  // formattedNotes.append(note).append(System.lineSeparator());
-  // formattedNotes.append("----------").append(System.lineSeparator());
-  // }
-  // // Remove the last separator to avoid an extra line separator at the end
-  // formattedNotes.setLength(formattedNotes.length() - (System.lineSeparator().length() + "----------".length()));
-  // }
-  //
-  // return formattedNotes.toString();
-  // }
 
   /**
    * Adds a {@link com.devonfw.tools.solicitor.model.inventory.RawLicense} to the given
