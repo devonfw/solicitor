@@ -1,5 +1,6 @@
 auth
 Capsulate
+CDXGEN
 cfgdir
 conf
 deliverables
@@ -23,6 +24,7 @@ nd
 ort
 oss
 RHS
+SBOM
 scancode
 SOLI
 sql
