@@ -888,6 +888,39 @@ In Solicitor the Data is read with the following part of the config
 
 NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
 
+=== CycloneDX
+
+The CycloneDX reader can read SBOMs in CycloneDX 1.4 or 1.5 format (https://cyclonedx.org/specification/overview/).
+CDXGEN (https://github.com/CycloneDX/cdxgen) is one tool which can create an SBOM in the required format.
+
+To install CDXGEN, the following command needs to be executed.
+----
+sudo npm install -g @cyclonedx/cdxgen
+----
+To run CDXGEN, change into the project directory containing the build file (i.e. pom.xml, package.json). For npm projects, execute "npm-install" before running CDXGEN to create a package-lock.json.
+
+Set the FETCH_LICENSE environmental variable, to fetch the declared licenses.
+----
+export FETCH_LICENSE=true
+----
+Then execute the following command:
+----
+cdxgen -o sbom.json
+----
+The export should look like the following
+----
+link:files/sbom.json[]
+----
+In Solicitor, the data is read with the following part of the config
+----
+"readers" : [ {
+      "type" : "cdxgen",
+      "source" : "file:$/input/sbom.json",
+      "usagePattern" : "DYNAMIC_LINKING"
+   	} ]
+----
+
+Note: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl.
 
 == Working with Decision Tables
 
