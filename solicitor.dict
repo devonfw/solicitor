@@ -3,6 +3,7 @@ Capsulate
 CDXGEN
 cfgdir
 conf
+CycloneDX
 deliverables
 Dloader
 Dpropertyname
@@ -24,7 +25,7 @@ nd
 ort
 oss
 RHS
-SBOM
+SBOMs
 scancode
 SOLI
 sql
