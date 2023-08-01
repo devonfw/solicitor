@@ -20,95 +20,97 @@ import org.springframework.stereotype.Component;
 import org.cyclonedx.exception.ParseException;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.parsers.JsonParser;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+/**
+ * A {@link Reader} which reads data produced by the <a href="https://github.com/CycloneDX/cdxgen">CDXGEN Tool</a>.
+ */
 @Component
 public class CyclonedxReader extends AbstractReader implements Reader {
-	/**
-	 * The supported type of this {@link Reader}.
-	 */
-	public static final String SUPPORTED_TYPE = "cyclonedx";
-	
-    
-    @Autowired
-    private DelegatingPackageURLHandlerImpl delegatingPackageURLHandler;
-    
-	/**
-	 * @param delegatingPackageURLHandler the delegatingPackageURLHandler to set
-	 */
-	public void setDelegatingPackageURLHandler(DelegatingPackageURLHandlerImpl delegatingPackageURLHandler) {
-		this.delegatingPackageURLHandler = delegatingPackageURLHandler;
-	}
 
-	/** {@inheritDoc} */
-	@Override
-	public Set<String> getSupportedTypes() {
-		return Collections.singleton(SUPPORTED_TYPE);
-	}
+  private static final Logger LOG = LoggerFactory.getLogger(CyclonedxReader.class);
 
-	@Override
-	public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-			String repoType, Map<String, String> configuration) {
-			
-	    int components = 0;
-	    int licenses = 0;
-	    InputStream is;
+/**
+ * The supported type of this {@link Reader}.
+ */
+public static final String SUPPORTED_TYPE = "cyclonedx";
 
-	    try {
-	        is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
-	      } catch (IOException e1) {
-	        throw new SolicitorRuntimeException("Could not open inventory source '" + sourceUrl + "' for reading", e1);
-	      }
-	    
-	    // Create a JSON parser instance
-	    JsonParser parser = new JsonParser();
+@Autowired
+private DelegatingPackageURLHandlerImpl delegatingPackageURLHandler;
 
-	    try {
-	   	// Parse the sbom.json file into a Bom object
-		Bom bom = parser.parse(is);
+public void setDelegatingPackageURLHandler(DelegatingPackageURLHandlerImpl delegatingPackageURLHandler) {
+	this.delegatingPackageURLHandler = delegatingPackageURLHandler;
+}
+
+/** {@inheritDoc} */
+@Override
+public Set<String> getSupportedTypes() {
+	return Collections.singleton(SUPPORTED_TYPE);
+}
+
+@Override
+public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
+		String repoType, Map<String, String> configuration) {
 		
-        // Access the list of components in the Bom
-        for (org.cyclonedx.model.Component component : bom.getComponents()) {
-            ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-            appComponent.setApplication(application);
-            appComponent.setGroupId(component.getGroup());
-            appComponent.setArtifactId(component.getName());
-            appComponent.setVersion(component.getVersion());
-            appComponent.setUsagePattern(usagePattern);
-            appComponent.setRepoType(repoType);
-            
-            String purl = component.getPurl();
-            try {
-            	// check if handler exists for this package type
-	            if(!delegatingPackageURLHandler.sourceDownloadUrlFor(purl).isEmpty()) {
-	            	appComponent.setPackageUrl(purl);
-	            }
-            }catch (SolicitorPackageURLException ex) {
-            	System.out.println("Exception occurred for package: " + purl + " - " + ex.getMessage());
-       
+    int components = 0;
+    int licenses = 0;
+    InputStream is;
+
+    try {
+        is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
+      } catch (IOException e1) {
+        throw new SolicitorRuntimeException("Could not open inventory source '" + sourceUrl + "' for reading", e1);
+      }
+    
+    // Create a JSON parser instance
+    JsonParser parser = new JsonParser();
+
+    try {
+   	// Parse the sbom.json file into a Bom object
+	Bom bom = parser.parse(is);
+	
+    // Access the list of components in the Bom
+    for (org.cyclonedx.model.Component component : bom.getComponents()) {
+        ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
+        appComponent.setApplication(application);
+        appComponent.setGroupId(component.getGroup());
+        appComponent.setArtifactId(component.getName());
+        appComponent.setVersion(component.getVersion());
+        appComponent.setUsagePattern(usagePattern);
+        appComponent.setRepoType(repoType);
+        
+        try {
+        	// check if handler exists for the package type defined in purl
+            if(!delegatingPackageURLHandler.sourceDownloadUrlFor(component.getPurl()).isEmpty()) {
+            	appComponent.setPackageUrl(component.getPurl());
             }
-            components++;
-            
-            // in case no license field is found, insert an empty entry
-            if (component.getLicenseChoice() == null) {	
-                addRawLicense(appComponent, null, null, sourceUrl);
-              } 
-            else {
-                  // in case license field is found but empty, insert an empty entry. getLicenses returns List of license objects
-            	  if(component.getLicenseChoice().getLicenses() == null){		
-                      addRawLicense(appComponent, null, null, sourceUrl);
-            	  }
-            	  else {
-		            	//Declared License can be written either in "id" or "name" field. Prefer "id" as its written in SPDX format.
+        }catch (SolicitorPackageURLException ex) {       
+        	LOG.warn("WARNING: {}", ex.getMessage());
+        }
+        components++;
+        
+        // in case no license field exists, insert an empty entry
+        if (component.getLicenseChoice() == null) {	
+            addRawLicense(appComponent, null, null, sourceUrl);
+        } 
+        else {
+              // in case license field exists but empty, insert an empty entry.
+        	  if(component.getLicenseChoice().getLicenses() == null){		
+                  addRawLicense(appComponent, null, null, sourceUrl);
+        	  }
+        	  else {
+        		  	// in case license field exists and contains licenses, insert the license
+	            	// Declared License can be written either in "id" or "name" field. Prefer "id" as its written in SPDX format.
 		                for (org.cyclonedx.model.License lic : component.getLicenseChoice().getLicenses()) {
 		                	if (lic.getId()!=null) {
 		                        addRawLicense(appComponent, lic.getId(), lic.getUrl(), sourceUrl);
 		                	}
-		                	else if(lic.getName()!=null) {
+		                	else if (lic.getName()!=null) {
 		                		addRawLicense(appComponent, lic.getName(), lic.getUrl(), sourceUrl);
 		                	}
-		                  }
+		                }
             	  }
-              }
+            }
         }
 	    }
         catch (ParseException e) {
@@ -116,7 +118,5 @@ public class CyclonedxReader extends AbstractReader implements Reader {
 		}
 	    doLogging(sourceUrl, application, components, licenses);
 	}
-
-
 
 }
