@@ -32,6 +32,13 @@ public class CyclonedxReader extends AbstractReader implements Reader {
     @Autowired
     private DelegatingPackageURLHandlerImpl delegatingPackageURLHandler;
     
+	/**
+	 * @param delegatingPackageURLHandler the delegatingPackageURLHandler to set
+	 */
+	public void setDelegatingPackageURLHandler(DelegatingPackageURLHandlerImpl delegatingPackageURLHandler) {
+		this.delegatingPackageURLHandler = delegatingPackageURLHandler;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> getSupportedTypes() {
@@ -71,6 +78,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
             
             String purl = component.getPurl();
             try {
+            	// check if handler exists for this package type
 	            if(!delegatingPackageURLHandler.sourceDownloadUrlFor(purl).isEmpty()) {
 	            	appComponent.setPackageUrl(purl);
 	            }
