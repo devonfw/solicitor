@@ -2,6 +2,7 @@ package com.devonfw.tools.solicitor.componentinfo.scancode;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -202,6 +203,10 @@ public class ScancodeComponentInfo implements ComponentInfo {
   private String packageDownloadUrl;
 
   private String sourceDownloadUrl;
+
+  private String dataStatus;
+
+  private List<String> traceabilityNotes;
 
   /**
    * The constructor.
@@ -426,4 +431,39 @@ public class ScancodeComponentInfo implements ComponentInfo {
     this.sourceDownloadUrl = sourceDownloadUrl;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getDataStatus() {
+
+    return this.dataStatus;
+  }
+
+  /**
+   * Gets the traceability notes of the component.
+   *
+   * @return the traceability notes
+   */
+  @Override
+  public List<String> getTraceabilityNotes() {
+
+    return this.traceabilityNotes;
+  }
+
+  /**
+   * @param dataStatus new value of {@link #getDataStatus}.
+   */
+  public void setDataStatus(String dataStatus) {
+
+    this.dataStatus = dataStatus;
+  }
+
+  /**
+   * @param traceabilityNotes new value of {@link #getTraceabilityNotes}.
+   */
+  public void setTraceabilityNotes(List<String> traceabilityNotes) {
+
+    this.traceabilityNotes = traceabilityNotes;
+  }
 }

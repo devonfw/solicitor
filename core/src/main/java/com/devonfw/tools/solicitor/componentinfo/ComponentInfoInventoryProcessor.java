@@ -1,5 +1,7 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,10 +72,14 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
   }
 
   /**
-   * Process a single {@link ApplicationComponent}.
+   * Processes a single {@link ApplicationComponent} by looking up license information from an external data source,
+   * such as a scancode file store. If license information is found, it updates the relevant properties of the
+   * {@link ApplicationComponent} with the data obtained from this source. The method also handles cases when no license
+   * information is found or when there is an error reading the component info data source.
    *
-   * @param ac application component
-   * @return processing statistics
+   * @param ac The {@link ApplicationComponent} to be processed.
+   * @return A {@link Statistics} object representing the processing statistics.
+   * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
   private Statistics processApplicationComponent(ApplicationComponent ac) {
 
@@ -81,6 +87,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
     statistics.componentsTotal = 1;
 
     if (ac.getPackageUrl() != null) {
+      // Try to get component information from the available ComponentInfoAdapters
       ComponentInfo componentInfo = null;
       try {
         for (ComponentInfoAdapter cia : this.componentInfoAdapters) {
@@ -96,6 +103,13 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       if (componentInfo != null) {
         statistics.componentsWithComponentInfo = 1;
 
+        // Set dataStatus and traceabilityNotes of the ApplicationComponent
+        ac.setDataStatus(componentInfo.getDataStatus());
+        // Format and set the traceabilityNotes in the ApplicationComponent
+        String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
+        ac.setTraceabilityNotes(formattedTraceabilityNotes);
+
+        // Update the notice file URL and content if available
         if (componentInfo.getNoticeFilePath() != null) {
           ac.setNoticeFileUrl(componentInfo.getNoticeFilePath());
         }
@@ -104,6 +118,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
           ac.setNoticeFileContent(componentInfo.getNoticeFileContent());
         }
 
+        // Process licenses if available
         if (componentInfo.getLicenses().size() > 0) {
           ac.removeAllRawLicenses();
           for (LicenseInfo li : componentInfo.getLicenses()) {
@@ -141,6 +156,23 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       // can this happen?
     }
     return statistics;
+  }
+
+  /**
+   * Formats the traceability notes from the given {@link ComponentInfo} by concatenating to a single string using line
+   * separators.
+   *
+   * @param componentInfo The {@link ComponentInfo} containing the traceability notes.
+   * @return A formatted {@link String} representing the traceability notes, separated by the long separator.
+   */
+  public String formatTraceabilityNotes(ComponentInfo componentInfo) {
+
+    Collection<String> traceabilityNotes = componentInfo.getTraceabilityNotes();
+    if (traceabilityNotes != null && !traceabilityNotes.isEmpty()) {
+      return String.join(System.lineSeparator(), traceabilityNotes);
+    } else {
+      return "";
+    }
   }
 
   /**
