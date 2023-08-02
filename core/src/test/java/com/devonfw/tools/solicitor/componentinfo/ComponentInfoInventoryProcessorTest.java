@@ -1,8 +1,8 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class ComponentInfoInventoryProcessorTest {
 
     // Create a mock ComponentInfo with multiline traceability notes
     ComponentInfo componentInfo = Mockito.mock(ComponentInfo.class);
-    Collection<String> traceabilityNotes = Arrays.asList("Note 1", "Note 2", "Note 3");
+    List<String> traceabilityNotes = Arrays.asList("Note 1", "Note 2", "Note 3");
     Mockito.when(componentInfo.getTraceabilityNotes()).thenReturn(traceabilityNotes);
 
     // Create an instance of ComponentInfoInventoryProcessor
@@ -46,7 +46,7 @@ class ComponentInfoInventoryProcessorTest {
 
     // Create a mock ComponentInfo with an empty list of traceability notes
     ComponentInfo componentInfo = Mockito.mock(ComponentInfo.class);
-    Collection<String> emptyList = Collections.emptyList();
+    List<String> emptyList = Collections.emptyList();
     Mockito.when(componentInfo.getTraceabilityNotes()).thenReturn(emptyList);
 
     // Create an instance of ComponentInfoInventoryProcessor

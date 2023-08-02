@@ -1,6 +1,7 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Data structure which holds information about a component which comes from an external data source, like the results
@@ -77,5 +78,5 @@ public interface ComponentInfo {
    *
    * @return the traceability notes
    */
-  Collection<String> getTraceabilityNotes();
+  List<String> getTraceabilityNotes();
 }
