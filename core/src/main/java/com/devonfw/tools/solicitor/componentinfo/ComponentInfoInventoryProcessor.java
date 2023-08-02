@@ -170,7 +170,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
     // Check if componentInfo contains any traceability notes
     Collection<String> traceabilityNotes = componentInfo.getTraceabilityNotes();
-    if (!traceabilityNotes.isEmpty()) {
+    if (traceabilityNotes != null && !traceabilityNotes.isEmpty()) {
       // Append each traceability note with the long separator
       for (String note : traceabilityNotes) {
         formattedNotes.append(note).append(System.lineSeparator());

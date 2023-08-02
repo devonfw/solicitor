@@ -63,6 +63,27 @@ class ComponentInfoInventoryProcessorTest {
 
   /**
    * Test the {@link ComponentInfoInventoryProcessor#formatTraceabilityNotes(ComponentInfo)} method with a mock
+   * ComponentInfo containing null for traceability notes.
+   */
+  @Test
+  public void testFormatTraceabilityNotesWithNull() {
+
+    // Create a mock ComponentInfo with an empty list of traceability notes
+    ComponentInfo componentInfo = Mockito.mock(ComponentInfo.class);
+    Mockito.when(componentInfo.getTraceabilityNotes()).thenReturn(null);
+
+    // Create an instance of ComponentInfoInventoryProcessor
+    ComponentInfoInventoryProcessor processor = new ComponentInfoInventoryProcessor();
+
+    // Call the formatTraceabilityNotes method with the mocked ComponentInfo
+    String formattedNotes = processor.formatTraceabilityNotes(componentInfo);
+
+    // Assert that the formatted notes are an empty string
+    Assertions.assertEquals("", formattedNotes);
+  }
+
+  /**
+   * Test the {@link ComponentInfoInventoryProcessor#formatTraceabilityNotes(ComponentInfo)} method with a mock
    * ComponentInfo containing a long list of traceability notes.
    */
   @Test
