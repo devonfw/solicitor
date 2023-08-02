@@ -159,29 +159,20 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
   }
 
   /**
-   * Formats the traceability notes from the given {@link ComponentInfo}.
+   * Formats the traceability notes from the given {@link ComponentInfo} by concatenating to a single string using line
+   * separators.
    *
    * @param componentInfo The {@link ComponentInfo} containing the traceability notes.
    * @return A formatted {@link String} representing the traceability notes, separated by the long separator.
    */
   public String formatTraceabilityNotes(ComponentInfo componentInfo) {
 
-    StringBuilder formattedNotes = new StringBuilder();
-
-    // Check if componentInfo contains any traceability notes
     Collection<String> traceabilityNotes = componentInfo.getTraceabilityNotes();
     if (traceabilityNotes != null && !traceabilityNotes.isEmpty()) {
-      // Append each traceability note with the long separator
-      for (String note : traceabilityNotes) {
-        formattedNotes.append(note).append(System.lineSeparator());
-      }
-      // Remove the last separator to avoid an extra line separator at the end
-      formattedNotes.setLength(formattedNotes.length() - System.lineSeparator().length());
-      // Add the long separator after all traceability notes
-      formattedNotes.append(System.lineSeparator()).append("----------").append(System.lineSeparator());
+      return String.join(System.lineSeparator(), traceabilityNotes);
+    } else {
+      return "";
     }
-
-    return formattedNotes.toString();
   }
 
   /**
