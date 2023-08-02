@@ -63,6 +63,10 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private ContentProvider<WebContent> licenseContentProvider;
 
+  private String dataStatus;
+
+  private String traceabilityNotes;
+
   /** {@inheritDoc} */
   @Override
   public void addNormalizedLicense(NormalizedLicense normalizedLicense) {
@@ -111,7 +115,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
     return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl(), getOssHomepage(),
     getSourceRepoUrl(), getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(),
-    isOssModified() ? "true" : "false", getCopyrights(), getPackageDownloadUrl(), getSourceDownloadUrl() };
+    isOssModified() ? "true" : "false", getCopyrights(), getPackageDownloadUrl(), getSourceDownloadUrl(),
+    getDataStatus(), getTraceabilityNotes() };
   }
 
   /** {@inheritDoc} */
@@ -127,7 +132,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
     return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "sourceRepoUrl",
     "noticeFileUrl", "noticeFileContent", "usagePattern", "ossModified", "copyrights", "packageDownloadUrl",
-    "sourceDownloadUrl" };
+    "sourceDownloadUrl", "dataStatus", "traceabilityNotes" };
   }
 
   /** {@inheritDoc} */
@@ -392,6 +397,40 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void setSourceDownloadUrl(String sourceDownloadUrl) {
 
     this.sourceDownloadUrl = sourceDownloadUrl;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getDataStatus() {
+
+    return this.dataStatus;
+  }
+
+  /** {@inheritDoc} */
+
+  @Override
+  public String getTraceabilityNotes() {
+
+    return this.traceabilityNotes;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setDataStatus(String dataStatus) {
+
+    this.dataStatus = dataStatus;
+  }
+
+  /** {@inheritDoc} */
+
+  @Override
+  public void setTraceabilityNotes(String traceabilityNotes) {
+
+    this.traceabilityNotes = traceabilityNotes;
   }
 
   /**

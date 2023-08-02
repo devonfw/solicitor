@@ -147,6 +147,20 @@ public interface ApplicationComponent {
   public String getSourceDownloadUrl();
 
   /**
+   * This method gets the field <code>dataStatus</code>.
+   *
+   * @return the field dataStatus
+   */
+  String getDataStatus();
+
+  /**
+   * This method gets the field <code>traceabilityNotes</code>.
+   *
+   * @return the field traceabilityNotes
+   */
+  String getTraceabilityNotes();
+
+  /**
    * Sets the {@link Application}.
    *
    * @param application the application to which this {@link ApplicationComponent} belongs to.
@@ -253,6 +267,20 @@ public interface ApplicationComponent {
    * @param sourceDownloadUrl new value of {@link #getSourceDownloadUrl()}.
    */
   public void setSourceDownloadUrl(String sourceDownloadUrl);
+
+  /**
+   * This method sets the field <code>dataStatus</code>.
+   *
+   * @param dataStatus the new value of the field dataStatus
+   */
+  void setDataStatus(String dataStatus);
+
+  /**
+   * This method sets the field <code>traceabilityNotes</code>.
+   *
+   * @param traceabilityNotes the new value of the field traceabilityNotes
+   */
+  void setTraceabilityNotes(String traceabilityNotes);
 
   /**
    * Complete the data of this object by setting members which are derived from other members.
