@@ -155,8 +155,8 @@ The internal business data model consists of 6 entities:
 | copyrights | String | Copyright statements found in the components metadata / code (optional, see <<Experimental Scancode Integration>>)
 | packageDownloadUrl | String | URL for downloading the component (optional, see <<Experimental Scancode Integration>>)
 | sourceDownloadUrl | String | URL for downloading the sources of the component (optional, see <<Experimental Scancode Integration>>)
-| dataStatus | String |  Represents the quality status of the data associated with the component. It indicates the reliability, accuracy, and completeness of the information related to the component. Possible values may include "Validated", "Incomplete", "Outdated", "Unverified", "Verified", or other relevant categories depending on the specific context and requirements.  
-| traceabilityNotes | String |   Provides traceability notes related to the component. These notes offer insights into various aspects of the component, including its source and origin, version changes, integration details, licensing information, contributors, compatibility, and change history.
+| dataStatus | String | Optional status of the data associated with the component. Possible values TBD.
+| traceabilityNotes | String | Optional notes for tracing the information about this component back to its origin.
 |===
 
 ==== RawLicense
@@ -1578,8 +1578,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.12.0::
-* https://github.com/devonfw/solicitor/pull/183: Extension of the data structure "ComponentInfo" and "ScancodeComponentInfo" in Solicitor
-* https://github.com/devonfw/solicitor/issues/182: Addition new data quality and traceability attributes to the ComponentInfo data structure.
+* https://github.com/devonfw/solicitor/issues/182: Add new data quality and traceability attributes to the ComponentInfo data structure.
 
 Changes in 1.11.0::
 * https://github.com/devonfw/solicitor/pull/179: Added further name mapping rules.
