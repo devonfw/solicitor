@@ -1576,7 +1576,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.12.0::
-* https://github.com/devonfw/solicitor/issues/185: Fixed random order of rows in OSS-Inventory-Simple, which causes false differences to be marked.
+* https://github.com/devonfw/solicitor/issues/185: Fixed random ordering of rows in OSS-Inventory-Simple, which causes false differences to be marked.
 
 Changes in 1.11.0::
 * https://github.com/devonfw/solicitor/pull/179: Added further name mapping rules.
