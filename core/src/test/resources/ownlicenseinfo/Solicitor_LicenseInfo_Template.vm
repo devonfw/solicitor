@@ -113,7 +113,7 @@ are at least partly licensed via the following license of type $nl:
 		#if ($nlc)
 		<table border="1">
 		<tr><td>
-			<pre>$esc.html($nlc)</pre>
+			<pre>$esc.html($esc.wrap100to80($nlc))</pre>
  		</td></tr>
 		</table>
 		#else
