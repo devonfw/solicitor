@@ -111,14 +111,20 @@ public void readInventory(String type, String sourceUrl, Application application
              for (JsonNode licenseNode : licensesNode) {
             	 // Declared License can be written either in "id" or "name" field. Prefer "id" as its written in SPDX format.
                if (licenseNode.get("license").has("id")) {
-                     String licenseId = licenseNode.get("license").get("id").asText();
-                     String licenseUrl = licenseNode.get("license").get("url").asText();
-                     addRawLicense(appComponent, licenseId, licenseUrl, sourceUrl);
+              	 	if(licenseNode.get("license").has("url")) {
+              	 		addRawLicense(appComponent, licenseNode.get("license").get("id").asText(), licenseNode.get("license").get("url").asText(), sourceUrl);
+              	 	}
+              	 	else {
+              	 		addRawLicense(appComponent, licenseNode.get("license").get("id").asText(), null, sourceUrl);
+              	 	}
                } 
                else if (licenseNode.get("license").has("name")) {
-                     String licenseName = licenseNode.get("license").get("name").asText();
-                     String licenseUrl = licenseNode.get("license").get("url").asText();
-                     addRawLicense(appComponent, licenseName, licenseUrl, sourceUrl);
+                 	if(licenseNode.get("license").has("url")) {
+                 			addRawLicense(appComponent, licenseNode.get("license").get("name").asText(), licenseNode.get("license").get("url").asText(), sourceUrl);
+                 	}
+                 	else {
+                 		addRawLicense(appComponent, licenseNode.get("license").get("name").asText(), null, sourceUrl);
+                 	}
                }
              }
          }
