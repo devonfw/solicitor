@@ -86,7 +86,9 @@ public enum LogMessages {
   CURATIONS_PROCESSING(58, "Curations file '{}' exists. Applying curations."), //
   COMPONENTINFO_NO_LICENSES(59, "ComponentInfo for '{}' does not contain any license. Keeping licenses from Reader."), //
   CLASSPATHEXCEPTION_WITHOUT_GPL(60, "ClassPathException was found but no GPL License exists for {}"), //
-  CLASSPATHEXCEPTION_MULTIPLE_GPL(61, "ClassPathException was found but there are multiple GPL Licenses for {}");
+  CLASSPATHEXCEPTION_MULTIPLE_GPL(61, "ClassPathException was found but there are multiple GPL Licenses for {}"), //
+  CYCLONEDX_UNSUPPORTED_PURL(62,
+      "The CycloneDX file contains the PackageURL '{}' with unsupported type which will be ignored. Solicitor reports might be incomplete.");
 
   private final String message;
 
