@@ -917,11 +917,11 @@ In Solicitor, the data is read with the following part of the config
       "type" : "cdxgen",
       "source" : "file:$/input/sbom.json",
       "usagePattern" : "DYNAMIC_LINKING"
-      "repoType" : "maven" //or npm or pip or .NET
+      "repoType" : "maven" //or any other valid repoType
    	} ]
 ----
 
-NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl. 
+NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl.
 
 NOTE: In the "repoType" field, only ONE type is allowed to be set. In case the SBOM contains packages of multiple types, create a separate SBOM and reader configuration for each type.
 
@@ -1389,17 +1389,17 @@ Results are stored in subdirectory `Source` of the directory `output` and is org
 ===== Origin file
 The Scancode integration scripts try to download ApplicationComponent sources from default URLs derived from the PackageUrl (e.g. Maven Central). In cases where the sources are not available at these locations, the download will fail (and the subsequent source scan will be skipped). In this case it is possible to manually download the sources from some other location and store it in the directory structure. Restarting the Scancode integration script might then perform the source scan.
 
-To be able to document the (non default) origin of the ApplicationComponent sources a file `origin.yaml` is created in the components directory in the file system. If the failed source download has been performed manually it is possible to edit this file and correct the data given in this file. 
+To be able to document the (non default) origin of the ApplicationComponent sources a file `origin.yaml` is created in the components directory in the file system. If the failed source download has been performed manually it is possible to edit this file and correct the data given in this file.
 
 [source,yaml]
 ----
 # This file contains metadata about the orgin of the package and the sources.
 # This file was automatically created but might manually be edited if the contained data is not correct
 sourceDownloadUrl: https://url/pointing/to/the/source/archive.jar  <1>
-packageDownloadUrl: https://url/pointing/to/the/binary/archive.jar <2>         
+packageDownloadUrl: https://url/pointing/to/the/binary/archive.jar <2>
 # note: to add comments: write them here and remove the hash at the beginning of the line (not yet processed by Solicitor)
 ----
-<1> URL for downloading the sources - will be available as property `ApplicationComponent.sourceDownloadUrl` in the Solicitor data model. 
+<1> URL for downloading the sources - will be available as property `ApplicationComponent.sourceDownloadUrl` in the Solicitor data model.
 <2> URL for downloading the binaries - will be available as property `ApplicationComponent.packageDownloadUrl` in the Solicitor data model.
 
 The content of the file `origin.yaml` currently just affects the above given two properties, it does not affect the downloading of sources by the scripts.
@@ -1413,8 +1413,8 @@ _Solicitor_ will try to look up ScanCode information from the directory tree in 
 * License information (including URL of license text) as obtained from the Readers is replaced by the license info found by ScanCode
 * Copyrights are taken from ScanCode results
 * Info on NOTICE file is taken from the ScanCode results
-* If the ScanCode results contain information about project URLs this is stored as `sourceRepoUrl` and/or `ossHomepage` 
-* `sourceDownloadUrl`  and `packageDownloadUrl` are set to the values given in file `origin.yaml` 
+* If the ScanCode results contain information about project URLs this is stored as `sourceRepoUrl` and/or `ossHomepage`
+* `sourceDownloadUrl`  and `packageDownloadUrl` are set to the values given in file `origin.yaml`
 
 ==== Output
 Main target of the additional information obtained from ScanCode is currently the new report `Attributions_PROJECTNAME.html` which lists
@@ -1619,7 +1619,7 @@ Changes in 1.11.0::
 * https://github.com/devonfw/solicitor/issues/168: Fixed NullPointerException for blank license in License URL Guessing.
 
 Changes in 1.10.0::
-* https://github.com/devonfw/solicitor/issues/175: Introduce new properties `packageDownloadUrl` and `sourceDownloadUrl` in `ApplicationComponent`. Process file `origin.yaml` within <<Experimental Scancode Integration>> to be able to set these properties to non default values.  
+* https://github.com/devonfw/solicitor/issues/175: Introduce new properties `packageDownloadUrl` and `sourceDownloadUrl` in `ApplicationComponent`. Process file `origin.yaml` within <<Experimental Scancode Integration>> to be able to set these properties to non default values.
 * https://github.com/devonfw/solicitor/issues/177: Contents of local resources (`file:`) are no longer cached in FilesystemCachingContentProvider.
 
 Changes in 1.9.0::
