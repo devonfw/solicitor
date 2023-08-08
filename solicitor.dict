@@ -1,7 +1,9 @@
 auth
 Capsulate
+CDXGEN
 cfgdir
 conf
+CycloneDX
 deliverables
 Dloader
 Dpropertyname
@@ -23,6 +25,7 @@ nd
 ort
 oss
 RHS
+SBOMs
 scancode
 SOLI
 sql

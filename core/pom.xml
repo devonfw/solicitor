@@ -170,7 +170,6 @@
       <type>pdf</type>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
 
   <build>
