@@ -25,4 +25,5 @@ order by
 	UPPER("artifactId"),
 	UPPER("version"),
 	UPPER("effectiveNormalizedLicense"),
-	UPPER("normalizedLicense")
+	UPPER("normalizedLicense"),
+	UPPER("declaredLicense")

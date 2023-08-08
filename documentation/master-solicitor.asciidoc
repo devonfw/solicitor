@@ -155,6 +155,8 @@ The internal business data model consists of 6 entities:
 | copyrights | String | Copyright statements found in the components metadata / code (optional, see <<Experimental Scancode Integration>>)
 | packageDownloadUrl | String | URL for downloading the component (optional, see <<Experimental Scancode Integration>>)
 | sourceDownloadUrl | String | URL for downloading the sources of the component (optional, see <<Experimental Scancode Integration>>)
+| dataStatus | String | Optional status of the data associated with the component. Possible values TBD.
+| traceabilityNotes | String | Optional notes for tracing the information about this component back to its origin.
 |===
 
 ==== RawLicense
@@ -1611,7 +1613,11 @@ Spring beans implementing this interface will be called at certain points in the
 
 [appendix]
 == Release Notes
+Changes in 1.13.0::
+
 Changes in 1.12.0::
+* https://github.com/devonfw/solicitor/issues/182: Add new data quality and traceability attributes to the ComponentInfo data structure.
+* https://github.com/devonfw/solicitor/issues/185: Fixed random ordering of rows in OSS-Inventory-Simple, which causes false differences to be marked.
 * https://github.com/devonfw/solicitor/issues/189: Added a CycloneDX Reader, to enable reading SBOMs in CycloneDX 1.4 or 1.5 format.
 
 Changes in 1.11.0::
