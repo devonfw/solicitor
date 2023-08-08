@@ -917,10 +917,13 @@ In Solicitor, the data is read with the following part of the config
       "type" : "cdxgen",
       "source" : "file:$/input/sbom.json",
       "usagePattern" : "DYNAMIC_LINKING"
+      "repoType" : "maven" //or npm or pip or .NET
    	} ]
 ----
 
-Note: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl.
+NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl. 
+
+NOTE: In the "repoType" field, only ONE type is allowed to be set. In case the SBOM contains packages of multiple types, create a seperate SBOM and reader configuration for each type.
 
 == Working with Decision Tables
 
