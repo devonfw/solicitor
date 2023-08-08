@@ -916,7 +916,7 @@ link:files/sbom.json[]
 In Solicitor, the data is read with the following part of the config
 ----
 "readers" : [ {
-      "type" : "cdxgen",
+      "type" : "cyclonedx",
       "source" : "file:$/input/sbom.json",
       "usagePattern" : "DYNAMIC_LINKING"
       "repoType" : "maven" //or any other valid repoType
