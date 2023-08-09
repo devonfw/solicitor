@@ -28,26 +28,23 @@ public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
   	return (PackageURL.StandardTypes.NUGET.equals(packageURL.getType()));
   }
 
-	// https://www.nuget.org/api/v2/package/{packageID}/{packageVersion}
-	// https://www.nuget.org/api/v2/package/Castle.Core/4.4.1
-	// pkg:nuget/Castle.Core@4.4.1
-  
+
+  // Nuget does not have a standardized API to fetch the source code
+  // This needs to be handled by another component (LicenseUrlGuesser?)
   @Override
   public String doSourceDownloadUrlFor(PackageURL purl) {
 
-	  StringBuffer sb = new StringBuffer(this.repoBaseUrl);				// https://www.nuget.org/api/v2/package/
-	  sb.append(purl.getName()).append("/");											// {packageID}/
-	  sb.append(purl.getVersion());																// {packageVersion}
-
-	  return sb.toString();
+	  return null;
   }
 
+	// https://www.nuget.org/api/v2/package/{packageID}/{packageVersion}
+	// Example: https://www.nuget.org/api/v2/package/Castle.Core/4.4.1
 	@Override
 	public String doPackageDownloadUrlFor(PackageURL purl) {
 	
-	  StringBuffer sb = new StringBuffer(this.repoBaseUrl);
-	  sb.append(purl.getName()).append("/");
-	  sb.append(purl.getVersion());
+	  StringBuffer sb = new StringBuffer(this.repoBaseUrl);				// https://www.nuget.org/api/v2/package/
+	  sb.append(purl.getName()).append("/");											// {packageID}/
+	  sb.append(purl.getVersion());																// {packageVersion}
 
 	  return sb.toString();
 	}
