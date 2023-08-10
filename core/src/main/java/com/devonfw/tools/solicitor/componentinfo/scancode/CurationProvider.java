@@ -32,14 +32,15 @@ public class CurationProvider {
 
   private boolean curationsExistenceLogged;
 
-  @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
 
   /**
    * The constructor.
    */
-  public CurationProvider() {
+  @Autowired
+  public CurationProvider(AllKindsPackageURLHandler packageURLHandler) {
 
+    this.packageURLHandler = packageURLHandler;
   }
 
   /**

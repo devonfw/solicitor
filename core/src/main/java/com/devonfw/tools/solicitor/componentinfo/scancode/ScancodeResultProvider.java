@@ -32,16 +32,19 @@ public class ScancodeResultProvider {
 
   private String repoBasePath;
 
-  @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
 
-  @Autowired
   private DirectUrlWebContentProvider contentProvider;
 
   /**
    * The constructor.
    */
-  public ScancodeResultProvider() {
+  @Autowired
+  public ScancodeResultProvider(DirectUrlWebContentProvider contentProvider,
+      AllKindsPackageURLHandler packageURLHandler) {
+
+    this.contentProvider = contentProvider;
+    this.packageURLHandler = packageURLHandler;
 
   }
 

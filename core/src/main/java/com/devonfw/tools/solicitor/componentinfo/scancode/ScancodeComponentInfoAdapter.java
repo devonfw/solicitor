@@ -26,18 +26,19 @@ public class ScancodeComponentInfoAdapter implements ComponentInfoAdapter {
 
   private boolean featureLogged = false;
 
-  @Autowired
   private ScancodeComponentInfoMapper scancodeComponentInfoMapper;
 
-  @Autowired
   private ComponentInfoCurator componentInfoCurator;
 
   /**
    * The constructor.
    */
+  @Autowired
+  public ScancodeComponentInfoAdapter(ScancodeComponentInfoMapper scancodeComponentInfoMapper,
+      ComponentInfoCurator componentInfoCurator) {
 
-  public ScancodeComponentInfoAdapter() {
-
+    this.scancodeComponentInfoMapper = scancodeComponentInfoMapper;
+    this.componentInfoCurator = componentInfoCurator;
   }
 
   /**

@@ -36,16 +36,19 @@ public class ScancodeComponentInfoMapper {
 
   private double licenseToTextRatioToTakeCompleteFile = 90;
 
-  @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
 
-  @Autowired
   private ScancodeResultProvider scancodeResultProvider;
 
   /**
    * The constructor.
    */
-  public ScancodeComponentInfoMapper() {
+  @Autowired
+  public ScancodeComponentInfoMapper(ScancodeResultProvider scancodeResultProvider,
+      AllKindsPackageURLHandler packageURLHandler) {
+
+    this.scancodeResultProvider = scancodeResultProvider;
+    this.packageURLHandler = packageURLHandler;
 
   }
 

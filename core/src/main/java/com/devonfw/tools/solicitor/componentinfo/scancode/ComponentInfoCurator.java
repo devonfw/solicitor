@@ -18,17 +18,18 @@ public class ComponentInfoCurator {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentInfoCurator.class);
 
-  @Autowired
   private DirectUrlWebContentProvider contentProvider;
 
-  @Autowired
   private CurationProvider curationProvider;
 
   /**
    * The constructor.
    */
-  public ComponentInfoCurator() {
+  @Autowired
+  public ComponentInfoCurator(CurationProvider curationProvider, DirectUrlWebContentProvider contentProvider) {
 
+    this.curationProvider = curationProvider;
+    this.contentProvider = contentProvider;
   }
 
   /**
