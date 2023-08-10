@@ -15,6 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
@@ -55,17 +56,21 @@ public class ScancodeFileAdapter implements ComponentInfoAdapter {
 
   private double licenseToTextRatioToTakeCompleteFile = 90;
 
-  @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
 
-  @Autowired
   private DirectUrlWebContentProvider contentProvider;
 
   /**
    * The constructor.
+   *
+   * @param packageURLHandler the {@link AllKindsPackageURLHandler} to use
+   * @param contentProvider the {@link ContentProvider} to use
    */
+  @Autowired
+  public ScancodeFileAdapter(AllKindsPackageURLHandler packageURLHandler, DirectUrlWebContentProvider contentProvider) {
 
-  public ScancodeFileAdapter() {
+    this.packageURLHandler = packageURLHandler;
+    this.contentProvider = contentProvider;
 
   }
 
