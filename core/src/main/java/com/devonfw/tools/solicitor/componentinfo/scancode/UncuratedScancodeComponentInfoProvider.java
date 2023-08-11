@@ -12,19 +12,21 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.curating.UncuratedComponentInfoProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.packageurl.PackageURL;
 
 /**
- * TODO ohecker This type ...
+ * {@link UncuratedComponentInfoProvider} which delivers data based on scancode data.
  *
  */
 @Component
-public class ScancodeComponentInfoMapper {
+public class UncuratedScancodeComponentInfoProvider implements UncuratedComponentInfoProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ScancodeComponentInfoAdapter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UncuratedScancodeComponentInfoProvider.class);
 
   private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -38,16 +40,19 @@ public class ScancodeComponentInfoMapper {
 
   private AllKindsPackageURLHandler packageURLHandler;
 
-  private ScancodeResultProvider scancodeResultProvider;
+  private ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider;
 
   /**
    * The constructor.
+   *
+   * @param fileScancodeRawComponentInfoProvider the provide for the raw scancode data
+   * @param packageURLHandler the handler for dealing with {@link PackageURL}s.
    */
   @Autowired
-  public ScancodeComponentInfoMapper(ScancodeResultProvider scancodeResultProvider,
+  public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider,
       AllKindsPackageURLHandler packageURLHandler) {
 
-    this.scancodeResultProvider = scancodeResultProvider;
+    this.fileScancodeRawComponentInfoProvider = fileScancodeRawComponentInfoProvider;
     this.packageURLHandler = packageURLHandler;
 
   }
@@ -93,9 +98,10 @@ public class ScancodeComponentInfoMapper {
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
-  public ScancodeComponentInfo determineScancodeInformation(String packageUrl) throws ComponentInfoAdapterException {
+  @Override
+  public ScancodeComponentInfo getComponentInfo(String packageUrl) throws ComponentInfoAdapterException {
 
-    ScancodeRawComponentInfo rawScancodeData = this.scancodeResultProvider.readScancodeData(packageUrl);
+    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
     if (rawScancodeData == null) {
       return null;
     }
@@ -218,7 +224,7 @@ public class ScancodeComponentInfoMapper {
         licenseFilePath = normalizeLicenseUrl(packageUrl, licenseFilePath);
         String givenLicenseText = null;
         if (licenseFilePath != null && licenseFilePath.startsWith("file:")) {
-          givenLicenseText = this.scancodeResultProvider.retrieveContent(licenseFilePath);
+          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(licenseFilePath);
         }
 
         componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseFilePath,
@@ -231,7 +237,7 @@ public class ScancodeComponentInfoMapper {
     if (componentScancodeInfos.getNoticeFilePath() != null
         && componentScancodeInfos.getNoticeFilePath().startsWith("file:")) {
       componentScancodeInfos.setNoticeFileContent(
-          this.scancodeResultProvider.retrieveContent(componentScancodeInfos.getNoticeFilePath()));
+          this.fileScancodeRawComponentInfoProvider.retrieveContent(componentScancodeInfos.getNoticeFilePath()));
     }
     return componentScancodeInfos;
   }

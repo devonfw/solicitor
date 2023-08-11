@@ -1,5 +1,6 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -206,7 +207,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private String dataStatus;
 
-  private List<String> traceabilityNotes;
+  private List<String> traceabilityNotes = new ArrayList<>();
 
   /**
    * The constructor.

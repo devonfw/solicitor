@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.componentinfo.scancode;
+package com.devonfw.tools.solicitor.componentinfo.curating;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,12 +19,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
- * TODO ohecker This type ...
+ * Implementation of the {@link CurationProvider} interface which reads curation data for all packages from a single
+ * file.
  *
  */
 @Component
-public class CurationProvider {
-  private static final Logger LOG = LoggerFactory.getLogger(CurationProvider.class);
+public class SingleFileCurationProvider implements CurationProvider {
+  private static final Logger LOG = LoggerFactory.getLogger(SingleFileCurationProvider.class);
 
   private static final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
@@ -36,18 +37,23 @@ public class CurationProvider {
 
   /**
    * The constructor.
+   *
+   * @param packageURLHandler the packageURLHandler for handling packageURLs.
    */
   @Autowired
-  public CurationProvider(AllKindsPackageURLHandler packageURLHandler) {
+  public SingleFileCurationProvider(AllKindsPackageURLHandler packageURLHandler) {
 
     this.packageURLHandler = packageURLHandler;
   }
 
   /**
-   * @param packageUrl
-   * @return
-   * @throws ComponentInfoAdapterException
+   * Return the curation data for a given packe
+   *
+   * @param packageUrl identifies the package
+   * @return the curation data if it existes or <code>null</code> if no curations exist for the package.
+   * @throws ComponentInfoAdapterException if something unexpected happens
    */
+  @Override
   public JsonNode findCurations(String packageUrl) throws ComponentInfoAdapterException {
 
     JsonNode foundCurations = null;

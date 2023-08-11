@@ -15,6 +15,9 @@ import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
+import com.devonfw.tools.solicitor.componentinfo.curating.ComponentInfoCurator;
+import com.devonfw.tools.solicitor.componentinfo.curating.ComponentInfoCuratorImpl;
+import com.devonfw.tools.solicitor.componentinfo.curating.SingleFileCurationProvider;
 
 /**
  * This class contains JUnit test methods for the {@link ScancodeComponentInfoAdapter} class.
@@ -24,13 +27,13 @@ class ScancodeComponentInfoAdapterTest {
   // the object under test
   ScancodeComponentInfoAdapter scancodeComponentInfoAdapter;
 
-  ScancodeComponentInfoMapper scancodeComponentInfoMapper;
+  UncuratedScancodeComponentInfoProvider uncuratedScancodeComponentInfoProvider;
 
-  ScancodeResultProvider scancodeResultProvider;
+  FileScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
 
-  ComponentInfoCurator componentInfoCurator;
+  ComponentInfoCurator componentInfoCuratorImpl;
 
-  CurationProvider curationProvider;
+  SingleFileCurationProvider singleFileCurationProvider;
 
   @BeforeEach
   public void setup() {
@@ -41,21 +44,21 @@ class ScancodeComponentInfoAdapterTest {
         .thenReturn("pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0");
     DirectUrlWebContentProvider contentProvider = new DirectUrlWebContentProvider(false);
 
-    this.scancodeResultProvider = new ScancodeResultProvider(contentProvider, packageURLHandler);
-    this.scancodeResultProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
+    this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(contentProvider, packageURLHandler);
+    this.fileScancodeRawComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
 
-    this.scancodeComponentInfoMapper = new ScancodeComponentInfoMapper(this.scancodeResultProvider, packageURLHandler);
-    this.scancodeComponentInfoMapper.setMinLicensefileNumberOfLines(5);
-    this.scancodeComponentInfoMapper.setMinLicenseScore(90.0);
-    this.scancodeComponentInfoMapper.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
+    this.uncuratedScancodeComponentInfoProvider = new UncuratedScancodeComponentInfoProvider(this.fileScancodeRawComponentInfoProvider, packageURLHandler);
+    this.uncuratedScancodeComponentInfoProvider.setMinLicensefileNumberOfLines(5);
+    this.uncuratedScancodeComponentInfoProvider.setMinLicenseScore(90.0);
+    this.uncuratedScancodeComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
 
-    this.curationProvider = new CurationProvider(packageURLHandler);
-    this.curationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
+    this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
+    this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
-    this.componentInfoCurator = new ComponentInfoCurator(this.curationProvider, contentProvider);
+    this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(this.singleFileCurationProvider, contentProvider);
 
-    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.scancodeComponentInfoMapper,
-        this.componentInfoCurator);
+    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.uncuratedScancodeComponentInfoProvider,
+        this.componentInfoCuratorImpl);
     this.scancodeComponentInfoAdapter.setFeatureFlag(true);
 
   }
@@ -87,7 +90,7 @@ class ScancodeComponentInfoAdapterTest {
   public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException {
 
     // given
-    this.curationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
+    this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter

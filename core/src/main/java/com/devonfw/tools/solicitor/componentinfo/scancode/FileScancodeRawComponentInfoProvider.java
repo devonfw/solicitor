@@ -20,13 +20,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
- * TODO ohecker This type ...
+ * Provider for {@link ScancodeRawComponentInfo} which reads the scancode (and supplementary data) from the file system.
  *
  */
 @Component
-public class ScancodeResultProvider {
+public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponentInfoPovider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ScancodeResultProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FileScancodeRawComponentInfoProvider.class);
 
   private static final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
@@ -38,9 +38,12 @@ public class ScancodeResultProvider {
 
   /**
    * The constructor.
+   *
+   * @param contentProvider content provider for accessing source files of the packag
+   * @param packageURLHandler handler to deal with PackageURLs.
    */
   @Autowired
-  public ScancodeResultProvider(DirectUrlWebContentProvider contentProvider,
+  public FileScancodeRawComponentInfoProvider(DirectUrlWebContentProvider contentProvider,
       AllKindsPackageURLHandler packageURLHandler) {
 
     this.contentProvider = contentProvider;
@@ -59,6 +62,14 @@ public class ScancodeResultProvider {
     this.repoBasePath = repoBasePath;
   }
 
+  /**
+   * Retrieve the {@link ScancodeRawComponentInfo} for the package given by its PackageURL.
+   *
+   * @param packageUrl the identifier for the package
+   * @return the raw data base on scancode and supplemental data. <code>null</code> if no data is available.
+   * @throws ComponentInfoAdapterException is something unexpected happens
+   */
+  @Override
   public ScancodeRawComponentInfo readScancodeData(String packageUrl) throws ComponentInfoAdapterException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
@@ -126,6 +137,7 @@ public class ScancodeResultProvider {
     }
   }
 
+  @Override
   public String retrieveContent(String path) {
 
     return this.contentProvider.getContentForUri(path).getContent();

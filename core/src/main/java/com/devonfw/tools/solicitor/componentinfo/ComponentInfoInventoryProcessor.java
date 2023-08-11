@@ -47,7 +47,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentInfoInventoryProcessor.class);
 
-  private ComponentInfoAdapter[] componentInfoAdapters;
+  private ComponentInfoProvider[] componentInfoAdapters;
 
   private ModelFactory modelFactory;
 
@@ -90,7 +90,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       // Try to get component information from the available ComponentInfoAdapters
       ComponentInfo componentInfo = null;
       try {
-        for (ComponentInfoAdapter cia : this.componentInfoAdapters) {
+        for (ComponentInfoProvider cia : this.componentInfoAdapters) {
           componentInfo = cia.getComponentInfo(ac.getPackageUrl());
           // stop querying further adapters if some info was returned
           if (componentInfo != null) {
@@ -217,7 +217,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * @param componentInfoAdapters new value of <code>componentInfoAdapters</code>.
    */
   @Autowired
-  public void setComponentInfoAdapters(ComponentInfoAdapter[] componentInfoAdapters) {
+  public void setComponentInfoAdapters(ComponentInfoProvider[] componentInfoAdapters) {
 
     this.componentInfoAdapters = componentInfoAdapters;
   }
