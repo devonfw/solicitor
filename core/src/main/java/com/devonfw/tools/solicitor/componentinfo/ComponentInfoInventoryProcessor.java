@@ -19,8 +19,8 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 
 /**
  * An {@link InventoryProcessor} which looks up license information for the found application components / packages at
- * some external data source , like a scancode file store. If license information is found then the license, copyright
- * and notice file information of the model will be replaced by the data obtained from this source.
+ * external data source by the use of {@link ComponentInfoAdapter}s. If license information is found then the license,
+ * copyright and notice file information of the model will be replaced by the data obtained from this source.
  *
  */
 @Component
@@ -47,7 +47,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentInfoInventoryProcessor.class);
 
-  private ComponentInfoProvider[] componentInfoAdapters;
+  private ComponentInfoAdapter[] componentInfoAdapters;
 
   private ModelFactory modelFactory;
 
@@ -217,7 +217,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * @param componentInfoAdapters new value of <code>componentInfoAdapters</code>.
    */
   @Autowired
-  public void setComponentInfoAdapters(ComponentInfoProvider[] componentInfoAdapters) {
+  public void setComponentInfoAdapters(ComponentInfoAdapter[] componentInfoAdapters) {
 
     this.componentInfoAdapters = componentInfoAdapters;
   }
