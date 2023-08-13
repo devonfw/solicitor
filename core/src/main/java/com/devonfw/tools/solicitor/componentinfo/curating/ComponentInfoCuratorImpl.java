@@ -10,7 +10,8 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.DefaultLicenseInfoImpl;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.devonfw.tools.solicitor.componentinfo.curating.model.ComponentInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.curating.model.LicenseInfoCuration;
 
 /**
  * This {@link ComponentInfoCurator} curates the {@link ComponentInfo} dat based on the data obtained from a
@@ -52,10 +53,10 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
   @Override
   public ComponentInfo curate(String packageUrl, ComponentInfo componentInfo) throws ComponentInfoAdapterException {
 
-    JsonNode foundCurations = this.curationProvider.findCurations(packageUrl);
-    if (foundCurations != null) {
+    ComponentInfoCuration foundCuration = this.curationProvider.findCurations(packageUrl);
+    if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
-      applyFoundCurations(componentInfoImpl, foundCurations);
+      applyFoundCurations(componentInfoImpl, foundCuration);
       return componentInfoImpl;
     } else {
       return componentInfo;
@@ -63,24 +64,22 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
 
   }
 
-  private void applyFoundCurations(DefaultComponentInfoImpl componentInfo, JsonNode curations) {
+  private void applyFoundCurations(DefaultComponentInfoImpl componentInfo, ComponentInfoCuration curation) {
 
-    if (curations.get("copyrights") != null) {
+    if (curation.getCopyrights() != null) {
       componentInfo.clearCopyrights();
-      int authorCount = curations.get("copyrights").size();
-      for (int i = 0; i < authorCount; i++) {
-        componentInfo.addCopyright(curations.get("copyrights").get(i).asText());
+      for (String copyright : curation.getCopyrights()) {
+        componentInfo.addCopyright(copyright);
       }
     }
-    if (curations.get("url") != null) {
-      String url = curations.get("url").asText();
-      componentInfo.setSourceRepoUrl(url);
+    if (curation.getUrl() != null) {
+      componentInfo.setSourceRepoUrl(curation.getUrl());
     }
-    if (curations.get("licenses") != null) {
+    if (curation.getLicenses() != null) {
       componentInfo.clearLicenses();
-      for (JsonNode licenseNode : curations.get("licenses")) {
-        String license = licenseNode.get("license").asText();
-        String url = licenseNode.get("url").asText();
+      for (LicenseInfoCuration licenseCuration : curation.getLicenses()) {
+        String license = licenseCuration.getLicense();
+        String url = licenseCuration.getUrl();
         String givenLicenseText = null;
         if (url != null && url.startsWith("file:")) {
           givenLicenseText = this.contentProvider.getContentForUri(url).getContent();

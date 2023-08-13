@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.devonfw.tools.solicitor.componentinfo.curating.model.ComponentInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.curating.model.CurationList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -27,7 +28,12 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 public class SingleFileCurationProvider implements CurationProvider {
   private static final Logger LOG = LoggerFactory.getLogger(SingleFileCurationProvider.class);
 
-  private static final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+  private static final ObjectMapper yamlMapper;
+
+  static {
+    yamlMapper = new ObjectMapper(new YAMLFactory());
+    yamlMapper.findAndRegisterModules();
+  }
 
   private String curationsFileName;
 
@@ -54,9 +60,9 @@ public class SingleFileCurationProvider implements CurationProvider {
    * @throws ComponentInfoAdapterException if something unexpected happens
    */
   @Override
-  public JsonNode findCurations(String packageUrl) throws ComponentInfoAdapterException {
+  public ComponentInfoCuration findCurations(String packageUrl) throws ComponentInfoAdapterException {
 
-    JsonNode foundCurations = null;
+    ComponentInfoCuration foundCuration = null;
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
 
@@ -75,12 +81,12 @@ public class SingleFileCurationProvider implements CurationProvider {
       }
       try (InputStream isc = new FileInputStream(this.curationsFileName)) {
 
-        JsonNode curationsObj = yamlMapper.readTree(isc);
+        CurationList curationList = yamlMapper.readValue(isc, CurationList.class);
 
-        for (JsonNode curations : curationsObj.get("artifacts")) {
-          String component = curations.get("name").asText();
+        for (ComponentInfoCuration curation : curationList.getArtifacts()) {
+          String component = curation.getName();
           if (component.equals(packagePathPart)) {
-            foundCurations = curations;
+            foundCuration = curation;
             break;
           }
         }
@@ -90,7 +96,7 @@ public class SingleFileCurationProvider implements CurationProvider {
       }
 
     }
-    return foundCurations;
+    return foundCuration;
   }
 
   /**

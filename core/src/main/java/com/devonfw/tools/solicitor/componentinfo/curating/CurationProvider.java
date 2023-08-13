@@ -2,7 +2,7 @@ package com.devonfw.tools.solicitor.componentinfo.curating;
 
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.devonfw.tools.solicitor.componentinfo.curating.model.ComponentInfoCuration;
 
 /**
  * Provides curation data for {@link ComponentInfo} data.
@@ -17,6 +17,6 @@ public interface CurationProvider {
    * @return the curation data if it exists or <code>null</code> if no curations exist for the package.
    * @throws ComponentInfoAdapterException if something unexpected happens
    */
-  JsonNode findCurations(String packageUrl) throws ComponentInfoAdapterException;
+  ComponentInfoCuration findCurations(String packageUrl) throws ComponentInfoAdapterException;
 
 }
