@@ -15,9 +15,9 @@ import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
-import com.devonfw.tools.solicitor.componentinfo.curating.ComponentInfoCurator;
-import com.devonfw.tools.solicitor.componentinfo.curating.ComponentInfoCuratorImpl;
-import com.devonfw.tools.solicitor.componentinfo.curating.SingleFileCurationProvider;
+import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCurator;
+import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCuratorImpl;
+import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 
 /**
  * This class contains JUnit test methods for the {@link ScancodeComponentInfoAdapter} class.

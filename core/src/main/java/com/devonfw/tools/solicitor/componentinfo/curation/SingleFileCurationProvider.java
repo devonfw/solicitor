@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.componentinfo.curating;
+package com.devonfw.tools.solicitor.componentinfo.curation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.devonfw.tools.solicitor.componentinfo.curating.model.ComponentInfoCuration;
-import com.devonfw.tools.solicitor.componentinfo.curating.model.CurationList;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.CurationList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 

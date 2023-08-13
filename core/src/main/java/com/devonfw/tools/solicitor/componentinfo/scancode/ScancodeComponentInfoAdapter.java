@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
-import com.devonfw.tools.solicitor.componentinfo.curating.ComponentInfoCurator;
-import com.devonfw.tools.solicitor.componentinfo.curating.CuratingComponentInfoAdapter;
+import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCurator;
+import com.devonfw.tools.solicitor.componentinfo.curation.CuratingComponentInfoAdapter;
 
 /**
  * Adapter for providing curated {@link ComponentInfo} based on Scancode data.

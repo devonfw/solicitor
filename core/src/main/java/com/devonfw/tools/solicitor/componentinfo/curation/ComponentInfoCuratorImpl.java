@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.componentinfo.curating;
+package com.devonfw.tools.solicitor.componentinfo.curation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +10,8 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.DefaultLicenseInfoImpl;
-import com.devonfw.tools.solicitor.componentinfo.curating.model.ComponentInfoCuration;
-import com.devonfw.tools.solicitor.componentinfo.curating.model.LicenseInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.LicenseInfoCuration;
 
 /**
  * This {@link ComponentInfoCurator} curates the {@link ComponentInfo} dat based on the data obtained from a

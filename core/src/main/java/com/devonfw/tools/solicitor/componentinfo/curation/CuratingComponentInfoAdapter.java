@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.componentinfo.curating;
+package com.devonfw.tools.solicitor.componentinfo.curation;
 
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;

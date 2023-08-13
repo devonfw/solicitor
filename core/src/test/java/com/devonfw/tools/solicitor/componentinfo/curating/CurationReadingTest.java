@@ -9,8 +9,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import com.devonfw.tools.solicitor.componentinfo.curating.model.ComponentInfoCuration;
-import com.devonfw.tools.solicitor.componentinfo.curating.model.CurationList;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.CurationList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 

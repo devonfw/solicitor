@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.componentinfo.curating.model;
+package com.devonfw.tools.solicitor.componentinfo.curation.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

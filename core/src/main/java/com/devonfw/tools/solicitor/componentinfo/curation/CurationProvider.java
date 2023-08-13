@@ -1,8 +1,8 @@
-package com.devonfw.tools.solicitor.componentinfo.curating;
+package com.devonfw.tools.solicitor.componentinfo.curation;
 
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.devonfw.tools.solicitor.componentinfo.curating.model.ComponentInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 
 /**
  * Provides curation data for {@link ComponentInfo} data.
