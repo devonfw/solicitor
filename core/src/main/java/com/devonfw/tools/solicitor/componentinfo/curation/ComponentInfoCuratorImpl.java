@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
+import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
@@ -23,7 +23,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentInfoCuratorImpl.class);
 
-  private DirectUrlWebContentProvider contentProvider;
+  private ComponentContentProvider componentContentProvider;
 
   private CurationProvider curationProvider;
 
@@ -31,13 +31,14 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
    * The constructor.
    *
    * @param curationProvider the curation provider used to get the curations
-   * @param contentProvider the content provider used for loading referenced file data
+   * @param componentContentProvider the provider used for loading referenced subpath data from the component
    */
   @Autowired
-  public ComponentInfoCuratorImpl(CurationProvider curationProvider, DirectUrlWebContentProvider contentProvider) {
+  public ComponentInfoCuratorImpl(CurationProvider curationProvider,
+      ComponentContentProvider componentContentProvider) {
 
     this.curationProvider = curationProvider;
-    this.contentProvider = contentProvider;
+    this.componentContentProvider = componentContentProvider;
   }
 
   /**
@@ -56,7 +57,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
     ComponentInfoCuration foundCuration = this.curationProvider.findCurations(packageUrl);
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
-      applyFoundCurations(componentInfoImpl, foundCuration);
+      applyFoundCurations(packageUrl, componentInfoImpl, foundCuration);
       return componentInfoImpl;
     } else {
       return componentInfo;
@@ -64,7 +65,8 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
 
   }
 
-  private void applyFoundCurations(DefaultComponentInfoImpl componentInfo, ComponentInfoCuration curation) {
+  private void applyFoundCurations(String packageUrl, DefaultComponentInfoImpl componentInfo,
+      ComponentInfoCuration curation) {
 
     if (curation.getCopyrights() != null) {
       componentInfo.clearCopyrights();
@@ -81,8 +83,8 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
         String license = licenseCuration.getLicense();
         String url = licenseCuration.getUrl();
         String givenLicenseText = null;
-        if (url != null && url.startsWith("file:")) {
-          givenLicenseText = this.contentProvider.getContentForUri(url).getContent();
+        if (url != null && url.startsWith(ComponentContentProvider.PATH_PREFIX)) {
+          givenLicenseText = this.componentContentProvider.retrieveContent(packageUrl, url);
         }
         DefaultLicenseInfoImpl licenseInfo = new DefaultLicenseInfoImpl();
         licenseInfo.setSpdxId(license);

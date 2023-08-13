@@ -138,8 +138,14 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   }
 
   @Override
-  public String retrieveContent(String path) {
+  public String retrieveContent(String packageUrl, String path) {
 
-    return this.contentProvider.getContentForUri(path).getContent();
+    if (!path.startsWith(PATH_PREFIX)) {
+      return null;
+    }
+    String pathWithoutPrefix = path.substring(PATH_PREFIX.length());
+    String directUrl = "file:" + this.repoBasePath + "/" + this.packageURLHandler.pathFor(packageUrl) + "/"
+        + pathWithoutPrefix;
+    return this.contentProvider.getContentForUri(directUrl).getContent();
   }
 }

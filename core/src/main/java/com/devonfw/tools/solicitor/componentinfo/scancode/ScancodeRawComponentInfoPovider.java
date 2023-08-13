@@ -1,12 +1,13 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
+import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 
 /**
  * Provider for {@link ScancodeRawComponentInfo}
  *
  */
-public interface ScancodeRawComponentInfoPovider {
+public interface ScancodeRawComponentInfoPovider extends ComponentContentProvider {
 
   /**
    * Retrieve the {@link ScancodeRawComponentInfo} for the package given by its PackageURL.
@@ -16,13 +17,5 @@ public interface ScancodeRawComponentInfoPovider {
    * @throws ComponentInfoAdapterException is something unexpected happens
    */
   ScancodeRawComponentInfo readScancodeData(String packageUrl) throws ComponentInfoAdapterException;
-
-  /**
-   * Retrieves additional data from the repository-
-   *
-   * @param path the path of the data
-   * @return the found data
-   */
-  String retrieveContent(String path);
 
 }

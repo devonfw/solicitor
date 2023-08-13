@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.curation.UncuratedComponentInfoProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -150,8 +151,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
         continue;
       }
       if (file.get("path").asText().contains("/NOTICE")) {
-        componentScancodeInfos.addNoticeFilePath("file:" + this.repoBasePath + "/"
-            + this.packageURLHandler.pathFor(packageUrl) + "/" + file.get("path").asText(), 100.0);
+        componentScancodeInfos.addNoticeFilePath(ComponentContentProvider.PATH_PREFIX + file.get("path").asText(),
+            100.0);
       }
       double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
       boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
@@ -223,8 +224,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
 
         licenseFilePath = normalizeLicenseUrl(packageUrl, licenseFilePath);
         String givenLicenseText = null;
-        if (licenseFilePath != null && licenseFilePath.startsWith("file:")) {
-          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(licenseFilePath);
+        if (licenseFilePath != null && licenseFilePath.startsWith(ComponentContentProvider.PATH_PREFIX)) {
+          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseFilePath);
         }
 
         componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseFilePath,
@@ -235,9 +236,9 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     // componentScancodeInfos.addLicense("unknown", "unknown", "", 100.0, "", "", 0);
     // }
     if (componentScancodeInfos.getNoticeFilePath() != null
-        && componentScancodeInfos.getNoticeFilePath().startsWith("file:")) {
-      componentScancodeInfos.setNoticeFileContent(
-          this.fileScancodeRawComponentInfoProvider.retrieveContent(componentScancodeInfos.getNoticeFilePath()));
+        && componentScancodeInfos.getNoticeFilePath().startsWith(ComponentContentProvider.PATH_PREFIX)) {
+      componentScancodeInfos.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl,
+          componentScancodeInfos.getNoticeFilePath()));
     }
     return componentScancodeInfos;
   }
@@ -260,8 +261,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
             "https://scancode-licensedb.aboutcode.org");
         adjustedLicenseFilePath = adjustedLicenseFilePath.replace("github.com", "raw.github.com").replace("/tree", "");
       } else {
-        adjustedLicenseFilePath = "file:" + this.repoBasePath + "/" + this.packageURLHandler.pathFor(packageUrl) + "/"
-            + licenseFilePath;
+        adjustedLicenseFilePath = ComponentContentProvider.PATH_PREFIX + licenseFilePath;
         LOG.debug("LOCAL LICENSE: " + licenseFilePath);
       }
     } else {

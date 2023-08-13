@@ -44,10 +44,12 @@ class ScancodeComponentInfoAdapterTest {
         .thenReturn("pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0");
     DirectUrlWebContentProvider contentProvider = new DirectUrlWebContentProvider(false);
 
-    this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(contentProvider, packageURLHandler);
+    this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(contentProvider,
+        packageURLHandler);
     this.fileScancodeRawComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
 
-    this.uncuratedScancodeComponentInfoProvider = new UncuratedScancodeComponentInfoProvider(this.fileScancodeRawComponentInfoProvider, packageURLHandler);
+    this.uncuratedScancodeComponentInfoProvider = new UncuratedScancodeComponentInfoProvider(
+        this.fileScancodeRawComponentInfoProvider, packageURLHandler);
     this.uncuratedScancodeComponentInfoProvider.setMinLicensefileNumberOfLines(5);
     this.uncuratedScancodeComponentInfoProvider.setMinLicenseScore(90.0);
     this.uncuratedScancodeComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
@@ -55,7 +57,8 @@ class ScancodeComponentInfoAdapterTest {
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
-    this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(this.singleFileCurationProvider, contentProvider);
+    this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(this.singleFileCurationProvider,
+        this.fileScancodeRawComponentInfoProvider);
 
     this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.uncuratedScancodeComponentInfoProvider,
         this.componentInfoCuratorImpl);
@@ -100,9 +103,7 @@ class ScancodeComponentInfoAdapterTest {
     assertNotNull(componentInfo);
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getNoticeFileContent());
-    assertEquals(
-        "file:src/test/resources/scancodefileadapter/Source/repo/pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0/sources/NOTICE.txt",
-        componentInfo.getNoticeFilePath());
+    assertEquals("$PKG_ROOT$/sources/NOTICE.txt", componentInfo.getNoticeFilePath());
     assertEquals(1, componentInfo.getCopyrights().size());
     assertEquals("Copyright 2023 devonfw", componentInfo.getCopyrights().toArray()[0]);
     assertEquals(2, componentInfo.getLicenses().size());
@@ -146,9 +147,7 @@ class ScancodeComponentInfoAdapterTest {
     assertNotNull(componentInfo);
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getNoticeFileContent());
-    assertEquals(
-        "file:src/test/resources/scancodefileadapter/Source/repo/pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0/sources/NOTICE.txt",
-        componentInfo.getNoticeFilePath());
+    assertEquals("$PKG_ROOT$/sources/NOTICE.txt", componentInfo.getNoticeFilePath());
     assertEquals(1, componentInfo.getCopyrights().size());
     assertEquals("Copyright (c) 2023 somebody", componentInfo.getCopyrights().toArray()[0]);
     assertEquals(1, componentInfo.getLicenses().size());
