@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,11 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 @Component
 public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponentInfoPovider {
+
+  /**
+   * The directory within the component root directory which contains the sources / the content
+   */
+  private static final String SOURCES_DIR = "sources/";
 
   private static final Logger LOG = LoggerFactory.getLogger(FileScancodeRawComponentInfoProvider.class);
 
@@ -138,14 +144,48 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   }
 
   @Override
-  public String retrieveContent(String packageUrl, String path) {
+  public String retrieveContent(String packageUrl, String fileUri) {
 
-    if (!path.startsWith(PATH_PREFIX)) {
+    if (!fileUri.startsWith(PKG_CONTENT_SCHEMA_PREFIX)) {
       return null;
     }
-    String pathWithoutPrefix = path.substring(PATH_PREFIX.length());
+    if (fileUri.contains("..")) {
+      // prevent directory traversal
+      LOG.debug("Suspicious file traversal in URI '{}', returning null", fileUri);
+      return null;
+    }
+    String pathWithoutPrefix = fileUri.substring(PKG_CONTENT_SCHEMA_PREFIX.length());
     String directUrl = "file:" + this.repoBasePath + "/" + this.packageURLHandler.pathFor(packageUrl) + "/"
-        + pathWithoutPrefix;
+        + SOURCES_DIR + pathWithoutPrefix;
     return this.contentProvider.getContentForUri(directUrl).getContent();
+  }
+
+  /**
+   * Checks if the argument seems to be a (relative) path pointing to some content within the package.
+   *
+   * @param path the path to check
+   * @return <code>true</code> if the seems to be a correct path, <code>false</code> otherwise.
+   */
+  @Override
+  public boolean isLocalContentPath(String path) {
+
+    return (path != null && path.startsWith(SOURCES_DIR));
+  }
+
+  /**
+   * Creates a pkgcontent-URI (see {@link ComponentContentProvider}) from the relative local file path.
+   *
+   * @param path the path referencing file content
+   * @return a pkgContent URI which might be used for retrieving the content vis
+   *         {@link ComponentContentProvider#retrieveContent(String, String)}
+   */
+  @Override
+  public String pkgContentUriFromPath(String path) {
+
+    if (!isLocalContentPath(path)) {
+      throw new IllegalArgumentException("'" + path + "' is not a valid path to content within the package");
+    }
+    return PKG_CONTENT_SCHEMA_PREFIX + path.substring(SOURCES_DIR.length());
+
   }
 }

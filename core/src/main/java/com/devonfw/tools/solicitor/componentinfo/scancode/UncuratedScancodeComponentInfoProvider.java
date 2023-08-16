@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
-import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.curation.UncuratedComponentInfoProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -152,8 +151,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
         continue;
       }
       if (file.get("path").asText().contains("/NOTICE")) {
-        componentScancodeInfos.addNoticeFilePath(ComponentContentProvider.PATH_PREFIX + file.get("path").asText(),
-            100.0);
+        componentScancodeInfos.addNoticeFilePath(
+            this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(file.get("path").asText()), 100.0);
       }
       double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
       boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
@@ -225,7 +224,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
 
         licenseFilePath = normalizeLicenseUrl(packageUrl, licenseFilePath);
         String givenLicenseText = null;
-        if (licenseFilePath != null && licenseFilePath.startsWith(ComponentContentProvider.PATH_PREFIX)) {
+        if (licenseFilePath != null) {
           givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseFilePath);
         }
 
@@ -233,8 +232,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
             givenLicenseText, endLine - startLine);
       }
     }
-    if (componentScancodeInfos.getNoticeFilePath() != null
-        && componentScancodeInfos.getNoticeFilePath().startsWith(ComponentContentProvider.PATH_PREFIX)) {
+    if (componentScancodeInfos.getNoticeFilePath() != null) {
       componentScancodeInfos.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl,
           componentScancodeInfos.getNoticeFilePath()));
     }
@@ -250,20 +248,17 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    */
   private String normalizeLicenseUrl(String packageUrl, String licenseFilePath) {
 
-    String adjustedLicenseFilePath;
+    String adjustedLicenseFilePath = licenseFilePath;
     if (licenseFilePath != null) {
       if (licenseFilePath.startsWith("http")) {
         adjustedLicenseFilePath = licenseFilePath.replace(
             "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses",
             "https://scancode-licensedb.aboutcode.org");
         adjustedLicenseFilePath = adjustedLicenseFilePath.replace("github.com", "raw.github.com").replace("/tree", "");
-      } else {
-        adjustedLicenseFilePath = ComponentContentProvider.PATH_PREFIX + licenseFilePath;
+      } else if (this.fileScancodeRawComponentInfoProvider.isLocalContentPath(licenseFilePath)) {
+        adjustedLicenseFilePath = this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(licenseFilePath);
         LOG.debug("LOCAL LICENSE: " + licenseFilePath);
       }
-    } else {
-      adjustedLicenseFilePath = null;
-      LOG.debug("NONLOCAL LICENSE: {} (was: {})" + adjustedLicenseFilePath, licenseFilePath);
     }
     return adjustedLicenseFilePath;
   }

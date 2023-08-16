@@ -81,7 +81,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
         String license = licenseCuration.getLicense();
         String url = licenseCuration.getUrl();
         String givenLicenseText = null;
-        if (url != null && url.startsWith(ComponentContentProvider.PATH_PREFIX)) {
+        if (url != null) {
           givenLicenseText = this.componentContentProvider.retrieveContent(componentInfo.getPackageUrl(), url);
         }
         DefaultLicenseInfoImpl licenseInfo = new DefaultLicenseInfoImpl();
