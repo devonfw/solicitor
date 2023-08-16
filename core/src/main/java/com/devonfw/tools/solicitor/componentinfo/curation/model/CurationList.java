@@ -1,5 +1,6 @@
 package com.devonfw.tools.solicitor.componentinfo.curation.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  */
 public class CurationList {
 
-  List<ComponentInfoCuration> artifacts;
+  List<ComponentInfoCuration> artifacts = new ArrayList<>();
 
   /**
    * @return artifacts

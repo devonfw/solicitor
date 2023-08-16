@@ -53,7 +53,7 @@ public class SingleFileCurationProvider implements CurationProvider {
   }
 
   /**
-   * Return the curation data for a given packe
+   * Return the curation data for a given package
    *
    * @param packageUrl identifies the package
    * @return the curation data if it existes or <code>null</code> if no curations exist for the package.

@@ -232,9 +232,6 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
             givenLicenseText, endLine - startLine);
       }
     }
-    // if (componentScancodeInfos.getLicenses().size() == 0) {
-    // componentScancodeInfos.addLicense("unknown", "unknown", "", 100.0, "", "", 0);
-    // }
     if (componentScancodeInfos.getNoticeFilePath() != null
         && componentScancodeInfos.getNoticeFilePath().startsWith(ComponentContentProvider.PATH_PREFIX)) {
       componentScancodeInfos.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl,
@@ -255,7 +252,6 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     String adjustedLicenseFilePath;
     if (licenseFilePath != null) {
       if (licenseFilePath.startsWith("http")) {
-        // TODO
         adjustedLicenseFilePath = licenseFilePath.replace(
             "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses",
             "https://scancode-licensedb.aboutcode.org");
@@ -266,7 +262,6 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       }
     } else {
       adjustedLicenseFilePath = null;
-      // licenseFilePath = null;// "??????";// defaultGithubLicenseURL(repo);
       LOG.debug("NONLOCAL LICENSE: {} (was: {})" + adjustedLicenseFilePath, licenseFilePath);
     }
     return adjustedLicenseFilePath;

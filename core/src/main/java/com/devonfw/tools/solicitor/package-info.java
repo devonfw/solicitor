@@ -6,10 +6,11 @@
  * <p>
  * <img src="doc-files/solicitor_beans.png" alt="Solicitor Spring Beans">
  * <p>
- * The interfaces / classes / sprinmg beans of the componentinfo package and subpackages is
- * shown in the following diagram:
+ * The interfaces / classes / spring beans of the componentinfo package and subpackages is shown in the following
+ * diagram:
  * <p>
- * <img src="componentinfo/doc-files/componentinfo_classes.drawio.svg" alt="Interfaces / classes and Spring Beans of the componentinfo packages">
+ * <img src="componentinfo/doc-files/componentinfo_classes.drawio.svg" alt="Interfaces / classes and Spring Beans of the
+ * componentinfo packages">
  * <p>
  */
 package com.devonfw.tools.solicitor;
