@@ -47,7 +47,7 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
       if (componentInfo == null) {
         return null;
       }
-      componentInfo = this.componentInfoCurator.curate(packageUrl, componentInfo);
+      componentInfo = this.componentInfoCurator.curate(componentInfo);
 
       return componentInfo;
 

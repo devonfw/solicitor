@@ -138,6 +138,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
 
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
+    componentScancodeInfos.setPackageUrl(packageUrl);
 
     JsonNode scancodeJson;
     try {

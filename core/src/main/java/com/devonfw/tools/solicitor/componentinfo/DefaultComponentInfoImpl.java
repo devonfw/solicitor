@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class DefaultComponentInfoImpl implements ComponentInfo {
 
+  private String packageUrl;
+
   private Collection<String> copyrights;
 
   private Collection<LicenseInfo> licenses;
@@ -51,6 +53,7 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   public DefaultComponentInfoImpl(ComponentInfo source) {
 
     this();
+    this.packageUrl = source.getPackageUrl();
     this.dataStatus = source.getDataStatus();
     this.homepageUrl = source.getHomepageUrl();
     this.noticeFileContent = source.getNoticeFileContent();
@@ -67,6 +70,14 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
     for (LicenseInfo licenseInfo : source.getLicenses()) {
       addLicense(licenseInfo);
     }
+  }
+
+  /**
+   * @param packageUrl new value of {@link #getPackageUrl}.
+   */
+  public void setPackageUrl(String packageUrl) {
+
+    this.packageUrl = packageUrl;
   }
 
   /**
@@ -171,6 +182,12 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   public void addLicense(LicenseInfo licenseInfo) {
 
     this.licenses.add(new DefaultLicenseInfoImpl(licenseInfo));
+  }
+
+  @Override
+  public String getPackageUrl() {
+
+    return this.packageUrl;
   }
 
   @Override

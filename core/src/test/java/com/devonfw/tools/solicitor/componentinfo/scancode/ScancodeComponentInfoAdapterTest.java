@@ -101,6 +101,7 @@ class ScancodeComponentInfoAdapterTest {
 
     // then
     assertNotNull(componentInfo);
+    assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getNoticeFileContent());
     assertEquals("$PKG_ROOT$/sources/NOTICE.txt", componentInfo.getNoticeFilePath());
@@ -145,6 +146,7 @@ class ScancodeComponentInfoAdapterTest {
 
     // then
     assertNotNull(componentInfo);
+    assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getNoticeFileContent());
     assertEquals("$PKG_ROOT$/sources/NOTICE.txt", componentInfo.getNoticeFilePath());

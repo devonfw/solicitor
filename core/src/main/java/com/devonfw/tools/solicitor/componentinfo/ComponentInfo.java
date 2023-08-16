@@ -11,6 +11,13 @@ import java.util.List;
 public interface ComponentInfo {
 
   /**
+   * Get the packageUrl.
+   *
+   * @return the packageURL. This is an identifier for this object.
+   */
+  String getPackageUrl();
+
+  /**
    * Gets all copyrights.
    *
    * @return the copyrights

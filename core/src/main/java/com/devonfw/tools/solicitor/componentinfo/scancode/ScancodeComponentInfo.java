@@ -187,6 +187,8 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private SortedMap<String, ScancodeLicenseInfo> licenses = new TreeMap<>();
 
+  private String packageUrl;
+
   private double noticeFileScore = 0;
 
   private String noticeFilePath = null;
@@ -467,4 +469,19 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
     this.traceabilityNotes = traceabilityNotes;
   }
+
+  @Override
+  public String getPackageUrl() {
+
+    return this.packageUrl;
+  }
+
+  /**
+   * @param packageUrl new value of {@link #getPackageUrl}.
+   */
+  public void setPackageUrl(String packageUrl) {
+
+    this.packageUrl = packageUrl;
+  }
+
 }

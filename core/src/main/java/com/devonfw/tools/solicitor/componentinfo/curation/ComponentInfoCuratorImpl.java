@@ -46,18 +46,17 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
    * then the a new curated {@link ComponentInfo} instance will be created from the incoming uncurated
    * {@link ComponentInfo} and the curations.
    *
-   * @param packageUrl the identifier of the package
    * @param componentInfo the componentInfo to curate
    * @return the curated component info
    * @throws ComponentInfoAdapterException if the curations could not be read
    */
   @Override
-  public ComponentInfo curate(String packageUrl, ComponentInfo componentInfo) throws ComponentInfoAdapterException {
+  public ComponentInfo curate(ComponentInfo componentInfo) throws ComponentInfoAdapterException {
 
-    ComponentInfoCuration foundCuration = this.curationProvider.findCurations(packageUrl);
+    ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl());
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
-      applyFoundCurations(packageUrl, componentInfoImpl, foundCuration);
+      applyFoundCurations(componentInfoImpl, foundCuration);
       return componentInfoImpl;
     } else {
       return componentInfo;
@@ -65,8 +64,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
 
   }
 
-  private void applyFoundCurations(String packageUrl, DefaultComponentInfoImpl componentInfo,
-      ComponentInfoCuration curation) {
+  private void applyFoundCurations(DefaultComponentInfoImpl componentInfo, ComponentInfoCuration curation) {
 
     if (curation.getCopyrights() != null) {
       componentInfo.clearCopyrights();
@@ -84,7 +82,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
         String url = licenseCuration.getUrl();
         String givenLicenseText = null;
         if (url != null && url.startsWith(ComponentContentProvider.PATH_PREFIX)) {
-          givenLicenseText = this.componentContentProvider.retrieveContent(packageUrl, url);
+          givenLicenseText = this.componentContentProvider.retrieveContent(componentInfo.getPackageUrl(), url);
         }
         DefaultLicenseInfoImpl licenseInfo = new DefaultLicenseInfoImpl();
         licenseInfo.setSpdxId(license);
