@@ -152,7 +152,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       }
       if (file.get("path").asText().contains("/NOTICE")) {
         componentScancodeInfos.addNoticeFilePath(
-            this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(file.get("path").asText()), 100.0);
+            this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, file.get("path").asText()),
+            100.0);
       }
       double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
       boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
@@ -255,8 +256,9 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
             "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses",
             "https://scancode-licensedb.aboutcode.org");
         adjustedLicenseFilePath = adjustedLicenseFilePath.replace("github.com", "raw.github.com").replace("/tree", "");
-      } else if (this.fileScancodeRawComponentInfoProvider.isLocalContentPath(licenseFilePath)) {
-        adjustedLicenseFilePath = this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(licenseFilePath);
+      } else if (this.fileScancodeRawComponentInfoProvider.isLocalContentPath(packageUrl, licenseFilePath)) {
+        adjustedLicenseFilePath = this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl,
+            licenseFilePath);
         LOG.debug("LOCAL LICENSE: " + licenseFilePath);
       }
     }

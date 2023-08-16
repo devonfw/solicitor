@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
-import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -160,29 +159,16 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
     return this.contentProvider.getContentForUri(directUrl).getContent();
   }
 
-  /**
-   * Checks if the argument seems to be a (relative) path pointing to some content within the package.
-   *
-   * @param path the path to check
-   * @return <code>true</code> if the seems to be a correct path, <code>false</code> otherwise.
-   */
   @Override
-  public boolean isLocalContentPath(String path) {
+  public boolean isLocalContentPath(String packageUrl, String path) {
 
     return (path != null && path.startsWith(SOURCES_DIR));
   }
 
-  /**
-   * Creates a pkgcontent-URI (see {@link ComponentContentProvider}) from the relative local file path.
-   *
-   * @param path the path referencing file content
-   * @return a pkgContent URI which might be used for retrieving the content vis
-   *         {@link ComponentContentProvider#retrieveContent(String, String)}
-   */
   @Override
-  public String pkgContentUriFromPath(String path) {
+  public String pkgContentUriFromPath(String packageUrl, String path) {
 
-    if (!isLocalContentPath(path)) {
+    if (!isLocalContentPath(packageUrl, path)) {
       throw new IllegalArgumentException("'" + path + "' is not a valid path to content within the package");
     }
     return PKG_CONTENT_SCHEMA_PREFIX + path.substring(SOURCES_DIR.length());
