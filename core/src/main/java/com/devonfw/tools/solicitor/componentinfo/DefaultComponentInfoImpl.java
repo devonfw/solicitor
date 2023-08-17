@@ -17,7 +17,7 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
 
   private Collection<LicenseInfo> licenses;
 
-  private String noticeFilePath;
+  private String noticeFileUrl;
 
   private String noticeFileContent;
 
@@ -57,7 +57,7 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
     this.dataStatus = source.getDataStatus();
     this.homepageUrl = source.getHomepageUrl();
     this.noticeFileContent = source.getNoticeFileContent();
-    this.noticeFilePath = source.getNoticeFilePath();
+    this.noticeFileUrl = source.getNoticeFileUrl();
     this.packageDownloadUrl = source.getPackageDownloadUrl();
     this.sourceDownloadUrl = source.getSourceDownloadUrl();
     this.sourceRepoUrl = source.getSourceRepoUrl();
@@ -81,11 +81,11 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   }
 
   /**
-   * @param noticeFilePath new value of {@link #getNoticeFilePath}.
+   * @param noticeFileUrl new value of {@link #getNoticeFileUrl}.
    */
-  public void setNoticeFilePath(String noticeFilePath) {
+  public void setNoticeFileUrl(String noticeFileUrl) {
 
-    this.noticeFilePath = noticeFilePath;
+    this.noticeFileUrl = noticeFileUrl;
   }
 
   /**
@@ -191,9 +191,9 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   }
 
   @Override
-  public String getNoticeFilePath() {
+  public String getNoticeFileUrl() {
 
-    return this.noticeFilePath;
+    return this.noticeFileUrl;
   }
 
   @Override

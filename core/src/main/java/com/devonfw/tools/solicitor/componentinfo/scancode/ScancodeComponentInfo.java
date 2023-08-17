@@ -38,9 +38,9 @@ public class ScancodeComponentInfo implements ComponentInfo {
     private double licenseScore;
 
     /**
-     * Path to the license file.
+     * Url of the license file.
      */
-    private String licenseFilePath;
+    private String licenseUrl;
 
     /**
      * Text of license.
@@ -59,11 +59,11 @@ public class ScancodeComponentInfo implements ComponentInfo {
      * @param spdxid the spdx id
      * @param defaultUrl the default URL of the license text
      * @param licenseScore the score for the license
-     * @param licenseFilePath the path to the license file
+     * @param licenseUrl the path to the license file
      * @param givenLicenseText the given license text (might be <code>null</code>)
      * @param licenseFileScore the score of the license file - number of lines with license info
      */
-    public ScancodeLicenseInfo(String id, String spdxid, String defaultUrl, double licenseScore, String licenseFilePath,
+    public ScancodeLicenseInfo(String id, String spdxid, String defaultUrl, double licenseScore, String licenseUrl,
         String givenLicenseText, int licenseFileScore) {
 
       super();
@@ -71,11 +71,11 @@ public class ScancodeComponentInfo implements ComponentInfo {
       this.spdxid = spdxid;
       this.licenseScore = licenseScore;
       if (licenseFileScore >= ScancodeComponentInfo.this.minLicensefileNumberOfLines) {
-        this.licenseFilePath = licenseFilePath;
+        this.licenseUrl = licenseUrl;
         this.licenseFileScore = licenseFileScore;
         this.givenLicenseText = givenLicenseText;
       } else {
-        this.licenseFilePath = defaultUrl;
+        this.licenseUrl = defaultUrl;
         this.licenseFileScore = 0;
       }
     }
@@ -106,12 +106,12 @@ public class ScancodeComponentInfo implements ComponentInfo {
     }
 
     /**
-     * @return licenseFilePath
+     * @return licenseUrl
      */
     @Override
-    public String getLicenseFilePath() {
+    public String getLicenseUrl() {
 
-      return this.licenseFilePath;
+      return this.licenseUrl;
     }
 
     /**
@@ -156,11 +156,11 @@ public class ScancodeComponentInfo implements ComponentInfo {
     }
 
     /**
-     * @param licenseFilePath new value of {@link #getLicenseFilePath}.
+     * @param licenseUrl new value of {@link #getLicenseUrl}.
      */
-    public void setLicenseFilePath(String licenseFilePath) {
+    public void setLicenseUrl(String licenseUrl) {
 
-      this.licenseFilePath = licenseFilePath;
+      this.licenseUrl = licenseUrl;
     }
 
     /**
@@ -191,7 +191,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private double noticeFileScore = 0;
 
-  private String noticeFilePath = null;
+  private String noticeFileUrl = null;
 
   private String noticeFileContent;
 
@@ -272,7 +272,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
       ScancodeLicenseInfo existingLicenseInfo = this.licenses.get(licenseId);
 
       double resultingScore = Math.max(existingLicenseInfo.getLicenseScore(), score);
-      String resultingFilePath = existingLicenseInfo.getLicenseFilePath();
+      String resultingFilePath = existingLicenseInfo.getLicenseUrl();
       String resultingGivenText = existingLicenseInfo.getGivenLicenseText();
       int resultingFileScore = existingLicenseInfo.getLicenseFileScore();
       if (fileScore > existingLicenseInfo.getLicenseFileScore()) {
@@ -311,16 +311,16 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   /**
-   * Stores the path to a NOTICE file if the score exceeds the minimum required score and is higher than the score of
-   * already existing information.
+   * Stores the reference to a NOTICE file if the score exceeds the minimum required score and is higher than the score
+   * of already existing information.
    *
-   * @param path path to the NOTICE file
+   * @param url reference to the NOTICE file
    * @param score score of the file
    */
-  public void addNoticeFilePath(String path, double score) {
+  public void addNoticeFileUrl(String url, double score) {
 
     if (score > this.noticeFileScore && score >= MIN_NOTICEFILE_PERCENTAGE) {
-      this.noticeFilePath = path;
+      this.noticeFileUrl = url;
       this.noticeFileScore = score;
     }
   }
@@ -334,14 +334,14 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   /**
-   * Gets the path to the notice file (if any).
+   * Gets the referennce to the notice file (if any).
    *
-   * @return path to the notice file
+   * @return reference to the notice file
    */
   @Override
-  public String getNoticeFilePath() {
+  public String getNoticeFileUrl() {
 
-    return this.noticeFilePath;
+    return this.noticeFileUrl;
   }
 
   @Override

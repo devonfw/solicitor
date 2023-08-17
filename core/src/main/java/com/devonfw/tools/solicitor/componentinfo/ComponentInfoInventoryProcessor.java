@@ -110,8 +110,8 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         ac.setTraceabilityNotes(formattedTraceabilityNotes);
 
         // Update the notice file URL and content if available
-        if (componentInfo.getNoticeFilePath() != null) {
-          ac.setNoticeFileUrl(componentInfo.getNoticeFilePath());
+        if (componentInfo.getNoticeFileUrl() != null) {
+          ac.setNoticeFileUrl(componentInfo.getNoticeFileUrl());
         }
 
         if (componentInfo.getNoticeFileContent() != null) {
@@ -122,7 +122,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         if (componentInfo.getLicenses().size() > 0) {
           ac.removeAllRawLicenses();
           for (LicenseInfo li : componentInfo.getLicenses()) {
-            addRawLicense(ac, li.getSpdxid(), li.getLicenseFilePath(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
+            addRawLicense(ac, li.getSpdxid(), li.getLicenseUrl(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
           }
         } else {
           LOG.info(LogMessages.COMPONENTINFO_NO_LICENSES.msg(),

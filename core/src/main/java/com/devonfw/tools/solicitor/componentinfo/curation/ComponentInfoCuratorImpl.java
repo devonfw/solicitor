@@ -86,7 +86,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
         }
         DefaultLicenseInfoImpl licenseInfo = new DefaultLicenseInfoImpl();
         licenseInfo.setSpdxId(license);
-        licenseInfo.setLicenseFilePath(url);
+        licenseInfo.setLicenseUrl(url);
         licenseInfo.setGivenLicenseText(givenLicenseText);
         componentInfo.addLicense(licenseInfo);
       }

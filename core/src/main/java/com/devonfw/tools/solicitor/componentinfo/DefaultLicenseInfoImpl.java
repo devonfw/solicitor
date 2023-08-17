@@ -8,7 +8,7 @@ public class DefaultLicenseInfoImpl implements LicenseInfo {
 
   private String spdxid;
 
-  private String licenseFilePath;
+  private String licenseUrl;
 
   private String givenLicenseText;
 
@@ -28,7 +28,7 @@ public class DefaultLicenseInfoImpl implements LicenseInfo {
 
     this();
     this.spdxid = source.getSpdxid();
-    this.licenseFilePath = source.getLicenseFilePath();
+    this.licenseUrl = source.getLicenseUrl();
     this.givenLicenseText = source.getGivenLicenseText();
   }
 
@@ -39,9 +39,9 @@ public class DefaultLicenseInfoImpl implements LicenseInfo {
   }
 
   @Override
-  public String getLicenseFilePath() {
+  public String getLicenseUrl() {
 
-    return this.licenseFilePath;
+    return this.licenseUrl;
   }
 
   @Override
@@ -59,11 +59,11 @@ public class DefaultLicenseInfoImpl implements LicenseInfo {
   }
 
   /**
-   * @param licenseFilePath new value of {@link #getLicenseFilePath}.
+   * @param licenseUrl new value of {@link #getLicenseUrl}.
    */
-  public void setLicenseFilePath(String licenseFilePath) {
+  public void setLicenseUrl(String licenseUrl) {
 
-    this.licenseFilePath = licenseFilePath;
+    this.licenseUrl = licenseUrl;
   }
 
   /**

@@ -104,7 +104,7 @@ class ScancodeComponentInfoAdapterTest {
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getNoticeFileContent());
-    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getNoticeFilePath());
+    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getNoticeFileUrl());
     assertEquals(1, componentInfo.getCopyrights().size());
     assertEquals("Copyright 2023 devonfw", componentInfo.getCopyrights().toArray()[0]);
     assertEquals(2, componentInfo.getLicenses().size());
@@ -149,7 +149,7 @@ class ScancodeComponentInfoAdapterTest {
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getNoticeFileContent());
-    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getNoticeFilePath());
+    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getNoticeFileUrl());
     assertEquals(1, componentInfo.getCopyrights().size());
     assertEquals("Copyright (c) 2023 somebody", componentInfo.getCopyrights().toArray()[0]);
     assertEquals(1, componentInfo.getLicenses().size());
@@ -157,7 +157,7 @@ class ScancodeComponentInfoAdapterTest {
     boolean mitFound = false;
     for (LicenseInfo li : componentInfo.getLicenses()) {
       if (li.getSpdxid().equals("MIT")) {
-        Assertions.assertEquals("https://some/license/url", li.getLicenseFilePath());
+        Assertions.assertEquals("https://some/license/url", li.getLicenseUrl());
         mitFound = true;
       }
     }

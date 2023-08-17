@@ -110,7 +110,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     addSupplementedData(rawScancodeData, componentScancodeInfos);
     LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
         componentScancodeInfos.getLicenses().size(), componentScancodeInfos.getCopyrights().size(),
-        componentScancodeInfos.getNoticeFilePath() != null ? 1 : 0);
+        componentScancodeInfos.getNoticeFileUrl() != null ? 1 : 0);
 
     return componentScancodeInfos;
   }
@@ -151,7 +151,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
         continue;
       }
       if (file.get("path").asText().contains("/NOTICE")) {
-        componentScancodeInfos.addNoticeFilePath(
+        componentScancodeInfos.addNoticeFileUrl(
             this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, file.get("path").asText()),
             100.0);
       }
@@ -213,29 +213,29 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
         String licenseDefaultUrl = li.get("scancode_text_url").asText();
         licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
         double score = li.get("score").asDouble();
-        String licenseFilePath = file.get("path").asText();
+        String licenseUrl = file.get("path").asText();
         int startLine = li.get("start_line").asInt();
         int endLine = li.get("end_line").asInt();
         if (!takeCompleteFile) {
-          licenseFilePath += "#L" + startLine;
+          licenseUrl += "#L" + startLine;
           if (endLine != startLine) {
-            licenseFilePath += "-L" + endLine;
+            licenseUrl += "-L" + endLine;
           }
         }
 
-        licenseFilePath = normalizeLicenseUrl(packageUrl, licenseFilePath);
+        licenseUrl = normalizeLicenseUrl(packageUrl, licenseUrl);
         String givenLicenseText = null;
-        if (licenseFilePath != null) {
-          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseFilePath);
+        if (licenseUrl != null) {
+          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseUrl);
         }
 
-        componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseFilePath,
+        componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseUrl,
             givenLicenseText, endLine - startLine);
       }
     }
-    if (componentScancodeInfos.getNoticeFilePath() != null) {
+    if (componentScancodeInfos.getNoticeFileUrl() != null) {
       componentScancodeInfos.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl,
-          componentScancodeInfos.getNoticeFilePath()));
+          componentScancodeInfos.getNoticeFileUrl()));
     }
     return componentScancodeInfos;
   }
@@ -244,25 +244,25 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    * Adjustment of license paths/urls so that they might retrieved
    *
    * @param packageUrl package url of the package
-   * @param licenseFilePath the original path or URL
+   * @param licenseUrl the original path or URL
    * @return the adjusted path or url as a url
    */
-  private String normalizeLicenseUrl(String packageUrl, String licenseFilePath) {
+  private String normalizeLicenseUrl(String packageUrl, String licenseUrl) {
 
-    String adjustedLicenseFilePath = licenseFilePath;
-    if (licenseFilePath != null) {
-      if (licenseFilePath.startsWith("http")) {
-        adjustedLicenseFilePath = licenseFilePath.replace(
+    String adjustedLicenseUrl = licenseUrl;
+    if (licenseUrl != null) {
+      if (licenseUrl.startsWith("http")) {
+        adjustedLicenseUrl = licenseUrl.replace(
             "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses",
             "https://scancode-licensedb.aboutcode.org");
-        adjustedLicenseFilePath = adjustedLicenseFilePath.replace("github.com", "raw.github.com").replace("/tree", "");
-      } else if (this.fileScancodeRawComponentInfoProvider.isLocalContentPath(packageUrl, licenseFilePath)) {
-        adjustedLicenseFilePath = this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl,
-            licenseFilePath);
-        LOG.debug("LOCAL LICENSE: " + licenseFilePath);
+        adjustedLicenseUrl = adjustedLicenseUrl.replace("github.com", "raw.github.com").replace("/tree", "");
+      } else if (this.fileScancodeRawComponentInfoProvider.isLocalContentPath(packageUrl, licenseUrl)) {
+        adjustedLicenseUrl = this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl,
+            licenseUrl);
+        LOG.debug("LOCAL LICENSE: " + licenseUrl);
       }
     }
-    return adjustedLicenseFilePath;
+    return adjustedLicenseUrl;
   }
 
 }

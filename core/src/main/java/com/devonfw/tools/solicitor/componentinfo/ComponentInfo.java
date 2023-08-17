@@ -32,11 +32,11 @@ public interface ComponentInfo {
   Collection<? extends LicenseInfo> getLicenses();
 
   /**
-   * Gets the path to the notice file (if any)
+   * Gets the url to the notice file (if any)
    *
-   * @return path to the notice file
+   * @return url of the notice file
    */
-  String getNoticeFilePath();
+  String getNoticeFileUrl();
 
   /**
    * Gets the contents of the notice file (if any)
