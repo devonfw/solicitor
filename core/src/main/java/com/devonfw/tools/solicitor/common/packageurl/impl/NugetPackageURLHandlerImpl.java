@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import com.github.packageurl.PackageURL;
 @Component
 public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandler {
-	private String repoBaseUrl;									// https://www.nuget.org/api/v2/package/
-
+	private String repoBaseUrl;
+	
   /**
    * The constructor.
    *
@@ -28,7 +28,6 @@ public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
   	return (PackageURL.StandardTypes.NUGET.equals(packageURL.getType()));
   }
 
-
   // Nuget does not have a standardized API to fetch the source code
   // This needs to be handled by another component (LicenseUrlGuesser?)
   @Override
@@ -44,7 +43,8 @@ public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
 	
 	  StringBuffer sb = new StringBuffer(this.repoBaseUrl);				// https://www.nuget.org/api/v2/package/
 	  sb.append(purl.getName()).append("/");											// {packageID}/
-	  sb.append(purl.getVersion());																// {packageVersion}
+    sb.append(purl.getVersion()).append(".nupkg");								// {packageVersion}
+	  
 
 	  return sb.toString();
 	}
