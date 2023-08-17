@@ -1,0 +1,13 @@
+artifacts:
+- name: "pkg/maven/somenamespace/somecomponent/2.3.4"
+  note: "some note on the curation"
+  licenses:
+  - license: "Apache-2.0"
+    url: "https://scancode-licensedb.aboutcode.org/apache-2.0.LICENSE"
+  copyrights: []
+- name: "pkg/maven/somenamespace/somecomponent/2.3.5"
+  note: "some note on the curation"
+  licenses:
+  - license: "BSD-2-Clause"
+    url: "https://scancode-licensedb.aboutcode.org/bsd-simplified.LICENSE"
+  copyrights: []

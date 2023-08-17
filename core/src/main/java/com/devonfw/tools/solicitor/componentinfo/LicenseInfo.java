@@ -12,9 +12,9 @@ public interface LicenseInfo {
   String getSpdxid();
 
   /**
-   * @return licenseFilePath
+   * @return licenseUrl
    */
-  String getLicenseFilePath();
+  String getLicenseUrl();
 
   /**
    * @return the given license text (might be <code>null</code>)

@@ -19,8 +19,8 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 
 /**
  * An {@link InventoryProcessor} which looks up license information for the found application components / packages at
- * some external data source , like a scancode file store. If license information is found then the license, copyright
- * and notice file information of the model will be replaced by the data obtained from this source.
+ * external data source by the use of {@link ComponentInfoAdapter}s. If license information is found then the license,
+ * copyright and notice file information of the model will be replaced by the data obtained from this source.
  *
  */
 @Component
@@ -90,7 +90,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       // Try to get component information from the available ComponentInfoAdapters
       ComponentInfo componentInfo = null;
       try {
-        for (ComponentInfoAdapter cia : this.componentInfoAdapters) {
+        for (ComponentInfoProvider cia : this.componentInfoAdapters) {
           componentInfo = cia.getComponentInfo(ac.getPackageUrl());
           // stop querying further adapters if some info was returned
           if (componentInfo != null) {
@@ -110,8 +110,8 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         ac.setTraceabilityNotes(formattedTraceabilityNotes);
 
         // Update the notice file URL and content if available
-        if (componentInfo.getNoticeFilePath() != null) {
-          ac.setNoticeFileUrl(componentInfo.getNoticeFilePath());
+        if (componentInfo.getNoticeFileUrl() != null) {
+          ac.setNoticeFileUrl(componentInfo.getNoticeFileUrl());
         }
 
         if (componentInfo.getNoticeFileContent() != null) {
@@ -122,7 +122,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         if (componentInfo.getLicenses().size() > 0) {
           ac.removeAllRawLicenses();
           for (LicenseInfo li : componentInfo.getLicenses()) {
-            addRawLicense(ac, li.getSpdxid(), li.getLicenseFilePath(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
+            addRawLicense(ac, li.getSpdxid(), li.getLicenseUrl(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
           }
         } else {
           LOG.info(LogMessages.COMPONENTINFO_NO_LICENSES.msg(),

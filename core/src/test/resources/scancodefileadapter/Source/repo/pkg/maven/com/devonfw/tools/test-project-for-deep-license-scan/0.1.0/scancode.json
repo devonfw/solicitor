@@ -1,0 +1,252 @@
+{
+  "headers": [
+    {
+      "tool_name": "scancode-toolkit",
+      "tool_version": "31.0.2",
+      "options": {
+        "input": [
+          "/somepath/Source/pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0/sources"
+        ],
+        "--consolidate": true,
+        "--copyright": true,
+        "--json-pp": "/somepath/Source/pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0/scancode.json",
+        "--license": true,
+        "--license-text": true,
+        "--only-findings": true,
+        "--processes": "16"
+      },
+      "notice": "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+      "start_timestamp": "2023-08-10T143029.366986",
+      "end_timestamp": "2023-08-10T143032.887088",
+      "output_format_version": "2.0.0",
+      "duration": 3.520116090774536,
+      "message": null,
+      "errors": [],
+      "warnings": [
+        "The --consolidate option will be deprecated in a future version of scancode-toolkit."
+      ],
+      "extra_data": {
+        "system_environment": {
+          "operating_system": "linux",
+          "cpu_architecture": "64",
+          "platform": "Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29",
+          "platform_version": "#1 SMP Wed Mar 2 00:30:59 UTC 2022",
+          "python_version": "3.8.10 (default, Jun 22 2022, 20:18:18) \n[GCC 9.4.0]"
+        },
+        "spdx_license_list_version": "3.17",
+        "files_count": 3
+      }
+    }
+  ],
+  "consolidated_components": [
+    {
+      "type": "holders",
+      "identifier": "devonfw_1",
+      "consolidated_license_expression": "apache-2.0",
+      "consolidated_holders": [
+        "devonfw"
+      ],
+      "consolidated_copyright": "Copyright (c) devonfw",
+      "core_license_expression": "apache-2.0",
+      "core_holders": [
+        "devonfw"
+      ],
+      "other_license_expression": null,
+      "other_holders": [],
+      "files_count": 1
+    }
+  ],
+  "consolidated_packages": [],
+  "files": [
+    {
+      "path": "sources/NOTICE.txt",
+      "type": "file",
+      "licenses": [
+        {
+          "key": "apache-2.0",
+          "score": 100.0,
+          "name": "Apache License 2.0",
+          "short_name": "Apache 2.0",
+          "category": "Permissive",
+          "is_exception": false,
+          "is_unknown": false,
+          "owner": "Apache Software Foundation",
+          "homepage_url": "http://www.apache.org/licenses/",
+          "text_url": "http://www.apache.org/licenses/LICENSE-2.0",
+          "reference_url": "https://scancode-licensedb.aboutcode.org/apache-2.0",
+          "scancode_text_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/apache-2.0.LICENSE",
+          "scancode_data_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/apache-2.0.yml",
+          "spdx_license_key": "Apache-2.0",
+          "spdx_url": "https://spdx.org/licenses/Apache-2.0",
+          "start_line": 1,
+          "end_line": 1,
+          "matched_rule": {
+            "identifier": "spdx_license_id_apache-2.0_for_apache-2.0.RULE",
+            "license_expression": "apache-2.0",
+            "licenses": [
+              "apache-2.0"
+            ],
+            "referenced_filenames": [],
+            "is_license_text": false,
+            "is_license_notice": false,
+            "is_license_reference": true,
+            "is_license_tag": false,
+            "is_license_intro": false,
+            "has_unknown": false,
+            "matcher": "2-aho",
+            "rule_length": 3,
+            "matched_length": 3,
+            "match_coverage": 100.0,
+            "rule_relevance": 100
+          },
+          "matched_text": "This is a dummy notice file for testing. Code is under Apache-2.0."
+        }
+      ],
+      "license_expressions": [
+        "apache-2.0"
+      ],
+      "percentage_of_license_text": 23.08,
+      "copyrights": [],
+      "holders": [],
+      "authors": [],
+      "consolidated_to": [],
+      "scan_errors": []
+    },
+    {
+      "path": "sources/src/main/java/com/devonfw/tools/test",
+      "type": "directory",
+      "licenses": [],
+      "license_expressions": [],
+      "percentage_of_license_text": 0,
+      "copyrights": [],
+      "holders": [],
+      "authors": [],
+      "consolidated_to": [
+        "devonfw_1"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "sources/src/main/java/com/devonfw/tools/test/SampleClass1.java",
+      "type": "file",
+      "licenses": [
+        {
+          "key": "apache-2.0",
+          "score": 100.0,
+          "name": "Apache License 2.0",
+          "short_name": "Apache 2.0",
+          "category": "Permissive",
+          "is_exception": false,
+          "is_unknown": false,
+          "owner": "Apache Software Foundation",
+          "homepage_url": "http://www.apache.org/licenses/",
+          "text_url": "http://www.apache.org/licenses/LICENSE-2.0",
+          "reference_url": "https://scancode-licensedb.aboutcode.org/apache-2.0",
+          "scancode_text_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/apache-2.0.LICENSE",
+          "scancode_data_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/apache-2.0.yml",
+          "spdx_license_key": "Apache-2.0",
+          "spdx_url": "https://spdx.org/licenses/Apache-2.0",
+          "start_line": 5,
+          "end_line": 15,
+          "matched_rule": {
+            "identifier": "apache-2.0_7.RULE",
+            "license_expression": "apache-2.0",
+            "licenses": [
+              "apache-2.0"
+            ],
+            "referenced_filenames": [],
+            "is_license_text": false,
+            "is_license_notice": true,
+            "is_license_reference": false,
+            "is_license_tag": false,
+            "is_license_intro": false,
+            "has_unknown": false,
+            "matcher": "2-aho",
+            "rule_length": 85,
+            "matched_length": 85,
+            "match_coverage": 100.0,
+            "rule_relevance": 100
+          },
+          "matched_text": " * Licensed under the Apache License, Version 2.0 (the \"License\");\r\n * you may not use this file except in compliance with the License.\r\n * You may obtain a copy of the License at\r\n *\r\n *          http://www.apache.org/licenses/LICENSE-2.0\r\n *\r\n * Unless required by applicable law or agreed to in writing, software\r\n * distributed under the License is distributed on an \"AS IS\" BASIS,\r\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n * See the License for the specific language governing permissions and\r\n * limitations under the License."
+        }
+      ],
+      "license_expressions": [
+        "apache-2.0"
+      ],
+      "percentage_of_license_text": 89.47,
+      "copyrights": [
+        {
+          "copyright": "Copyright 2023 devonfw",
+          "start_line": 3,
+          "end_line": 3
+        }
+      ],
+      "holders": [
+        {
+          "holder": "devonfw",
+          "start_line": 3,
+          "end_line": 3
+        }
+      ],
+      "authors": [],
+      "consolidated_to": [
+        "devonfw_1"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "sources/src/main/java/com/devonfw/tools/test/SampleClass2.java",
+      "type": "file",
+      "licenses": [
+        {
+          "key": "unknown-license-reference",
+          "score": 100.0,
+          "name": "Unknown License file reference",
+          "short_name": "Unknown License reference",
+          "category": "Unstated License",
+          "is_exception": false,
+          "is_unknown": true,
+          "owner": "Unspecified",
+          "homepage_url": null,
+          "text_url": "",
+          "reference_url": "https://scancode-licensedb.aboutcode.org/unknown-license-reference",
+          "scancode_text_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/unknown-license-reference.LICENSE",
+          "scancode_data_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/unknown-license-reference.yml",
+          "spdx_license_key": "LicenseRef-scancode-unknown-license-reference",
+          "spdx_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/unknown-license-reference.LICENSE",
+          "start_line": 4,
+          "end_line": 4,
+          "matched_rule": {
+            "identifier": "license-intro_26.RULE",
+            "license_expression": "unknown-license-reference",
+            "licenses": [
+              "unknown-license-reference"
+            ],
+            "referenced_filenames": [],
+            "is_license_text": false,
+            "is_license_notice": false,
+            "is_license_reference": false,
+            "is_license_tag": false,
+            "is_license_intro": true,
+            "has_unknown": true,
+            "matcher": "2-aho",
+            "rule_length": 3,
+            "matched_length": 3,
+            "match_coverage": 100.0,
+            "rule_relevance": 100
+          },
+          "matched_text": " * It is licensed under the same license as the rest of Solicitor."
+        }
+      ],
+      "license_expressions": [
+        "unknown-license-reference"
+      ],
+      "percentage_of_license_text": 8.82,
+      "copyrights": [],
+      "holders": [],
+      "authors": [],
+      "consolidated_to": [],
+      "scan_errors": []
+    }
+  ]
+}
