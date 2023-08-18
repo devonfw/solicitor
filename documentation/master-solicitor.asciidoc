@@ -1616,7 +1616,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.13.0::
 * https://github.com/devonfw/solicitor/issues/191: Refactoring of the (experimental) Scancode integration (formerly class ScancodeFileAdapter).
 * https://github.com/devonfw/solicitor/issues/192: References to files within the sources of a component (e.g. license or notice files)
-are now returned from the Scancode adapter by a local path prefixed by `$PKG_ROOT$/`. This replaces the usage of `file:` urls in this case. The same syntax needs to be used within curation data if the url pointing to license texts within the component needs to be curated.
+are now returned from the Scancode adapter by a uri with schme/prefixed `pkgcontent:`. This replaces the usage of `file:` urls in this case. The same syntax needs to be used within curation data if the url pointing to license texts within the component needs to be curated.
 
 Changes in 1.12.0::
 * https://github.com/devonfw/solicitor/issues/182: Add new data quality and traceability attributes to the ComponentInfo data structure.
