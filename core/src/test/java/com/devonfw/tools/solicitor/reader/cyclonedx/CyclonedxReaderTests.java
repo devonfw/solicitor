@@ -41,7 +41,7 @@ public class CyclonedxReaderTests {
   public void readMavenFileAndCheckSize() {
 
     // Always return a non-empty String for maven purls
-    Mockito.when(this.delegatingPurlHandler.sourceDownloadUrlFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Java8");
@@ -76,7 +76,7 @@ public class CyclonedxReaderTests {
   public void readMavenFileAndCheckSizeNegative() {
 
     // Always throw exception for maven purls
-    Mockito.when(this.delegatingPurlHandler.sourceDownloadUrlFor(Mockito.startsWith("pkg:maven/"))).thenThrow(
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenThrow(
         new SolicitorPackageURLException("No applicable SingleKindPackageURLHandler found for type 'maven'"));
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
@@ -100,7 +100,7 @@ public class CyclonedxReaderTests {
   public void readMavenFileAndCheckSingleContentSize() {
 
     // Always return a non-empty String for maven purls
-    Mockito.when(this.delegatingPurlHandler.sourceDownloadUrlFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Java8");
@@ -162,7 +162,7 @@ public class CyclonedxReaderTests {
   public void readNpmFileAndCheckSize() {
 
     // Always return a non-empty String for npm purls
-    Mockito.when(this.delegatingPurlHandler.sourceDownloadUrlFor(Mockito.startsWith("pkg:npm/"))).thenReturn("foo");
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:npm/"))).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Angular");
