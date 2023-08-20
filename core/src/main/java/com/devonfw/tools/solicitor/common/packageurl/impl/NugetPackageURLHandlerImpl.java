@@ -1,15 +1,15 @@
 package com.devonfw.tools.solicitor.common.packageurl.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.github.packageurl.PackageURL;
+
 @Component
 public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandler {
-	private String repoBaseUrl;
-	
+  private String repoBaseUrl;
+
   /**
    * The constructor.
    *
@@ -21,11 +21,11 @@ public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
     super();
     this.repoBaseUrl = repoBaseUrl;
   }
-  
+
   @Override
   public boolean canHandle(PackageURL packageURL) {
 
-  	return (PackageURL.StandardTypes.NUGET.equals(packageURL.getType()));
+    return (PackageURL.StandardTypes.NUGET.equals(packageURL.getType()));
   }
 
   // Nuget does not have a standardized API to fetch the source code
@@ -33,21 +33,20 @@ public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
   @Override
   public String doSourceDownloadUrlFor(PackageURL purl) {
 
-	  return null;
+    return null;
   }
 
-	// https://www.nuget.org/api/v2/package/{packageID}/{packageVersion}
-	// Example: https://www.nuget.org/api/v2/package/Castle.Core/4.4.1
-	@Override
-	public String doPackageDownloadUrlFor(PackageURL purl) {
-	
-	  StringBuffer sb = new StringBuffer(this.repoBaseUrl);				// https://www.nuget.org/api/v2/package/
-	  sb.append(purl.getName()).append("/");											// {packageID}/
-    sb.append(purl.getVersion()).append(".nupkg");								// {packageVersion}
-	  
+  // https://www.nuget.org/api/v2/package/{packageID}/{packageVersion}
+  // Example: https://www.nuget.org/api/v2/package/Castle.Core/4.4.1
+  @Override
+  public String doPackageDownloadUrlFor(PackageURL purl) {
 
-	  return sb.toString();
-	}
+    StringBuffer sb = new StringBuffer(this.repoBaseUrl); // https://www.nuget.org/api/v2/package/
+    sb.append(purl.getName()).append("/"); // {packageID}/
+    sb.append(purl.getVersion()).append(".nupkg"); // {packageVersion}
+
+    return sb.toString();
+  }
 
   @Override
   public String doSourceArchiveSuffixFor(PackageURL packageURL) {

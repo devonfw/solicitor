@@ -11,9 +11,9 @@ public class NugetPackageURLHandlerTests {
   void testSourceDownloadUrlFor() {
 
     NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
-    assertEquals(null,handler.sourceDownloadUrlFor("pkg:nuget/com.someorg@4.5.35"));
+    assertEquals(null, handler.sourceDownloadUrlFor("pkg:nuget/com.someorg@4.5.35"));
   }
-  
+
   @Test
   void testCanHandle() {
 
@@ -21,18 +21,18 @@ public class NugetPackageURLHandlerTests {
     assertTrue(handler.canHandle(handler.parse("pkg:nuget/a@1")));
     assertFalse(handler.canHandle(handler.parse("pkg:nuget1/a@1")));
   }
-  
+
   @Test
   void testSourceArchiveSuffixFor() {
 
-  	NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
+    NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
     assertEquals("nupkg", handler.sourceArchiveSuffixFor("pkg:nuget/com.someorg@4.5.35"));
   }
-  
+
   @Test
   void testPathFor() {
 
-  	NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
+    NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
     assertEquals("pkg/nuget/com.someorg/4.5.35", handler.pathFor("pkg:nuget/com.someorg@4.5.35"));
   }
 }
