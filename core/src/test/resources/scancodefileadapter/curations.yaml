@@ -1,0 +1,10 @@
+artifacts: 
+- name: "pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0"
+  note: "some note on the curation"
+  copyrights:
+  - "Copyright (c) 2023 somebody"
+  url: "http://some/url"
+  licenses:
+    - license: MIT
+      url: https://some/license/url
+      

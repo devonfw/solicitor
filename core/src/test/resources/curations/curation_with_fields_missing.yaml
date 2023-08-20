@@ -1,0 +1,14 @@
+name: "pkg/maven/somenamespace/somecomponent/2.3.4"
+note: "some note on the curation"
+#url: "http://the/sourceRepoUrl"
+#licenses:
+#- license: "Apache-2.0"
+#  url: "https://scancode-licensedb.aboutcode.org/apache-2.0.LICENSE"
+#- license: "BSD-2-Clause"
+#  url: "https://scancode-licensedb.aboutcode.org/bsd-simplified.LICENSE"
+#- license: "CC-BY-3.0"
+#  url: "https://scancode-licensedb.aboutcode.org/cc-by-3.0.LICENSE"
+copyrights: []
+# the copyright list exists but is empty!
+#- "Copyright (c) 2003 First Holder"
+#- "Copyright (c) 2004 Second Holder"

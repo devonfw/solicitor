@@ -1,0 +1,5 @@
+# This file contains metadata about the orgin of the package and the sources.
+# This file was automatically created but might manually be edited if the contained data is not correct
+sourceDownloadUrl: https://somehost/test-project-for-deep-license-scan-0.1.0-sources.jar
+packageDownloadUrl: https://somehost/test-project-for-deep-license-scan-0.1.0.jar
+# note: to add comments: write them here and remove the hash at the beginning of the line
