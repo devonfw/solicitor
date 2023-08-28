@@ -9,7 +9,7 @@
 	mkdir $artifact.applicationName &> /dev/null
 	cd $artifact.applicationName
 	#if ( $artifact.packageUrl == "NA" )
-		echo "Artifact Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version" >> need-to-retrieve-manually.txt
+		echo "No PackageUrl available: Artifact Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version" >> need-to-retrieve-manually.txt
 	#else
 			curl -# $purlhandler.sourceDownloadUrlFor($artifact.packageUrl) -o ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}
 			#if ( $purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "jar" )
@@ -23,7 +23,7 @@
 			#end
 			if [ $? -ne 0 ]
 			then
-  				echo "Need to retrieve-manually: ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}" >> need-to-retrieve-manually.txt
+  				echo "Could not be downloaded: ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}" >> need-to-retrieve-manually.txt
   				rm ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}
 			fi	
 	#end
