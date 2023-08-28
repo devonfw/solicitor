@@ -4,7 +4,6 @@
 # see https://github.com/devonfw/solicitor
 # This script downloads the sources for components, which have the "includeSource" flag set to "yes".
 
-echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manually.txt
 #foreach ($artifact in $ARTIFACTS)
 # Application: $artifact.applicationName -- Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version -- License(s): $artifact.effectiveNormalizedLicense -- includeSource: $artifact.includeSource
 	mkdir $artifact.applicationName &> /dev/null
@@ -28,5 +27,6 @@ echo "These artifacts need to be downloaded manually:" > need-to-retrieve-manual
   				rm ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}
 			fi	
 	#end
+	rm -rf package/
 	cd ..
 #end
