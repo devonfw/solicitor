@@ -94,7 +94,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           // Fill purl
           try {
             // check if handler exists for the package type defined in purl
-            if (!this.delegatingPackageURLHandler.sourceDownloadUrlFor(purl).isEmpty()) {
+            if (!this.delegatingPackageURLHandler.pathFor(purl).isEmpty()) {
               appComponent.setPackageUrl(purl);
             }
           } catch (SolicitorPackageURLException ex) {
