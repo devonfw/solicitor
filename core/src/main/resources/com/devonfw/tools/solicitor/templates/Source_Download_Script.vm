@@ -11,22 +11,30 @@
 	#if ( $artifact.packageUrl == "NA" )
 		echo "No PackageUrl available: Artifact Group: $artifact.groupId -- Artifact: $artifact.artifactId -- Version: $artifact.version" >> need-to-retrieve-manually.txt
 	#else
-			curl -# $purlhandler.sourceDownloadUrlFor($artifact.packageUrl) -o ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}
-			#if ( $purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "jar" )
-			unzip -q -t ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.jar
-			#elseif($purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "tgz")
-			tar -xvzf ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.tgz
-			#elseif($purlhandler.sourceArchiveSuffixFor($artifact.packageUrl) == "tar.gz")
-			tar -xvzf ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.tar.gz
+		#set($sourceArchiveSuffix= ${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)})	
+		#set($prefixToRemove = "pkg-")
+		
+		#set($fileName= ${purlhandler.pathFor($artifact.packageUrl).replaceAll("/","-")})
+		#set($fileName= $fileName+("-sources."))
+		#set($fileName= $fileName + $sourceArchiveSuffix)
+		#set($fileName = $fileName.substring($prefixToRemove.length()))
+		# File name: $fileName
+		
+			curl -# $purlhandler.sourceDownloadUrlFor($artifact.packageUrl) -o $fileName
+			#if ( $sourceArchiveSuffix == "jar" )
+			unzip -q -t $fileName
+			#elseif($sourceArchiveSuffix == "tgz")
+			tar -xvzf $fileName -O > /dev/null
+			#elseif($sourceArchiveSuffix == "tar.gz")
+			tar -xvzf $fileName -O > /dev/null
 			#else
 			unzip -q nonexisting
 			#end
 			if [ $? -ne 0 ]
 			then
-  				echo "Could not be downloaded: ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}" >> need-to-retrieve-manually.txt
-  				rm ${artifact.groupId}--${artifact.artifactId}-${artifact.version}-sources.${purlhandler.sourceArchiveSuffixFor($artifact.packageUrl)}
-			fi	
+  				echo "Could not be downloaded: $fileName " >> need-to-retrieve-manually.txt
+  				rm $fileName
+			fi
 	#end
-	rm -rf package/
 	cd ..
 #end
