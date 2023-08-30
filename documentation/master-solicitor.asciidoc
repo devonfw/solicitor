@@ -1534,6 +1534,9 @@ Similar to the above but uses guessed license URLs and content, see <<Guessing o
 This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:
 Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized Licenses, License Count.
 
+=== Source_Download_Script.vm
+This template creates a bash script for downloading package sources for all packages where the license requires the source code to be included in the distribution.  
+
 === ScancodeScript.vm, ScancodeScanScript.vm
 These templates create script files for downloading package sources and using https://github.com/nexB/scancode-toolkit[ScanCode] to do a "deep license scan"
 for finding licenses, copyright information (statements, holders, authors)
