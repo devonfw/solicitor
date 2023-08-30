@@ -1534,6 +1534,9 @@ Similar to the above but uses guessed license URLs and content, see <<Guessing o
 This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:
 Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized Licenses, License Count.
 
+=== Source_Download_Script.vm
+This template creates a bash script for downloading package sources for all packages where the license requires the source code to be included in the distribution.  
+
 === ScancodeScript.vm, ScancodeScanScript.vm
 These templates create script files for downloading package sources and using https://github.com/nexB/scancode-toolkit[ScanCode] to do a "deep license scan"
 for finding licenses, copyright information (statements, holders, authors)
@@ -1618,6 +1621,7 @@ Changes in 1.13.0::
 * https://github.com/devonfw/solicitor/issues/191: Refactoring of the (experimental) Scancode integration (formerly class ScancodeFileAdapter).
 * https://github.com/devonfw/solicitor/issues/192: References to files within the sources of a component (e.g. license or notice files)
 are now returned from the Scancode adapter by a local path prefixed by `$PKG_ROOT$/`. This replaces the usage of `file:` urls in this case. The same syntax needs to be used within curation data if the url pointing to license texts within the component needs to be curated.
+* https://github.com/devonfw/solicitor/issues/199: Refactoring of Source_Download_Script.vm to use packageUrl instead of repoType.
 
 Changes in 1.12.0::
 * https://github.com/devonfw/solicitor/issues/182: Add new data quality and traceability attributes to the ComponentInfo data structure.
