@@ -78,7 +78,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * information is found or when there is an error reading the component info data source.
    *
    * @param ac The {@link ApplicationComponent} to be processed.
-   * @param gitBranch The git branch to be used when looking up component information.
    * @return A {@link Statistics} object representing the processing statistics.
    * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
@@ -141,7 +140,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         if (componentInfo.getHomepageUrl() != null) {
           ac.setOssHomepage(componentInfo.getHomepageUrl());
         }
-        // check whether Source Reop Url is included in input file or not
+        // check whether Source ReopUrl is included in input file or not
         if (componentInfo.getSourceRepoUrl() != null) {
           ac.setSourceRepoUrl(componentInfo.getSourceRepoUrl());
         }
@@ -160,11 +159,11 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
   }
 
   /**
-   * Formats the traceability notes from the given {@link ComponentInfo} by concatenating to a single string using line
+   * Formats the traceabilityNotes from the given {@link ComponentInfo} by concatenating to a single string using line
    * separators.
    *
-   * @param componentInfo The {@link ComponentInfo} containing the traceability notes.
-   * @return A formatted {@link String} representing the traceability notes, separated by the long separator.
+   * @param componentInfo The {@link ComponentInfo} containing the traceabilityNotes.
+   * @return A formatted {@link String} representing the traceabilityNotes, separated by the long separator.
    */
   public String formatTraceabilityNotes(ComponentInfo componentInfo) {
 
