@@ -39,15 +39,15 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   @Override
-  public ComponentInfo getComponentInfo(String packageUrl) throws ComponentInfoAdapterException {
+  public ComponentInfo getComponentInfo(String packageUrl, String gitBranch) throws ComponentInfoAdapterException {
 
     if (isFeatureActive()) {
 
-      ComponentInfo componentInfo = this.uncuratedComponentInfoProvider.getComponentInfo(packageUrl);
+      ComponentInfo componentInfo = this.uncuratedComponentInfoProvider.getComponentInfo(packageUrl, gitBranch);
       if (componentInfo == null) {
         return null;
       }
-      componentInfo = this.componentInfoCurator.curate(componentInfo);
+      componentInfo = this.componentInfoCurator.curate(componentInfo, gitBranch);
 
       return componentInfo;
 

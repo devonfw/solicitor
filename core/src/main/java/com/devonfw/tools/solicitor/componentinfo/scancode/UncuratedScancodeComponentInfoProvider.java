@@ -99,7 +99,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   @Override
-  public ScancodeComponentInfo getComponentInfo(String packageUrl) throws ComponentInfoAdapterException {
+  public ScancodeComponentInfo getComponentInfo(String packageUrl, String gitBranch)
+      throws ComponentInfoAdapterException {
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
     if (rawScancodeData == null) {
@@ -257,8 +258,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
             "https://scancode-licensedb.aboutcode.org");
         adjustedLicenseUrl = adjustedLicenseUrl.replace("github.com", "raw.github.com").replace("/tree", "");
       } else if (this.fileScancodeRawComponentInfoProvider.isLocalContentPath(packageUrl, licenseUrl)) {
-        adjustedLicenseUrl = this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl,
-            licenseUrl);
+        adjustedLicenseUrl = this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, licenseUrl);
         LOG.debug("LOCAL LICENSE: " + licenseUrl);
       }
     }

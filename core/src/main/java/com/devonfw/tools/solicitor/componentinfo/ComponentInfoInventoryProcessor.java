@@ -78,6 +78,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * information is found or when there is an error reading the component info data source.
    *
    * @param ac The {@link ApplicationComponent} to be processed.
+   * @param gitBranch The git branch to be used when looking up component information.
    * @return A {@link Statistics} object representing the processing statistics.
    * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
@@ -91,7 +92,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       ComponentInfo componentInfo = null;
       try {
         for (ComponentInfoProvider cia : this.componentInfoAdapters) {
-          componentInfo = cia.getComponentInfo(ac.getPackageUrl());
+          componentInfo = cia.getComponentInfo(ac.getPackageUrl(), null);
           // stop querying further adapters if some info was returned
           if (componentInfo != null) {
             break;
