@@ -78,7 +78,7 @@ class ScancodeComponentInfoAdapterTest {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter
-        .getComponentInfo("pkg:maven/com.devonfw.tools/unknown@0.1.0");
+        .getComponentInfo("pkg:maven/com.devonfw.tools/unknown@0.1.0", "someGitBranch");
 
     // then
     assertNull(componentInfo);
@@ -97,7 +97,7 @@ class ScancodeComponentInfoAdapterTest {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter
-        .getComponentInfo("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .getComponentInfo("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someGitBranch");
 
     // then
     assertNotNull(componentInfo);
@@ -142,7 +142,7 @@ class ScancodeComponentInfoAdapterTest {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter
-        .getComponentInfo("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .getComponentInfo("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someGitBranch");
 
     // then
     assertNotNull(componentInfo);

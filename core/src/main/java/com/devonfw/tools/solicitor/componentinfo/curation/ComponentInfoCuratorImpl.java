@@ -43,17 +43,18 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
 
   /**
    * Checks for the existence of curations for the given package via the {@link CurationProvider}. If curations exist
-   * then the a new curated {@link ComponentInfo} instance will be created from the incoming uncurated
-   * {@link ComponentInfo} and the curations.
+   * then a new curated {@link ComponentInfo} instance will be created from the incoming uncurated {@link ComponentInfo}
+   * and the curations. 
    *
    * @param componentInfo the componentInfo to curate
+   * @param gitBranch the Git branch to use for fetching curation data (optional).
    * @return the curated component info
    * @throws ComponentInfoAdapterException if the curations could not be read
    */
   @Override
-  public ComponentInfo curate(ComponentInfo componentInfo) throws ComponentInfoAdapterException {
+  public ComponentInfo curate(ComponentInfo componentInfo, String gitBranch) throws ComponentInfoAdapterException {
 
-    ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl());
+    ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl(), gitBranch);
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
       applyFoundCurations(componentInfoImpl, foundCuration);
@@ -61,7 +62,6 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
     } else {
       return componentInfo;
     }
-
   }
 
   private void applyFoundCurations(DefaultComponentInfoImpl componentInfo, ComponentInfoCuration curation) {
