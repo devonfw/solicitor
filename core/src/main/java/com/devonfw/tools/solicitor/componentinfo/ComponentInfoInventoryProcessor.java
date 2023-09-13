@@ -78,7 +78,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * information is found or when there is an error reading the component info data source.
    *
    * @param ac The {@link ApplicationComponent} to be processed.
-   * @param gitBranch The git branch to be used when looking up component information.
    * @return A {@link Statistics} object representing the processing statistics.
    * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
@@ -86,7 +85,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
     Statistics statistics = new Statistics();
     statistics.componentsTotal = 1;
-    // String gitBranch = "main";
 
     if (ac.getPackageUrl() != null) {
       // Try to get component information from the available ComponentInfoAdapters
