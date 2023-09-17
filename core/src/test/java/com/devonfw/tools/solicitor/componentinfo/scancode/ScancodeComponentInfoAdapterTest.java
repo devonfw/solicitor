@@ -4,10 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
@@ -17,6 +20,7 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
 import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCurator;
 import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCuratorImpl;
+import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 
 /**
@@ -67,9 +71,9 @@ class ScancodeComponentInfoAdapterTest {
   }
 
   /**
-   * Test the {@link ScancodeFileAdapter#getComponentInfo(String)} method when such package is known.
+   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when such package is known.
    *
-   * @throws ComponentInfoAdapterException
+   * @throws ComponentInfoAdapterException if something goes wrong
    */
   @Test
   public void testGetComponentInfoNaPackage() throws ComponentInfoAdapterException {
@@ -85,9 +89,10 @@ class ScancodeComponentInfoAdapterTest {
   }
 
   /**
-   * Test the {@link ScancodeFileAdapter#getComponentInfo(String)} method when no curations are available.
+   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when no curations are
+   * available.
    *
-   * @throws ComponentInfoAdapterException
+   * @throws ComponentInfoAdapterException if something goes wrong
    */
   @Test
   public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException {
@@ -133,9 +138,42 @@ class ScancodeComponentInfoAdapterTest {
   }
 
   /**
-   * Test the {@link ScancodeFileAdapter#getComponentInfo(String)} method when curations are existing.
+   * Test if the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} propagates the parameter
+   * curationDataSelector to downstream beans.
    *
-   * @throws ComponentInfoAdapterException
+   * @throws ComponentInfoAdapterException if something goes wrong
+   */
+  @Test
+  public void testGetComponentCheckCurationDataSelector() throws ComponentInfoAdapterException {
+
+    // given
+    CurationProvider curationProvider = Mockito.mock(CurationProvider.class);
+    when(curationProvider.findCurations(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+    this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(curationProvider,
+        this.fileScancodeRawComponentInfoProvider);
+
+    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.uncuratedScancodeComponentInfoProvider,
+        this.componentInfoCuratorImpl);
+    this.scancodeComponentInfoAdapter.setFeatureFlag(true);
+
+    // when
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+
+    // then
+    assertNotNull(componentInfo);
+
+    ArgumentCaptor<String> captor1 = ArgumentCaptor.forClass(String.class);
+    ArgumentCaptor<String> captor2 = ArgumentCaptor.forClass(String.class);
+    Mockito.verify(curationProvider, times(1)).findCurations(captor1.capture(), captor2.capture());
+    assertEquals("someCurationSelector", captor2.getValue());
+
+  }
+
+  /**
+   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when curations are existing.
+   *
+   * @throws ComponentInfoAdapterException if something goes wrong
    */
   @Test
   public void testGetComponentInfoWithCurations() throws ComponentInfoAdapterException {
