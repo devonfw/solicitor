@@ -86,4 +86,5 @@ public interface ComponentInfo {
    * @return the traceability notes
    */
   List<String> getTraceabilityNotes();
+
 }
