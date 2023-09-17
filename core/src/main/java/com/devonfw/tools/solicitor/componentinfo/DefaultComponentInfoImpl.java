@@ -256,6 +256,4 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
     this.traceabilityNotes.add(traceabilityNote);
   }
 
-
-
 }

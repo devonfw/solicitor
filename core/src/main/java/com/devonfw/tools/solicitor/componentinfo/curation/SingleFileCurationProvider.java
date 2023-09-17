@@ -56,12 +56,13 @@ public class SingleFileCurationProvider implements CurationProvider {
    * Return the curation data for a given package.
    *
    * @param packageUrl identifies the package
-   * @param gitBranch identifies the gitBranch
-   * @return the curation data if it exists or <code>null</code> if no curation exist for the package.
+   * @param curationDataSelector identifies which source should be used for the curation data. This parameter is ignored
+   *        by this implementation.
    * @throws ComponentInfoAdapterException if something unexpected happens
    */
   @Override
-  public ComponentInfoCuration findCurations(String packageUrl, String gitBranch) throws ComponentInfoAdapterException {
+  public ComponentInfoCuration findCurations(String packageUrl, String curationDataSelector)
+      throws ComponentInfoAdapterException {
 
     ComponentInfoCuration foundCuration = null;
 

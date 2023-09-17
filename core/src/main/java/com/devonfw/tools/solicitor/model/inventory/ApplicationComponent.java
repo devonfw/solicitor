@@ -287,6 +287,4 @@ public interface ApplicationComponent {
    */
   public void completeData();
 
-
-
 }

@@ -14,10 +14,12 @@ public interface CurationProvider {
    * Return the curation data for a given package.
    *
    * @param packageUrl identifies the package
-   * @param gitBranch identifies the gitBranch
+   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
+   *        indicates that the default should be used.
    * @return the curation data if it exists or <code>null</code> if no curation exist for the package.
    * @throws ComponentInfoAdapterException if something unexpected happens
    */
-  ComponentInfoCuration findCurations(String packageUrl, String gitBranch) throws ComponentInfoAdapterException;
+  ComponentInfoCuration findCurations(String packageUrl, String curationDataSelector)
+      throws ComponentInfoAdapterException;
 
 }

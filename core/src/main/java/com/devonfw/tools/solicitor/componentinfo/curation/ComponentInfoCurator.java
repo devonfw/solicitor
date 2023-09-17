@@ -13,10 +13,11 @@ public interface ComponentInfoCurator {
    * Curates the given {@link ComponentInfo}.
    *
    * @param componentInfo the componentInfo to curate
-   * @param gitBranch the gitBranch to use for curation
+   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
+   *        indicates that the default should be used.
    * @return the curated component info or - if no curation are done - the incoming object
    * @throws ComponentInfoAdapterException if the curation could not be read
    */
-  ComponentInfo curate(ComponentInfo componentInfo, String gitBranch) throws ComponentInfoAdapterException;
+  ComponentInfo curate(ComponentInfo componentInfo, String curationDataSelector) throws ComponentInfoAdapterException;
 
 }

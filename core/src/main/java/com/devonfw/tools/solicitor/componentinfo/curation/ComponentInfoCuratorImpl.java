@@ -47,14 +47,17 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
    * and the curation.
    *
    * @param componentInfo the componentInfo to curate
-   * @param gitBranch the Git branch to use for fetching curation data (optional).
+   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
+   *        indicates that the default should be used.
    * @return the curated component info
    * @throws ComponentInfoAdapterException if the curation could not be read
    */
   @Override
-  public ComponentInfo curate(ComponentInfo componentInfo, String gitBranch) throws ComponentInfoAdapterException {
+  public ComponentInfo curate(ComponentInfo componentInfo, String curationDataSelector)
+      throws ComponentInfoAdapterException {
 
-    ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl(), gitBranch);
+    ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl(),
+        curationDataSelector);
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
       applyFoundCurations(componentInfoImpl, foundCuration);

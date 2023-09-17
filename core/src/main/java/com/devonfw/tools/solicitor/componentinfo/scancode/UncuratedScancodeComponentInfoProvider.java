@@ -94,12 +94,14 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    * Read scancode information for the given package from local file storage.
    *
    * @param packageUrl The package url of the package
+   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
+   *        indicates that the default should be used.
    * @return the read scancode information, <code>null</code> if no information was found
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   @Override
-  public ScancodeComponentInfo getComponentInfo(String packageUrl, String gitBranch)
+  public ScancodeComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
       throws ComponentInfoAdapterException {
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);

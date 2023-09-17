@@ -78,7 +78,7 @@ class ScancodeComponentInfoAdapterTest {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter
-        .getComponentInfo("pkg:maven/com.devonfw.tools/unknown@0.1.0", "someGitBranch");
+        .getComponentInfo("pkg:maven/com.devonfw.tools/unknown@0.1.0", "someCurationSelector");
 
     // then
     assertNull(componentInfo);
@@ -96,8 +96,8 @@ class ScancodeComponentInfoAdapterTest {
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
-    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter
-        .getComponentInfo("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someGitBranch");
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
     assertNotNull(componentInfo);
@@ -141,8 +141,8 @@ class ScancodeComponentInfoAdapterTest {
   public void testGetComponentInfoWithCurations() throws ComponentInfoAdapterException {
 
     // when
-    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter
-        .getComponentInfo("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someGitBranch");
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
     assertNotNull(componentInfo);
