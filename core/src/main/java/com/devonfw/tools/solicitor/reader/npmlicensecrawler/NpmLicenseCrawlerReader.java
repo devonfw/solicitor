@@ -67,7 +67,7 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      Map<String, String> configuration) {
 
     this.deprecationChecker.check(true, "Use of Reader of type '" + SUPPORTED_TYPE
         + "' is deprecated, use 'npm-license-checker' instead. See https://github.com/devonfw/solicitor/issues/125");
@@ -100,7 +100,6 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
         appComponent.setUsagePattern(usagePattern);
         appComponent.setGroupId("");
         appComponent.setSourceRepoUrl(record.get(2));
-        appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(record.get(0)).toString());
 
         // merge ApplicationComponentImpl with same key if they appear

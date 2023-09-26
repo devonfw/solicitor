@@ -42,8 +42,7 @@ public class NpmLicenseCrawlerReaderTests {
     });
     nr.setModelFactory(modelFactory);
     nr.setInputStreamFactory(new FileInputStreamFactory());
-    nr.readInventory("npm", "src/test/resources/npmlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING, "npm",
-        null);
+    nr.readInventory("npm", "src/test/resources/npmlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING, null);
   }
 
   @Test

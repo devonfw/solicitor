@@ -6,7 +6,6 @@ select distinct
 	NVL(ac."groupId", 'NA') as "groupId",
 	NVL(ac."artifactId", 'NA') as "artifactId",
 	NVL(ac."version", 'NA' ) as "version",
-	NVL(ac."repoType", 'NA' ) as "repoType",
 	NVL(ac."packageUrl", 'NA' ) as "packageUrl",
 	REGEXP_REPLACE(NVL(ac."groupId", 'NA'),'\.','/') as "groupIdT",
 	GROUP_CONCAT(DISTINCT l."includeSource" ORDER BY l."includeSource" DESC SEPARATOR ', ') as "includeSource",
@@ -24,7 +23,6 @@ group by
 	"groupId",
 	"artifactId",
 	"version",
-	"repoType",
 	"packageUrl"
 order by
 	"applicationName",

@@ -49,7 +49,7 @@ public class MavenReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      Map<String, String> configuration) {
 
     int components = 0;
     int licenses = 0;
@@ -77,7 +77,6 @@ public class MavenReader extends AbstractReader implements Reader {
       appComponent.setArtifactId(dep.getArtifactId());
       appComponent.setVersion(dep.getVersion());
       appComponent.setUsagePattern(usagePattern);
-      appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(
           PackageURLHelper.fromMavenCoordinates(dep.getGroupId(), dep.getArtifactId(), dep.getVersion()).toString());
       components++;

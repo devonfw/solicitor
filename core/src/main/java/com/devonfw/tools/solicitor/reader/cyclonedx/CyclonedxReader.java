@@ -55,7 +55,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      Map<String, String> configuration) {
 
     int componentCount = 0;
     int licenseCount = 0;
@@ -89,7 +89,6 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           appComponent.setArtifactId(artifactId);
           appComponent.setVersion(version);
           appComponent.setUsagePattern(usagePattern);
-          appComponent.setRepoType(repoType);
 
           // Fill purl
           try {

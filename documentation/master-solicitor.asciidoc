@@ -148,7 +148,6 @@ The internal business data model consists of 6 entities:
 | groupId | String | component identifier: maven group
 | artifactId | String | component identifier: maven artifactId
 | version | String | component identifier: Version
-| repoType | String | component identifier: RepoType
 | packageUrl | String | the https://github.com/package-url/purl-spec[Package URL] as an technology neutral component identifier
 | noticeFileUrl | String | URL referencing a NOTICE file to be included in the attributions (optional, see <<Experimental Scancode Integration>>)
 | noticeFileContent | String | resolved content of noticeFileUrl (optional, see <<Experimental Scancode Integration>>)
@@ -336,9 +335,8 @@ Within this section the different applications (=deliverables) of the engagement
     "programmingEcosystem" : "Java8", <4>
     "readers" : [ { <5>
       "type" : "maven", <6>
-      "source" : "classpath:samples/licenses_devon4j.xml", <7> <10>
+      "source" : "classpath:samples/licenses_devon4j.xml", <7> <9>
       "usagePattern" : "DYNAMIC_LINKING", <8>
-      "repoType" : "maven" <9>
     } ]
   } ],
 
@@ -350,8 +348,7 @@ Within this section the different applications (=deliverables) of the engagement
 <6> the type of reader; for possible values see <<Reading License Information with Readers>>
 <7> location of the source file to read (ResourceLoader-URL)
 <8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
-<9> repoType: Repository to download the sources from: currently possible values: maven, npm, pip, yarn, ort; if omitted then "maven" will be taken as default
-<10> _placeholder patterns might be used here_
+<9> _placeholder patterns might be used here_
 
 
 The different readers are described in chapter <<Reading License Information with Readers>>
@@ -645,7 +642,6 @@ In _Solicitor_ the data is read with the following part of the config
   "type" : "npm-license-checker",
   "source" : "file:path/to/licenses.json",
   "usagePattern" : "STATIC_LINKING",
-  "repoType" : "npm"
 } ]
 ----
 
@@ -683,7 +679,6 @@ In _Solicitor_ the data is read with the following part of the config
   "type" : "npm-license-crawler-csv",
   "source" : "file:path/to/licenses.csv",
   "usagePattern" : "STATIC_LINKING",
-  "repoType" : "npm"
 } ]
 ----
 
@@ -712,7 +707,6 @@ In _Solicitor_ the data is read with the following part of the config
   "type" : "yarn",
   "source" : "file:path/to/yarnlicenses.json",
   "usagePattern" : "STATIC_LINKING",
-  "repoType" : "yarn"
 } ]
 ----
 
@@ -745,7 +739,6 @@ In _Solicitor_ the data is read with the following part of the config
   "type" : "pip",
   "source" : "file:path/to/piplicenses.json",
   "usagePattern" : "DYNAMIC_LINKING",
-  "repoType" : "pip"
 } ]
 ----
 
@@ -787,7 +780,6 @@ In _Solicitor_ the data is read with the following part of the config
   "type" : "ort",
   "source" : "file:path/to/analyzer-result.json",
   "usagePattern" : "DYNAMIC_LINKING",
-  "repoType" : "ort"
 } ]
 ----
 
@@ -919,13 +911,10 @@ In Solicitor, the data is read with the following part of the config
       "type" : "cyclonedx",
       "source" : "file:$/input/sbom.json",
       "usagePattern" : "DYNAMIC_LINKING"
-      "repoType" : "maven" //or any other valid repoType
    	} ]
 ----
 
 NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl.
-
-NOTE: In the "repoType" field, only ONE type is allowed to be set. In case the SBOM contains packages of multiple types, create a separate SBOM and reader configuration for each type.
 
 == Working with Decision Tables
 

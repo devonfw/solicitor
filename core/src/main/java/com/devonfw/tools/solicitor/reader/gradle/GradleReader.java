@@ -61,7 +61,7 @@ public class GradleReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      Map<String, String> configuration) {
 
     this.deprecationChecker.check(false,
         "Use of Reader of type 'gradle' is deprecated, use 'gradle2' instead. See https://github.com/devonfw/solicitor/issues/58");
@@ -108,7 +108,6 @@ public class GradleReader extends AbstractReader implements Reader {
       appComponent.setVersion(dep.getVersion());
       appComponent.setOssHomepage(dep.getUrl());
       appComponent.setUsagePattern(usagePattern);
-      appComponent.setRepoType(repoType);
       String[] dependencyParts = dep.getDependency().split(":");
       if (dependencyParts.length != 3) {
         throw new SolicitorRuntimeException(

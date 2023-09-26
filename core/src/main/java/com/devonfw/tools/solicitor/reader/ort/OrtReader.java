@@ -44,7 +44,7 @@ public class OrtReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+       Map<String, String> configuration) {
 
     int componentCount = 0;
     int licenseCount = 0;
@@ -71,9 +71,8 @@ public class OrtReader extends AbstractReader implements Reader {
         appComponent.setApplication(application);
         componentCount++;
 
-        // resolve id into groupId/artifactId/version/repoType
+        // resolve id into groupId/artifactId/version
         String[] resolvedId = id.split(":");
-        String trueRepoType = resolvedId[0];
         String groupId = resolvedId[1];
         String artifactId = resolvedId[2];
         String version = resolvedId[3];
@@ -84,7 +83,6 @@ public class OrtReader extends AbstractReader implements Reader {
         appComponent.setUsagePattern(usagePattern);
         appComponent.setOssHomepage(homePage);
         appComponent.setSourceRepoUrl(repo);
-        appComponent.setRepoType(trueRepoType);
         appComponent.setPackageUrl(pURL);
 
         // manage multiple declared licenses

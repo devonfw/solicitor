@@ -48,7 +48,7 @@ public class YarnReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      Map<String, String> configuration) {
 
     String content = cutSourceJson(sourceUrl);
 
@@ -90,7 +90,6 @@ public class YarnReader extends AbstractReader implements Reader {
       appComponent.setGroupId("");
       appComponent.setOssHomepage(homePage);
       appComponent.setSourceRepoUrl(repo);
-      appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(name, version).toString());
 
       addRawLicense(appComponent, license, licenseUrl, sourceUrl);

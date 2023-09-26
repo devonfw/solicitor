@@ -107,13 +107,6 @@ public interface ApplicationComponent {
   String getVersion();
 
   /**
-   * This method gets the field <code>repoType</code>.
-   *
-   * @return the field repoType
-   */
-  String getRepoType();
-
-  /**
    * This methods gets the field <code>packageUrl</code>. This is a technology neutral identifier for the
    * {@link ApplicationComponent}.
    *
@@ -229,13 +222,6 @@ public interface ApplicationComponent {
    * @param version the new value of the field version
    */
   void setVersion(String version);
-
-  /**
-   * This method sets the field <code>repoType</code>.
-   *
-   * @param repoType the new value of the field repoType
-   */
-  void setRepoType(String repoType);
 
   /**
    * This method sets the field <code>copyrights</code>.

@@ -34,8 +34,6 @@ public class SolicitorSetup {
 
     private UsagePattern usagePattern;
 
-    private String repoType;
-
     private Map<String, String> configuration;
 
     /**
@@ -76,16 +74,6 @@ public class SolicitorSetup {
     public UsagePattern getUsagePattern() {
 
       return this.usagePattern;
-    }
-
-    /**
-     * This method gets the field <code>repoType</code>.
-     *
-     * @return the field repoType
-     */
-    public String getRepoType() {
-
-      return this.repoType;
     }
 
     /**
@@ -148,15 +136,6 @@ public class SolicitorSetup {
       this.usagePattern = usagePattern;
     }
 
-    /**
-     * This method sets the field <code>repoType</code>.
-     *
-     * @param repoType the new value of the field repoType
-     */
-    public void setRepoType(String repoType) {
-
-      this.repoType = repoType;
-    }
   }
 
   private String engagementName;

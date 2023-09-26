@@ -59,7 +59,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
-        "maven", configuration);
+         configuration);
 
   }
 

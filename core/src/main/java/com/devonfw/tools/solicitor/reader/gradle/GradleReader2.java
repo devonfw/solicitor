@@ -48,7 +48,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      Map<String, String> configuration) {
 
     int components = 0;
     int licenses = 0;
@@ -98,7 +98,6 @@ public class GradleReader2 extends AbstractReader implements Reader {
       appComponent.setVersion(dependencyParts[2]);
       appComponent.setOssHomepage(dep.getUrl());
       appComponent.setUsagePattern(usagePattern);
-      appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(
           PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1], dependencyParts[2]).toString());
       if (dep.getLicenses().isEmpty()) {

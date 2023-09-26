@@ -14,7 +14,6 @@ select
 	"trace" , 
 	"groupId",
 	"artifactId",
-	"repoType",
 	"packageUrl",
 	"ossHomepage",
 	"sourceRepoUrl",
@@ -48,7 +47,6 @@ from (
 		GROUP_CONCAT(l."trace" ORDER BY "trace" ASC SEPARATOR U&'\000D\000A---------\000D\000A') as "trace" , 
 		ac."groupId",
 		ac."artifactId",
-		ac."repoType",
 		ac."packageUrl",
 		ac."ossHomepage",
 		ac."sourceRepoUrl",
@@ -84,7 +82,6 @@ from (
 	group by 
 		"groupId",
 		"artifactId",
-		"repoType",
 		"packageUrl",
 		"ossHomepage",
 		"sourceRepoUrl",

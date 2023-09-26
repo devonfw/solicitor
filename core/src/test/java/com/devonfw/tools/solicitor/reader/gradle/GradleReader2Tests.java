@@ -33,8 +33,7 @@ public class GradleReader2Tests {
     GradleReader2 gr = new GradleReader2();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
-    gr.readInventory("gradle2", "src/test/resources/licenseReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
-        "maven", null);
+    gr.readInventory("gradle2", "src/test/resources/licenseReport.json", this.application, UsagePattern.DYNAMIC_LINKING, null);
 
   }
 

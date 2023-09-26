@@ -44,7 +44,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      Map<String, String> configuration) {
 
     int componentCount = 0;
     int licenseCount = 0;
@@ -72,7 +72,6 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         appComponent.setUsagePattern(usagePattern);
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
-        appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(name, version).toString());
 
         addRawLicense(appComponent, license, licenseUrl, sourceUrl);

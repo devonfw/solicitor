@@ -47,8 +47,6 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private String version;
 
-  private String repoType;
-
   private String packageUrl;
 
   private String copyrights;
@@ -113,7 +111,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getDataElements() {
 
-    return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl(), getOssHomepage(),
+    return new String[] { this.groupId, this.artifactId, this.version, getPackageUrl(), getOssHomepage(),
     getSourceRepoUrl(), getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(),
     isOssModified() ? "true" : "false", getCopyrights(), getPackageDownloadUrl(), getSourceDownloadUrl(),
     getDataStatus(), getTraceabilityNotes() };
@@ -130,7 +128,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getHeadElements() {
 
-    return new String[] { "groupId", "artifactId", "version", "repoType", "packageUrl", "ossHomepage", "sourceRepoUrl",
+    return new String[] { "groupId", "artifactId", "version", "packageUrl", "ossHomepage", "sourceRepoUrl",
     "noticeFileUrl", "noticeFileContent", "usagePattern", "ossModified", "copyrights", "packageDownloadUrl",
     "sourceDownloadUrl", "dataStatus", "traceabilityNotes" };
   }
@@ -200,13 +198,6 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public String getVersion() {
 
     return this.version;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getRepoType() {
-
-    return this.repoType;
   }
 
   /** {@inheritDoc} */
@@ -331,13 +322,6 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void setVersion(String version) {
 
     this.version = version;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setRepoType(String repoType) {
-
-    this.repoType = repoType;
   }
 
   /** {@inheritDoc} */

@@ -121,7 +121,6 @@ public class ConfigFactory {
         rs.setType(rc.getType());
         rs.setSource(rc.getSource());
         rs.setUsagePattern(rc.getUsagePattern());
-        rs.setRepoType(rc.getRepoType());
         rs.setConfiguration(rc.getConfiguration());
         rs = resolvePlaceholdersInReader(rs, placeHolderMap);
         this.solicitorSetup.getReaderSetups().add(rs);

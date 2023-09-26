@@ -137,7 +137,6 @@ public class ModelImporterExporter {
       String groupId = applicationComponentNode.get("groupId").asText(null);
       String artifactId = applicationComponentNode.get("artifactId").asText(null);
       String version = applicationComponentNode.get("version").asText(null);
-      String repoType = applicationComponentNode.get("repoType").asText(null);
       String packageUrl = null;
       if (readModelVersion >= LOWEST_VERSION_WITH_PACKAGE_URL) {
         packageUrl = applicationComponentNode.get("packageUrl").asText(null);
@@ -158,7 +157,6 @@ public class ModelImporterExporter {
       applicationComponent.setGroupId(groupId);
       applicationComponent.setArtifactId(artifactId);
       applicationComponent.setVersion(version);
-      applicationComponent.setRepoType(repoType);
       applicationComponent.setPackageUrl(packageUrl);
       applicationComponent.setCopyrights(copyrights);
       applicationComponent.setNoticeFileUrl(noticeFileUrl);
