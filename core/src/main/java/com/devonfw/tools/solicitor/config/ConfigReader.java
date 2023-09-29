@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
@@ -30,6 +31,14 @@ public class ConfigReader {
   @Autowired
   private InputStreamFactory inputStreamFactory;
 
+  private DeprecationChecker deprecationChecker;
+
+  @Autowired
+  public void setDeprecationChecker(DeprecationChecker deprecationChecker) {
+
+    this.deprecationChecker = deprecationChecker;
+  }
+  
   private ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
   /**
@@ -39,7 +48,9 @@ public class ConfigReader {
    * @return the read config
    */
   public SolicitorConfig readConfig(String url) {
-
+  	
+    this.deprecationChecker.check(true,
+        "Use value 'repoType' is deprecated, the value will not be used. See https://github.com/devonfw/solicitor/issues/190");
     checkConfigVersion(url);
 
     SolicitorConfig sc;
