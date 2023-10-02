@@ -50,7 +50,7 @@ public class ConfigReader {
   public SolicitorConfig readConfig(String url) {
   	
     this.deprecationChecker.check(true,
-        "Use value 'repoType' is deprecated, the value will not be used. See https://github.com/devonfw/solicitor/issues/190");
+        "The variable 'repoType' is deprecated and will not be used. See https://github.com/devonfw/solicitor/issues/190");
     checkConfigVersion(url);
 
     SolicitorConfig sc;
