@@ -336,8 +336,9 @@ Within this section the different applications (=deliverables) of the engagement
     "programmingEcosystem" : "Java8", <4>
     "readers" : [ { <5>
       "type" : "maven", <6>
-      "source" : "classpath:samples/licenses_devon4j.xml", <7> <9>
+      "source" : "classpath:samples/licenses_devon4j.xml", <7> <10>
       "usagePattern" : "DYNAMIC_LINKING", <8>
+      "repoType" : "maven" <9>
     } ]
   } ],
 
@@ -349,7 +350,8 @@ Within this section the different applications (=deliverables) of the engagement
 <6> the type of reader; for possible values see <<Reading License Information with Readers>>
 <7> location of the source file to read (ResourceLoader-URL)
 <8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
-<9> _placeholder patterns might be used here_
+<9> repoType: `repoType` to be set in the `ApplicationComponent` . *This parameter is deprecated and should no longer be used*, see <<List of Deprecated Features>>. The value of `repoType` in `ApplicationComponent` will otherwise be determined from the type info in the PackageURL of the component.
+<10> _placeholder patterns might be used here_
 
 
 The different readers are described in chapter <<Reading License Information with Readers>>
@@ -1329,7 +1331,7 @@ The following features are deprecated via the above mechanism:
 * Reader of type "npm"; Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see https://github.com/devonfw/solicitor/issues/78
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 1 from Version 1.4.0 on
-* Use of `repoType` in _solicitor.cfg_. Value will be set via `packageUrl`; Stage 1 from Version 1.14.0 on; see https://github.com/devonfw/solicitor/issues/190
+* Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 1 from Version 1.14.0 on; see https://github.com/devonfw/solicitor/issues/190
 
 == Experimental Scancode Integration
 
@@ -1609,7 +1611,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.14.0::
 * https://github.com/devonfw/solicitor/issues/202: Include parameter in CurationProvider.findCurations() to allow getting curation from alternative locations.
-* https://github.com/devonfw/solicitor/issues/190: Deprecate `repoType` attribute.
+* https://github.com/devonfw/solicitor/issues/190: Deprecate `repoType` attribute in configuration of readers.
 
 Changes in 1.13.0::
 * https://github.com/devonfw/solicitor/issues/198: Add PackageUrlHandler for nuget packages.
