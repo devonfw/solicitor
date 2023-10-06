@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -52,6 +53,9 @@ public class ConfigFactory {
 
   @Autowired
   private ModelFactory modelFactory;
+
+  @Autowired
+  private DeprecationChecker deprecationCecker;
 
   @Value("${solicitor.base-config-url}")
   private String baseConfigUrl;
@@ -121,6 +125,10 @@ public class ConfigFactory {
         rs.setType(rc.getType());
         rs.setSource(rc.getSource());
         rs.setUsagePattern(rc.getUsagePattern());
+        if (rc.getRepoType() != null) {
+          this.deprecationCecker.check(true,
+              "The parameter 'repoType' in the reader configuration is deprecated, see https://github.com/devonfw/solicitor/issues/190");
+        }
         rs.setRepoType(rc.getRepoType());
         rs.setConfiguration(rc.getConfiguration());
         rs = resolvePlaceholdersInReader(rs, placeHolderMap);

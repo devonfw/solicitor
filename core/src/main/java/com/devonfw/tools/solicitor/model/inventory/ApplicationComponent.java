@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
+import com.github.packageurl.PackageURL;
 
 /**
  * Represents an ApplicationComponent in the Solicitor data model.
@@ -231,7 +232,8 @@ public interface ApplicationComponent {
   void setVersion(String version);
 
   /**
-   * This method sets the field <code>repoType</code>.
+   * This method sets the field <code>repoType</code>. Note that this field might also be set under certain conditions
+   * via {@link #setPackageUrl(String)}.
    *
    * @param repoType the new value of the field repoType
    */
@@ -245,7 +247,8 @@ public interface ApplicationComponent {
   void setCopyrights(String copyrights);
 
   /**
-   * This method sets the field <code>packageUrl</code>.
+   * This method sets the field <code>packageUrl</code>. In case that the field <code>repoType</code> is not yet set
+   * (<code>null</code>) then it will also be set by the value obtained by {@link PackageURL#getType()}.
    *
    * @param packageUrl the new value of the field packageUrl.
    *
