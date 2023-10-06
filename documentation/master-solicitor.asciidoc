@@ -350,7 +350,7 @@ Within this section the different applications (=deliverables) of the engagement
 <6> the type of reader; for possible values see <<Reading License Information with Readers>>
 <7> location of the source file to read (ResourceLoader-URL)
 <8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
-<9> repoType: Repository to download the sources from: currently possible values: maven, npm, pip, yarn, ort; if omitted then "maven" will be taken as default
+<9> repoType: `repoType` to be set in the `ApplicationComponent` . *This parameter is deprecated and should no longer be used*, see <<List of Deprecated Features>>. The value of `repoType` in `ApplicationComponent` will otherwise be determined from the type info in the PackageURL of the component.
 <10> _placeholder patterns might be used here_
 
 
@@ -644,8 +644,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "npm-license-checker",
   "source" : "file:path/to/licenses.json",
-  "usagePattern" : "STATIC_LINKING",
-  "repoType" : "npm"
+  "usagePattern" : "STATIC_LINKING"
 } ]
 ----
 
@@ -682,8 +681,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "npm-license-crawler-csv",
   "source" : "file:path/to/licenses.csv",
-  "usagePattern" : "STATIC_LINKING",
-  "repoType" : "npm"
+  "usagePattern" : "STATIC_LINKING"
 } ]
 ----
 
@@ -711,8 +709,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "yarn",
   "source" : "file:path/to/yarnlicenses.json",
-  "usagePattern" : "STATIC_LINKING",
-  "repoType" : "yarn"
+  "usagePattern" : "STATIC_LINKING"
 } ]
 ----
 
@@ -744,8 +741,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "pip",
   "source" : "file:path/to/piplicenses.json",
-  "usagePattern" : "DYNAMIC_LINKING",
-  "repoType" : "pip"
+  "usagePattern" : "DYNAMIC_LINKING"
 } ]
 ----
 
@@ -786,8 +782,7 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "ort",
   "source" : "file:path/to/analyzer-result.json",
-  "usagePattern" : "DYNAMIC_LINKING",
-  "repoType" : "ort"
+  "usagePattern" : "DYNAMIC_LINKING"
 } ]
 ----
 
@@ -919,13 +914,10 @@ In Solicitor, the data is read with the following part of the config
       "type" : "cyclonedx",
       "source" : "file:$/input/sbom.json",
       "usagePattern" : "DYNAMIC_LINKING"
-      "repoType" : "maven" //or any other valid repoType
    	} ]
 ----
 
 NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl.
-
-NOTE: In the "repoType" field, only ONE type is allowed to be set. In case the SBOM contains packages of multiple types, create a separate SBOM and reader configuration for each type.
 
 == Working with Decision Tables
 
@@ -1339,6 +1331,7 @@ The following features are deprecated via the above mechanism:
 * Reader of type "npm"; Stage 1 from Version 1.0.8 on; see https://github.com/devonfw/solicitor/issues/62
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see https://github.com/devonfw/solicitor/issues/78
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 1 from Version 1.4.0 on
+* Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 1 from Version 1.14.0 on; see https://github.com/devonfw/solicitor/issues/190
 
 == Experimental Scancode Integration
 
@@ -1618,6 +1611,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.14.0::
 * https://github.com/devonfw/solicitor/issues/202: Include parameter in CurationProvider.findCurations() to allow getting curation from alternative locations.
+* https://github.com/devonfw/solicitor/issues/190: Deprecate `repoType` attribute in configuration of readers.
 
 Changes in 1.13.0::
 * https://github.com/devonfw/solicitor/issues/198: Add PackageUrlHandler for nuget packages.

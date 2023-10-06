@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents the configuration of a {@link Reader} in JSON format.
  */
 public class ReaderConfig {
-  private static final String DEFAULT_REPO_TYPE = "maven";
+  private static final String DEFAULT_REPO_TYPE = null;
 
   @JsonProperty
   private String type;

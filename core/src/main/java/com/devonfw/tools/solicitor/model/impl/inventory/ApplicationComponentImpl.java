@@ -347,12 +347,18 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
     // Assures we have the canonical representation and the packageUrl is valid;
     if (packageUrl != null) {
       try {
-        this.packageUrl = new PackageURL(packageUrl).toString();
+        PackageURL pUrl = new PackageURL(packageUrl);
+        this.packageUrl = pUrl.toString();
+        if (this.repoType == null) {
+          // if repoType is not set then set it via the type of the PackageURL
+          this.repoType = pUrl.getType();
+        }
       } catch (MalformedPackageURLException e) {
         throw new SolicitorRuntimeException("The given packageUrl '" + packageUrl + "' has an invalid format", e);
       }
+    } else {
+      this.packageUrl = null;
     }
-    this.packageUrl = packageUrl;
   }
 
   /** {@inheritDoc} */
