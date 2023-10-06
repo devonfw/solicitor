@@ -55,7 +55,7 @@ public class ConfigFactory {
   private ModelFactory modelFactory;
 
   @Autowired
-  private DeprecationChecker deprecationCecker;
+  private DeprecationChecker deprecationChecker;
 
   @Value("${solicitor.base-config-url}")
   private String baseConfigUrl;
@@ -126,7 +126,7 @@ public class ConfigFactory {
         rs.setSource(rc.getSource());
         rs.setUsagePattern(rc.getUsagePattern());
         if (rc.getRepoType() != null) {
-          this.deprecationCecker.check(true,
+          this.deprecationChecker.check(true,
               "The parameter 'repoType' in the reader configuration is deprecated, see https://github.com/devonfw/solicitor/issues/190");
         }
         rs.setRepoType(rc.getRepoType());
