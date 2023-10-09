@@ -18,8 +18,10 @@ public interface CurationProvider {
    *        indicates that the default should be used.
    * @return the curation data if it exists or <code>null</code> if no curation exist for the package.
    * @throws ComponentInfoAdapterException if something unexpected happens
+   * @throws ComponentInfoAdapterNonExistingCurationDataSelectorException if the specified curationDataSelector could not be
+   *         resolved
    */
   ComponentInfoCuration findCurations(String packageUrl, String curationDataSelector)
-      throws ComponentInfoAdapterException;
+      throws ComponentInfoAdapterException, ComponentInfoAdapterNonExistingCurationDataSelectorException;
 
 }
