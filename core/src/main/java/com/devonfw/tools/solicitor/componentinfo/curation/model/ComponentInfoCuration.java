@@ -21,6 +21,9 @@ public class ComponentInfoCuration {
 
   private List<LicenseInfoCuration> licenses;
 
+  private List<String> excludedPaths;
+  
+  
   /**
    * The constructor.
    */
@@ -107,5 +110,13 @@ public class ComponentInfoCuration {
 
     this.licenses = licenses;
   }
+
+	public List<String> getExcludedPaths() {
+		return excludedPaths;
+	}
+
+	public void setExcludedPaths(List<String> excludedPaths) {
+		this.excludedPaths = excludedPaths;
+	}
 
 }

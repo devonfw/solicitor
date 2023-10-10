@@ -1,5 +1,6 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCurator;
+import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCuratorImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.UncuratedComponentInfoProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,6 +44,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
   private AllKindsPackageURLHandler packageURLHandler;
 
   private ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider;
+  
+  private ComponentInfoCurator componentInfoCurator;
 
   /**
    * The constructor.
@@ -50,10 +55,11 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    */
   @Autowired
   public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider,
-      AllKindsPackageURLHandler packageURLHandler) {
+      AllKindsPackageURLHandler packageURLHandler, ComponentInfoCurator componentInfoCurator) {
 
     this.fileScancodeRawComponentInfoProvider = fileScancodeRawComponentInfoProvider;
     this.packageURLHandler = packageURLHandler;
+    this.componentInfoCurator = componentInfoCurator;
 
   }
 
@@ -141,7 +147,13 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
-
+    
+    // Alle Pfade aus curations.yaml in eine Arraylist füllen
+    
+    ArrayList<String> excludedPaths = new ArrayList<String>();
+    //excludedPaths.add("sources/annotations");
+    //excludedPaths.add("sources/com");
+    
     JsonNode scancodeJson;
     try {
       scancodeJson = mapper.readTree(rawScancodeData.rawScancodeResult);
@@ -149,7 +161,13 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       throw new ComponentInfoAdapterException("Could not parse Scancode JSON", e);
     }
 
+    // Alle Nodes skippen, deren Pfad in der Arraylist enthalten ist.
     for (JsonNode file : scancodeJson.get("files")) {
+      for (String excludedPath : excludedPaths) {
+      	if (file.get("path").asText().startsWith(excludedPath)) {
+      		continue;
+      	}
+      }
       if ("directory".equals(file.get("type").asText())) {
         continue;
       }

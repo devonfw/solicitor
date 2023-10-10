@@ -38,7 +38,7 @@ class ScancodeComponentInfoAdapterTest {
   ComponentInfoCurator componentInfoCuratorImpl;
 
   SingleFileCurationProvider singleFileCurationProvider;
-
+  
   @BeforeEach
   public void setup() {
 
@@ -53,7 +53,7 @@ class ScancodeComponentInfoAdapterTest {
     this.fileScancodeRawComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
 
     this.uncuratedScancodeComponentInfoProvider = new UncuratedScancodeComponentInfoProvider(
-        this.fileScancodeRawComponentInfoProvider, packageURLHandler);
+        this.fileScancodeRawComponentInfoProvider, packageURLHandler, null);
     this.uncuratedScancodeComponentInfoProvider.setMinLicensefileNumberOfLines(5);
     this.uncuratedScancodeComponentInfoProvider.setMinLicenseScore(90.0);
     this.uncuratedScancodeComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
