@@ -1,7 +1,7 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCurator;
-import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCuratorImpl;
+import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.UncuratedComponentInfoProvider;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,7 +45,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
 
   private ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider;
   
-  private ComponentInfoCurator componentInfoCurator;
+  private SingleFileCurationProvider singleFileCurationProvider;
 
   /**
    * The constructor.
@@ -55,11 +55,11 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    */
   @Autowired
   public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider,
-      AllKindsPackageURLHandler packageURLHandler, ComponentInfoCurator componentInfoCurator) {
+      AllKindsPackageURLHandler packageURLHandler, SingleFileCurationProvider singleFileCurationProvider) {
 
     this.fileScancodeRawComponentInfoProvider = fileScancodeRawComponentInfoProvider;
     this.packageURLHandler = packageURLHandler;
-    this.componentInfoCurator = componentInfoCurator;
+    this.singleFileCurationProvider = singleFileCurationProvider;
 
   }
 
@@ -148,11 +148,15 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
     
-    // Alle Pfade aus curations.yaml in eine Arraylist füllen
     
-    ArrayList<String> excludedPaths = new ArrayList<String>();
-    //excludedPaths.add("sources/annotations");
-    //excludedPaths.add("sources/com");
+    // Get all curations for the given packageUrl
+    ComponentInfoCuration componentInfoCuration = this.singleFileCurationProvider.findCurations(packageUrl, null);
+   
+    // Get all excludedPaths in this curation
+    List<String> excludedPaths = null;
+    if(componentInfoCuration != null) {
+    	excludedPaths = componentInfoCuration.getExcludedPaths();
+    }
     
     JsonNode scancodeJson;
     try {
@@ -161,98 +165,102 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       throw new ComponentInfoAdapterException("Could not parse Scancode JSON", e);
     }
 
-    // Alle Nodes skippen, deren Pfad in der Arraylist enthalten ist.
+    // Skip all files, whose path have a prefix which is in the excluded path list
+    outerLoop:
     for (JsonNode file : scancodeJson.get("files")) {
-      for (String excludedPath : excludedPaths) {
-      	if (file.get("path").asText().startsWith(excludedPath)) {
-      		continue;
-      	}
-      }
-      if ("directory".equals(file.get("type").asText())) {
-        continue;
-      }
-      if (file.get("path").asText().contains("/NOTICE")) {
-        componentScancodeInfos.addNoticeFileUrl(
-            this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, file.get("path").asText()),
-            100.0);
-      }
-      double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
-      boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
-      for (JsonNode cr : file.get("copyrights")) {
-        if (cr.has("copyright")) {
-          componentScancodeInfos.addCopyright(cr.get("copyright").asText());
-        } else {
-          componentScancodeInfos.addCopyright(cr.get("value").asText());
-        }
-      }
-
-      // special handling for Classpath-exception-2.0
-      Map<String, String> spdxIdMap = new HashMap<>();
-      boolean classPathExceptionExists = false;
-      int numberOfGplLicenses = 0;
-      for (JsonNode li : file.get("licenses")) {
-        String licenseName = li.get("spdx_license_key").asText();
-        if ("Classpath-exception-2.0".equals(licenseName)) {
-          classPathExceptionExists = true;
-        }
-        if (!spdxIdMap.containsKey(licenseName)) {
-          spdxIdMap.put(licenseName, licenseName);
-          if (licenseName.startsWith("GPL")) {
-            numberOfGplLicenses++;
-          }
-        }
-      }
-      if (classPathExceptionExists) {
-        if (numberOfGplLicenses == 0) {
-          LOG.warn(LogMessages.CLASSPATHEXCEPTION_WITHOUT_GPL.msg(), packageUrl);
-        } else if (numberOfGplLicenses > 1) {
-          LOG.warn(LogMessages.CLASSPATHEXCEPTION_MULTIPLE_GPL.msg(), packageUrl);
-        } else {
-          LOG.debug("Adjusting GPL license to contain WITH Classpath-execption-2.0 for " + packageUrl);
-          for (String licenseName : spdxIdMap.keySet()) {
-            if (licenseName.startsWith("GPL")) {
-              spdxIdMap.put(licenseName, licenseName + " WITH Classpath-exception-2.0");
-            }
-          }
-          // do not output the Classpath-exception-2.0 as separate License
-          spdxIdMap.remove("Classpath-exception-2.0");
-        }
-      }
-      for (JsonNode li : file.get("licenses")) {
-        String licenseid = li.get("key").asText();
-        String licenseName = li.get("spdx_license_key").asText();
-        String effectiveLicenseName = spdxIdMap.get(licenseName);
-        if (effectiveLicenseName == null) {
-          // not contained in map --> this must be the Classpath-exception-2.0
-          continue;
-        } else {
-          licenseName = effectiveLicenseName;
-          if (licenseName.endsWith("WITH Classpath-exception-2.0")) {
-            licenseid = licenseid + "WITH Classpath-exception-2.0";
-          }
-        }
-        String licenseDefaultUrl = li.get("scancode_text_url").asText();
-        licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
-        double score = li.get("score").asDouble();
-        String licenseUrl = file.get("path").asText();
-        int startLine = li.get("start_line").asInt();
-        int endLine = li.get("end_line").asInt();
-        if (!takeCompleteFile) {
-          licenseUrl += "#L" + startLine;
-          if (endLine != startLine) {
-            licenseUrl += "-L" + endLine;
-          }
-        }
-
-        licenseUrl = normalizeLicenseUrl(packageUrl, licenseUrl);
-        String givenLicenseText = null;
-        if (licenseUrl != null) {
-          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseUrl);
-        }
-
-        componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseUrl,
-            givenLicenseText, endLine - startLine);
-      }
+    	if(excludedPaths != null) {
+	      for (String excludedPath : excludedPaths) {
+	      	if (file.get("path").asText().startsWith(excludedPath)) {
+	      		continue outerLoop;
+	      	}
+	      }
+    	}
+	      if ("directory".equals(file.get("type").asText())) {
+	        continue;
+	      }
+	      if (file.get("path").asText().contains("/NOTICE")) {
+	        componentScancodeInfos.addNoticeFileUrl(
+	            this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, file.get("path").asText()),
+	            100.0);
+	      }
+	      double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
+	      boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
+	      for (JsonNode cr : file.get("copyrights")) {
+	        if (cr.has("copyright")) {
+	          componentScancodeInfos.addCopyright(cr.get("copyright").asText());
+	        } else {
+	          componentScancodeInfos.addCopyright(cr.get("value").asText());
+	        }
+	      }
+	
+	      // special handling for Classpath-exception-2.0
+	      Map<String, String> spdxIdMap = new HashMap<>();
+	      boolean classPathExceptionExists = false;
+	      int numberOfGplLicenses = 0;
+	      for (JsonNode li : file.get("licenses")) {
+	        String licenseName = li.get("spdx_license_key").asText();
+	        if ("Classpath-exception-2.0".equals(licenseName)) {
+	          classPathExceptionExists = true;
+	        }
+	        if (!spdxIdMap.containsKey(licenseName)) {
+	          spdxIdMap.put(licenseName, licenseName);
+	          if (licenseName.startsWith("GPL")) {
+	            numberOfGplLicenses++;
+	          }
+	        }
+	      }
+	      if (classPathExceptionExists) {
+	        if (numberOfGplLicenses == 0) {
+	          LOG.warn(LogMessages.CLASSPATHEXCEPTION_WITHOUT_GPL.msg(), packageUrl);
+	        } else if (numberOfGplLicenses > 1) {
+	          LOG.warn(LogMessages.CLASSPATHEXCEPTION_MULTIPLE_GPL.msg(), packageUrl);
+	        } else {
+	          LOG.debug("Adjusting GPL license to contain WITH Classpath-execption-2.0 for " + packageUrl);
+	          for (String licenseName : spdxIdMap.keySet()) {
+	            if (licenseName.startsWith("GPL")) {
+	              spdxIdMap.put(licenseName, licenseName + " WITH Classpath-exception-2.0");
+	            }
+	          }
+	          // do not output the Classpath-exception-2.0 as separate License
+	          spdxIdMap.remove("Classpath-exception-2.0");
+	        }
+	      }
+	      for (JsonNode li : file.get("licenses")) {
+	        String licenseid = li.get("key").asText();
+	        String licenseName = li.get("spdx_license_key").asText();
+	        String effectiveLicenseName = spdxIdMap.get(licenseName);
+	        if (effectiveLicenseName == null) {
+	          // not contained in map --> this must be the Classpath-exception-2.0
+	          continue;
+	        } else {
+	          licenseName = effectiveLicenseName;
+	          if (licenseName.endsWith("WITH Classpath-exception-2.0")) {
+	            licenseid = licenseid + "WITH Classpath-exception-2.0";
+	          }
+	        }
+	        String licenseDefaultUrl = li.get("scancode_text_url").asText();
+	        licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
+	        double score = li.get("score").asDouble();
+	        String licenseUrl = file.get("path").asText();
+	        int startLine = li.get("start_line").asInt();
+	        int endLine = li.get("end_line").asInt();
+	        if (!takeCompleteFile) {
+	          licenseUrl += "#L" + startLine;
+	          if (endLine != startLine) {
+	            licenseUrl += "-L" + endLine;
+	          }
+	        }
+	
+	        licenseUrl = normalizeLicenseUrl(packageUrl, licenseUrl);
+	        String givenLicenseText = null;
+	        if (licenseUrl != null) {
+	          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseUrl);
+	        }
+	
+	        componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseUrl,
+	            givenLicenseText, endLine - startLine);
+	      }
+      
     }
     if (componentScancodeInfos.getNoticeFileUrl() != null) {
       componentScancodeInfos.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl,

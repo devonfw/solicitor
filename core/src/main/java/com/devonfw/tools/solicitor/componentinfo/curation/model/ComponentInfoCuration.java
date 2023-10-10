@@ -110,11 +110,15 @@ public class ComponentInfoCuration {
 
     this.licenses = licenses;
   }
-
+  /**
+   * @return excluded paths
+   */
 	public List<String> getExcludedPaths() {
-		return excludedPaths;
+		return this.excludedPaths;
 	}
-
+  /**
+   * @param excludedPaths new value of {@link #getExcludedPaths}.
+   */
 	public void setExcludedPaths(List<String> excludedPaths) {
 		this.excludedPaths = excludedPaths;
 	}
