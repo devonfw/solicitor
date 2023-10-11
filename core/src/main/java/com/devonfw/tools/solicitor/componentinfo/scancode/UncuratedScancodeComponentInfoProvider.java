@@ -43,7 +43,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
 
   private AllKindsPackageURLHandler packageURLHandler;
 
-  private ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider;
+  private ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
   
   private SingleFileCurationProvider singleFileCurationProvider;
 
@@ -54,7 +54,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    * @param packageURLHandler the handler for dealing with {@link PackageURL}s.
    */
   @Autowired
-  public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider,
+  public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider,
       AllKindsPackageURLHandler packageURLHandler, SingleFileCurationProvider singleFileCurationProvider) {
 
     this.fileScancodeRawComponentInfoProvider = fileScancodeRawComponentInfoProvider;
@@ -149,7 +149,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     componentScancodeInfos.setPackageUrl(packageUrl);
     
     
-    // Get all curations for the given packageUrl
+    // Get the curation for a given packageUrl
     ComponentInfoCuration componentInfoCuration = this.singleFileCurationProvider.findCurations(packageUrl, null);
    
     // Get all excludedPaths in this curation

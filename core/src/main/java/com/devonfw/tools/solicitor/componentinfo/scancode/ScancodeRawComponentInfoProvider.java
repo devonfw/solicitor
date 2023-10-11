@@ -7,7 +7,7 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
  * Provider for {@link ScancodeRawComponentInfo}
  *
  */
-public interface ScancodeRawComponentInfoPovider extends ComponentContentProvider {
+public interface ScancodeRawComponentInfoProvider extends ComponentContentProvider {
 
   /**
    * Retrieve the {@link ScancodeRawComponentInfo} for the package given by its PackageURL.
