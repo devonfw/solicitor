@@ -43,7 +43,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
 
   /**
    * Checks for the existence of curation for the given package via the {@link CurationProvider}. If curations exist
-   * then a new curated {@link ComponentInfo} instance will be created from the incoming uncurated {@link ComponentInfo}
+   * then a new curated {@link ComponentInfo} instance will be created from the incoming filtered {@link ComponentInfo}
    * and the curation.
    *
    * @param componentInfo the componentInfo to curate

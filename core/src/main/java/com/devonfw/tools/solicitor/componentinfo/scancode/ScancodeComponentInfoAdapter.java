@@ -29,14 +29,14 @@ public class ScancodeComponentInfoAdapter extends CuratingComponentInfoAdapter {
   /**
    * The constructor.
    *
-   * @param uncuratedScancodeComponentInfoProvider provider for uncurated data originating from scancode data
+   * @param filteredScancodeComponentInfoProvider provider for filtered data originating from scancode data
    * @param componentInfoCurator the curator to use
    */
   @Autowired
-  public ScancodeComponentInfoAdapter(UncuratedScancodeComponentInfoProvider uncuratedScancodeComponentInfoProvider,
+  public ScancodeComponentInfoAdapter(FilteredScancodeComponentInfoProvider filteredScancodeComponentInfoProvider,
       ComponentInfoCurator componentInfoCurator) {
 
-    super(uncuratedScancodeComponentInfoProvider, componentInfoCurator);
+    super(filteredScancodeComponentInfoProvider, componentInfoCurator);
   }
 
   /**

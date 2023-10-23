@@ -13,12 +13,12 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 
 /**
- * This class contains JUnit test methods for the {@link UncuratedScancodeComponentInfoProvider} class.
+ * This class contains JUnit test methods for the {@link FilteredScancodeComponentInfoProvider} class.
  */
-public class UncuratedScancodeComponentInfoProviderTests {
+public class FilteredScancodeComponentInfoProviderTests {
 
   // the object under test
-  UncuratedScancodeComponentInfoProvider uncuratedScancodeComponentInfoProvider;
+  FilteredScancodeComponentInfoProvider filteredScancodeComponentInfoProvider;
 
   FileScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
 
@@ -40,13 +40,13 @@ public class UncuratedScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
-    this.uncuratedScancodeComponentInfoProvider = new UncuratedScancodeComponentInfoProvider(
+    this.filteredScancodeComponentInfoProvider = new FilteredScancodeComponentInfoProvider(
         this.fileScancodeRawComponentInfoProvider, packageURLHandler, this.singleFileCurationProvider);
 
   }
 
   /**
-   * Test the {@link UncuratedScancodeComponentInfoProvider#getComponentInfo(String,String)} method when no curations
+   * Test the {@link FilteredScancodeComponentInfoProvider#getComponentInfo(String,String)} method when no curations
    * file exists
    *
    * @throws ComponentInfoAdapterException if something goes wrong
@@ -58,7 +58,7 @@ public class UncuratedScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
-    ScancodeComponentInfo scancodeComponentInfo = this.uncuratedScancodeComponentInfoProvider.getComponentInfo(
+    ScancodeComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
@@ -84,7 +84,7 @@ public class UncuratedScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider
         .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions.yaml");
     // when
-    ScancodeComponentInfo scancodeComponentInfo = this.uncuratedScancodeComponentInfoProvider.getComponentInfo(
+    ScancodeComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
@@ -110,7 +110,7 @@ public class UncuratedScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
     // when
-    ScancodeComponentInfo scancodeComponentInfo = this.uncuratedScancodeComponentInfoProvider.getComponentInfo(
+    ScancodeComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then

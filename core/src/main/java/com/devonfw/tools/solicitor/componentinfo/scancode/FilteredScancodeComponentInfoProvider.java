@@ -14,7 +14,7 @@ import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
-import com.devonfw.tools.solicitor.componentinfo.curation.UncuratedComponentInfoProvider;
+import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,13 +23,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.packageurl.PackageURL;
 
 /**
- * {@link UncuratedComponentInfoProvider} which delivers data based on scancode data.
+ * {@link FilteredComponentInfoProvider} which delivers data based on scancode data.
  *
  */
 @Component
-public class UncuratedScancodeComponentInfoProvider implements UncuratedComponentInfoProvider {
+public class FilteredScancodeComponentInfoProvider implements FilteredComponentInfoProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UncuratedScancodeComponentInfoProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FilteredScancodeComponentInfoProvider.class);
 
   private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -54,7 +54,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    *        code
    */
   @Autowired
-  public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider,
+  public FilteredScancodeComponentInfoProvider(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider,
       AllKindsPackageURLHandler packageURLHandler, CurationProvider curationProvider) {
 
     this.fileScancodeRawComponentInfoProvider = fileScancodeRawComponentInfoProvider;
