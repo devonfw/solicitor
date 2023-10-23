@@ -1455,7 +1455,7 @@ artifacts:
 <7> A single copyright.
 <8> Another copyright. Note that due to YAML syntax any string containing `:` needs to be enclosed with parentheses
 <9> Excluded paths to be set. Optional. If defined then all scanned files, whose path prefix contain any given string here, are excluded from the ScanCode information.
-<10> A single path prefix. All scanned files starting with this path prefix are excluded from the Scancod information.
+<10> A single path prefix. All scanned files starting with this path prefix are excluded from the Scancode information.
 <11> Further packages to follow.
 
 ==== Decision table rules
@@ -1614,7 +1614,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.15.0::
-* Add a new feature allowing the exclusion of paths and files of scanned artifacts from the Scancode information.
+* https://github.com/devonfw/solicitor/issues/207: Add a new feature allowing the exclusion of paths and files of scanned artifacts from the Scancode information.
 Changes in 1.14.0::
 * https://github.com/devonfw/solicitor/issues/202: Include parameter in CurationProvider.findCurations() to allow getting curation from alternative locations.
 * https://github.com/devonfw/solicitor/issues/190: Deprecate `repoType` attribute in configuration of readers.
