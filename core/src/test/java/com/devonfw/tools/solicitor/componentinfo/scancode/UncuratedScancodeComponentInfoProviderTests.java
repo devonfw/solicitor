@@ -47,12 +47,12 @@ public class UncuratedScancodeComponentInfoProviderTests {
   }
   
   /**
-   * Test the {@link UncuratedScancodeComponentInfoProvider#getComponentInfo(String,String)} method when no paths are excluded
+   * Test the {@link UncuratedScancodeComponentInfoProvider#getComponentInfo(String,String)} method when no curations file exists
    * 
    * @throws ComponentInfoAdapterException if something goes wrong
    */
     @Test
-    public void testGetComponentInfoWithoutExclusions() throws ComponentInfoAdapterException {
+    public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException {
     	
       // given
       this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
@@ -94,5 +94,28 @@ public class UncuratedScancodeComponentInfoProviderTests {
       		scancodeComponentInfo.getNoticeFileContent());
       assertEquals(0, scancodeComponentInfo.getCopyrights().size()); //since the copyright is found under /src/../SampleClass.java1, it will be excluded
     }
- 
+    /**
+     * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when curations exist but no 
+     * paths are excluded
+     * @throws ComponentInfoAdapterException if something goes wrong
+     */
+    @Test
+    public void testGetComponentInfoWithCurationsAndWithoutExclusions() throws ComponentInfoAdapterException {
+    	
+      // given
+      this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
+      
+      // when
+    	ScancodeComponentInfo scancodeComponentInfo = 
+    			this.uncuratedScancodeComponentInfoProvider.getComponentInfo(
+    					"pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+    			
+      // then
+      assertNotNull(scancodeComponentInfo);
+      assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", scancodeComponentInfo.getPackageUrl());   
+      assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
+      		scancodeComponentInfo.getNoticeFileContent());
+      assertEquals(1, scancodeComponentInfo.getCopyrights().size());
+      assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getCopyrights().toArray()[0]); //The copyright curation does not apply on the scancodeComponentInfo object.
+    }
 }
