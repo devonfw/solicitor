@@ -38,7 +38,7 @@ class ScancodeComponentInfoAdapterTest {
   ComponentInfoCurator componentInfoCuratorImpl;
 
   SingleFileCurationProvider singleFileCurationProvider;
-  
+
   @BeforeEach
   public void setup() {
 
@@ -51,7 +51,7 @@ class ScancodeComponentInfoAdapterTest {
     this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(contentProvider,
         packageURLHandler);
     this.fileScancodeRawComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
-    
+
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
     

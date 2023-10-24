@@ -14,7 +14,6 @@ import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
-import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.UncuratedComponentInfoProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -170,7 +169,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       String path = file.get("path").asText();
       if(isExcluded(path, excludedPaths)) {
     	  continue;
-    	}
+      }
 	    if ("directory".equals(file.get("type").asText())) {
 	      continue;
 	    }
@@ -188,7 +187,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
           componentScancodeInfos.addCopyright(cr.get("value").asText());
         }
       }
-	
+
       // special handling for Classpath-exception-2.0
       Map<String, String> spdxIdMap = new HashMap<>();
       boolean classPathExceptionExists = false;
@@ -291,9 +290,9 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
   /**
    * Check if the given path prefix is excluded in the curation.
    *
-   * @param path linked to a package url
-   * @param excludedPaths all excluded paths of a curation linked to a package url
-   * @return true if path prefix is excluded in curation.
+   * @param path in the scancode data
+   * @param excludedPaths all excluded paths defined in the curation
+   * @return true if path prefix is excluded in curation
    */
   private boolean isExcluded(String path,List<String> excludedPaths) {
   	
