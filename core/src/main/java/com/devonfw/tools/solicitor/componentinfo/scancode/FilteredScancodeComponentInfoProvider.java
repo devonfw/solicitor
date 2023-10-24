@@ -1,6 +1,7 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.devonfw.tools.solicitor.componentinfo.curation.UncuratedComponentInfoProvider;
+import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
+import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
+import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,17 +23,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.packageurl.PackageURL;
 
 /**
- * {@link UncuratedComponentInfoProvider} which delivers data based on scancode data.
+ * {@link FilteredComponentInfoProvider} which delivers data based on scancode data.
  *
  */
 @Component
-public class UncuratedScancodeComponentInfoProvider implements UncuratedComponentInfoProvider {
+public class FilteredScancodeComponentInfoProvider implements FilteredComponentInfoProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UncuratedScancodeComponentInfoProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FilteredScancodeComponentInfoProvider.class);
 
   private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-
-  private String repoBasePath;
 
   private double minLicenseScore;
 
@@ -40,32 +41,26 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
 
   private AllKindsPackageURLHandler packageURLHandler;
 
-  private ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider;
+  private ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
+
+  private CurationProvider curationProvider;
 
   /**
    * The constructor.
    *
    * @param fileScancodeRawComponentInfoProvider the provide for the raw scancode data
    * @param packageURLHandler the handler for dealing with {@link PackageURL}s.
+   * @param curationProvider for getting the filter information used for filtering findings based on the paths in the
+   *        code
    */
   @Autowired
-  public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoPovider fileScancodeRawComponentInfoProvider,
-      AllKindsPackageURLHandler packageURLHandler) {
+  public FilteredScancodeComponentInfoProvider(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider,
+      AllKindsPackageURLHandler packageURLHandler, CurationProvider curationProvider) {
 
     this.fileScancodeRawComponentInfoProvider = fileScancodeRawComponentInfoProvider;
     this.packageURLHandler = packageURLHandler;
+    this.curationProvider = curationProvider;
 
-  }
-
-  /**
-   * Sets repoBasePath.
-   *
-   * @param repoBasePath new value of repoBasePath.
-   */
-  @Value("${solicitor.scancode.repo-base-path}")
-  public void setRepoBasePath(String repoBasePath) {
-
-    this.repoBasePath = repoBasePath;
   }
 
   /**
@@ -109,7 +104,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       return null;
     }
 
-    ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData);
+    ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
+        curationDataSelector);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
     LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
         componentScancodeInfos.getLicenses().size(), componentScancodeInfos.getCopyrights().size(),
@@ -135,12 +131,21 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    * @return
    * @throws ComponentInfoAdapterException
    */
-  private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData)
-      throws ComponentInfoAdapterException {
+  private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
+      String curationDataSelector) throws ComponentInfoAdapterException {
 
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
+
+    // Get the curation for a given packageUrl
+    ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataSelector);
+
+    // Get all excludedPaths in this curation
+    List<String> excludedPaths = null;
+    if (componentInfoCuration != null) {
+      excludedPaths = componentInfoCuration.getExcludedPaths();
+    }
 
     JsonNode scancodeJson;
     try {
@@ -149,14 +154,18 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       throw new ComponentInfoAdapterException("Could not parse Scancode JSON", e);
     }
 
+    // Skip all files, whose path have a prefix which is in the excluded path list
     for (JsonNode file : scancodeJson.get("files")) {
+      String path = file.get("path").asText();
+      if (isExcluded(path, excludedPaths)) {
+        continue;
+      }
       if ("directory".equals(file.get("type").asText())) {
         continue;
       }
-      if (file.get("path").asText().contains("/NOTICE")) {
-        componentScancodeInfos.addNoticeFileUrl(
-            this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, file.get("path").asText()),
-            100.0);
+      if (path.contains("/NOTICE")) {
+        componentScancodeInfos
+            .addNoticeFileUrl(this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, path), 100.0);
       }
       double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
       boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
@@ -216,7 +225,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
         String licenseDefaultUrl = li.get("scancode_text_url").asText();
         licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
         double score = li.get("score").asDouble();
-        String licenseUrl = file.get("path").asText();
+        String licenseUrl = path;
         int startLine = li.get("start_line").asInt();
         int endLine = li.get("end_line").asInt();
         if (!takeCompleteFile) {
@@ -267,4 +276,22 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     return adjustedLicenseUrl;
   }
 
+  /**
+   * Check if the given path prefix is excluded in the curation.
+   *
+   * @param path in the scancode data
+   * @param excludedPaths all excluded paths defined in the curation
+   * @return true if path prefix is excluded in curation
+   */
+  private boolean isExcluded(String path, List<String> excludedPaths) {
+
+    if (excludedPaths != null) {
+      for (String excludedPath : excludedPaths) {
+        if (path.startsWith(excludedPath)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }

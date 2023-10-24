@@ -31,7 +31,7 @@ class ScancodeComponentInfoAdapterTest {
   // the object under test
   ScancodeComponentInfoAdapter scancodeComponentInfoAdapter;
 
-  UncuratedScancodeComponentInfoProvider uncuratedScancodeComponentInfoProvider;
+  FilteredScancodeComponentInfoProvider filteredScancodeComponentInfoProvider;
 
   FileScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
 
@@ -52,19 +52,18 @@ class ScancodeComponentInfoAdapterTest {
         packageURLHandler);
     this.fileScancodeRawComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
 
-    this.uncuratedScancodeComponentInfoProvider = new UncuratedScancodeComponentInfoProvider(
-        this.fileScancodeRawComponentInfoProvider, packageURLHandler);
-    this.uncuratedScancodeComponentInfoProvider.setMinLicensefileNumberOfLines(5);
-    this.uncuratedScancodeComponentInfoProvider.setMinLicenseScore(90.0);
-    this.uncuratedScancodeComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
-
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
+
+    this.filteredScancodeComponentInfoProvider = new FilteredScancodeComponentInfoProvider(
+        this.fileScancodeRawComponentInfoProvider, packageURLHandler, this.singleFileCurationProvider);
+    this.filteredScancodeComponentInfoProvider.setMinLicensefileNumberOfLines(5);
+    this.filteredScancodeComponentInfoProvider.setMinLicenseScore(90.0);
 
     this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(this.singleFileCurationProvider,
         this.fileScancodeRawComponentInfoProvider);
 
-    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.uncuratedScancodeComponentInfoProvider,
+    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.filteredScancodeComponentInfoProvider,
         this.componentInfoCuratorImpl);
     this.scancodeComponentInfoAdapter.setFeatureFlag(true);
 
@@ -152,7 +151,7 @@ class ScancodeComponentInfoAdapterTest {
     this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(curationProvider,
         this.fileScancodeRawComponentInfoProvider);
 
-    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.uncuratedScancodeComponentInfoProvider,
+    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.filteredScancodeComponentInfoProvider,
         this.componentInfoCuratorImpl);
     this.scancodeComponentInfoAdapter.setFeatureFlag(true);
 

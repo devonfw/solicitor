@@ -5,26 +5,26 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 
 /**
- * A {@link ComponentInfoAdapter} which takes uncurated {@link ComponentInfo} data from the configuret
- * {@link UncuratedComponentInfoProvider} and curates it via the given {@link ComponentInfoCurator}.
+ * A {@link ComponentInfoAdapter} which takes filtered {@link ComponentInfo} data from the configuret
+ * {@link FilteredComponentInfoProvider} and curates it via the given {@link ComponentInfoCurator}.
  *
  */
 public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
 
-  private UncuratedComponentInfoProvider uncuratedComponentInfoProvider;
+  private FilteredComponentInfoProvider filteredComponentInfoProvider;
 
   private ComponentInfoCurator componentInfoCurator;
 
   /**
    * The constructor.
    *
-   * @param uncuratedComponentInfoProvider the provider of the uncurated {@link ComponentInfo} data
+   * @param filteredComponentInfoProvider the provider of the filtered {@link ComponentInfo} data
    * @param componentInfoCurator the curator to take
    */
-  public CuratingComponentInfoAdapter(UncuratedComponentInfoProvider uncuratedComponentInfoProvider,
+  public CuratingComponentInfoAdapter(FilteredComponentInfoProvider filteredComponentInfoProvider,
       ComponentInfoCurator componentInfoCurator) {
 
-    this.uncuratedComponentInfoProvider = uncuratedComponentInfoProvider;
+    this.filteredComponentInfoProvider = filteredComponentInfoProvider;
     this.componentInfoCurator = componentInfoCurator;
   }
 
@@ -46,7 +46,7 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
 
     if (isFeatureActive()) {
 
-      ComponentInfo componentInfo = this.uncuratedComponentInfoProvider.getComponentInfo(packageUrl,
+      ComponentInfo componentInfo = this.filteredComponentInfoProvider.getComponentInfo(packageUrl,
           curationDataSelector);
       if (componentInfo == null) {
         return null;

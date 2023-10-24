@@ -24,7 +24,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  *
  */
 @Component
-public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponentInfoPovider {
+public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponentInfoProvider {
 
   /**
    * The directory within the component root directory which contains the sources / the content
