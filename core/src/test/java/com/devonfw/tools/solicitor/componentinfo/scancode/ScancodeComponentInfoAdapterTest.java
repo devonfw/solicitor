@@ -54,12 +54,11 @@ class ScancodeComponentInfoAdapterTest {
 
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
-    
+
     this.uncuratedScancodeComponentInfoProvider = new UncuratedScancodeComponentInfoProvider(
         this.fileScancodeRawComponentInfoProvider, packageURLHandler, this.singleFileCurationProvider);
     this.uncuratedScancodeComponentInfoProvider.setMinLicensefileNumberOfLines(5);
     this.uncuratedScancodeComponentInfoProvider.setMinLicenseScore(90.0);
-    this.uncuratedScancodeComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
 
     this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(this.singleFileCurationProvider,
         this.fileScancodeRawComponentInfoProvider);

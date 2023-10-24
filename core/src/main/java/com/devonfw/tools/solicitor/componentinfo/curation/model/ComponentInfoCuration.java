@@ -22,8 +22,7 @@ public class ComponentInfoCuration {
   private List<LicenseInfoCuration> licenses;
 
   private List<String> excludedPaths;
-  
-  
+
   /**
    * The constructor.
    */
@@ -110,17 +109,21 @@ public class ComponentInfoCuration {
 
     this.licenses = licenses;
   }
+
   /**
    * @return excluded paths
    */
-	public List<String> getExcludedPaths() {
-		return this.excludedPaths;
-	}
+  public List<String> getExcludedPaths() {
+
+    return this.excludedPaths;
+  }
+
   /**
    * @param excludedPaths new value of {@link #getExcludedPaths}.
    */
-	public void setExcludedPaths(List<String> excludedPaths) {
-		this.excludedPaths = excludedPaths;
-	}
+  public void setExcludedPaths(List<String> excludedPaths) {
+
+    this.excludedPaths = excludedPaths;
+  }
 
 }

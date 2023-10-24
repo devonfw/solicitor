@@ -33,8 +33,6 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
 
   private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-  private String repoBasePath;
-
   private double minLicenseScore;
 
   private int minLicensefileNumberOfLines;
@@ -44,7 +42,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
   private AllKindsPackageURLHandler packageURLHandler;
 
   private ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
-    
+
   private CurationProvider curationProvider;
 
   /**
@@ -52,6 +50,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    *
    * @param fileScancodeRawComponentInfoProvider the provide for the raw scancode data
    * @param packageURLHandler the handler for dealing with {@link PackageURL}s.
+   * @param curationProvider for getting the filter information used for filtering findings based on the paths in the
+   *        code
    */
   @Autowired
   public UncuratedScancodeComponentInfoProvider(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider,
@@ -61,17 +61,6 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     this.packageURLHandler = packageURLHandler;
     this.curationProvider = curationProvider;
 
-  }
-
-  /**
-   * Sets repoBasePath.
-   *
-   * @param repoBasePath new value of repoBasePath.
-   */
-  @Value("${solicitor.scancode.repo-base-path}")
-  public void setRepoBasePath(String repoBasePath) {
-
-    this.repoBasePath = repoBasePath;
   }
 
   /**
@@ -115,7 +104,8 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
       return null;
     }
 
-    ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData, curationDataSelector);
+    ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
+        curationDataSelector);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
     LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
         componentScancodeInfos.getLicenses().size(), componentScancodeInfos.getCopyrights().size(),
@@ -141,22 +131,22 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    * @return
    * @throws ComponentInfoAdapterException
    */
-  private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData, String curationDataSelector)
-      throws ComponentInfoAdapterException {
+  private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
+      String curationDataSelector) throws ComponentInfoAdapterException {
 
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
-    
+
     // Get the curation for a given packageUrl
     ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataSelector);
-   
+
     // Get all excludedPaths in this curation
     List<String> excludedPaths = null;
-    if(componentInfoCuration != null) {
-    	excludedPaths = componentInfoCuration.getExcludedPaths();
+    if (componentInfoCuration != null) {
+      excludedPaths = componentInfoCuration.getExcludedPaths();
     }
-    
+
     JsonNode scancodeJson;
     try {
       scancodeJson = mapper.readTree(rawScancodeData.rawScancodeResult);
@@ -167,16 +157,15 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
     // Skip all files, whose path have a prefix which is in the excluded path list
     for (JsonNode file : scancodeJson.get("files")) {
       String path = file.get("path").asText();
-      if(isExcluded(path, excludedPaths)) {
-    	  continue;
+      if (isExcluded(path, excludedPaths)) {
+        continue;
       }
-	    if ("directory".equals(file.get("type").asText())) {
-	      continue;
-	    }
+      if ("directory".equals(file.get("type").asText())) {
+        continue;
+      }
       if (path.contains("/NOTICE")) {
-        componentScancodeInfos.addNoticeFileUrl(
-            this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, path),
-            100.0);
+        componentScancodeInfos
+            .addNoticeFileUrl(this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, path), 100.0);
       }
       double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
       boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
@@ -236,7 +225,7 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
         String licenseDefaultUrl = li.get("scancode_text_url").asText();
         licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
         double score = li.get("score").asDouble();
-        String licenseUrl = file.get("path").asText();
+        String licenseUrl = path;
         int startLine = li.get("start_line").asInt();
         int endLine = li.get("end_line").asInt();
         if (!takeCompleteFile) {
@@ -294,15 +283,15 @@ public class UncuratedScancodeComponentInfoProvider implements UncuratedComponen
    * @param excludedPaths all excluded paths defined in the curation
    * @return true if path prefix is excluded in curation
    */
-  private boolean isExcluded(String path,List<String> excludedPaths) {
-  	
-  	if(excludedPaths != null) { 
-  		for (String excludedPath : excludedPaths) {
-  			if (path.startsWith(excludedPath)) {
-  				return true;
-  			}
-  		}
-  	}
-  	return false;
+  private boolean isExcluded(String path, List<String> excludedPaths) {
+
+    if (excludedPaths != null) {
+      for (String excludedPath : excludedPaths) {
+        if (path.startsWith(excludedPath)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
