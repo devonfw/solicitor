@@ -23,6 +23,12 @@ public abstract class AbstractSolicitorLifecycleListener implements SolicitorLif
   }
 
   @Override
+  public void beforeWriterProcessing(ModelRoot modelRoot) {
+
+    // NOOP by default
+  }
+  
+  @Override
   public void endOfMainProcessing(ModelRoot modelRoot) {
 
     // NOOP by default

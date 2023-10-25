@@ -36,7 +36,22 @@ public class LifecycleListenerHolder {
       sll.modelRootInitialized(modelRoot);
     }
   }
+  
+  /**
+   * Calls {@link SolicitorLifecycleListener#beforeWriterProcessing(ModelRoot)} of all registered
+   * {@link SolicitorLifecycleListener}s.
+   *
+   * @param modelRoot the model data at the after beginning of main processing
+   */
+  public void beforeWriterProcessing(ModelRoot modelRoot) {
 
+    if (this.listeners == null) {
+      return;
+    }
+    for (SolicitorLifecycleListener sll : this.listeners) {
+      sll.beforeWriterProcessing(modelRoot);
+    }
+  }
   /**
    * Calls {@link SolicitorLifecycleListener#endOfMainProcessing(ModelRoot)} of all registered
    * {@link SolicitorLifecycleListener}s.

@@ -16,6 +16,13 @@ public interface SolicitorLifecycleListener {
   void modelRootInitialized(ModelRoot modelRoot);
 
   /**
+   * Method to be called at before reports are written.
+   * 
+   * @param modelRoot the model data as existing at the beginning of the main processing
+   */
+  void beforeWriterProcessing(ModelRoot modelRoot);
+
+  /**
    * Method to be called at the end of main processing.
    *
    * @param modelRoot the model data as existing at the end of the main processing
