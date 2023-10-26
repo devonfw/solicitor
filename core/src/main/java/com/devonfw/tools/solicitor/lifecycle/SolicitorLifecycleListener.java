@@ -17,6 +17,13 @@ public interface SolicitorLifecycleListener {
   void modelRootInitialized(ModelRoot modelRoot);
 
   /**
+   * Method to be called after the inventory was read (via the readers) but before any further processing.
+   *
+   * @param modelRoot the model data as existing after the inventory was read via the readers.
+   */
+  void afterReadingInventory(ModelRoot modelRoot);
+
+  /**
    * Method to be called after the model has been processed, but before the model is potentially saved (and the writers
    * are called).
    *
