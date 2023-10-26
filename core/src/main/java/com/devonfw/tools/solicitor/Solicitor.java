@@ -118,8 +118,10 @@ public class Solicitor {
       modelRoot = this.modelImporterExporter.loadModel(clo.pathForLoad);
     } else {
       readInventory();
+      this.lifecycleListenerHolder.afterReadingInventory(modelRoot);
       runInventoryProcessors(modelRoot);
       modelRoot.completeData();
+      this.lifecycleListenerHolder.afterModelProcessing(modelRoot);
     }
     if (clo.save) {
       LOG.info(LogMessages.SAVING_DATAMODEL.msg(), clo.pathForSave);

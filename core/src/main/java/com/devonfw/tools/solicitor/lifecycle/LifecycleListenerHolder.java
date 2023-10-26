@@ -38,6 +38,39 @@ public class LifecycleListenerHolder {
   }
 
   /**
+   * Method to be called after the inventory was read (via the readers) but before any further processing.
+   *
+   * @param modelRoot the model data as existing after the inventory was read via the readers.
+   */
+  public void afterReadingInventory(ModelRoot modelRoot) {
+
+    if (this.listeners == null) {
+      return;
+    }
+    for (SolicitorLifecycleListener sll : this.listeners) {
+      sll.afterReadingInventory(modelRoot);
+    }
+
+  }
+
+  /**
+   * Calls {@link SolicitorLifecycleListener#afterModelProcessing(ModelRoot)} of all registered
+   * {@link SolicitorLifecycleListener}s.
+   *
+   * @param modelRoot modelRoot the model data as existing after the model processing but before model is (optionally)
+   *        saved or writers are called
+   */
+  public void afterModelProcessing(ModelRoot modelRoot) {
+
+    if (this.listeners == null) {
+      return;
+    }
+    for (SolicitorLifecycleListener sll : this.listeners) {
+      sll.afterModelProcessing(modelRoot);
+    }
+  }
+
+  /**
    * Calls {@link SolicitorLifecycleListener#endOfMainProcessing(ModelRoot)} of all registered
    * {@link SolicitorLifecycleListener}s.
    *
