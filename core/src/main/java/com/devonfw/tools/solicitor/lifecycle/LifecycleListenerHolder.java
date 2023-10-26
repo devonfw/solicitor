@@ -36,22 +36,24 @@ public class LifecycleListenerHolder {
       sll.modelRootInitialized(modelRoot);
     }
   }
-  
+
   /**
-   * Calls {@link SolicitorLifecycleListener#beforeWriterProcessing(ModelRoot)} of all registered
+   * Calls {@link SolicitorLifecycleListener#afterModelProcessing(ModelRoot)} of all registered
    * {@link SolicitorLifecycleListener}s.
    *
-   * @param modelRoot the model data at the after beginning of main processing
+   * @param modelRoot modelRoot the model data as existing after the model processing but before model is (optionally)
+   *        saved or writers are called
    */
-  public void beforeWriterProcessing(ModelRoot modelRoot) {
+  public void afterModelProcessing(ModelRoot modelRoot) {
 
     if (this.listeners == null) {
       return;
     }
     for (SolicitorLifecycleListener sll : this.listeners) {
-      sll.beforeWriterProcessing(modelRoot);
+      sll.afterModelProcessing(modelRoot);
     }
   }
+
   /**
    * Calls {@link SolicitorLifecycleListener#endOfMainProcessing(ModelRoot)} of all registered
    * {@link SolicitorLifecycleListener}s.

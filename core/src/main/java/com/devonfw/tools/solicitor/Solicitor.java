@@ -120,6 +120,7 @@ public class Solicitor {
       readInventory();
       runInventoryProcessors(modelRoot);
       modelRoot.completeData();
+      this.lifecycleListenerHolder.afterModelProcessing(modelRoot);
     }
     if (clo.save) {
       LOG.info(LogMessages.SAVING_DATAMODEL.msg(), clo.pathForSave);
@@ -130,7 +131,6 @@ public class Solicitor {
       LOG.info(LogMessages.LOADING_DIFF.msg(), clo.pathForDiff);
       oldModelRoot = this.modelImporterExporter.loadModel(clo.pathForDiff);
     }
-    this.lifecycleListenerHolder.beforeWriterProcessing(modelRoot);
     this.writerFacade.writeResult(modelRoot, oldModelRoot);
     this.lifecycleListenerHolder.endOfMainProcessing(modelRoot);
   }
