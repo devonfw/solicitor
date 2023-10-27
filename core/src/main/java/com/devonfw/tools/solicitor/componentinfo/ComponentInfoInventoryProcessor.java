@@ -2,6 +2,7 @@ package com.devonfw.tools.solicitor.componentinfo;
 
 import java.util.Collection;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,10 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
     statistics.componentsTotal = 1;
 
     if (ac.getPackageUrl() != null) {
+      // Check if curationDataSelector is empty and then set "null".
+      if (StringUtils.isBlank(this.curationDataSelector)) {
+        this.curationDataSelector = null;
+      }
       // Try to get component information from the available ComponentInfoAdapters
       ComponentInfo componentInfo = null;
       try {
