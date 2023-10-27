@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -51,6 +52,9 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
   private ModelFactory modelFactory;
 
+  @Value("${solicitor.curationDataSelector}")
+  private String curationDataSelector;
+
   /**
    * The constructor.
    */
@@ -78,6 +82,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * information is found or when there is an error reading the component info data source.
    *
    * @param ac The {@link ApplicationComponent} to be processed.
+   * @param curationDataSelector identifies which source should be used for the curation data.
    * @return A {@link Statistics} object representing the processing statistics.
    * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
@@ -91,7 +96,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       ComponentInfo componentInfo = null;
       try {
         for (ComponentInfoProvider cia : this.componentInfoAdapters) {
-          componentInfo = cia.getComponentInfo(ac.getPackageUrl(), null);
+          componentInfo = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
           // stop querying further adapters if some info was returned
           if (componentInfo != null) {
             break;
