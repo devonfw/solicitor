@@ -2,7 +2,6 @@ package com.devonfw.tools.solicitor.componentinfo;
 
 import java.util.Collection;
 
-import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +52,24 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
   private ModelFactory modelFactory;
 
-  @Value("${solicitor.curationDataSelector}")
   private String curationDataSelector;
+
+  /**
+   * Set the curationDataSelector.
+   *
+   * @param curationDataSelector the curationDataSelector to chose when getting curation data. An empty string will be
+   *        stored as <code>null</code> null which results in the default origin being taken.
+   */
+  @Value("${solicitor.curationDataSelector}")
+  public void setCurationDataSelector(String curationDataSelector) {
+
+    if (curationDataSelector != null && curationDataSelector.isEmpty()) {
+      this.curationDataSelector = null;
+    } else {
+      this.curationDataSelector = curationDataSelector;
+
+    }
+  }
 
   /**
    * The constructor.
@@ -83,7 +98,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * information is found or when there is an error reading the component info data source.
    *
    * @param ac The {@link ApplicationComponent} to be processed.
-   * @param curationDataSelector identifies which source should be used for the curation data.
    * @return A {@link Statistics} object representing the processing statistics.
    * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
@@ -93,10 +107,6 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
     statistics.componentsTotal = 1;
 
     if (ac.getPackageUrl() != null) {
-      // Check if curationDataSelector is empty and then set "null".
-      if (StringUtils.isBlank(this.curationDataSelector)) {
-        this.curationDataSelector = null;
-      }
       // Try to get component information from the available ComponentInfoAdapters
       ComponentInfo componentInfo = null;
       try {
