@@ -1616,6 +1616,8 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.15.0::
 * https://github.com/devonfw/solicitor/issues/208: Add two new lifecycle methods to `SolicitorLifecycleListener`.
 * https://github.com/devonfw/solicitor/issues/207: Add a new feature allowing the exclusion of paths and files of scanned artifacts from the Scancode information.
+* https://github.com/devonfw/solicitor/issues/211: Allow setting alternative locations for curation data (`curationDataSelector`). Note that the standard implementation included within Solicitor does not yet honor this value.
+
 Changes in 1.14.0::
 * https://github.com/devonfw/solicitor/issues/202: Include parameter in CurationProvider.findCurations() to allow getting curation from alternative locations.
 * https://github.com/devonfw/solicitor/issues/190: Deprecate `repoType` attribute in configuration of readers.

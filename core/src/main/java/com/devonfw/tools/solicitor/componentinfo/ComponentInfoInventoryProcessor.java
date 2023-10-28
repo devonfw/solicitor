@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -51,6 +52,25 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
   private ModelFactory modelFactory;
 
+  private String curationDataSelector;
+
+  /**
+   * Set the curationDataSelector.
+   *
+   * @param curationDataSelector the curationDataSelector to chose when getting curation data. An empty string will be
+   *        stored as <code>null</code> null which results in the default origin being taken.
+   */
+  @Value("${solicitor.curationDataSelector}")
+  public void setCurationDataSelector(String curationDataSelector) {
+
+    if (curationDataSelector != null && curationDataSelector.isEmpty()) {
+      this.curationDataSelector = null;
+    } else {
+      this.curationDataSelector = curationDataSelector;
+
+    }
+  }
+
   /**
    * The constructor.
    */
@@ -91,7 +111,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       ComponentInfo componentInfo = null;
       try {
         for (ComponentInfoProvider cia : this.componentInfoAdapters) {
-          componentInfo = cia.getComponentInfo(ac.getPackageUrl(), null);
+          componentInfo = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
           // stop querying further adapters if some info was returned
           if (componentInfo != null) {
             break;
