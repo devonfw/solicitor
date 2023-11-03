@@ -132,7 +132,15 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         repo = repo.substring(0, repo.length() - 1);
       }
       if (repo.contains("github.com")) {
-        return repo.replace("git://", "https://") + "/raw/master" + licenseRelative;
+        if (repo.contains("/tree")) {
+          return repo.replace("git://", "https://").replace("github.com", "raw.githubusercontent.com").replace("/tree",
+              "") + licenseRelative;
+
+        } else {
+          return repo.replace("git://", "https://").replace("github.com", "raw.githubusercontent.com") + "/master"
+              + licenseRelative;
+
+        }
       }
     }
     return repo;
