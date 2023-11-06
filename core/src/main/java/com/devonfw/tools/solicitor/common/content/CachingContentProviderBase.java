@@ -6,6 +6,8 @@ package com.devonfw.tools.solicitor.common.content;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Scanner;
 
@@ -59,14 +61,49 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
    */
   public String getKey(String url) {
 
-    /**
-     * Normalize URL to http
-     */
+    // Normalize URL to http
     if (url.startsWith("https")) {
       url = url.replace("https", "http");
     }
-    String result = url.replaceAll("\\W", "_");
+
+    // Use the first 40 characters of the original filename
+    String firstPart = url.substring(0, Math.min(url.length(), 40));
+
+    // Calculate a hash value of the original filename (e.g., SHA-256)
+    String hashPart = calculateHash(url);
+
+    // Use the last 40 characters of the original filename
+    String lastPart = url.substring(Math.max(url.length() - 40, 0), url.length());
+
+    // Combine the parts to create the cache key
+    String result = firstPart + hashPart + lastPart;
+
+    // Ensure that the filename does not contain any characters not allowed in filenames
+    result = result.replaceAll("[^a-zA-Z0-9]", "_");
+
     return result;
+  }
+
+  /**
+   * Calculate a hash value for the given string using SHA-256.
+   *
+   * @param input the input string
+   * @return the SHA-256 hash value as a string
+   */
+  private String calculateHash(String input) {
+
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
+      byte[] hashBytes = md.digest(input.getBytes());
+      StringBuilder hexString = new StringBuilder();
+      for (byte b : hashBytes) {
+        hexString.append(String.format("%02x", b));
+      }
+      return hexString.toString();
+    } catch (NoSuchAlgorithmException e) {
+      LOG.error("SHA-256 hashing algorithm not available.", e);
+      return "";
+    }
   }
 
   /**
