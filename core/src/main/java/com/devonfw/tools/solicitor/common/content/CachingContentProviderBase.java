@@ -6,6 +6,8 @@ package com.devonfw.tools.solicitor.common.content;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Scanner;
 
@@ -30,6 +32,9 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
   private ContentProvider<C> nextContentProvider;
 
+  // Define the maximum length for filename
+  private static final int maxLength = 250;
+
   /**
    * The Constructor.
    *
@@ -52,21 +57,59 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
   protected abstract Collection<String> getCacheUrls(String key);
 
   /**
-   * Calculate the key for the given web content URL.
+   * Calculate the cache key for the given web content URL.
    *
    * @param url the URL of the web content
    * @return the cache key
    */
   public String getKey(String url) {
 
-    /**
-     * Normalize URL to http
-     */
     if (url.startsWith("https")) {
       url = url.replace("https", "http");
     }
-    String result = url.replaceAll("\\W", "_");
+
+    // Use the original filename if it's within the maximum length
+    if (url.length() <= maxLength) {
+      return url;
+    }
+
+    // Use the first 40 characters of the original filename
+    String firstPart = url.substring(0, Math.min(url.length(), 40));
+
+    // Calculate a hash value of the original filename (e.g., SHA-256)
+    String hashPart = calculateHash(url);
+
+    String lastPart = url.substring(url.length() - 40);
+
+    // Combine the parts to create the cache key
+    String result = firstPart + hashPart + lastPart;
+
+    // Replace any characters that are not alphanumeric with underscores
+    result = result.replaceAll("[^a-zA-Z0-9]", "_");
+
     return result;
+  }
+
+  /**
+   * Calculate a hash value for the given string using SHA-256.
+   *
+   * @param input the input string
+   * @return the SHA-256 hash value as a string
+   */
+  private String calculateHash(String input) {
+
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
+      byte[] hashBytes = md.digest(input.getBytes());
+      StringBuilder hexString = new StringBuilder();
+      for (byte b : hashBytes) {
+        hexString.append(String.format("%02x", b));
+      }
+      return hexString.toString();
+    } catch (NoSuchAlgorithmException e) {
+      LOG.error("SHA-256 hashing algorithm not available.", e);
+      return "";
+    }
   }
 
   /**
