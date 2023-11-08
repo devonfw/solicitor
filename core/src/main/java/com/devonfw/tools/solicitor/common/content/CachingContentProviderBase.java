@@ -68,41 +68,45 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
       url = url.replace("https", "http");
     }
 
-    // Use the original filename if it's within the maximum length
-    if (url.length() <= maxLength) {
-      return url;
+    String result = url.replaceAll("\\W", "_");
+
+    // Check if the filename length exceeds the maximum length
+    if (result.length() <= maxLength) {
+      return result; // If it's within the limit, use it as is.
+    } else {
+      // If the filename length is too long, create a modified filename.
+      String prefix = result.substring(0, 40);
+      String suffix = result.substring(result.length() - 40);
+
+      // Calculate a hash value of the original filename (e.g., using SHA-256)
+      String hash = generateHash(result);
+
+      // Combine the prefix, hash, and suffix to create a unique filename
+      String modifiedFilename = prefix + hash + suffix;
+
+      // Make sure the modified filename does not exceed the maximum length
+      if (modifiedFilename.length() > maxLength) {
+        modifiedFilename = modifiedFilename.substring(0, maxLength);
+      }
+
+      return modifiedFilename;
     }
-
-    // Use the first 40 characters of the original filename
-    String firstPart = url.substring(0, Math.min(url.length(), 40));
-
-    // Calculate a hash value of the original filename (e.g., SHA-256)
-    String hashPart = calculateHash(url);
-
-    String lastPart = url.substring(url.length() - 40);
-
-    // Combine the parts to create the cache key
-    String result = firstPart + hashPart + lastPart;
-
-    // Replace any characters that are not alphanumeric with underscores
-    result = result.replaceAll("[^a-zA-Z0-9]", "_");
-
-    return result;
   }
 
   /**
-   * Calculate a hash value for the given string using SHA-256.
+   * Generates a SHA-256 hash of the input string.
    *
-   * @param input the input string
-   * @return the SHA-256 hash value as a string
+   * @param input The input string to be hashed.
+   * @return A hexadecimal string representation of the SHA-256 hash.
+   * 
    */
-  private String calculateHash(String input) {
+  private String generateHash(String input) {
 
     try {
-      MessageDigest md = MessageDigest.getInstance("SHA-256");
-      byte[] hashBytes = md.digest(input.getBytes());
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      byte[] hash = digest.digest(input.getBytes());
       StringBuilder hexString = new StringBuilder();
-      for (byte b : hashBytes) {
+      for (byte b : hash) {
         hexString.append(String.format("%02x", b));
       }
       return hexString.toString();
