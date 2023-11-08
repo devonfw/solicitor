@@ -79,13 +79,11 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
     // Calculate a hash value of the original filename (e.g., SHA-256)
     String hashPart = calculateHash(url);
 
-    // Use the last 40 characters of the original filename
     String lastPart = url.substring(url.length() - 40);
 
     // Combine the parts to create the cache key
     String result = firstPart + hashPart + lastPart;
 
-    // Ensure that the filename does not contain any characters not allowed in filenames
     result = result.replaceAll("[^a-zA-Z0-9]", "_");
 
     return result;
@@ -97,8 +95,8 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
    * @param input the input string
    * @return the SHA-256 hash value as a string
    */
-  private String calculateHash(String input) {
 
+  private String calculateHash(String input) {
     try {
       MessageDigest md = MessageDigest.getInstance("SHA-256");
       byte[] hashBytes = md.digest(input.getBytes());
