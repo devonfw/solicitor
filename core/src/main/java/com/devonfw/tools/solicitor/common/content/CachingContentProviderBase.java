@@ -32,6 +32,9 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
   private ContentProvider<C> nextContentProvider;
 
+  // Define the maximum length for filenames
+  private static final int maxLength = 250;
+
   /**
    * The Constructor.
    *
@@ -61,9 +64,13 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
    */
   public String getKey(String url) {
 
-    // Normalize URL to http
     if (url.startsWith("https")) {
       url = url.replace("https", "http");
+    }
+
+    // Use the original filename if it's within the maximum length
+    if (url.length() <= maxLength) {
+      return url;
     }
 
     // Use the first 40 characters of the original filename
@@ -73,7 +80,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
     String hashPart = calculateHash(url);
 
     // Use the last 40 characters of the original filename
-    String lastPart = url.substring(Math.max(url.length() - 40, 0), url.length());
+    String lastPart = url.substring(url.length() - 40);
 
     // Combine the parts to create the cache key
     String result = firstPart + hashPart + lastPart;
