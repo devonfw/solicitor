@@ -32,7 +32,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
   private ContentProvider<C> nextContentProvider;
 
-  // Define the maximum length for filenames
+  // Define the maximum length for filename
   private static final int maxLength = 250;
 
   /**
@@ -57,7 +57,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
   protected abstract Collection<String> getCacheUrls(String key);
 
   /**
-   * Calculate the key for the given web content URL.
+   * Calculate the cache key for the given web content URL.
    *
    * @param url the URL of the web content
    * @return the cache key
@@ -84,6 +84,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
     // Combine the parts to create the cache key
     String result = firstPart + hashPart + lastPart;
 
+    // Replace any characters that are not alphanumeric with underscores
     result = result.replaceAll("[^a-zA-Z0-9]", "_");
 
     return result;
@@ -95,8 +96,8 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
    * @param input the input string
    * @return the SHA-256 hash value as a string
    */
-
   private String calculateHash(String input) {
+
     try {
       MessageDigest md = MessageDigest.getInstance("SHA-256");
       byte[] hashBytes = md.digest(input.getBytes());
