@@ -1615,6 +1615,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.16.0::
 * https://github.com/devonfw/solicitor/pull/212: Improvement in determining License-URL within NpmLicenseCheckerReader.
+* https://github.com/devonfw/solicitor/issues/218: Update dependencies to latest version.
 
 Changes in 1.15.0::
 * https://github.com/devonfw/solicitor/issues/208: Add two new lifecycle methods to `SolicitorLifecycleListener`.
