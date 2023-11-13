@@ -25,9 +25,9 @@
   </scm>
 
   <properties>
-    <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
-    <asciidoctorj.pdf.version>1.6.2</asciidoctorj.pdf.version>
-    <asciidoctorj.version>2.5.3</asciidoctorj.version>
+    <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
+    <asciidoctorj.pdf.version>2.3.9</asciidoctorj.pdf.version>
+    <asciidoctorj.version>2.5.10</asciidoctorj.version>
     <jruby.version>9.3.3.0</jruby.version>
     <maven.build.timestamp.format>dd-MM-yy_HH:mm</maven.build.timestamp.format>
     <builddate>${maven.build.timestamp}</builddate>
@@ -56,7 +56,7 @@
                       asciidoctor-maven-plugin
                     </artifactId>
                     <versionRange>
-                      [2.2.2,)
+                      [2.2.4,)
                     </versionRange>
                     <goals>
                       <goal>
@@ -169,7 +169,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0</version>
         <executions>
           <execution>
             <id>attach-doc</id>
