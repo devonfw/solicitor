@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.UrlInputStreamFactory;
 
 /**
@@ -33,7 +34,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
   private ContentProvider<C> nextContentProvider;
 
   // Define the maximum length for filename
-  private static final int maxLength = 250;
+  private static final int MAX_KEY_LENGTH = 250;
 
   /**
    * Get the maximum length for filenames.
@@ -42,7 +43,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
    */
   public static int getMaxLength() {
 
-    return maxLength;
+    return MAX_KEY_LENGTH;
   }
 
   /**
@@ -81,7 +82,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
     String result = url.replaceAll("\\W", "_");
 
     // Check if the filename length exceeds the maximum length
-    if (result.length() <= maxLength) {
+    if (result.length() <= MAX_KEY_LENGTH) {
       return result; // If it's within the limit, use it as is.
     } else {
       // If the filename length is too long, create a modified filename.
@@ -95,8 +96,8 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
       String modifiedFilename = prefix + hash + suffix;
 
       // Make sure the modified filename does not exceed the maximum length
-      if (modifiedFilename.length() > maxLength) {
-        modifiedFilename = modifiedFilename.substring(0, maxLength);
+      if (modifiedFilename.length() > MAX_KEY_LENGTH) {
+        modifiedFilename = modifiedFilename.substring(0, MAX_KEY_LENGTH);
       }
 
       return modifiedFilename;
@@ -121,8 +122,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
       }
       return hexString.toString();
     } catch (NoSuchAlgorithmException e) {
-      LOG.error("SHA-256 hashing algorithm not available.", e);
-      return "";
+      throw new SolicitorRuntimeException("SHA-256 hashing algorithm not available.", e);
     }
   }
 
