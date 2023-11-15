@@ -49,10 +49,6 @@ class CachingContentProviderBaseTest {
     // Verify that the result is a modified filename
     assertTrue(longResult.length() <= CachingContentProviderBase.getMaxLength(),
         "Modified filename length exceeds the maximum");
-
-    // Test the long URL
-    System.out.println("Actual Result: " + longResult);
-
     // Verify that the result is a modified filename
     assertTrue(longResult.length() <= CachingContentProviderBase.getMaxLength(),
         "Modified filename length exceeds the maximum");
