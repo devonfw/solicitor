@@ -36,6 +36,16 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
   private static final int maxLength = 250;
 
   /**
+   * Get the maximum length for filenames.
+   *
+   * @return The maximum length for filenames.
+   */
+  public static int getMaxLength() {
+
+    return maxLength;
+  }
+
+  /**
    * The Constructor.
    *
    * @param contentFactory factory for creating instances of C
@@ -98,7 +108,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
    *
    * @param input The input string to be hashed.
    * @return A hexadecimal string representation of the SHA-256 hash.
-   * 
+   *
    */
   private String generateHash(String input) {
 
