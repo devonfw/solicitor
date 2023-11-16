@@ -33,18 +33,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
   private ContentProvider<C> nextContentProvider;
 
-  // Define the maximum length for filename
-  private static final int MAX_KEY_LENGTH = 250;
-
-  /**
-   * Get the maximum length for filenames.
-   *
-   * @return The maximum length for filenames.
-   */
-  public static int getMaxLength() {
-
-    return MAX_KEY_LENGTH;
-  }
+  static final int MAX_KEY_LENGTH = 250;
 
   /**
    * The Constructor.
@@ -56,7 +45,6 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
     super(contentFactory);
     this.nextContentProvider = nextContentProvider;
-
   }
 
   /**
@@ -78,9 +66,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
     if (url.startsWith("https")) {
       url = url.replace("https", "http");
     }
-
     String result = url.replaceAll("\\W", "_");
-
     // Check if the filename length exceeds the maximum length
     if (result.length() <= MAX_KEY_LENGTH) {
       return result; // If it's within the limit, use it as is.
@@ -91,16 +77,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
       // Calculate a hash value of the original filename (e.g., using SHA-256)
       String hash = generateHash(result);
-
-      // Combine the prefix, hash, and suffix to create a unique filename
-      String modifiedFilename = prefix + hash + suffix;
-
-      // Make sure the modified filename does not exceed the maximum length
-      if (modifiedFilename.length() > MAX_KEY_LENGTH) {
-        modifiedFilename = modifiedFilename.substring(0, MAX_KEY_LENGTH);
-      }
-
-      return modifiedFilename;
+      return prefix + hash + suffix;
     }
   }
 

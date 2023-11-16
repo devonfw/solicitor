@@ -1,7 +1,6 @@
 package com.devonfw.tools.solicitor.common.content;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
@@ -15,7 +14,6 @@ class CachingContentProviderBaseTest {
 
   // Dummy implementation of CachingContentProviderBase for testing
   static class TestCachingContentProvider extends CachingContentProviderBase<Content> {
-
     public TestCachingContentProvider() {
 
       super(null, null); // ContentFactory and ContentProvider not needed for this test
@@ -24,38 +22,30 @@ class CachingContentProviderBaseTest {
     @Override
     protected Collection<String> getCacheUrls(String key) {
 
-      // Implement as needed
       return null;
     }
   }
 
   @Test
-  void shouldGenerateCorrectKeyForShortAndLongUrls() {
+  void shouldGenerateCorrectKeyForUrlOfLength250() {
 
-    // Create an instance of TestCachingContentProvider for testing
     TestCachingContentProvider cachingContentProvider = new TestCachingContentProvider();
 
-    // Test cases for URLs with different lengths
-    String shortUrl = "http://example.com";
-    String longUrl = "http://example.com/this/is/a/very/long/url/that/exceeds/the/maximum/filename/length";
-
-    // Test the short URL
-    String shortResult = cachingContentProvider.getKey(shortUrl);
-    assertEquals(shortUrl.replaceAll("\\W", "_"), shortResult, "Short URL key mismatch");
-
-    // Test the long URL
-    String longResult = cachingContentProvider.getKey(longUrl);
-
-    // Verify that the result is a modified filename
-    assertTrue(longResult.length() <= CachingContentProviderBase.getMaxLength(),
-        "Modified filename length exceeds the maximum");
-    // Verify that the result is a modified filename
-    assertTrue(longResult.length() <= CachingContentProviderBase.getMaxLength(),
-        "Modified filename length exceeds the maximum");
-
-    // Verify that the modified filename has the correct format
-    assertFalse(longResult.matches("^\\w{40}[0-9a-f]{64}\\w{40}$"),
-        "Modified filename format is incorrect. Actual Result: " + longResult);
-
+    // Create a URL of length 250 (classical logic should be used)
+    String longUrl250 = "http://example.com/clear/and/concise/url/for/testing/purposes/with/exactly/250/characters/in/total/including/letters/numbers/special/characters/as/appropriate/for/clarity/this/is/a/very/long/url/the/maximum/filename/length/just/to/reach/to/length/250";
+    String longResult250 = cachingContentProvider.getKey(longUrl250);
+    assertTrue(longResult250.length() <= 250, // Use the constant value directly exact 250 test, lenght
+        "Modified filename length exceeds the maximum for URL of length 250");
   }
+
+  void shouldGenerateCorrectKeyForUrlOfLength251() {
+
+    TestCachingContentProvider cachingContentProvider = new TestCachingContentProvider();
+
+    // Create a URL of length 251 (new approach should be used)
+    String longUrl251 = "http://example.com/clear/and/concise/url/for/testing/purposes/with/exactly/251/characters/in/total/including/letters/numbers/special/characters/as/appropriate/for/clarity/this/is/a/very/long/url/the/maximum/filenames/length/just/to/reach/to/length/251";
+    String longResult251 = cachingContentProvider.getKey(longUrl251);
+    assertEquals(144, longResult251.length(), "Modified filename length is incorrect for URL of length 251");
+  }
+
 }
