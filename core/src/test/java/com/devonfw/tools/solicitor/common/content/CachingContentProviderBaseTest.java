@@ -34,10 +34,11 @@ class CachingContentProviderBaseTest {
     // Create a URL of length 250 (classical logic should be used)
     String longUrl250 = "http://example.com/clear/and/concise/url/for/testing/purposes/with/exactly/250/characters/in/total/including/letters/numbers/special/characters/as/appropriate/for/clarity/this/is/a/very/long/url/the/maximum/filename/length/just/to/reach/to/length/250";
     String longResult250 = cachingContentProvider.getKey(longUrl250);
-    assertTrue(longResult250.length() <= 250, // Use the constant value directly exact 250 test, lenght
+    assertTrue(longResult250.length() == 250, // length should be unchanged
         "Modified filename length exceeds the maximum for URL of length 250");
   }
 
+  @Test
   void shouldGenerateCorrectKeyForUrlOfLength251() {
 
     TestCachingContentProvider cachingContentProvider = new TestCachingContentProvider();
@@ -45,7 +46,8 @@ class CachingContentProviderBaseTest {
     // Create a URL of length 251 (new approach should be used)
     String longUrl251 = "http://example.com/clear/and/concise/url/for/testing/purposes/with/exactly/251/characters/in/total/including/letters/numbers/special/characters/as/appropriate/for/clarity/this/is/a/very/long/url/the/maximum/filenames/length/just/to/reach/to/length/251";
     String longResult251 = cachingContentProvider.getKey(longUrl251);
-    assertEquals(144, longResult251.length(), "Modified filename length is incorrect for URL of length 251");
+    assertEquals(40 + 2 + 64 + 2 + 40, longResult251.length(),
+        "Modified filename length is incorrect for URL of length 251");
   }
 
 }

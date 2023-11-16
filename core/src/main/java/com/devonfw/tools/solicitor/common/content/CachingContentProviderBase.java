@@ -77,7 +77,7 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
       // Calculate a hash value of the original filename (e.g., using SHA-256)
       String hash = generateHash(result);
-      return prefix + hash + suffix;
+      return prefix + "__" + hash + "__" + suffix;
     }
   }
 
