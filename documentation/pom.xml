@@ -154,8 +154,8 @@
               <sourceHighlighter>coderay</sourceHighlighter>
               <doctype>book</doctype>
               <attributes>
-                <pdf-stylesdir>${project.basedir}/theme</pdf-stylesdir>
-                <pdf-style>solicitor</pdf-style>
+                <pdf-themesdir>${project.basedir}/theme</pdf-themesdir>
+                <pdf-theme>solicitor</pdf-theme>
                 <icons>font</icons>
                 <pagenums/>
                 <toc/>
