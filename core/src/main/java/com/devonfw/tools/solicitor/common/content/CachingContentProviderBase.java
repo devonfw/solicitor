@@ -6,6 +6,8 @@ package com.devonfw.tools.solicitor.common.content;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Scanner;
 
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.UrlInputStreamFactory;
 
 /**
@@ -30,6 +33,8 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
   private ContentProvider<C> nextContentProvider;
 
+  static final int MAX_KEY_LENGTH = 250;
+
   /**
    * The Constructor.
    *
@@ -40,7 +45,6 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
 
     super(contentFactory);
     this.nextContentProvider = nextContentProvider;
-
   }
 
   /**
@@ -52,21 +56,51 @@ public abstract class CachingContentProviderBase<C extends Content> extends Abst
   protected abstract Collection<String> getCacheUrls(String key);
 
   /**
-   * Calculate the key for the given web content URL.
+   * Calculate the cache key for the given web content URL.
    *
    * @param url the URL of the web content
    * @return the cache key
    */
   public String getKey(String url) {
 
-    /**
-     * Normalize URL to http
-     */
     if (url.startsWith("https")) {
       url = url.replace("https", "http");
     }
     String result = url.replaceAll("\\W", "_");
-    return result;
+    // Check if the filename length exceeds the maximum length
+    if (result.length() <= MAX_KEY_LENGTH) {
+      return result; // If it's within the limit, use it as is.
+    } else {
+      // If the filename length is too long, create a modified filename.
+      String prefix = result.substring(0, 40);
+      String suffix = result.substring(result.length() - 40);
+
+      // Calculate a hash value of the original filename (e.g., using SHA-256)
+      String hash = generateHash(result);
+      return prefix + "__" + hash + "__" + suffix;
+    }
+  }
+
+  /**
+   * Generates a SHA-256 hash of the input string.
+   *
+   * @param input The input string to be hashed.
+   * @return A hexadecimal string representation of the SHA-256 hash.
+   *
+   */
+  private String generateHash(String input) {
+
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      byte[] hash = digest.digest(input.getBytes());
+      StringBuilder hexString = new StringBuilder();
+      for (byte b : hash) {
+        hexString.append(String.format("%02x", b));
+      }
+      return hexString.toString();
+    } catch (NoSuchAlgorithmException e) {
+      throw new SolicitorRuntimeException("SHA-256 hashing algorithm not available.", e);
+    }
   }
 
   /**

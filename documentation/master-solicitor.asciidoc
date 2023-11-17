@@ -1261,7 +1261,14 @@ The determined content is available as `NormalizedLicense.effectiveNormalizedLic
 === Encoding of URLs
 When creating the resource or filename for given URLs in the above steps the following encoding scheme will be applied to ensure that always a valid name can be created:
 
-All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
+* If the scheme is `https` it will be replaced with `http`. 
+* All "non-word" characters (i.e. characters outside the set `[a-zA-Z_0-9]`) are replaced by underscores ("`_`").
+* In case that the resulting filename exceeds a length of 250 it will be replaced by a new name concatenated from
+** the first 40 characters of the (too) long filename
+** two underscores
+** a sha256 (hex encoded) of the (too) long filename
+** two underscores
+** the last 40 characters of the (too) long filename
 
 == Guessing of license URLs
 Fetching the license content `NormalizedLicense.effectiveNormalizedLicenseContent` based on the URL in `NormalizedLicense.effectiveNormalizedLicenseUrl` will often result in content which is in HTML format instead of plain text and is not properly rendered when included in reports.
@@ -1615,6 +1622,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.16.0::
 * https://github.com/devonfw/solicitor/pull/212: Improvement in determining License-URL within NpmLicenseCheckerReader.
+* https://github.com/devonfw/solicitor/issues/213: Avoid (too) long filenames when caching license texts oder licenseurls. See <<Encoding of URLs>>.
 * https://github.com/devonfw/solicitor/issues/218: Update dependencies to latest version.
 
 Changes in 1.15.0::
