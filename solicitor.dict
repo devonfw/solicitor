@@ -15,6 +15,7 @@ eug
 fas
 gradle
 http
+https
 jwt
 licenseRefUrl
 licenseToIgnoreN
@@ -27,6 +28,7 @@ oss
 RHS
 SBOMs
 scancode
+sha
 SOLI
 sql
 Unlicense
