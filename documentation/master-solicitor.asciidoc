@@ -1624,7 +1624,7 @@ Changes in 1.17.0::
 
 Changes in 1.16.0::
 * https://github.com/devonfw/solicitor/pull/212: Improvement in determining License-URL within NpmLicenseCheckerReader.
-* https://github.com/devonfw/solicitor/issues/213: Avoid (too) long filenames when caching license texts oder licenseurls. See <<Encoding of URLs>>.
+* https://github.com/devonfw/solicitor/issues/213: Avoid (too) long filenames when caching license texts or licenseurls. See <<Encoding of URLs>>.
 * https://github.com/devonfw/solicitor/issues/218: Update dependencies to latest version.
 
 Changes in 1.15.0::
