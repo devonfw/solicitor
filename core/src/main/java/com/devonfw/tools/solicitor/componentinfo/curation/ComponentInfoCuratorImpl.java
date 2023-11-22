@@ -70,16 +70,16 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
   private void applyFoundCurations(DefaultComponentInfoImpl componentInfo, ComponentInfoCuration curation) {
 
     if (curation.getCopyrights() != null) {
-      componentInfo.clearCopyrights();
+      componentInfo.getComponentInfoData().clearCopyrights();
       for (String copyright : curation.getCopyrights()) {
-        componentInfo.addCopyright(copyright);
+        componentInfo.getComponentInfoData().addCopyright(copyright);
       }
     }
     if (curation.getUrl() != null) {
-      componentInfo.setSourceRepoUrl(curation.getUrl());
+      componentInfo.getComponentInfoData().setSourceRepoUrl(curation.getUrl());
     }
     if (curation.getLicenses() != null) {
-      componentInfo.clearLicenses();
+      componentInfo.getComponentInfoData().clearLicenses();
       for (LicenseInfoCuration licenseCuration : curation.getLicenses()) {
         String license = licenseCuration.getLicense();
         String url = licenseCuration.getUrl();
@@ -91,7 +91,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
         licenseInfo.setSpdxId(license);
         licenseInfo.setLicenseUrl(url);
         licenseInfo.setGivenLicenseText(givenLicenseText);
-        componentInfo.addLicense(licenseInfo);
+        componentInfo.getComponentInfoData().addLicense(licenseInfo);
       }
     }
   }

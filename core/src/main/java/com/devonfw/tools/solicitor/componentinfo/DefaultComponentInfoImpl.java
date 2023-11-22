@@ -1,7 +1,6 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,33 +12,19 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
 
   private String packageUrl;
 
-  private Collection<String> copyrights;
-
-  private Collection<LicenseInfo> licenses;
-
-  private String noticeFileUrl;
-
-  private String noticeFileContent;
-
-  private String homepageUrl;
-
-  private String sourceRepoUrl;
-
-  private String packageDownloadUrl;
-
-  private String sourceDownloadUrl;
+  private boolean dataAvailable;
 
   private String dataStatus;
 
   private List<String> traceabilityNotes;
+
+  private DefaultComponentInfoDataImpl componentInfoData;
 
   /**
    * The constructor.
    */
   public DefaultComponentInfoImpl() {
 
-    this.copyrights = new ArrayList<>();
-    this.licenses = new ArrayList<>();
     this.traceabilityNotes = new ArrayList<>();
   }
 
@@ -54,21 +39,13 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
 
     this();
     this.packageUrl = source.getPackageUrl();
+    this.dataAvailable = source.isDataAvailable();
     this.dataStatus = source.getDataStatus();
-    this.homepageUrl = source.getHomepageUrl();
-    this.noticeFileContent = source.getNoticeFileContent();
-    this.noticeFileUrl = source.getNoticeFileUrl();
-    this.packageDownloadUrl = source.getPackageDownloadUrl();
-    this.sourceDownloadUrl = source.getSourceDownloadUrl();
-    this.sourceRepoUrl = source.getSourceRepoUrl();
-    for (String copyright : source.getCopyrights()) {
-      addCopyright(copyright);
-    }
     for (String traceabilityNote : source.getTraceabilityNotes()) {
       addTraceabillityNote(traceabilityNote);
     }
-    for (LicenseInfo licenseInfo : source.getLicenses()) {
-      addLicense(licenseInfo);
+    if (this.dataAvailable) {
+      this.componentInfoData = new DefaultComponentInfoDataImpl(source.getComponentInfoData());
     }
   }
 
@@ -81,51 +58,11 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   }
 
   /**
-   * @param noticeFileUrl new value of {@link #getNoticeFileUrl}.
+   * @param dataAvailable new value of {@link #isDataAvailable}.
    */
-  public void setNoticeFileUrl(String noticeFileUrl) {
+  public void setDataAvailable(boolean dataAvailable) {
 
-    this.noticeFileUrl = noticeFileUrl;
-  }
-
-  /**
-   * @param noticeFileContent new value of {@link #getNoticeFileContent}.
-   */
-  public void setNoticeFileContent(String noticeFileContent) {
-
-    this.noticeFileContent = noticeFileContent;
-  }
-
-  /**
-   * @param homepageUrl new value of {@link #getHomepageUrl}.
-   */
-  public void setHomepageUrl(String homepageUrl) {
-
-    this.homepageUrl = homepageUrl;
-  }
-
-  /**
-   * @param sourceRepoUrl new value of {@link #getSourceRepoUrl}.
-   */
-  public void setSourceRepoUrl(String sourceRepoUrl) {
-
-    this.sourceRepoUrl = sourceRepoUrl;
-  }
-
-  /**
-   * @param packageDownloadUrl new value of {@link #getPackageDownloadUrl}.
-   */
-  public void setPackageDownloadUrl(String packageDownloadUrl) {
-
-    this.packageDownloadUrl = packageDownloadUrl;
-  }
-
-  /**
-   * @param sourceDownloadUrl new value of {@link #getSourceDownloadUrl}.
-   */
-  public void setSourceDownloadUrl(String sourceDownloadUrl) {
-
-    this.sourceDownloadUrl = sourceDownloadUrl;
+    this.dataAvailable = dataAvailable;
   }
 
   /**
@@ -136,52 +73,12 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
     this.dataStatus = dataStatus;
   }
 
-  @Override
-  public Collection<String> getCopyrights() {
-
-    return Collections.unmodifiableCollection(this.copyrights);
-  }
-
   /**
-   * Clears the collection of copyrights.
+   * @param componentInfoData new value of {@link #getComponentInfoData}.
    */
-  public void clearCopyrights() {
+  public void setComponentInfoData(DefaultComponentInfoDataImpl componentInfoData) {
 
-    this.copyrights = new ArrayList<>();
-  }
-
-  /**
-   * Adds a copyright string to the list of already existing copyrights.
-   *
-   * @param copyright the copyrigt sring to add
-   */
-  public void addCopyright(String copyright) {
-
-    this.copyrights.add(copyright);
-  }
-
-  @Override
-  public Collection<LicenseInfo> getLicenses() {
-
-    return Collections.unmodifiableCollection(this.licenses);
-  }
-
-  /**
-   * Clears the collection of licenses.
-   */
-  public void clearLicenses() {
-
-    this.licenses = new ArrayList<>();
-  }
-
-  /**
-   * Adds a {@link LicenseInfo} instance to the collection of licenses.
-   *
-   * @param licenseInfo the license to add
-   */
-  public void addLicense(LicenseInfo licenseInfo) {
-
-    this.licenses.add(new DefaultLicenseInfoImpl(licenseInfo));
+    this.componentInfoData = componentInfoData;
   }
 
   @Override
@@ -191,45 +88,27 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   }
 
   @Override
-  public String getNoticeFileUrl() {
-
-    return this.noticeFileUrl;
-  }
-
-  @Override
-  public String getNoticeFileContent() {
-
-    return this.noticeFileContent;
-  }
-
-  @Override
-  public String getHomepageUrl() {
-
-    return this.homepageUrl;
-  }
-
-  @Override
-  public String getSourceRepoUrl() {
-
-    return this.sourceRepoUrl;
-  }
-
-  @Override
-  public String getPackageDownloadUrl() {
-
-    return this.packageDownloadUrl;
-  }
-
-  @Override
-  public String getSourceDownloadUrl() {
-
-    return this.sourceDownloadUrl;
-  }
-
-  @Override
   public String getDataStatus() {
 
     return this.dataStatus;
+  }
+
+  /**
+   * @return dataAvailable
+   */
+  @Override
+  public boolean isDataAvailable() {
+
+    return this.dataAvailable;
+  }
+
+  /**
+   * @return componentInfoData
+   */
+  @Override
+  public DefaultComponentInfoDataImpl getComponentInfoData() {
+
+    return this.componentInfoData;
   }
 
   @Override

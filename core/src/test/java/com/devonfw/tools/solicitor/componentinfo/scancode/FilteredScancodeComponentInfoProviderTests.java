@@ -66,9 +66,9 @@ public class FilteredScancodeComponentInfoProviderTests {
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
         scancodeComponentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        scancodeComponentInfo.getNoticeFileContent());
-    assertEquals(1, scancodeComponentInfo.getCopyrights().size());
-    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getCopyrights().toArray()[0]);
+        scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals(1, scancodeComponentInfo.getComponentInfoData().getCopyrights().size());
+    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getComponentInfoData().getCopyrights().toArray()[0]);
   }
 
   /**
@@ -92,9 +92,10 @@ public class FilteredScancodeComponentInfoProviderTests {
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
         scancodeComponentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        scancodeComponentInfo.getNoticeFileContent());
-    assertEquals(0, scancodeComponentInfo.getCopyrights().size()); // since the copyright is found under
-                                                                   // /src/../SampleClass.java1, it will be excluded
+        scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals(0, scancodeComponentInfo.getComponentInfoData().getCopyrights().size()); // since the copyright is
+                                                                                          // found under
+    // /src/../SampleClass.java1, it will be excluded
   }
 
   /**
@@ -118,12 +119,13 @@ public class FilteredScancodeComponentInfoProviderTests {
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
         scancodeComponentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        scancodeComponentInfo.getNoticeFileContent());
-    assertEquals(1, scancodeComponentInfo.getCopyrights().size());
-    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getCopyrights().toArray()[0]); // The copyright
-                                                                                                // curation does not
-                                                                                                // apply on the
-                                                                                                // scancodeComponentInfo
-                                                                                                // object.
+        scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals(1, scancodeComponentInfo.getComponentInfoData().getCopyrights().size());
+    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getComponentInfoData().getCopyrights().toArray()[0]); // The
+                                                                                                                       // copyright
+    // curation does not
+    // apply on the
+    // scancodeComponentInfo
+    // object.
   }
 }

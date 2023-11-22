@@ -107,15 +107,15 @@ class ScancodeComponentInfoAdapterTest {
     assertNotNull(componentInfo);
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        componentInfo.getNoticeFileContent());
-    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getNoticeFileUrl());
-    assertEquals(1, componentInfo.getCopyrights().size());
-    assertEquals("Copyright 2023 devonfw", componentInfo.getCopyrights().toArray()[0]);
-    assertEquals(2, componentInfo.getLicenses().size());
+        componentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getComponentInfoData().getNoticeFileUrl());
+    assertEquals(1, componentInfo.getComponentInfoData().getCopyrights().size());
+    assertEquals("Copyright 2023 devonfw", componentInfo.getComponentInfoData().getCopyrights().toArray()[0]);
+    assertEquals(2, componentInfo.getComponentInfoData().getLicenses().size());
 
     boolean apacheFound = false;
     boolean unknownFound = false;
-    for (LicenseInfo li : componentInfo.getLicenses()) {
+    for (LicenseInfo li : componentInfo.getComponentInfoData().getLicenses()) {
       if (li.getSpdxid().equals("Apache-2.0")) {
         Assertions.assertTrue(li.getGivenLicenseText().contains("Unless required by applicable"));
         apacheFound = true;
@@ -128,11 +128,11 @@ class ScancodeComponentInfoAdapterTest {
     assertTrue(apacheFound && unknownFound);
 
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        componentInfo.getNoticeFileContent());
+        componentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals("https://somehost/test-project-for-deep-license-scan-0.1.0.jar",
-        componentInfo.getPackageDownloadUrl());
+        componentInfo.getComponentInfoData().getPackageDownloadUrl());
     assertEquals("https://somehost/test-project-for-deep-license-scan-0.1.0-sources.jar",
-        componentInfo.getSourceDownloadUrl());
+        componentInfo.getComponentInfoData().getSourceDownloadUrl());
 
   }
 
@@ -185,14 +185,14 @@ class ScancodeComponentInfoAdapterTest {
     assertNotNull(componentInfo);
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        componentInfo.getNoticeFileContent());
-    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getNoticeFileUrl());
-    assertEquals(1, componentInfo.getCopyrights().size());
-    assertEquals("Copyright (c) 2023 somebody", componentInfo.getCopyrights().toArray()[0]);
-    assertEquals(1, componentInfo.getLicenses().size());
+        componentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getComponentInfoData().getNoticeFileUrl());
+    assertEquals(1, componentInfo.getComponentInfoData().getCopyrights().size());
+    assertEquals("Copyright (c) 2023 somebody", componentInfo.getComponentInfoData().getCopyrights().toArray()[0]);
+    assertEquals(1, componentInfo.getComponentInfoData().getLicenses().size());
 
     boolean mitFound = false;
-    for (LicenseInfo li : componentInfo.getLicenses()) {
+    for (LicenseInfo li : componentInfo.getComponentInfoData().getLicenses()) {
       if (li.getSpdxid().equals("MIT")) {
         Assertions.assertEquals("https://some/license/url", li.getLicenseUrl());
         mitFound = true;
@@ -201,12 +201,12 @@ class ScancodeComponentInfoAdapterTest {
     assertTrue(mitFound);
 
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        componentInfo.getNoticeFileContent());
+        componentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals("https://somehost/test-project-for-deep-license-scan-0.1.0.jar",
-        componentInfo.getPackageDownloadUrl());
+        componentInfo.getComponentInfoData().getPackageDownloadUrl());
     assertEquals("https://somehost/test-project-for-deep-license-scan-0.1.0-sources.jar",
-        componentInfo.getSourceDownloadUrl());
-    assertEquals("http://some/url", componentInfo.getSourceRepoUrl());
+        componentInfo.getComponentInfoData().getSourceDownloadUrl());
+    assertEquals("http://some/url", componentInfo.getComponentInfoData().getSourceRepoUrl());
   }
 
 }
