@@ -12,8 +12,6 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
 
   private String packageUrl;
 
-  private boolean dataAvailable;
-
   private String dataStatus;
 
   private List<String> traceabilityNotes;
@@ -39,12 +37,11 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
 
     this();
     this.packageUrl = source.getPackageUrl();
-    this.dataAvailable = source.isDataAvailable();
     this.dataStatus = source.getDataStatus();
     for (String traceabilityNote : source.getTraceabilityNotes()) {
       addTraceabillityNote(traceabilityNote);
     }
-    if (this.dataAvailable) {
+    if (source.getComponentInfoData() != null) {
       this.componentInfoData = new DefaultComponentInfoDataImpl(source.getComponentInfoData());
     }
   }
@@ -55,14 +52,6 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   public void setPackageUrl(String packageUrl) {
 
     this.packageUrl = packageUrl;
-  }
-
-  /**
-   * @param dataAvailable new value of {@link #isDataAvailable}.
-   */
-  public void setDataAvailable(boolean dataAvailable) {
-
-    this.dataAvailable = dataAvailable;
   }
 
   /**
@@ -91,15 +80,6 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   public String getDataStatus() {
 
     return this.dataStatus;
-  }
-
-  /**
-   * @return dataAvailable
-   */
-  @Override
-  public boolean isDataAvailable() {
-
-    return this.dataAvailable;
   }
 
   /**

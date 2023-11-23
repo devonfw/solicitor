@@ -116,7 +116,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
           if (componentInfo != null) {
             dataStatus = componentInfo.getDataStatus();
             // stop querying further adapters if some info was returned
-            if (componentInfo.isDataAvailable()) {
+            if (componentInfo.getComponentInfoData() != null) {
               break;
             }
           }
@@ -125,7 +125,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         throw new SolicitorRuntimeException("Exception when reading component info data source", e);
       }
       if (componentInfo != null) {
-        if (componentInfo.isDataAvailable()) {
+        if (componentInfo.getComponentInfoData() != null) {
           statistics.componentsWithComponentInfo = 1;
           /////////////////// TODO ///////////////////////////////
           // Set dataStatus and traceabilityNotes of the ApplicationComponent

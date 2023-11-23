@@ -436,8 +436,6 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private ScancodeComponentInfoData scancodeComponentInfoData;
 
-  private boolean dataAvailable = false;
-
   private String packageUrl;
 
   private String dataStatus;
@@ -454,7 +452,6 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
     super();
     this.scancodeComponentInfoData = new ScancodeComponentInfoData(minLicenseScore, minLicensefileNumberOfLines);
-    this.dataAvailable = true;
 
   }
 
@@ -465,15 +462,6 @@ public class ScancodeComponentInfo implements ComponentInfo {
   public String getDataStatus() {
 
     return this.dataStatus;
-  }
-
-  /**
-   * @return dataAvailable
-   */
-  @Override
-  public boolean isDataAvailable() {
-
-    return this.dataAvailable;
   }
 
   /**
@@ -501,14 +489,6 @@ public class ScancodeComponentInfo implements ComponentInfo {
   public void setTraceabilityNotes(List<String> traceabilityNotes) {
 
     this.traceabilityNotes = traceabilityNotes;
-  }
-
-  /**
-   * @param dataAvailable new value of {@link #isDataAvailable}.
-   */
-  public void setDataAvaliable(boolean dataAvailable) {
-
-    this.dataAvailable = dataAvailable;
   }
 
   /**

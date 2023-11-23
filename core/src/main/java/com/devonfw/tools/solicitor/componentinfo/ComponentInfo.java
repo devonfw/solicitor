@@ -3,8 +3,8 @@ package com.devonfw.tools.solicitor.componentinfo;
 import java.util.List;
 
 /**
- * Data structure which encapsulates the information about a component which comes from an external data source, like the results
- * of a scancode scan.
+ * Data structure which encapsulates the information about a component which comes from an external data source, like
+ * the results of a scancode scan.
  *
  */
 public interface ComponentInfo {
@@ -15,13 +15,6 @@ public interface ComponentInfo {
    * @return the packageURL. This is an identifier for this object.
    */
   String getPackageUrl();
-
-  /**
-   * Indicates if detail data is available.
-   *
-   * @return <code>true</code> if data is available, <code>false</code> otherwise.
-   */
-  boolean isDataAvailable();
 
   /**
    * This method gets the field <code>dataStatus</code>. If no data is available this indicates why there is no data
@@ -39,9 +32,10 @@ public interface ComponentInfo {
   List<String> getTraceabilityNotes();
 
   /**
-   * Gets the data on the component. Only available if {@link #isDataAvailable()} returns <code>true</code>.
+   * Gets the data on the component.
    *
-   * @return the detailed info on the component.
+   * @return the detailed info on the component. In case that no data is available (e.g. because there is no scancode
+   *         result available) this method will return <code>null</code>.
    */
   ComponentInfoData getComponentInfoData();
 
