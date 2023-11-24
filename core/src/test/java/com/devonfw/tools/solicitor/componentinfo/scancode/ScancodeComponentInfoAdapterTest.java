@@ -84,7 +84,7 @@ class ScancodeComponentInfoAdapterTest {
         .getComponentInfo("pkg:maven/com.devonfw.tools/unknown@0.1.0", "someCurationSelector");
 
     // then
-    assertNull(componentInfo);
+    assertNull(componentInfo.getComponentInfoData());
   }
 
   /**
@@ -104,7 +104,7 @@ class ScancodeComponentInfoAdapterTest {
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
-    assertNotNull(componentInfo);
+    assertNotNull(componentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getComponentInfoData().getNoticeFileContent());
@@ -160,7 +160,7 @@ class ScancodeComponentInfoAdapterTest {
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
-    assertNotNull(componentInfo);
+    assertNotNull(componentInfo.getComponentInfoData());
 
     ArgumentCaptor<String> captor1 = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<String> captor2 = ArgumentCaptor.forClass(String.class);
@@ -182,7 +182,7 @@ class ScancodeComponentInfoAdapterTest {
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
-    assertNotNull(componentInfo);
+    assertNotNull(componentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getComponentInfoData().getNoticeFileContent());

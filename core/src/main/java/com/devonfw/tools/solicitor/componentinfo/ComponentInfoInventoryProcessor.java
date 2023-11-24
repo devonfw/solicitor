@@ -101,6 +101,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * @return A {@link Statistics} object representing the processing statistics.
    * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
+  // TODO: ohecker: refactor this method
   private Statistics processApplicationComponent(ApplicationComponent ac) {
 
     Statistics statistics = new Statistics();
@@ -108,13 +109,13 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
     if (ac.getPackageUrl() != null) {
       // Try to get component information from the available ComponentInfoAdapters
+      ComponentInfo componentInfoCandidate = null;
       ComponentInfo componentInfo = null;
-      String dataStatus = null;
       try {
         for (ComponentInfoProvider cia : this.componentInfoAdapters) {
-          componentInfo = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
-          if (componentInfo != null) {
-            dataStatus = componentInfo.getDataStatus();
+          componentInfoCandidate = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
+          if (componentInfoCandidate != null) {
+            componentInfo = componentInfoCandidate;
             // stop querying further adapters if some info was returned
             if (componentInfo.getComponentInfoData() != null) {
               break;
@@ -129,7 +130,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
           statistics.componentsWithComponentInfo = 1;
           /////////////////// TODO ///////////////////////////////
           // Set dataStatus and traceabilityNotes of the ApplicationComponent
-          ac.setDataStatus(componentInfo.getDataStatus());
+          ac.setDataStatus("DA:" + componentInfo.getDataStatus());
           // Format and set the traceabilityNotes in the ApplicationComponent
           String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
           ac.setTraceabilityNotes(formattedTraceabilityNotes);
@@ -176,15 +177,15 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
           ac.setSourceDownloadUrl(componentInfoData.getSourceDownloadUrl());
         } else {
           // no adapter delivered data, set the status of the last queried adapter
-          ac.setDataStatus(dataStatus);
+          ac.setDataStatus("ND:" + componentInfo.getDataStatus());
         }
       } else {
         // all adapters disabled
-        ac.setDataStatus(null); // TODO: set status: disabled
+        ac.setDataStatus("ND:DISABLED"); // TODO: check if this is the correct status
       }
     } else {
       // ac did not contain PackageUrl
-      // can this happen?
+      // TODO: can this happen?
     }
     return statistics;
   }

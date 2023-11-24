@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
@@ -92,17 +94,19 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
    * @param packageUrl The package url of the package
    * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
    *        indicates that the default should be used.
-   * @return the read scancode information, <code>null</code> if no information was found
+   * @return the read scancode information
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   @Override
-  public ScancodeComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
+  public ComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
       throws ComponentInfoAdapterException {
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
     if (rawScancodeData == null) {
-      return null;
+      return new DefaultComponentInfoImpl(packageUrl, "TODO"); // TODO: possibly we need to get some info
+                                                               // from fileScancodeRawComponentInfoProvider
+                                                               // to set the right status
     }
 
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
@@ -139,6 +143,7 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
+    componentScancodeInfos.setDataStatus("NO_ISSUES");
 
     // get the object which hold the actual data
     ScancodeComponentInfoData scancodeComponentInfoData = componentScancodeInfos.getComponentInfoData();

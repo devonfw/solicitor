@@ -27,6 +27,19 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   }
 
   /**
+   * The constructor.
+   *
+   * @param packageUrl the PackageUrl of the component
+   * @param dataStatus the dataStatus
+   */
+  public DefaultComponentInfoImpl(String packageUrl, String dataStatus) {
+
+    this();
+    this.packageUrl = packageUrl;
+    this.dataStatus = dataStatus;
+  }
+
+  /**
    * Copy-Constructor. Allows to construct an instance of the class from another {@link ComponentInfo} instance. Members
    * are deep copied. Any changes to the new instance do not affect the original source.
    *
