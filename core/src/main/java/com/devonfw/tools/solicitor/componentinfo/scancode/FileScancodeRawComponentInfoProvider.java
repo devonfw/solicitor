@@ -83,12 +83,14 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
     File scanCodeFile = new File(path);
     if (!scanCodeFile.exists()) {
       LOG.debug("No Scancode info available for PackageURL '{}'", packageUrl);
-      // TODO: We need to check here why there is no info (no files available OR "sources.failed" exists OR
-      // "scancodeScan.failed" exists.
-      // Probably we need to define new/specific exceptions to propagate thisinfo to the calling component
-      // (FilteredScancodeComponentInfoProvider)
-      return null; // TODO: Maybe return "null" only in the case that there is no file at all and throw exception if
-                   // there is some "failed" file
+      // Check if "sources.failed" or "scancodeScan.failed" exists
+      String sourcesFailedPath = this.repoBasePath + "/" + packagePathPart + "/sources.failed";
+      String scancodeScanFailedPath = this.repoBasePath + "/" + packagePathPart + "/scancodeScan.failed";
+      File sourcesFailedFile = new File(sourcesFailedPath);
+      File scancodeScanFailedFile = new File(scancodeScanFailedPath);
+      if (sourcesFailedFile.exists() || scancodeScanFailedFile.exists())
+        throw new ComponentInfoAdapterException("PROCESSING_FAILED");
+      return null;
     }
     String scancodeString;
     LOG.debug("Found Scancode info for PackageURL '{}'", packageUrl);

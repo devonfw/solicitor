@@ -1,6 +1,8 @@
 package com.devonfw.tools.solicitor.componentinfo.curation;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
@@ -56,8 +58,6 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
       }
       componentInfo = this.componentInfoCurator.curate(componentInfo, curationDataSelector);
 
-      // TODO: Check here if there are any issues incomponentInfos (like Existing LicenseRef-scancode-free-unknown)
-      // and set to "WITH_ISSUES" in that case
       componentInfo = checkForIssues(componentInfo);
 
       return componentInfo;
@@ -69,14 +69,13 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
   }
 
   /**
-   * TODO
+   * Checks for issues in the given {@link ComponentInfo}. Issues include licenses falling into a defined set of keys.
    *
-   * @param componentInfo
-   * @return
+   * @param componentInfo The component information to check for issues.
+   * @return the component info with the status set to "WITH_ISSUES" if issues are found.
    */
   private ComponentInfo checkForIssues(ComponentInfo componentInfo) {
 
-    // TODO: This is just a primitive sample implementation which might need to be extended
     if (componentInfo.getComponentInfoData() == null) {
       return componentInfo;
     }
@@ -86,11 +85,16 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
       return componentInfo;
     }
     boolean issueExisting = false;
+    List<String> possibleIssues = Arrays.asList("LicenseRef-scancode-free-unknown");
     for (LicenseInfo li : licenses) {
-      if ("LicenseRef-scancode-free-unknown".equals(li.getSpdxid())) {
-        issueExisting = true;
-        break;
+      for (String key : possibleIssues) {
+        if (key.equals(li.getSpdxid())) {
+          issueExisting = true;
+          break;
+        }
       }
+      if (issueExisting)
+        break;
     }
     if (issueExisting) {
       DefaultComponentInfoImpl result = new DefaultComponentInfoImpl(componentInfo);

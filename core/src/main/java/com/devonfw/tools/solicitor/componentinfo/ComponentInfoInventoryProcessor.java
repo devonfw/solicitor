@@ -111,13 +111,15 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       // Try to get component information from the available ComponentInfoAdapters
       ComponentInfo componentInfoCandidate = null;
       ComponentInfo componentInfo = null;
+      ComponentInfoData componentInfoData = null;
       try {
         for (ComponentInfoProvider cia : this.componentInfoAdapters) {
           componentInfoCandidate = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
           if (componentInfoCandidate != null) {
             componentInfo = componentInfoCandidate;
             // stop querying further adapters if some info was returned
-            if (componentInfo.getComponentInfoData() != null) {
+            componentInfoData = componentInfo.getComponentInfoData();
+            if (componentInfoData != null) {
               break;
             }
           }
@@ -125,64 +127,63 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       } catch (ComponentInfoAdapterException e) {
         throw new SolicitorRuntimeException("Exception when reading component info data source", e);
       }
-      if (componentInfo != null) {
-        if (componentInfo.getComponentInfoData() != null) {
-          statistics.componentsWithComponentInfo = 1;
-          /////////////////// TODO ///////////////////////////////
-          // Set dataStatus and traceabilityNotes of the ApplicationComponent
-          ac.setDataStatus("DA:" + componentInfo.getDataStatus());
-          // Format and set the traceabilityNotes in the ApplicationComponent
-          String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
-          ac.setTraceabilityNotes(formattedTraceabilityNotes);
-
-          ComponentInfoData componentInfoData = componentInfo.getComponentInfoData();
-          // Update the notice file URL and content if available
-          if (componentInfoData.getNoticeFileUrl() != null) {
-            ac.setNoticeFileUrl(componentInfoData.getNoticeFileUrl());
-          }
-
-          if (componentInfoData.getNoticeFileContent() != null) {
-            ac.setNoticeFileContent(componentInfoData.getNoticeFileContent());
-          }
-
-          // Process licenses if available
-          if (componentInfoData.getLicenses().size() > 0) {
-            ac.removeAllRawLicenses();
-            for (LicenseInfo li : componentInfoData.getLicenses()) {
-              addRawLicense(ac, li.getSpdxid(), li.getLicenseUrl(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
-            }
-          } else {
-            LOG.info(LogMessages.COMPONENTINFO_NO_LICENSES.msg(),
-                (ac.getGroupId() != null ? ac.getGroupId() + "/" : "") + ac.getArtifactId() + "/" + ac.getVersion());
-            for (RawLicense rl : ac.getRawLicenses()) {
-              String trace = rl.getTrace() + System.lineSeparator()
-                  + "+ ComponentInfo available but without license information - keeping data from Reader";
-              rl.setTrace(trace);
-            }
-          }
-
-          String copyrights = String.join("\n", componentInfoData.getCopyrights());
-          ac.setCopyrights(copyrights);
-          // check whether VendorUrl is included in input file or not
-          if (componentInfoData.getHomepageUrl() != null) {
-            ac.setOssHomepage(componentInfoData.getHomepageUrl());
-          }
-          // check whether Source ReopUrl is included in input file or not
-          if (componentInfoData.getSourceRepoUrl() != null) {
-            ac.setSourceRepoUrl(componentInfoData.getSourceRepoUrl());
-          }
-
-          // always overwrite the download URLs - even if componentInfo does not contain any data
-          ac.setPackageDownloadUrl(componentInfoData.getPackageDownloadUrl());
-          ac.setSourceDownloadUrl(componentInfoData.getSourceDownloadUrl());
-        } else {
-          // no adapter delivered data, set the status of the last queried adapter
-          ac.setDataStatus("ND:" + componentInfo.getDataStatus());
-        }
-      } else {
+      if (componentInfo == null) {
         // all adapters disabled
         ac.setDataStatus("ND:DISABLED"); // TODO: check if this is the correct status
+      } else if (componentInfoData != null) {
+        statistics.componentsWithComponentInfo = 1;
+        /////////////////// TODO ///////////////////////////////
+        // Set dataStatus and traceabilityNotes of the ApplicationComponent
+        ac.setDataStatus("DA:" + componentInfo.getDataStatus());
+        // Format and set the traceabilityNotes in the ApplicationComponent
+        String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
+        ac.setTraceabilityNotes(formattedTraceabilityNotes);
+
+        // ComponentInfoData componentInfoData = componentInfo.getComponentInfoData();
+        // Update the notice file URL and content if available
+        if (componentInfoData.getNoticeFileUrl() != null) {
+          ac.setNoticeFileUrl(componentInfoData.getNoticeFileUrl());
+        }
+
+        if (componentInfoData.getNoticeFileContent() != null) {
+          ac.setNoticeFileContent(componentInfoData.getNoticeFileContent());
+        }
+
+        // Process licenses if available
+        if (componentInfoData.getLicenses().size() > 0) {
+          ac.removeAllRawLicenses();
+          for (LicenseInfo li : componentInfoData.getLicenses()) {
+            addRawLicense(ac, li.getSpdxid(), li.getLicenseUrl(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
+          }
+        } else {
+          LOG.info(LogMessages.COMPONENTINFO_NO_LICENSES.msg(),
+              (ac.getGroupId() != null ? ac.getGroupId() + "/" : "") + ac.getArtifactId() + "/" + ac.getVersion());
+          for (RawLicense rl : ac.getRawLicenses()) {
+            String trace = rl.getTrace() + System.lineSeparator()
+                + "+ ComponentInfo available but without license information - keeping data from Reader";
+            rl.setTrace(trace);
+          }
+        }
+
+        String copyrights = String.join("\n", componentInfoData.getCopyrights());
+        ac.setCopyrights(copyrights);
+        // check whether VendorUrl is included in input file or not
+        if (componentInfoData.getHomepageUrl() != null) {
+          ac.setOssHomepage(componentInfoData.getHomepageUrl());
+        }
+        // check whether Source ReopUrl is included in input file or not
+        if (componentInfoData.getSourceRepoUrl() != null) {
+          ac.setSourceRepoUrl(componentInfoData.getSourceRepoUrl());
+        }
+
+        // always overwrite the download URLs - even if componentInfo does not contain any data
+        ac.setPackageDownloadUrl(componentInfoData.getPackageDownloadUrl());
+        ac.setSourceDownloadUrl(componentInfoData.getSourceDownloadUrl());
+      } else {
+        // no adapter delivered data, set the status of the last queried adapter
+        ac.setDataStatus("ND:" + componentInfo.getDataStatus());
       }
+
     } else {
       // ac did not contain PackageUrl
       // TODO: can this happen?

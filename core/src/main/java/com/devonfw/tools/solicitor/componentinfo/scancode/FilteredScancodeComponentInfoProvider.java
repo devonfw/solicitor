@@ -104,9 +104,7 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
     if (rawScancodeData == null) {
-      return new DefaultComponentInfoImpl(packageUrl, "TODO"); // TODO: possibly we need to get some info
-                                                               // from fileScancodeRawComponentInfoProvider
-                                                               // to set the right status
+      return new DefaultComponentInfoImpl(packageUrl, "SCANDATA_NOT_AVAILABLE");
     }
 
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,

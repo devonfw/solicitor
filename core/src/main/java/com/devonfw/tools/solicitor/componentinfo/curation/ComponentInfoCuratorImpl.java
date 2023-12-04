@@ -61,6 +61,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
       applyFoundCurations(componentInfoImpl, foundCuration);
+      componentInfoImpl.setDataStatus("CURATED");
       return componentInfoImpl;
     } else {
       return componentInfo;
