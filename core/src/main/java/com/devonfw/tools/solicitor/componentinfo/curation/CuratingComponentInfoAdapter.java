@@ -7,6 +7,7 @@ import java.util.List;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
 
@@ -98,7 +99,7 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
     }
     if (issueExisting) {
       DefaultComponentInfoImpl result = new DefaultComponentInfoImpl(componentInfo);
-      result.setDataStatus("WITH_ISSUES");
+      result.setDataStatus(DataStatusValue.WITH_ISSUES);
       return result;
     } else {
       return componentInfo;

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.DefaultLicenseInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
@@ -61,7 +62,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
       applyFoundCurations(componentInfoImpl, foundCuration);
-      componentInfoImpl.setDataStatus("CURATED");
+      componentInfoImpl.setDataStatus(DataStatusValue.CURATED);
       return componentInfoImpl;
     } else {
       return componentInfo;

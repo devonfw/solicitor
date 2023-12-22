@@ -14,6 +14,7 @@ import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
@@ -106,10 +107,10 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     try {
       rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
     } catch (ScancodeProcessingFailedException e) {
-      return new DefaultComponentInfoImpl(packageUrl, "PROCESSING_FAILED");
+      return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.PROCESSING_FAILED);
     }
     if (rawScancodeData == null) {
-      return new DefaultComponentInfoImpl(packageUrl, "NOT_AVAILABLE");
+      return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.NOT_AVAILABLE);
     }
 
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
@@ -146,7 +147,8 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
-    componentScancodeInfos.setDataStatus("NO_ISSUES");
+    // set status to NO_ISSUES. This might be overridden later if issues are detected
+    componentScancodeInfos.setDataStatus(DataStatusValue.NO_ISSUES);
 
     // get the object which hold the actual data
     ScancodeComponentInfoData scancodeComponentInfoData = componentScancodeInfos.getComponentInfoData();

@@ -41,6 +41,16 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
   }
 
   /**
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that data is available.
+   */
+  private static final String DA_STATUS_PREFIX = "DA:";
+
+  /**
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that no data is available.
+   */
+  private static final String ND_STATUS_PREFIX = "ND:";
+
+  /**
    * Origin data for raw license objects created by this Class. Due to compatibility reasons this is named "scancode"
    * even due to the fact that it might originate from other sources.
    */
@@ -129,17 +139,15 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       }
       if (componentInfo == null) {
         // all adapters disabled
-        ac.setDataStatus("ND:DISABLED"); // TODO: check if this is the correct status
+        ac.setDataStatus(ND_STATUS_PREFIX + DataStatusValue.DISABLED);
       } else if (componentInfoData != null) {
         statistics.componentsWithComponentInfo = 1;
-        /////////////////// TODO ///////////////////////////////
         // Set dataStatus and traceabilityNotes of the ApplicationComponent
-        ac.setDataStatus("DA:" + componentInfo.getDataStatus());
+        ac.setDataStatus(DA_STATUS_PREFIX + componentInfo.getDataStatus());
         // Format and set the traceabilityNotes in the ApplicationComponent
         String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
         ac.setTraceabilityNotes(formattedTraceabilityNotes);
 
-        // ComponentInfoData componentInfoData = componentInfo.getComponentInfoData();
         // Update the notice file URL and content if available
         if (componentInfoData.getNoticeFileUrl() != null) {
           ac.setNoticeFileUrl(componentInfoData.getNoticeFileUrl());
@@ -181,7 +189,10 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         ac.setSourceDownloadUrl(componentInfoData.getSourceDownloadUrl());
       } else {
         // no adapter delivered data, set the status of the last queried adapter
-        ac.setDataStatus("ND:" + componentInfo.getDataStatus());
+        ac.setDataStatus(ND_STATUS_PREFIX + componentInfo.getDataStatus());
+        String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
+        ac.setTraceabilityNotes(formattedTraceabilityNotes);
+
       }
 
     } else {
