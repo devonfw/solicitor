@@ -1435,7 +1435,7 @@ When using the Scancode integration the following values are used for field `App
 |====================
 | Value | Description  
 | `ND:DISABLED` | No data available. Scancode integration disabled.  
-| `ND:NOT_AVAILABLE` | No data available. No scan results existing and no indication that attempting that download/scanning has failed.
+| `ND:NOT_AVAILABLE` | No data available. No scan results existing and no indication that attempting download/scanning has failed.
 | `ND:PROCESSING_FAILED` | No data available. No scan results existing. Processing (downloading or scanning) had failed.
 | `DA:WITH_ISSUES` | Data available. Issues were detected in the data which probably need to be curated.
 | `DA:NO_ISSUES` | Data available. No curations applied. No issues were detected.
