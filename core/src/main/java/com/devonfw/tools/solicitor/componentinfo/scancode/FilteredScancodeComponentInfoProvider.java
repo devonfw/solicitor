@@ -102,9 +102,14 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   public ComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
       throws ComponentInfoAdapterException {
 
-    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
+    ScancodeRawComponentInfo rawScancodeData;
+    try {
+      rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
+    } catch (ScancodeProcessingFailedException e) {
+      return new DefaultComponentInfoImpl(packageUrl, "PROCESSING_FAILED");
+    }
     if (rawScancodeData == null) {
-      return new DefaultComponentInfoImpl(packageUrl, "SCANDATA_NOT_AVAILABLE");
+      return new DefaultComponentInfoImpl(packageUrl, "NOT_AVAILABLE");
     }
 
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,

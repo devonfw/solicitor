@@ -15,8 +15,11 @@ public interface ScancodeRawComponentInfoProvider extends ComponentContentProvid
    * @param packageUrl the identifier for the package
    * @return the raw data based on scancode and supplemental data. <code>null</code> if no data is available.
    * @throws ComponentInfoAdapterException is something unexpected happens
+   * @throws ScancodeProcessingFailedException if no data can be provided due to previous issues when
+   *         downloading/scanning the package data.
    */
-  ScancodeRawComponentInfo readScancodeData(String packageUrl) throws ComponentInfoAdapterException;
+  ScancodeRawComponentInfo readScancodeData(String packageUrl)
+      throws ComponentInfoAdapterException, ScancodeProcessingFailedException;
 
   /**
    * Creates a pkgcontent-URI (see {@link ComponentContentProvider}) from the relative local file path.
