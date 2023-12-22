@@ -1,11 +1,10 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
- * Data structure which holds information about a component which comes from an external data source, like the results
- * of a scancode scan.
+ * Data structure which encapsulates the information about a component which comes from an external data source, like
+ * the results of a scancode scan.
  *
  */
 public interface ComponentInfo {
@@ -18,63 +17,8 @@ public interface ComponentInfo {
   String getPackageUrl();
 
   /**
-   * Gets all copyrights.
-   *
-   * @return the copyrights
-   */
-  Collection<String> getCopyrights();
-
-  /**
-   * Gets all licenses.
-   *
-   * @return all licenses
-   */
-  Collection<? extends LicenseInfo> getLicenses();
-
-  /**
-   * Gets the url to the notice file (if any)
-   *
-   * @return url of the notice file
-   */
-  String getNoticeFileUrl();
-
-  /**
-   * Gets the contents of the notice file (if any)
-   *
-   * @return contents of the notice file
-   */
-  String getNoticeFileContent();
-
-  /**
-   * Gets the url of the projects homepage,
-   *
-   * @return url to the projects homepage
-   */
-  String getHomepageUrl();
-
-  /**
-   * Gets the url of the source code repository.
-   *
-   * @return url to source code repository
-   */
-  String getSourceRepoUrl();
-
-  /**
-   * Gets the url for downloading the package/component.
-   *
-   * @return url to download the package
-   */
-  String getPackageDownloadUrl();
-
-  /**
-   * Gets the url for downloading the sources of the package/component.
-   *
-   * @return url to download the sources of the package/component
-   */
-  String getSourceDownloadUrl();
-
-  /**
-   * This method gets the field <code>dataStatus</code>.
+   * This method gets the field <code>dataStatus</code>. If no data is available this indicates why there is no data
+   * available.
    *
    * @return the field dataStatus
    */
@@ -86,5 +30,13 @@ public interface ComponentInfo {
    * @return the traceability notes
    */
   List<String> getTraceabilityNotes();
+
+  /**
+   * Gets the data on the component.
+   *
+   * @return the detailed info on the component. In case that no data is available (e.g. because there is no scancode
+   *         result available) this method will return <code>null</code>.
+   */
+  ComponentInfoData getComponentInfoData();
 
 }

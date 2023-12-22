@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 
 import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 
@@ -58,17 +59,17 @@ public class FilteredScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
-    ScancodeComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
+    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
-    assertNotNull(scancodeComponentInfo);
+    assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
         scancodeComponentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        scancodeComponentInfo.getNoticeFileContent());
-    assertEquals(1, scancodeComponentInfo.getCopyrights().size());
-    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getCopyrights().toArray()[0]);
+        scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals(1, scancodeComponentInfo.getComponentInfoData().getCopyrights().size());
+    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getComponentInfoData().getCopyrights().toArray()[0]);
   }
 
   /**
@@ -84,17 +85,18 @@ public class FilteredScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider
         .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions.yaml");
     // when
-    ScancodeComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
+    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
-    assertNotNull(scancodeComponentInfo);
+    assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
         scancodeComponentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        scancodeComponentInfo.getNoticeFileContent());
-    assertEquals(0, scancodeComponentInfo.getCopyrights().size()); // since the copyright is found under
-                                                                   // /src/../SampleClass.java1, it will be excluded
+        scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals(0, scancodeComponentInfo.getComponentInfoData().getCopyrights().size()); // since the copyright is
+                                                                                          // found under
+    // /src/../SampleClass.java1, it will be excluded
   }
 
   /**
@@ -110,20 +112,21 @@ public class FilteredScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
     // when
-    ScancodeComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
+    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
-    assertNotNull(scancodeComponentInfo);
+    assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
         scancodeComponentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        scancodeComponentInfo.getNoticeFileContent());
-    assertEquals(1, scancodeComponentInfo.getCopyrights().size());
-    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getCopyrights().toArray()[0]); // The copyright
-                                                                                                // curation does not
-                                                                                                // apply on the
-                                                                                                // scancodeComponentInfo
-                                                                                                // object.
+        scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
+    assertEquals(1, scancodeComponentInfo.getComponentInfoData().getCopyrights().size());
+    assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getComponentInfoData().getCopyrights().toArray()[0]); // The
+                                                                                                                       // copyright
+    // curation does not
+    // apply on the
+    // scancodeComponentInfo
+    // object.
   }
 }

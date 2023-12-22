@@ -12,10 +12,14 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
+import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
+import com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeComponentInfo.ScancodeComponentInfoData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -91,25 +95,31 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
    * @param packageUrl The package url of the package
    * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
    *        indicates that the default should be used.
-   * @return the read scancode information, <code>null</code> if no information was found
+   * @return the read scancode information
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
   @Override
-  public ScancodeComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
+  public ComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
       throws ComponentInfoAdapterException {
 
-    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
+    ScancodeRawComponentInfo rawScancodeData;
+    try {
+      rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
+    } catch (ScancodeProcessingFailedException e) {
+      return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.PROCESSING_FAILED);
+    }
     if (rawScancodeData == null) {
-      return null;
+      return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.NOT_AVAILABLE);
     }
 
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
         curationDataSelector);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
     LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
-        componentScancodeInfos.getLicenses().size(), componentScancodeInfos.getCopyrights().size(),
-        componentScancodeInfos.getNoticeFileUrl() != null ? 1 : 0);
+        componentScancodeInfos.getComponentInfoData().getLicenses().size(),
+        componentScancodeInfos.getComponentInfoData().getCopyrights().size(),
+        componentScancodeInfos.getComponentInfoData().getNoticeFileUrl() != null ? 1 : 0);
 
     return componentScancodeInfos;
   }
@@ -121,8 +131,8 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   private void addSupplementedData(ScancodeRawComponentInfo rawScancodeData,
       ScancodeComponentInfo componentScancodeInfos) {
 
-    componentScancodeInfos.setSourceDownloadUrl(rawScancodeData.sourceDownloadUrl);
-    componentScancodeInfos.setPackageDownloadUrl(rawScancodeData.packageDownloadUrl);
+    componentScancodeInfos.getComponentInfoData().setSourceDownloadUrl(rawScancodeData.sourceDownloadUrl);
+    componentScancodeInfos.getComponentInfoData().setPackageDownloadUrl(rawScancodeData.packageDownloadUrl);
   }
 
   /**
@@ -137,6 +147,11 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
+    // set status to NO_ISSUES. This might be overridden later if issues are detected
+    componentScancodeInfos.setDataStatus(DataStatusValue.NO_ISSUES);
+
+    // get the object which hold the actual data
+    ScancodeComponentInfoData scancodeComponentInfoData = componentScancodeInfos.getComponentInfoData();
 
     // Get the curation for a given packageUrl
     ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataSelector);
@@ -164,16 +179,16 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
         continue;
       }
       if (path.contains("/NOTICE")) {
-        componentScancodeInfos
+        scancodeComponentInfoData
             .addNoticeFileUrl(this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, path), 100.0);
       }
       double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
       boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
       for (JsonNode cr : file.get("copyrights")) {
         if (cr.has("copyright")) {
-          componentScancodeInfos.addCopyright(cr.get("copyright").asText());
+          scancodeComponentInfoData.addCopyright(cr.get("copyright").asText());
         } else {
-          componentScancodeInfos.addCopyright(cr.get("value").asText());
+          scancodeComponentInfoData.addCopyright(cr.get("value").asText());
         }
       }
 
@@ -241,13 +256,13 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
           givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseUrl);
         }
 
-        componentScancodeInfos.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseUrl,
+        scancodeComponentInfoData.addLicense(licenseid, licenseName, licenseDefaultUrl, score, licenseUrl,
             givenLicenseText, endLine - startLine);
       }
     }
-    if (componentScancodeInfos.getNoticeFileUrl() != null) {
-      componentScancodeInfos.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl,
-          componentScancodeInfos.getNoticeFileUrl()));
+    if (scancodeComponentInfoData.getNoticeFileUrl() != null) {
+      scancodeComponentInfoData.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider
+          .retrieveContent(packageUrl, scancodeComponentInfoData.getNoticeFileUrl()));
     }
     return componentScancodeInfos;
   }

@@ -73,9 +73,12 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
    * @param packageUrl the identifier for the package
    * @return the raw data base on scancode and supplemental data. <code>null</code> if no data is available.
    * @throws ComponentInfoAdapterException is something unexpected happens
+   * @throws ScancodeProcessingFailedException if no data can be provided due to previous issues when
+   *         downloading/scanning the package data.
    */
   @Override
-  public ScancodeRawComponentInfo readScancodeData(String packageUrl) throws ComponentInfoAdapterException {
+  public ScancodeRawComponentInfo readScancodeData(String packageUrl)
+      throws ComponentInfoAdapterException, ScancodeProcessingFailedException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
     String path = this.repoBasePath + "/" + packagePathPart + "/scancode.json";
@@ -83,6 +86,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
     File scanCodeFile = new File(path);
     if (!scanCodeFile.exists()) {
       LOG.debug("No Scancode info available for PackageURL '{}'", packageUrl);
+      throwExceptionForDownloadOrScanningFailures(packagePathPart);
       return null;
     }
     String scancodeString;
@@ -97,6 +101,30 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
     result.rawScancodeResult = scancodeString;
     addOriginData(packageUrl, result);
     return result;
+  }
+
+  /**
+   * Check if the unavailability of data is caused by previous failures when downloading of scanning the package
+   * sources. This is done by testing if the marker files which indicate such failures exist.
+   *
+   * @param packagePathPart part of the file path to the data
+   * @throws ScancodeProcessingFailedException if failures when downloading or scanning were detected
+   */
+  private void throwExceptionForDownloadOrScanningFailures(String packagePathPart)
+      throws ScancodeProcessingFailedException {
+
+    // Check if "sources.failed" exists
+    String sourcesFailedPath = this.repoBasePath + "/" + packagePathPart + "/sources.failed";
+    File sourcesFailedFile = new File(sourcesFailedPath);
+    if (sourcesFailedFile.exists()) {
+      throw new ScancodeProcessingFailedException("Downloading of package sources had failed.");
+    }
+    // Check if "scancodeScan.failed" exists
+    String scancodeScanFailedPath = this.repoBasePath + "/" + packagePathPart + "/scancodeScan.failed";
+    File scancodeScanFailedFile = new File(scancodeScanFailedPath);
+    if (scancodeScanFailedFile.exists()) {
+      throw new ScancodeProcessingFailedException("Scanning of package sources had failed.");
+    }
   }
 
   /**

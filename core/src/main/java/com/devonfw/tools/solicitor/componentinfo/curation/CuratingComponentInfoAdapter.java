@@ -1,8 +1,15 @@
 package com.devonfw.tools.solicitor.componentinfo.curation;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
+import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
+import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
 
 /**
  * A {@link ComponentInfoAdapter} which takes filtered {@link ComponentInfo} data from the configuret
@@ -35,8 +42,7 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
    * @param packageUrl The identifier of the package for which information is requested
    * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
    *        indicates that the default should be used.
-   * @return the data derived from the scancode results after applying any defined curation. <code>null</code> is
-   *         returned if no data is available,
+   * @return the data derived from the scancode results after applying any defined curation.
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
    */
@@ -48,10 +54,12 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
 
       ComponentInfo componentInfo = this.filteredComponentInfoProvider.getComponentInfo(packageUrl,
           curationDataSelector);
-      if (componentInfo == null) {
-        return null;
+      if (componentInfo == null || componentInfo.getComponentInfoData() == null) {
+        return componentInfo;
       }
       componentInfo = this.componentInfoCurator.curate(componentInfo, curationDataSelector);
+
+      componentInfo = checkForIssues(componentInfo);
 
       return componentInfo;
 
@@ -59,6 +67,43 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
       return null;
     }
 
+  }
+
+  /**
+   * Checks for issues in the given {@link ComponentInfo}. Issues include licenses falling into a defined set of keys.
+   *
+   * @param componentInfo The component information to check for issues.
+   * @return the component info with the status set to "WITH_ISSUES" if issues are found.
+   */
+  private ComponentInfo checkForIssues(ComponentInfo componentInfo) {
+
+    if (componentInfo.getComponentInfoData() == null) {
+      return componentInfo;
+    }
+
+    Collection<? extends LicenseInfo> licenses = componentInfo.getComponentInfoData().getLicenses();
+    if (licenses == null || licenses.isEmpty()) {
+      return componentInfo;
+    }
+    boolean issueExisting = false;
+    List<String> possibleIssues = Arrays.asList("LicenseRef-scancode-free-unknown");
+    for (LicenseInfo li : licenses) {
+      for (String key : possibleIssues) {
+        if (key.equals(li.getSpdxid())) {
+          issueExisting = true;
+          break;
+        }
+      }
+      if (issueExisting)
+        break;
+    }
+    if (issueExisting) {
+      DefaultComponentInfoImpl result = new DefaultComponentInfoImpl(componentInfo);
+      result.setDataStatus(DataStatusValue.WITH_ISSUES);
+      return result;
+    } else {
+      return componentInfo;
+    }
   }
 
   /**

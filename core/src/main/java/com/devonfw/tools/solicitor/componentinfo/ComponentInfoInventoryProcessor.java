@@ -41,6 +41,16 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
   }
 
   /**
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that data is available.
+   */
+  private static final String DA_STATUS_PREFIX = "DA:";
+
+  /**
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that no data is available.
+   */
+  private static final String ND_STATUS_PREFIX = "ND:";
+
+  /**
    * Origin data for raw license objects created by this Class. Due to compatibility reasons this is named "scancode"
    * even due to the fact that it might originate from other sources.
    */
@@ -101,6 +111,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * @return A {@link Statistics} object representing the processing statistics.
    * @throws SolicitorRuntimeException If there is an exception when reading the component info data source.
    */
+  // TODO: ohecker: refactor this method
   private Statistics processApplicationComponent(ApplicationComponent ac) {
 
     Statistics statistics = new Statistics();
@@ -108,40 +119,48 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
 
     if (ac.getPackageUrl() != null) {
       // Try to get component information from the available ComponentInfoAdapters
+      ComponentInfo componentInfoCandidate = null;
       ComponentInfo componentInfo = null;
+      ComponentInfoData componentInfoData = null;
       try {
         for (ComponentInfoProvider cia : this.componentInfoAdapters) {
-          componentInfo = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
-          // stop querying further adapters if some info was returned
-          if (componentInfo != null) {
-            break;
+          componentInfoCandidate = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
+          if (componentInfoCandidate != null) {
+            componentInfo = componentInfoCandidate;
+            // stop querying further adapters if some info was returned
+            componentInfoData = componentInfo.getComponentInfoData();
+            if (componentInfoData != null) {
+              break;
+            }
           }
         }
       } catch (ComponentInfoAdapterException e) {
         throw new SolicitorRuntimeException("Exception when reading component info data source", e);
       }
-      if (componentInfo != null) {
+      if (componentInfo == null) {
+        // all adapters disabled
+        ac.setDataStatus(ND_STATUS_PREFIX + DataStatusValue.DISABLED);
+      } else if (componentInfoData != null) {
         statistics.componentsWithComponentInfo = 1;
-
         // Set dataStatus and traceabilityNotes of the ApplicationComponent
-        ac.setDataStatus(componentInfo.getDataStatus());
+        ac.setDataStatus(DA_STATUS_PREFIX + componentInfo.getDataStatus());
         // Format and set the traceabilityNotes in the ApplicationComponent
         String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
         ac.setTraceabilityNotes(formattedTraceabilityNotes);
 
         // Update the notice file URL and content if available
-        if (componentInfo.getNoticeFileUrl() != null) {
-          ac.setNoticeFileUrl(componentInfo.getNoticeFileUrl());
+        if (componentInfoData.getNoticeFileUrl() != null) {
+          ac.setNoticeFileUrl(componentInfoData.getNoticeFileUrl());
         }
 
-        if (componentInfo.getNoticeFileContent() != null) {
-          ac.setNoticeFileContent(componentInfo.getNoticeFileContent());
+        if (componentInfoData.getNoticeFileContent() != null) {
+          ac.setNoticeFileContent(componentInfoData.getNoticeFileContent());
         }
 
         // Process licenses if available
-        if (componentInfo.getLicenses().size() > 0) {
+        if (componentInfoData.getLicenses().size() > 0) {
           ac.removeAllRawLicenses();
-          for (LicenseInfo li : componentInfo.getLicenses()) {
+          for (LicenseInfo li : componentInfoData.getLicenses()) {
             addRawLicense(ac, li.getSpdxid(), li.getLicenseUrl(), li.getGivenLicenseText(), ORIGIN_COMPONENTINFO);
           }
         } else {
@@ -154,26 +173,31 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
           }
         }
 
-        String copyrights = String.join("\n", componentInfo.getCopyrights());
+        String copyrights = String.join("\n", componentInfoData.getCopyrights());
         ac.setCopyrights(copyrights);
         // check whether VendorUrl is included in input file or not
-        if (componentInfo.getHomepageUrl() != null) {
-          ac.setOssHomepage(componentInfo.getHomepageUrl());
+        if (componentInfoData.getHomepageUrl() != null) {
+          ac.setOssHomepage(componentInfoData.getHomepageUrl());
         }
         // check whether Source ReopUrl is included in input file or not
-        if (componentInfo.getSourceRepoUrl() != null) {
-          ac.setSourceRepoUrl(componentInfo.getSourceRepoUrl());
+        if (componentInfoData.getSourceRepoUrl() != null) {
+          ac.setSourceRepoUrl(componentInfoData.getSourceRepoUrl());
         }
 
         // always overwrite the download URLs - even if componentInfo does not contain any data
-        ac.setPackageDownloadUrl(componentInfo.getPackageDownloadUrl());
-        ac.setSourceDownloadUrl(componentInfo.getSourceDownloadUrl());
-
+        ac.setPackageDownloadUrl(componentInfoData.getPackageDownloadUrl());
+        ac.setSourceDownloadUrl(componentInfoData.getSourceDownloadUrl());
       } else {
-        // no ComponentInfos info found for ac
+        // no adapter delivered data, set the status of the last queried adapter
+        ac.setDataStatus(ND_STATUS_PREFIX + componentInfo.getDataStatus());
+        String formattedTraceabilityNotes = formatTraceabilityNotes(componentInfo);
+        ac.setTraceabilityNotes(formattedTraceabilityNotes);
+
       }
+
     } else {
-      // can this happen?
+      // ac did not contain PackageUrl
+      // TODO: can this happen?
     }
     return statistics;
   }
