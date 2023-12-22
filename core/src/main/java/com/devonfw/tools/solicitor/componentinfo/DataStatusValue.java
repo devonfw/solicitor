@@ -21,7 +21,7 @@ public class DataStatusValue {
   public static final String PROCESSING_FAILED = "PROCESSING_FAILED";
 
   /**
-   * Data available. Issues were detected in the data which prabably need to be curated.
+   * Data available. Issues were detected in the data which probably need to be curated.
    */
   public static final String WITH_ISSUES = "WITH_ISSUES";
 
