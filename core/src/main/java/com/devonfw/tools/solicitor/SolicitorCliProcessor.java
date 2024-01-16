@@ -122,7 +122,6 @@ public class SolicitorCliProcessor {
     builder = Option.builder("l");
     builder.longOpt("loadModel");
     builder.hasArg();
-    builder.optionalArg(false);
     builder.argName("filename");
     description = "instead of reading raw license data and processing rules load the already "
         + "processed model from a previously saved file";
@@ -134,7 +133,6 @@ public class SolicitorCliProcessor {
     builder = Option.builder("d");
     builder.longOpt("diff");
     builder.hasArg();
-    builder.optionalArg(false);
     builder.argName("filename");
     description = "create a diff report to the already processed model given by this filename";
     builder.desc(description);
@@ -204,7 +202,7 @@ public class SolicitorCliProcessor {
 
   /**
    * Prints help information to standard output.
-   * 
+   *
    * @param options the {@link Options} object which describes the command line syntax
    */
   private void printHelp(Options options) {
