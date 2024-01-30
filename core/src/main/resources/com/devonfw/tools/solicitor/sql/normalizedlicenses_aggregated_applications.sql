@@ -18,6 +18,7 @@ select
 	"packageUrl",
 	"ossHomepage",
 	"sourceRepoUrl",
+	"dataStatus",		-- insert
 	"usagePattern",
 	"ossModified",	
 	"declaredLicense",
@@ -52,6 +53,7 @@ from (
 		ac."packageUrl",
 		ac."ossHomepage",
 		ac."sourceRepoUrl",
+		ac."dataStatus", --
 		ac."usagePattern",
 		ac."ossModified",
 		l."declaredLicense",
@@ -88,6 +90,7 @@ from (
 		"packageUrl",
 		"ossHomepage",
 		"sourceRepoUrl",
+		"dataStatus", --
 		"usagePattern",
 		"ossModified",
 		"declaredLicense",
