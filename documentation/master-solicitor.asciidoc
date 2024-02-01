@@ -1434,12 +1434,15 @@ When using the Scancode integration the following values are used for field `App
 [width="100%",cols="1,3",options="header"]
 |====================
 | Value | Description
-| `ND:DISABLED` | No data available. Scancode integration disabled.
-| `ND:NOT_AVAILABLE` | No data available. No scan results existing and no indication that attempting download/scanning has failed.
-| `ND:PROCESSING_FAILED` | No data available. No scan results existing. Processing (downloading or scanning) had failed.
-| `DA:WITH_ISSUES` | Data available. Issues were detected in the data which probably need to be curated.
-| `DA:NO_ISSUES` | Data available. No curations applied. No issues were detected.
-| `DA:CURATED` | Data available. Curations were applied. No issues were detected.
+| `ND:DISABLED` | No data available. Scancode integration disabled. License info from reader was preserved.
+| `ND:NOT_AVAILABLE` | No data available. No scan results existing and no indication that attempting download/scanning has failed. License info from reader was preserved.
+| `ND:PROCESSING_FAILED` | No data available. No scan results existing. Processing (downloading or scanning) had failed. License info from reader was preserved.
+| `NL:WITH_ISSUES` | Data available but did not contain any license infos. Issues were detected in the data which probably need to be curated. License info from reader was preserved.
+| `NL:NO_ISSUES` | Data available but did not contain any license infos. No curations applied. No issues were detected (despite the fact that no license info was found). License info from reader was preserved.
+| `NL:CURATED` | Data available but did not contain any license infos. Curations were applied. No issues were detected (despite the fact that no license info was found). License info from reader was preserved.
+| `DA:WITH_ISSUES` | Data available (including licenses). Issues were detected in the data which probably need to be curated.
+| `DA:NO_ISSUES` | Data available (including licenses). No curations applied. No issues were detected.
+| `DA:CURATED` | Data available (including licenses). Curations were applied. No issues were detected.
 |====================
 
 === Correcting data
@@ -1637,6 +1640,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.19.0::
 * https://github.com/devonfw/solicitor/issues/227: Fixed a bug where the `dataStatus` field in the aggregated OSS-Inventory was not filled.
+* https://github.com/devonfw/solicitor/issues/228: Extended `ApplicationComponent.dataStatus` values to reflect situation when no licenses were obtained from the Scancode information. See <<dataStatus values of the Scancode integration>>.
 
 Changes in 1.18.0::
 * https://github.com/devonfw/solicitor/pull/225: Added some additional name mapping rules to handle SPDX-IDs and license references from Scancode.
