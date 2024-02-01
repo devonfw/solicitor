@@ -41,7 +41,8 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
   }
 
   /**
-   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that data is available.
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that data is available. In this case the
+   * information as obtained from the Readers is preserved.
    */
   private static final String DA_STATUS_PREFIX = "DA:";
 
@@ -49,6 +50,12 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that no data is available.
    */
   private static final String ND_STATUS_PREFIX = "ND:";
+
+  /**
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case data is available but does not contain any
+   * license information. In this case the license information (RawLicenses) as obtained from the Readers is prserved.
+   */
+  private static final String NL_STATUS_PREFIX = "NL:";
 
   /**
    * Origin data for raw license objects created by this Class. Due to compatibility reasons this is named "scancode"
@@ -166,6 +173,8 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         } else {
           LOG.info(LogMessages.COMPONENTINFO_NO_LICENSES.msg(),
               (ac.getGroupId() != null ? ac.getGroupId() + "/" : "") + ac.getArtifactId() + "/" + ac.getVersion());
+          // Correct dataStatus
+          ac.setDataStatus(NL_STATUS_PREFIX + componentInfo.getDataStatus());
           for (RawLicense rl : ac.getRawLicenses()) {
             String trace = rl.getTrace() + System.lineSeparator()
                 + "+ ComponentInfo available but without license information - keeping data from Reader";
