@@ -41,13 +41,13 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
   }
 
   /**
-   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that data is available. In this case the
-   * information as obtained from the Readers is preserved.
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that data is available.
    */
   private static final String DA_STATUS_PREFIX = "DA:";
 
   /**
-   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that no data is available.
+   * Prefix used for {@link ApplicationComponent#getDataStatus()} in case that no data is available. In this case the
+   * information as obtained from the Readers is preserved.
    */
   private static final String ND_STATUS_PREFIX = "ND:";
 
