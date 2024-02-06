@@ -88,7 +88,16 @@ public enum LogMessages {
   CLASSPATHEXCEPTION_WITHOUT_GPL(60, "ClassPathException was found but no GPL License exists for {}"), //
   CLASSPATHEXCEPTION_MULTIPLE_GPL(61, "ClassPathException was found but there are multiple GPL Licenses for {}"), //
   CYCLONEDX_UNSUPPORTED_PURL(62,
-      "The CycloneDX file contains the PackageURL '{}' with unsupported type which will be ignored. Solicitor reports might be incomplete.");
+      "The CycloneDX file contains the PackageURL '{}' with unsupported type which will be ignored. Solicitor reports might be incomplete."), //
+  SCANCODE_AUTOMAPPING_STARTED(63,
+      "Attempting to automatically map scancode license id to create NormalizedLicense objects. Blacklist: {}"), //
+  SCANCODE_AUTOMAPPING_FEATURE_DEACTIVATED(64,
+      "The feature of attempting to automatically map scancode license ids is DEACTIVATED"), //
+  SCANCODE_NO_MAPPING(65,
+      "The license info '{}' from Scancode could not be mapped to OSS-SPDX or SCANCODE type license info"), //
+  SCANCODE_MAPPING_STATISTICS(66,
+      "Statistics for automatic mapping of scancode license ids to NormalizedLicenses: Total processed: {}, skipped due to blacklist: {}, "
+          + "skipped due to unkown SPDX: {}, mapped using type SCANCODE: {}, mapped using type OSS-SPDX: {}");
 
   private final String message;
 
