@@ -99,7 +99,7 @@ public enum LogMessages {
           + "skipped due to unkown SPDX: {}, mapped using type SCANCODE: {}, mapped using type OSS-SPDX: {}, mapped to IGNORE: {}"), //
   NOT_A_VALID_NPM_PACKAGE_NAME(67, "{} is not a valid name for an NPM package"), //
   SCANCODE_ISSUE_DETECTION_REGEX(68,
-      "The list of regular expressions for detecting licenses having issues is set to '{}'");
+      "The list of regular expressions for detecting licenses from scancode having issues is set to '{}'");
 
   private final String message;
 

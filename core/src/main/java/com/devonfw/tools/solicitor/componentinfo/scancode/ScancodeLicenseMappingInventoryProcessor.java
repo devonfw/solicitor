@@ -1,9 +1,5 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spdx.library.model.license.LicenseInfoFactory;
@@ -174,9 +170,8 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
    */
   protected boolean isToBeIgnored(String license) {
 
-    return this.mappingIgnorelistPredicate.test(license,
-        "License id '{}' matches ignore list via regex '{}' and "
-            + "will be mapped to a NormalizedLicense using pseudo license Ignore");
+    return this.mappingIgnorelistPredicate.test(license, "License id '{}' matches ignore list via regex '{}' and "
+        + "will be mapped to a NormalizedLicense using pseudo license Ignore");
   }
 
   /**
@@ -223,7 +218,7 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
    * @param licenseIdMappingBlacklistRegexes an array of regular expressions which define a blacklist of license ids
    *        which will not be mapped automatically to {@link NormalizedLicense} information.
    */
-  @Value("${solicitor.scancode.automapping.blacklist}")
+  @Value("${solicitor.scancode.automapping.blacklistpatterns}")
   public void setLicenseIdMappingBlacklistRegexes(String[] licenseIdMappingBlacklistRegexes) {
 
     this.mappingBlacklistPredicate.setRegexes(licenseIdMappingBlacklistRegexes);
@@ -235,7 +230,7 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
    * @param licenseIdMappingIgnorelistRegexes an array of regular expressions which define a list of license ids which
    *        will be mapped to @link NormalizedLicense} information using type/pseudolicense IGNORE/Ignore.
    */
-  @Value("${solicitor.scancode.automapping.ignorelist}")
+  @Value("${solicitor.scancode.automapping.ignorelistpatterns}")
   public void setLicenseIdMappingIgnorelistRegexes(String[] licenseIdMappingIgnorelistRegexes) {
 
     this.mappingIgnorelistPredicate.setRegexes(licenseIdMappingIgnorelistRegexes);

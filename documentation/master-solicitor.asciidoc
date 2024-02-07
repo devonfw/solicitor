@@ -1461,8 +1461,8 @@ The ignorelist allows to automatically map licenses so that they are ignored in 
 
 The default is:
 ----
-solicitor.scancode.automapping.blacklist=.*unknown.*,.*proprietary.*
-solicitor.scancode.automapping.ignorelist=
+solicitor.scancode.automapping.blacklistpatterns=.*unknown.*,.*proprietary.*
+solicitor.scancode.automapping.ignorelistpatterns=
 ----
 This prohibits automatic mapping of licenses ids which are ambiguous. No ignore mapping is done by default.
 
