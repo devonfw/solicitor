@@ -1,9 +1,13 @@
 package com.devonfw.tools.solicitor.componentinfo.curation;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.RegexListPredicate;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
@@ -18,9 +22,15 @@ import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
  */
 public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
 
+  private static final Logger LOG = LoggerFactory.getLogger(CuratingComponentInfoAdapter.class);
+
   private FilteredComponentInfoProvider filteredComponentInfoProvider;
 
   private ComponentInfoCurator componentInfoCurator;
+
+  private RegexListPredicate licenseIdIssuesPredicate = new RegexListPredicate();
+
+  private boolean regexesLogged = false;
 
   /**
    * The constructor.
@@ -86,16 +96,11 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
       return componentInfo;
     }
     boolean issueExisting = false;
-    List<String> possibleIssues = Arrays.asList("LicenseRef-scancode-free-unknown");
     for (LicenseInfo li : licenses) {
-      for (String key : possibleIssues) {
-        if (key.equals(li.getSpdxid())) {
-          issueExisting = true;
-          break;
-        }
-      }
-      if (issueExisting)
+      if (isIssue(li.getSpdxid())) {
+        issueExisting = true;
         break;
+      }
     }
     if (issueExisting) {
       DefaultComponentInfoImpl result = new DefaultComponentInfoImpl(componentInfo);
@@ -115,6 +120,34 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
   protected boolean isFeatureActive() {
 
     return true;
+  }
+
+  /**
+   * Checks if the given license id falls in the category of "WITH_ISSUES".
+   *
+   * @param license the license id to check
+   * @return <code>true</code> if the license id matches the issue list.
+   */
+  protected boolean isIssue(String license) {
+
+    if (!this.regexesLogged) {
+      LOG.info(LogMessages.SCANCODE_ISSUE_DETECTION_REGEX.msg(), this.licenseIdIssuesPredicate.getRegexesAsString());
+      this.regexesLogged = true;
+    }
+    return this.licenseIdIssuesPredicate.test(license,
+        "License id '{}' matches issue list via regex '{}' and result will be set to status WITH_ISSUES");
+  }
+
+  /**
+   * Sets the list of license ids which will be regarded as "WITH_ISSUES"
+   *
+   * @param licenseIdIssuesRegexes an array of regular expressions which define a the patterns of license ids which will
+   *        be regarded as "WITH_ISSUES".
+   */
+  @Value("${solicitor.scancode.issuelistpatterns}")
+  public void setLicenseIdIssuesRegexes(String[] licenseIdIssuesRegexes) {
+
+    this.licenseIdIssuesPredicate.setRegexes(licenseIdIssuesRegexes);
   }
 
 }
