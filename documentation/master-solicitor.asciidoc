@@ -1438,9 +1438,9 @@ When using the Scancode integration the following values are used for field `App
 | `ND:DISABLED` | No data available. Scancode integration disabled. License info from reader was preserved.
 | `ND:NOT_AVAILABLE` | No data available. No scan results existing and no indication that attempting download/scanning has failed. License info from reader was preserved.
 | `ND:PROCESSING_FAILED` | No data available. No scan results existing. Processing (downloading or scanning) had failed. License info from reader was preserved.
-| `NL:WITH_ISSUES` | Data available but did not contain any license infos. Issues were detected in the data which probably need to be curated. License info from reader was preserved.
-| `NL:NO_ISSUES` | Data available but did not contain any license infos. No curations applied. No issues were detected (despite the fact that no license info was found). License info from reader was preserved.
-| `NL:CURATED` | Data available but did not contain any license infos. Curations were applied. No issues were detected (despite the fact that no license info was found). License info from reader was preserved.
+| `NL:WITH_ISSUES` | Data available but did not contain any license information. Issues were detected in the data which probably need to be curated. License info from reader was preserved.
+| `NL:NO_ISSUES` | Data available but did not contain any license information. No curations applied. No issues were detected (despite the fact that no license info was found). License info from reader was preserved.
+| `NL:CURATED` | Data available but did not contain any license information. Curations were applied. No issues were detected (despite the fact that no license info was found). License info from reader was preserved.
 | `DA:WITH_ISSUES` | Data available (including licenses). Issues were detected in the data which probably need to be curated.
 | `DA:NO_ISSUES` | Data available (including licenses). No curations applied. No issues were detected.
 | `DA:CURATED` | Data available (including licenses). Curations were applied. No issues were detected.
@@ -1448,7 +1448,7 @@ When using the Scancode integration the following values are used for field `App
 
 === Automatic mapping of `RawLicense` data obtained from Scancode to `NormalizedLicense`
 
-Within the normal workflow `NormalizedLicense` objects are created from `RawLicense` objects via the rules given in the different LicenseAssignment and LicensNameMapping decision tables, see <<Phase 1: Determining assigned Licenses>>. The "raw" license data obtained from Scancode represents licenses either by SPDX-IDs or (if licenses 
+Within the normal workflow `NormalizedLicense` objects are created from `RawLicense` objects via the rules given in the different LicenseAssignment and LicenseNameMapping decision tables, see <<Phase 1: Determining assigned Licenses>>. The "raw" license data obtained from Scancode represents licenses either by SPDX-IDs or (if licenses 
 are detected which do not have a corresponding SPDX-IDs) via `LicenseRef-scancode-XXXXX` qualifiers. This is an improved data quality as compared to `RawLicenses` obtained from normal Readers. (See <<Reading License Information with Readers>>.) _Solicitor_ makes use of this improved data quality and by default performs an automatic mapping of `RawLicense` data to `NormalizedLicense` s in this case:
 
 * If the raw license matches a SPDX-ID then a `NormalizedLicense` is created with `normalizedLicenseType` set to `OSS-SPDX`.
