@@ -90,14 +90,14 @@ public enum LogMessages {
   CYCLONEDX_UNSUPPORTED_PURL(62,
       "The CycloneDX file contains the PackageURL '{}' with unsupported type which will be ignored. Solicitor reports might be incomplete."), //
   SCANCODE_AUTOMAPPING_STARTED(63,
-      "Attempting to automatically map scancode license id to create NormalizedLicense objects. Blacklist: {}"), //
+      "Attempting to automatically map scancode license id to create NormalizedLicense objects. Blacklist: '{}', Ignorelist: '{}'"), //
   SCANCODE_AUTOMAPPING_FEATURE_DEACTIVATED(64,
       "The feature of attempting to automatically map scancode license ids is DEACTIVATED"), //
   SCANCODE_NO_MAPPING(65,
       "The license info '{}' from Scancode could not be mapped to OSS-SPDX or SCANCODE type license info"), //
   SCANCODE_MAPPING_STATISTICS(66,
       "Statistics for automatic mapping of scancode license ids to NormalizedLicenses: Total processed: {}, skipped due to blacklist: {}, "
-          + "skipped due to unkown SPDX: {}, mapped using type SCANCODE: {}, mapped using type OSS-SPDX: {}");
+          + "skipped due to unkown SPDX: {}, mapped using type SCANCODE: {}, mapped using type OSS-SPDX: {}, mapped to IGNORE: {}");
 
   private final String message;
 

@@ -216,14 +216,14 @@ Defines the type of license
 * `SCANCODE` - A reference to a license represented by a `LicenseRef`-Id originating from Scancode.
 * `COMMERCIAL` - Commercial (non OSS) license; this might also include code which is owned by the project
 * `UNKNOWN`- License is unknown
-* `IGNORED`- license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License Type")
+* `IGNORED`- License will be ignored. If set on `normalizedLicenseType` (and `effectiveNormalizedLicenseType`) this indicates that the underlying RawLicense does not represent license information which is relevant in the given analysis. (E.g. a Contributor License Agreement might be qualified to be out of scope). If only set on `effectiveNormalizedLicenseType` this indicates that the license does not apply here - specifically due to selecting an alternative license in a multilicensing situation.
 
 ===== Pseudo License Ids
 A "normalized" license id might be either a SPDX-Id, a `LicenseRef`-Id or a "pseudo license id" which is used to indicate a specific situation. The following pseudo license ids are used:
 
 * `OSS specific` - a nonstandard OSS license which could not be mapped to a SPDX-Id
 * `PublicDomain` - any form of public domain which is not represented by an explicit SPDX-Id
-* `Ignored` - license will be ignored (non selected license in multi licensing case; only to be used as "Effective Normalized License")
+* `Ignored` - license will be ignored (see above)
 * `NonOSS` - commercial license, not OSS
 
 == Usage
@@ -1452,17 +1452,19 @@ Within the normal workflow `NormalizedLicense` objects are created from `RawLice
 are detected which do not have a corresponding SPDX-IDs) via `LicenseRef-scancode-XXXXX` qualifiers. This is an improved data quality as compared to `RawLicenses` obtained from normal Readers. (See <<Reading License Information with Readers>>.) _Solicitor_ makes use of this improved data quality and by default performs an automatic mapping of `RawLicense` data to `NormalizedLicense` s in this case:
 
 * If the raw license matches a SPDX-ID then a `NormalizedLicense` is created with `normalizedLicenseType` set to `OSS-SPDX`.
-* If the raw license starts with `LicenseRef-scancode-` then a `NormalizedLicense` is created with `normalizedLicenseType` set to `SCANCODE`
-* If the raw license does not match above criteria or matches a blacklist (see below) then no automatic mapping is done.
+* If the raw license starts with `LicenseRef-scancode-` then a `NormalizedLicense` is created with `normalizedLicenseType` set to `SCANCODE`.
+* If the raw license matches a given "ignorelist" (see below), then a `NormalizedLicense` is created with `normalizedLicenseType` set to `IGNORE` and `normalizeLicense` set to `Ignore`.
+* If the raw license does not match any of the above criteria or matches a "blacklist" (see below) then no automatic mapping is done.
 
-==== Blacklist
-A blacklist allows suppressing the automatic mapping of specific licenses. The blacklist is configured via a property and is represented by a comma separated list of regular expressions.
+==== Ignorelist and Blacklist
+The ignorelist allows to automatically map licenses so that they are ignored in the further evaluation. The blacklist allows suppressing the automatic mapping of specific licenses. Both lists are configured via properties and are represented by a comma separated list of regular expressions.
 
 The default is:
 ----
 solicitor.scancode.automapping.blacklist=.*unknown.*,.*proprietary.*
+solicitor.scancode.automapping.ignorelist=
 ----
-This prohibits automatic mapping of licenses ids which are ambiguous.  
+This prohibits automatic mapping of licenses ids which are ambiguous. No ignore mapping is done by default.
 
 ==== Feature flag
 The automatic mapping might be disabled by setting the corresponding feature flag to false:

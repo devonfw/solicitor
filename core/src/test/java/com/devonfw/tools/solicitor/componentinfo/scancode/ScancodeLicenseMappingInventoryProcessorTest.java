@@ -39,6 +39,7 @@ class ScancodeLicenseMappingInventoryProcessorTest {
     this.objectUnderTest = new ScancodeLicenseMappingInventoryProcessor();
     this.objectUnderTest.setModelFactory(this.mf);
     this.objectUnderTest.setLicenseIdMappingBlacklistRegexes(new String[] { ".*blacklisted.*" });
+    this.objectUnderTest.setLicenseIdMappingIgnorelistRegexes(new String[] { ".*ignore.*" });
 
     this.stat = new Statistics();
 
@@ -155,6 +156,23 @@ class ScancodeLicenseMappingInventoryProcessorTest {
    * {@link com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeLicenseMappingInventoryProcessor#processApplicationComponent(com.devonfw.tools.solicitor.model.inventory.ApplicationComponent, com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeLicenseMappingInventoryProcessor.Statistics)}.
    */
   @Test
+  void testProcessApplicationComponentIgnore() {
+
+    initObjects("scancode", "DA:FOOBAR", "LicenseRef-scancode-ignore-license");
+
+    this.objectUnderTest.processApplicationComponent(this.ac, this.stat);
+
+    Mockito.verify(this.mf, Mockito.times(1)).newNormalizedLicense(Mockito.any());
+    assertEquals("Ignore", this.nl.getNormalizedLicense());
+    assertEquals("IGNORE", this.nl.getNormalizedLicenseType());
+
+  }
+
+  /**
+   * Test method for
+   * {@link com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeLicenseMappingInventoryProcessor#processApplicationComponent(com.devonfw.tools.solicitor.model.inventory.ApplicationComponent, com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeLicenseMappingInventoryProcessor.Statistics)}.
+   */
+  @Test
   void testProcessApplicationComponentUnknown() {
 
     initObjects("scancode", "DA:FOOBAR", "Apache-0.9");
@@ -198,6 +216,23 @@ class ScancodeLicenseMappingInventoryProcessorTest {
     assertFalse(this.objectUnderTest.isBlacklisted("abkkkkk"));
     assertTrue(this.objectUnderTest.isBlacklisted("bkkkkk"));
     assertTrue(this.objectUnderTest.isBlacklisted("aa"));
+  }
+
+  /**
+   * Test method for
+   * {@link com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeLicenseMappingInventoryProcessor#isToBeIgnored(java.lang.String)}.
+   */
+  @Test
+  void testIsToBeIgnored() {
+
+    this.objectUnderTest = new ScancodeLicenseMappingInventoryProcessor();
+    this.objectUnderTest.setLicenseIdMappingIgnorelistRegexes(new String[] { ".*cc.*", "d.*" });
+
+    assertFalse(this.objectUnderTest.isToBeIgnored(""));
+    assertFalse(this.objectUnderTest.isToBeIgnored("somelicense"));
+    assertFalse(this.objectUnderTest.isToBeIgnored("cdkkkkk"));
+    assertTrue(this.objectUnderTest.isToBeIgnored("dkkkkk"));
+    assertTrue(this.objectUnderTest.isToBeIgnored("cc"));
   }
 
 }
