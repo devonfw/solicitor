@@ -1,12 +1,13 @@
 package com.devonfw.tools.solicitor.componentinfo.curation;
 
 import java.util.Collection;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.RegexListPredicate;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
@@ -27,7 +28,9 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
 
   private ComponentInfoCurator componentInfoCurator;
 
-  private Pattern[] licenseIdIssuesPatterns = new Pattern[0];
+  private RegexListPredicate licenseIdIssuesPredicate = new RegexListPredicate();
+
+  private boolean regexesLogged = false;
 
   /**
    * The constructor.
@@ -127,16 +130,12 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
    */
   protected boolean isIssue(String license) {
 
-    for (Pattern p : this.licenseIdIssuesPatterns) {
-      if (p.matcher(license).matches()) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("License id '{}' matches issue list via regex '{}' and result will be set to status {}", license,
-              p.toString(), DataStatusValue.WITH_ISSUES);
-        }
-        return true;
-      }
+    if (!this.regexesLogged) {
+      LOG.info(LogMessages.SCANCODE_ISSUE_DETECTION_REGEX.msg(), this.licenseIdIssuesPredicate.getRegexesAsString());
+      this.regexesLogged = true;
     }
-    return false;
+    return this.licenseIdIssuesPredicate.test(license,
+        "License id '{}' matches issue list via regex '{}' and result will be set to status WITH_ISSUES");
   }
 
   /**
@@ -148,12 +147,7 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
   @Value("${solicitor.scancode.issuelistpatterns}")
   public void setLicenseIdIssuesRegexes(String[] licenseIdIssuesRegexes) {
 
-    if (licenseIdIssuesRegexes != null) {
-      this.licenseIdIssuesPatterns = new Pattern[licenseIdIssuesRegexes.length];
-      for (int i = 0; i < licenseIdIssuesRegexes.length; i++) {
-        this.licenseIdIssuesPatterns[i] = Pattern.compile(licenseIdIssuesRegexes[i]);
-      }
-    }
+    this.licenseIdIssuesPredicate.setRegexes(licenseIdIssuesRegexes);
   }
 
 }

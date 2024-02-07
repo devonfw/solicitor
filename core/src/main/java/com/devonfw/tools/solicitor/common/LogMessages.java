@@ -76,7 +76,6 @@ public enum LogMessages {
   MULTIPLE_DECISIONTABLES(51, "Multiple decision tables in both .xls and .csv format. Prioritizing '{}.xls'."), //
   ADDING_ADDITIONALWRITER_CONFIG(52, "Merging config: Adding additional writers to base config from {}"), //
   NOT_A_VALID_NPM_PACKAGE_IDENTIFIER(53, "{} is not a valid identifier for an NPM package"), //
-  NOT_A_VALID_NPM_PACKAGE_NAME(54, "{} is not a valid name for an NPM package"), //
   SCANCODE_PROCESSOR_STARTING(54,
       "Experimental feature ACTIVE: Start enriching the inventory data with Scancode data (as far as available)"), //
   SCANCODE_FEATURE_DEACTIVATED(55,
@@ -97,7 +96,10 @@ public enum LogMessages {
       "The license info '{}' from Scancode could not be mapped to OSS-SPDX or SCANCODE type license info"), //
   SCANCODE_MAPPING_STATISTICS(66,
       "Statistics for automatic mapping of scancode license ids to NormalizedLicenses: Total processed: {}, skipped due to blacklist: {}, "
-          + "skipped due to unkown SPDX: {}, mapped using type SCANCODE: {}, mapped using type OSS-SPDX: {}, mapped to IGNORE: {}");
+          + "skipped due to unkown SPDX: {}, mapped using type SCANCODE: {}, mapped using type OSS-SPDX: {}, mapped to IGNORE: {}"), //
+  NOT_A_VALID_NPM_PACKAGE_NAME(67, "{} is not a valid name for an NPM package"), //
+  SCANCODE_ISSUE_DETECTION_REGEX(68,
+      "The list of regular expressions for detecting licenses having issues is set to '{}'");
 
   private final String message;
 

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.InventoryProcessor;
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.RegexListPredicate;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -69,9 +70,9 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
 
   private ModelFactory modelFactory;
 
-  private Pattern[] licenseIdMappingBlacklistPatterns = new Pattern[0];
+  private RegexListPredicate mappingBlacklistPredicate = new RegexListPredicate();
 
-  private Pattern[] licenseIdMappingIgnorelistPatterns = new Pattern[0];
+  private RegexListPredicate mappingIgnorelistPredicate = new RegexListPredicate();
 
   private boolean featureFlag;
 
@@ -161,16 +162,8 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
    */
   protected boolean isBlacklisted(String license) {
 
-    for (Pattern p : this.licenseIdMappingBlacklistPatterns) {
-      if (p.matcher(license).matches()) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("License id '{}' is blacklisted via regex '{}' and will not be mapped to a NormalizedLicense",
-              license, p.toString());
-        }
-        return true;
-      }
-    }
-    return false;
+    return this.mappingBlacklistPredicate.test(license,
+        "License id '{}' is blacklisted via regex '{}' and will not be mapped to a NormalizedLicense");
   }
 
   /**
@@ -181,17 +174,9 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
    */
   protected boolean isToBeIgnored(String license) {
 
-    for (Pattern p : this.licenseIdMappingIgnorelistPatterns) {
-      if (p.matcher(license).matches()) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug(
-              "License id '{}' matches ignore list via regex '{}' and will be mapped to a NormalizedLicense using pseudo license Ignore",
-              license, p.toString());
-        }
-        return true;
-      }
-    }
-    return false;
+    return this.mappingIgnorelistPredicate.test(license,
+        "License id '{}' matches ignore list via regex '{}' and "
+            + "will be mapped to a NormalizedLicense using pseudo license Ignore");
   }
 
   /**
@@ -241,12 +226,7 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
   @Value("${solicitor.scancode.automapping.blacklist}")
   public void setLicenseIdMappingBlacklistRegexes(String[] licenseIdMappingBlacklistRegexes) {
 
-    if (licenseIdMappingBlacklistRegexes != null) {
-      this.licenseIdMappingBlacklistPatterns = new Pattern[licenseIdMappingBlacklistRegexes.length];
-      for (int i = 0; i < licenseIdMappingBlacklistRegexes.length; i++) {
-        this.licenseIdMappingBlacklistPatterns[i] = Pattern.compile(licenseIdMappingBlacklistRegexes[i]);
-      }
-    }
+    this.mappingBlacklistPredicate.setRegexes(licenseIdMappingBlacklistRegexes);
   }
 
   /**
@@ -258,12 +238,7 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
   @Value("${solicitor.scancode.automapping.ignorelist}")
   public void setLicenseIdMappingIgnorelistRegexes(String[] licenseIdMappingIgnorelistRegexes) {
 
-    if (licenseIdMappingIgnorelistRegexes != null) {
-      this.licenseIdMappingIgnorelistPatterns = new Pattern[licenseIdMappingIgnorelistRegexes.length];
-      for (int i = 0; i < licenseIdMappingIgnorelistRegexes.length; i++) {
-        this.licenseIdMappingIgnorelistPatterns[i] = Pattern.compile(licenseIdMappingIgnorelistRegexes[i]);
-      }
-    }
+    this.mappingIgnorelistPredicate.setRegexes(licenseIdMappingIgnorelistRegexes);
 
   }
 
@@ -286,16 +261,8 @@ public class ScancodeLicenseMappingInventoryProcessor implements InventoryProces
   protected boolean isFeatureActive() {
 
     if (this.featureFlag) {
-      List<String> blackListRegExes = new ArrayList<>();
-      for (Pattern p : this.licenseIdMappingBlacklistPatterns) {
-        blackListRegExes.add(p.toString());
-      }
-      List<String> ignoreListRegExes = new ArrayList<>();
-      for (Pattern p : this.licenseIdMappingIgnorelistPatterns) {
-        ignoreListRegExes.add(p.toString());
-      }
-      LOG.info(LogMessages.SCANCODE_AUTOMAPPING_STARTED.msg(), String.join(",", blackListRegExes),
-          String.join(",", ignoreListRegExes));
+      LOG.info(LogMessages.SCANCODE_AUTOMAPPING_STARTED.msg(), this.mappingBlacklistPredicate.getRegexesAsString(),
+          this.mappingIgnorelistPredicate.getRegexesAsString());
     } else {
       LOG.info(LogMessages.SCANCODE_AUTOMAPPING_FEATURE_DEACTIVATED.msg());
     }
