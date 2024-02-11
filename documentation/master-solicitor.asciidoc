@@ -1671,6 +1671,7 @@ Changes in 1.19.0::
 * https://github.com/devonfw/solicitor/issues/227: Fixed a bug where the `dataStatus` field in the aggregated OSS-Inventory was not filled.
 * https://github.com/devonfw/solicitor/issues/228: Extended `ApplicationComponent.dataStatus` values to reflect situation when no licenses were obtained from the Scancode information. See <<dataStatus values of the Scancode integration>>.
 * https://github.com/devonfw/solicitor/issues/230: Enable automatic mapping of `RawLicense` data obtained from Scancode to `NormalizedLicenses`. See <<Automatic mapping of `RawLicense` data obtained from Scancode to `NormalizedLicense`>>.
+* Generalize pattern of scancode licenses classified as WITH_ISSUES (from `LicenseRef-scancode-free-unknown`  to `.\*unknown.*` )
 
 Changes in 1.18.0::
 * https://github.com/devonfw/solicitor/pull/225: Added some additional name mapping rules to handle SPDX-IDs and license references from Scancode.
