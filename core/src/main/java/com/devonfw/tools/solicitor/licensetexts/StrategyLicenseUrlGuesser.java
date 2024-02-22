@@ -9,10 +9,15 @@ import java.time.temporal.ChronoUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.devonfw.tools.solicitor.SolicitorVersion;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
+
+import reactor.core.publisher.Mono;
 
 /**
  * A {@link LicenseUrlGuesser} which tries to strategically find a possible better license URL.
@@ -24,7 +29,13 @@ public class StrategyLicenseUrlGuesser implements LicenseUrlGuesser {
   private ContentProvider<WebContent> webContentProvider;
 
   private SolicitorVersion solicitorVersion;
+  
+  @Value("${solicitor.githubtoken}")
+  private String token;
+  
+  private WebClient client = WebClient.create("https://api.github.com");
 
+		
   /**
    * The constructor.
    *
@@ -56,14 +67,19 @@ public class StrategyLicenseUrlGuesser implements LicenseUrlGuesser {
     traceBuilder.append(trace).append('\n');
   }
 
-  // https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat
-  // https://raw.githubusercontent.com/nodelib/nodelib/master/packages/fs/fs.stat/README.md
   // helper method that normalizes a github url and retrieves the raw link to
   // a given license
   private String normalizeGitURL(String url, StringBuilder traceBuilder) {
-
     String oldURL = url;
-    if (url.contains("github")) {
+    // case that github remote repository link is given
+    if (url.contains("github.com") && url.endsWith(".git")) {
+      url = githubAPILicenseUrl(url, token);
+      if(!url.equals(oldURL) && !url.contains("api.github.com")) {
+        setTrace("URL changed from " + oldURL + " to " + url, traceBuilder);
+        return url;
+      }
+    }
+    if (url.contains("github.com")) {
       // use https for all github URLs
       url = url.replace("http:", "https:");
       // omit repo suffix if existent
@@ -154,4 +170,48 @@ public class StrategyLicenseUrlGuesser implements LicenseUrlGuesser {
     return new GuessedLicenseUrlContent(guessedUrl, auditLogBuilder.toString());
   }
 
+  //tries to get github license file location based of vsc-link 
+  public String githubAPILicenseUrl(String link, String token) {
+	  
+	String fallbackLink = link;
+	  
+    String result = "";
+    if (link.contains("github.com")) {
+      if (link.endsWith(".git")) {
+        link = link.substring(0, link.length() - 4);
+      }
+	  link = link.replace("git://", "");
+	  link = link.replace("ssh://", "");
+	  link = link.replace("git@", "");
+	  link = link.replace("https://", "");
+      link = link.replace("api.github.com/", "");
+      link = link.replace("github.com/", "");
+
+      //TODO it should be better to parse the response directly into a JSON object, not string
+	  result = client.get()
+			  .uri("/repos/" + link + "/license")			 
+			  .header("Accept", "application/vnd.github+json")
+			  .header("Authorization", "Bearer " + token)
+			  .accept(MediaType.APPLICATION_JSON)
+			  .retrieve()
+			  .onStatus(status -> status.isError(), 
+                      response -> Mono.empty()) 
+			  .bodyToMono(String.class)
+			  .block(); //TODO this blocks the thread probably
+	    
+	  if (result.contains("download_url")) {
+	    result = result.substring(result.indexOf("\"download_url\":"));
+	    result = result.substring(16,result.indexOf(",")-1);
+	  }
+	  if (result.contains("\"message\":\"Moved Permanently\"")) {
+	    String tempLink = result.substring(result.indexOf("\"url\":"));
+        tempLink = tempLink.substring(7,result.indexOf(",")-1);
+	    result = githubAPILicenseUrl(tempLink, token);
+	  }
+	  if (result.contains("\"message\":\"Not Found\"")) {
+	    result = fallbackLink;
+	  }
+    }
+    return result;  
+  }
 }
