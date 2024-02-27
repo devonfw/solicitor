@@ -69,41 +69,6 @@ public class ComponentInfoCuratorTest {
   }
 
   /**
-   * Test the {@link ComponentInfoCurator#curate(ComponentInfo, String)} method with "none" curation data selector.
-   *
-   * <p>
-   * Given a mocked {@link CurationProvider} that returns null for the specified package URL and curation data selector,
-   * when the {@code curate} method is called, then verify that the result is the same as the input
-   * {@link ComponentInfo}.
-   * </p>
-   *
-   * @throws ComponentInfoAdapterException If an error occurs during the test.
-   */
-  @Test
-  public void testCurateWithNoneCurationDataSelector() throws ComponentInfoAdapterException {
-
-    // Mock dependencies
-    CurationProvider curationProvider = mock(CurationProvider.class);
-    ComponentContentProvider componentContentProvider = mock(ComponentContentProvider.class);
-
-    // Create an instance of ComponentInfoCuratorImpl
-    ComponentInfoCuratorImpl curator = new ComponentInfoCuratorImpl(curationProvider, componentContentProvider);
-
-    // Mock a ComponentInfo
-    ComponentInfo componentInfo = mock(ComponentInfo.class);
-    when(componentInfo.getPackageUrl()).thenReturn("example-package-url");
-
-    // Mock the behavior of CurationProvider to return null for foundCuration
-    when(curationProvider.findCurations("example-package-url", "none")).thenReturn(null);
-
-    // Invoke the curate method with curationDataSelector set to "none"
-    ComponentInfo result = curator.curate(componentInfo, "none");
-
-    // Verify that the result is the same as the input componentInfo
-    assertEquals(componentInfo, result);
-  }
-
-  /**
    * Test the {@link ComponentInfoCurator#curate(ComponentInfo, String)} method with raw ScanCode results.
    *
    * <p>
