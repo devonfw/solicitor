@@ -34,7 +34,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Imports and exports the data model.
+ * The {@code ModelImporterExporter} class handles the import and export of the data model. It provides methods for
+ * loading a data model from a JSON file, checking model version compatibility, and saving the data model to a file.
+ * Additionally, it facilitates the transformation of JSON data into model objects, ensuring proper association between
+ * the various components of the data model.
  */
 @Component
 public class ModelImporterExporter {
@@ -54,10 +57,12 @@ public class ModelImporterExporter {
   private ModelFactoryImpl modelFactory;
 
   /**
-   * Loads the data model from a file.
+   * Loads the data model from a JSON file. The loaded data model is represented by a root object of type
+   * {@code ModelRootImpl}.
    *
-   * @param filename the name of the file to load from.
-   * @return the root object of the loaded data model
+   * @param filename the name of the file to load the data model from.
+   * @return the root object of the loaded data model.
+   * @throws SolicitorRuntimeException if there is an issue loading the data model from the file.
    */
   public ModelRootImpl loadModel(String filename) {
 
@@ -102,10 +107,11 @@ public class ModelImporterExporter {
   }
 
   /**
-   * Checks if the version of the model to be loaded is supported.
+   * Checks if the version of the model to be loaded is supported and compatible with the current model version.
    *
    * @param readModelVersion the model version of the model to be loaded
    * @param currentModelRoot the root object of the current (target) model
+   * @throws SolicitorRuntimeException if the model version is unsupported or incompatible.
    */
   private void checkModelVersion(int readModelVersion, ModelRootImpl currentModelRoot) {
 
@@ -117,11 +123,13 @@ public class ModelImporterExporter {
   }
 
   /**
-   * Read the {@link ApplicationComponent}s from the JSON data structure.
+   * Reads the {@link ApplicationComponent}s from the JSON data structure and populates the provided {@link Application}
+   * with the corresponding data.
    *
    * @param application the {@link Application} to which the {@link ApplicationComponent}s belong to
    * @param applicationComponentsNode the relevant part of the parse JSON model
    * @param readModelVersion the model version of the model to be read
+   *
    */
   private void readApplicationComponents(ApplicationImpl application, JsonNode applicationComponentsNode,
       int readModelVersion) {
@@ -148,6 +156,21 @@ public class ModelImporterExporter {
       String noticeFileUrl = noticeFileUrlNode != null ? noticeFileUrlNode.asText(null) : null;
       JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
       JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
+      String dataStatus = applicationComponentNode.has("dataStatus")
+          ? applicationComponentNode.get("dataStatus").asText(null)
+          : null;
+      String traceabilityNotes = applicationComponentNode.has("traceabilityNotes")
+          ? applicationComponentNode.get("traceabilityNotes").asText(null)
+          : null;
+      String sourceDownloadUrl = applicationComponentNode.has("sourceDownloadUrl")
+          ? applicationComponentNode.get("sourceDownloadUrl").asText(null)
+          : null;
+      String packageDownloadUrl = applicationComponentNode.has("packageDownloadUrl")
+          ? applicationComponentNode.get("packageDownloadUrl").asText(null)
+          : null;
+      String noticeFileContentKey = applicationComponentNode.has("noticeFileContentKey")
+          ? applicationComponentNode.get("noticeFileContentKey").asText(null)
+          : null;
 
       ApplicationComponentImpl applicationComponent = this.modelFactory.newApplicationComponent();
       applicationComponent.setApplication(application);
@@ -165,6 +188,11 @@ public class ModelImporterExporter {
       applicationComponent.setRepoType(repoType);
       applicationComponent.setCopyrights(copyrights);
       applicationComponent.setNoticeFileUrl(noticeFileUrl);
+      applicationComponent.setDataStatus(dataStatus);
+      applicationComponent.setTraceabilityNotes(traceabilityNotes);
+      applicationComponent.setSourceDownloadUrl(sourceDownloadUrl);
+      applicationComponent.setPackageDownloadUrl(packageDownloadUrl);
+      applicationComponent.setNoticeFileContentKey(noticeFileContentKey);
 
       readNormalizedLicenses(applicationComponent, normalizedLicensesNode, readModelVersion);
       readRawLicenses(applicationComponent, rawLicensesNode, readModelVersion);
@@ -226,7 +254,8 @@ public class ModelImporterExporter {
   }
 
   /**
-   * Read the {@link NormalizedLicense}s from the JSON data structure.
+   * Reads the {@link NormalizedLicense}s from the JSON data structure and associates them with the provided
+   * {@link ApplicationComponent}.
    *
    * @param applicationComponent The {@link ApplicationComponent} to which the license belongs
    * @param normalizedLicensesNode the relevant part of the parsed JSON model
@@ -236,6 +265,7 @@ public class ModelImporterExporter {
       int readModelVersion) {
 
     for (JsonNode normalizedLicenseNode : normalizedLicensesNode) {
+      // Extracting information from the JSON node
       String declaredLicense = normalizedLicenseNode.get("declaredLicense").asText(null);
       String licenseUrl = normalizedLicenseNode.get("licenseUrl").asText(null);
       String normalizedLicenseType = normalizedLicenseNode.get("normalizedLicenseType").asText(null);
@@ -261,6 +291,7 @@ public class ModelImporterExporter {
         guessedLicenseUrl = normalizedLicenseNode.get("guessedLicenseUrl").asText(null);
         guessedLicenseUrlAuditInfo = normalizedLicenseNode.get("guessedLicenseUrlAuditInfo").asText(null);
       }
+      // Text pool keys introduced in certain model versions
       String effectiveNormalizedLicenseContentKey = null;
       String declaredLicenseContentKey = null;
       String licenseRefContentKey = null;
@@ -274,7 +305,7 @@ public class ModelImporterExporter {
         normalizedLicenseContentKey = normalizedLicenseNode.get("normalizedLicenseContentKey").asText(null);
         guessedLicenseContentKey = normalizedLicenseNode.get("guessedLicenseContentKey").asText(null);
       }
-
+      // Creating a new NormalizedLicense object and populating its fields
       NormalizedLicenseImpl normalizedLicense = this.modelFactory.newNormalizedLicense();
       normalizedLicense.setApplicationComponent(applicationComponent);
       normalizedLicense.setDeclaredLicense(declaredLicense);
@@ -303,6 +334,7 @@ public class ModelImporterExporter {
       normalizedLicense.setLicenseRefContentKey(licenseRefContentKey);
       normalizedLicense.setNormalizedLicenseContentKey(normalizedLicenseContentKey);
       normalizedLicense.setGuessedLicenseContentKey(guessedLicenseContentKey);
+
     }
   }
 
@@ -331,7 +363,6 @@ public class ModelImporterExporter {
       rawLicense.setTrace(trace);
       rawLicense.setOrigin(origin);
       rawLicense.setSpecialHandling(specialHandling);
-
     }
   }
 
@@ -349,6 +380,7 @@ public class ModelImporterExporter {
     }
     TextPool textPool = modelRoot.getTextPool();
     JsonNode dataMapNode = textPoolNode.get("dataMap");
+
     for (JsonNode singleEntryValue : dataMapNode) {
       // only store values; keys will be reconstructed based on values
       textPool.store(singleEntryValue.asText());
