@@ -181,7 +181,6 @@ public class ModelImporterExporter {
       applicationComponent.setGroupId(groupId);
       applicationComponent.setArtifactId(artifactId);
       applicationComponent.setVersion(version);
-      applicationComponent.setRepoType(repoType);
       applicationComponent.setPackageUrl(packageUrl);
       // when reading from file we set repoType after packageUrl to make sure the effective value is what is given by
       // the file. (ApplicationComponent.setPackageUrl() will set repoType as well if it is not already set to something
@@ -335,7 +334,6 @@ public class ModelImporterExporter {
       normalizedLicense.setLicenseRefContentKey(licenseRefContentKey);
       normalizedLicense.setNormalizedLicenseContentKey(normalizedLicenseContentKey);
       normalizedLicense.setGuessedLicenseContentKey(guessedLicenseContentKey);
-      normalizedLicense.setDeclaredLicenseContentKey(declaredLicenseContentKey);
 
     }
   }
