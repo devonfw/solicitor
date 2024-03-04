@@ -59,8 +59,8 @@ public class FilteredScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
-    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider
-        .getComponentInfo("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "none");
+    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());

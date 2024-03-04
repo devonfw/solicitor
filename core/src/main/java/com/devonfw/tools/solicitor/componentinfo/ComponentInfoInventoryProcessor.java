@@ -75,7 +75,7 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
    * Set the curationDataSelector.
    *
    * @param curationDataSelector the curationDataSelector to chose when getting curation data. An empty string will be
-   *        stored as <code>null</code> null which results in the default origin being taken.Use "none" to indicate no
+   *        stored as <code>null</code> null which results in the default origin being taken. Use "none" to indicate no
    *        curation.
    */
   @Value("${solicitor.curationDataSelector}")

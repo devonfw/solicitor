@@ -13,9 +13,9 @@ public interface ComponentInfoCurator {
    * Curates the given {@link ComponentInfo}.
    *
    * @param componentInfo the componentInfo to curate
-   * @param curationDataSelector identifies which source should be used for the curation data. If the value of
-   *        curationDataSelector equals "none," no curations will be applied.
-   * @return the curated component info or - if no curations are done - the incoming object
+   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
+   *        indicates that the default should be used.
+   * @return the curated component info or - if no curation are done - the incoming object
    * @throws ComponentInfoAdapterException if the curation could not be read
    */
   ComponentInfo curate(ComponentInfo componentInfo, String curationDataSelector) throws ComponentInfoAdapterException;

@@ -1669,7 +1669,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.20.0::
 * https://github.com/devonfw/solicitor/issues/232: Set a standard for ordering LicenseNameMapping rules. Rules with an 'or-later' suffix are put before '-only' rules.
-* https://github.com/devonfw/solicitor/pull/235: Enhanced Curation Template Generation.  when generating a curation template and setting the curationdataselector parameter to "none," curations will be skipped, resulting in a template without applied curations.
+* https://github.com/devonfw/solicitor/pull/235: Improvements in Curation Data Handling. When the curationdataselector parameter is set to "none," no curations will be applied.
 
 
 Changes in 1.19.0::

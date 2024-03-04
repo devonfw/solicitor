@@ -48,19 +48,14 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
    * and the curation.
    *
    * @param componentInfo the componentInfo to curate
-   * @param curationDataSelector identifies which source should be used for the curation data. If the value of
-   *        curationdataselector equals "none," no curations will be applied.
+   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
+   *        indicates that the default should be used.
    * @return the curated component info
    * @throws ComponentInfoAdapterException if the curation could not be read
    */
   @Override
   public ComponentInfo curate(ComponentInfo componentInfo, String curationDataSelector)
       throws ComponentInfoAdapterException {
-
-    // If curationDataSelector is "none", return raw componentInfo without applying curation.
-    if ("none".equals(curationDataSelector)) {
-      return componentInfo;
-    }
 
     ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl(),
         curationDataSelector);
