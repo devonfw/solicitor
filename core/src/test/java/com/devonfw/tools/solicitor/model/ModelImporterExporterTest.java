@@ -115,7 +115,7 @@ public class ModelImporterExporterTest {
   @Test
   public void testSaveModel() throws IOException {
 
-    ModelRoot mr = this.mie.loadModel("src/test/resources/models/model_version_3.json");
+    ModelRoot mr = this.mie.loadModel("src/test/resources/models/model_version_6.json");
     File tempFile = File.createTempFile("solicitor_model", "json");
     String fileName = tempFile.getPath();
 

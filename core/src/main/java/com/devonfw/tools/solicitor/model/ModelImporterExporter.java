@@ -299,21 +299,12 @@ public class ModelImporterExporter {
       String normalizedLicenseContentKey = null;
       String guessedLicenseContentKey = null;
       if (readModelVersion >= LOWEST_VERSION_WITH_TEXT_POOL) {
-        effectiveNormalizedLicenseContentKey = normalizedLicenseNode.has("effectiveNormalizedLicenseContentKey")
-            ? normalizedLicenseNode.get("effectiveNormalizedLicenseContentKey").asText(null)
-            : null;
-        declaredLicenseContentKey = normalizedLicenseNode.has("declaredLicenseContentKey")
-            ? normalizedLicenseNode.get("declaredLicenseContentKey").asText(null)
-            : null;
-        licenseRefContentKey = normalizedLicenseNode.has("licenseRefContentKey")
-            ? normalizedLicenseNode.get("licenseRefContentKey").asText(null)
-            : null;
-        normalizedLicenseContentKey = normalizedLicenseNode.has("normalizedLicenseContentKey")
-            ? normalizedLicenseNode.get("normalizedLicenseContentKey").asText(null)
-            : null;
-        guessedLicenseContentKey = normalizedLicenseNode.has("guessedLicenseContentKey")
-            ? normalizedLicenseNode.get("guessedLicenseContentKey").asText(null)
-            : null;
+        effectiveNormalizedLicenseContentKey = normalizedLicenseNode.get("effectiveNormalizedLicenseContentKey")
+            .asText(null);
+        declaredLicenseContentKey = normalizedLicenseNode.get("declaredLicenseContentKey").asText(null);
+        licenseRefContentKey = normalizedLicenseNode.get("licenseRefContentKey").asText(null);
+        normalizedLicenseContentKey = normalizedLicenseNode.get("normalizedLicenseContentKey").asText(null);
+        guessedLicenseContentKey = normalizedLicenseNode.get("guessedLicenseContentKey").asText(null);
       }
       // Creating a new NormalizedLicense object and populating its fields
       NormalizedLicenseImpl normalizedLicense = this.modelFactory.newNormalizedLicense();
@@ -386,7 +377,7 @@ public class ModelImporterExporter {
    */
   private void readTextPool(ModelRootImpl modelRoot, JsonNode textPoolNode, int readModelVersion) {
 
-    if (readModelVersion < LOWEST_VERSION_WITH_TEXT_POOL || textPoolNode == null) {
+    if (readModelVersion < LOWEST_VERSION_WITH_TEXT_POOL) {
       return;
     }
     TextPool textPool = modelRoot.getTextPool();
