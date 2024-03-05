@@ -16,10 +16,11 @@ public interface CurationProvider {
    * @param packageUrl identifies the package
    * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
    *        indicates that the default should be used.
-   * @return the curation data if it exists or <code>null</code> if no curation exist for the package.
+   * @return the curation data if it exists or <code>null</code> if no curation exist for the package.If the value of
+   *         curationDataSelector equals "none," no curations will be applied.
    * @throws ComponentInfoAdapterException if something unexpected happens
-   * @throws ComponentInfoAdapterNonExistingCurationDataSelectorException if the specified curationDataSelector could not be
-   *         resolved
+   * @throws ComponentInfoAdapterNonExistingCurationDataSelectorException if the specified curationDataSelector could
+   *         not be resolved
    */
   ComponentInfoCuration findCurations(String packageUrl, String curationDataSelector)
       throws ComponentInfoAdapterException, ComponentInfoAdapterNonExistingCurationDataSelectorException;
