@@ -50,8 +50,8 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
    * data as a {@link ComponentInfo} object.
    *
    * @param packageUrl The identifier of the package for which information is requested
-   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
-   *        indicates that the default should be used.
+   * @param curationDataSelector Identifies which source should be used for the curation data. <code>null</code>
+   *        indicates that the default should be used. Use "none" to indicate that no curation should be applied.
    * @return the data derived from the scancode results after applying any defined curation.
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.

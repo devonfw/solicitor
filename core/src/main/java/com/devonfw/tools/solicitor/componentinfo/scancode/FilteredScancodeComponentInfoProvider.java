@@ -94,10 +94,10 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
    *
    * @param packageUrl The package url of the package
    * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
-   *        indicates that the default should be used.
+   *        indicates that the default should be used. "none" indicates that no curations should be applied.
    * @return the read scancode information
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
-   *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
+   *         data available no exception will be thrown. Instead <code>null</code> will be returned in such a case.
    */
   @Override
   public ComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
@@ -136,10 +136,14 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * @param packageUrl
-   * @param rawScancodeData
-   * @return
-   * @throws ComponentInfoAdapterException
+   * Parses and maps scancode JSON to create ScancodeComponentInfo.
+   *
+   * @param packageUrl package URL of the package
+   * @param rawScancodeData raw scancode data
+   * @param curationDataSelector identifies which source should be used for the curation data. If the value of
+   *        curationdataselector equals "none," no curations will be applied.
+   * @return the ScancodeComponentInfo
+   * @throws ComponentInfoAdapterException if there was an issue during parsing
    */
   private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
       String curationDataSelector) throws ComponentInfoAdapterException {

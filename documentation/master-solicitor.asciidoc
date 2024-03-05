@@ -1670,6 +1670,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.20.0::
 * https://github.com/devonfw/solicitor/issues/232: Set a standard for ordering LicenseNameMapping rules. Rules with an 'or-later' suffix are put before '-only' rules.
 * https://github.com/devonfw/solicitor/issues/234: Correct handling of new data model fields in ModelImporterExporter `dataStatus`,`traceabilityNotes` etc.
+* https://github.com/devonfw/solicitor/pull/235: Improvements in Curation Data Handling. When the curationDataSelector parameter is set to "none," no curations will be applied.
 
 Changes in 1.19.0::
 * https://github.com/devonfw/solicitor/issues/227: Fixed a bug where the `dataStatus` field in the aggregated OSS-Inventory was not filled.
