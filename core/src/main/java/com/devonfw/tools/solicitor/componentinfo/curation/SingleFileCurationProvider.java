@@ -57,7 +57,9 @@ public class SingleFileCurationProvider implements CurationProvider {
    *
    * @param packageUrl identifies the package
    * @param curationDataSelector identifies which source should be used for the curation data. The value "none"
-   *        indicates that no curations should be applied.
+   *        indicates that no curations should be returned.
+   * @return the curation data if it exists. <code>null</code> if no curation exist for the package or the
+   *         curationDataSelector was given as "none".
    * @throws ComponentInfoAdapterException if something unexpected happens
    */
   @Override

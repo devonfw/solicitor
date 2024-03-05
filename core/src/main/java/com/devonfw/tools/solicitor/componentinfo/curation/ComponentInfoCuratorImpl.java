@@ -49,8 +49,8 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
    *
    * @param componentInfo the componentInfo to curate
    * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
-   *        indicates that the default should be used.If the value of curationdataselector equals "none," no curations
-   *        will be applied.
+   *        indicates that the default should be used. The special value "none" indicates that no curations will be
+   *        applied.
    * @return the curated component info
    * @throws ComponentInfoAdapterException if the curation could not be read
    */
