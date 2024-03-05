@@ -136,10 +136,14 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * @param packageUrl
-   * @param rawScancodeData
-   * @return
-   * @throws ComponentInfoAdapterException
+   * Parses and maps scancode JSON to create ScancodeComponentInfo.
+   *
+   * @param packageUrl package URL of the package
+   * @param rawScancodeData raw scancode data
+   * @param curationDataSelector identifies which source should be used for the curation data. If the value of
+   *        curationdataselector equals "none," no curations will be applied.
+   * @return the ScancodeComponentInfo
+   * @throws ComponentInfoAdapterException if there was an issue during parsing
    */
   private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
       String curationDataSelector) throws ComponentInfoAdapterException {
