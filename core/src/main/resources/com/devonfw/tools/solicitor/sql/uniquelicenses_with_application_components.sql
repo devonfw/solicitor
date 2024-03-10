@@ -4,6 +4,7 @@
 select distinct 
 	GROUP_CONCAT(DISTINCT l."normalizedLicense" ORDER BY "normalizedLicense" ASC SEPARATOR ', ') as "normalizedLicense",
 	GROUP_CONCAT(DISTINCT CONCAT( ac."artifactId", ' (', ac."version", ')' ) ORDER BY "artifactId" ASC, "version" ASC SEPARATOR ', ') as "artifact",
+	GROUP_CONCAT(DISTINCT ac."packageUrl" ORDER BY "packageUrl" ASC SEPARATOR ', ') as "packageUrl",
 	ARRAY_AGG(DISTINCT l."normalizedLicenseContent" ORDER BY "normalizedLicenseContent" DESC)[1] as "normalizedLicenseContent", 
 	UCASE(REGEXP_REPLACE(l."normalizedLicenseContent",'\s','')) as "unifiedNormalizedLicenseContent"
 from

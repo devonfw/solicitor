@@ -5,9 +5,14 @@ select
 	GROUP_CONCAT(DISTINCT ac."version" ORDER BY "version" DESC SEPARATOR ', ') as "version" , 
 	ac."groupId", 
 	ac."artifactId",
+	ac."packageUrl",
 	ac."ossHomepage",
 	ac."sourceRepoUrl",
-	ac."copyrights"
+	ac."sourceDownloadUrl",
+	ac."packageDownloadUrl",
+	ac."copyrights",
+	GROUP_CONCAT(DISTINCT CASE WHEN l."effectiveNormalizedLicenseType" = 'IGNORE' THEN CONCAT(l."normalizedLicense", ' (NA)') WHEN l."effectiveNormalizedLicense" != l."normalizedLicense" THEN CONCAT(l."normalizedLicense", ' (redistributed under ', l."effectiveNormalizedLicense", ')') ELSE  l."normalizedLicense" END ORDER BY "normalizedLicense" DESC SEPARATOR ', ') as "licenses" 
+
 from 
 	APPLICATION a, 
 	APPLICATIONCOMPONENT ac, 
@@ -19,10 +24,11 @@ where
 group by 
 	"groupId", 
 	"artifactId",
+	"packageUrl",
 	"ossHomepage",
 	"sourceRepoUrl",
+	"sourceDownloadUrl",
+	"packageDownloadUrl",
 	"copyrights"
 order by 
-	"groupId", 
-	"artifactId", 
-	"version"
+	"packageUrl"

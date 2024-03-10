@@ -5,6 +5,7 @@ select
 	GROUP_CONCAT(DISTINCT ac."version" ORDER BY "version" DESC SEPARATOR ', ') as "version" ,
 	ac."groupId",
 	ac."artifactId",
+	ac."packageUrl",
 	ac."ossHomepage",
   ac."sourceRepoUrl",
 	ac."copyrights",
@@ -21,6 +22,7 @@ where
 group by
 	"groupId",
 	"artifactId",
+	"packageUrl",
 	"ossHomepage",
 	"sourceRepoUrl",
 	"copyrights",
