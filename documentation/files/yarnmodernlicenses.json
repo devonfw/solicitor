@@ -1,0 +1,10 @@
+[
+  {
+    "value": "MIT",
+    "children.@babel/runtime@npm:6.15.7.value.locator": "@babel/runtime@npm:6.15.7",
+    "children.@babel/runtime@npm:6.15.7.value.descriptor": "@babel/runtime@npm:^6.17.7",
+    "children.@babel/runtime@npm:6.15.7.children.url": "https://github.com/babel/babel.git",
+    "children.@babel/runtime@npm:6.15.7.children.vendorName": "The Babel Team",
+    "children.@babel/runtime@npm:6.15.7.children.vendorUrl": "https://babel.dev/docs/en/next/babel-runtime",
+  }
+]

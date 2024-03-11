@@ -1,0 +1,33 @@
+[
+  {
+    "value": "MIT",
+    "children.@babel/runtime@npm:6.15.7.value.locator": "@babel/runtime@npm:6.15.7",
+    "children.@babel/runtime@npm:6.15.7.value.descriptor": "@babel/runtime@npm:^6.17.7",
+    "children.@babel/runtime@npm:6.15.7.children.url": "https://github.com/babel/babel.git",
+    "children.@babel/runtime@npm:6.15.7.children.vendorName": "The Babel Team",
+    "children.@babel/runtime@npm:6.15.7.children.vendorUrl": "https://babel.dev/docs/en/next/babel-runtime",
+    "children.@floating-ui/react-dom@virtual:3144d465a5f41fdd2d427886c8d853d1294ea068e6d3ea0018fc9787793599db665d173a4e52d32010c4b3e07a91aa0eeac00cbb00a677214be83ab38f3b1afc#npm:2.2.0.value.locator": "@floating-ui/react-dom@virtual:3144d465a5f41fdd2d427886c8d853d1294ea068e6d3ea0018fc9787793599db665d173a4e52d32010c4b3e07a91aa0eeac00cbb00a677214be83ab38f3b1afc#npm:2.2.0",
+    "children.@floating-ui/react-dom@virtual:3144d465a5f41fdd2d427886c8d853d1294ea068e6d3ea0018fc9787793599db665d173a4e52d32010c4b3e07a91aa0eeac00cbb00a677214be83ab38f3b1afc#npm:2.2.0.value.descriptor": "@floating-ui/react-dom@virtual:3144d465a5f41fdd2d427886c8d853d1294ea068e6d3ea0018fc9787793599db665d173a4e52d32010c4b3e07a91aa0eeac00cbb00a677214be83ab38f3b1afc#npm:^2.0.0",
+    "children.@floating-ui/react-dom@virtual:3144d465a5f41fdd2d427886c8d853d1294ea068e6d3ea0018fc9787793599db665d173a4e52d32010c4b3e07a91aa0eeac00cbb00a677214be83ab38f3b1afc#npm:2.2.0.children.url": "https://github.com/floating-ui/floating-ui.git",
+    "children.@floating-ui/react-dom@virtual:3144d465a5f41fdd2d427886c8d853d1294ea068e6d3ea0018fc9787793599db665d173a4e52d32010c4b3e07a91aa0eeac00cbb00a677214be83ab38f3b1afc#npm:2.2.0.children.vendorName": "atomiks",
+    "children.@floating-ui/react-dom@virtual:3144d465a5f41fdd2d427886c8d853d1294ea068e6d3ea0018fc9787793599db665d173a4e52d32010c4b3e07a91aa0eeac00cbb00a677214be83ab38f3b1afc#npm:2.2.0.children.vendorUrl": "https://floating-ui.com/docs/react-dom"
+  },
+  {
+    "value": "Apache-2.0",
+    "children.@humanwhocodes/config-array@npm:0.9.17.value.locator": "@humanwhocodes/config-array@npm:0.9.17",
+    "children.@humanwhocodes/config-array@npm:0.9.17.value.descriptor": "@humanwhocodes/config-array@npm:^0.9.8",
+    "children.@humanwhocodes/config-array@npm:0.9.17.children.url": "git+https://github.com/humanwhocodes/config-array.git",
+    "children.@humanwhocodes/config-array@npm:0.9.17.children.vendorName": "Nicholas C. Zakas",
+    "children.@humanwhocodes/config-array@npm:0.9.17.children.vendorUrl": "https://github.com/humanwhocodes/config-array#readme",
+    "children.typescript@patch:typescript@npm%3A4.3.7#~builtin<compat/typescript>::version=4.3.7&hash=c7623e.value.locator": "typescript@patch:typescript@npm%3A4.3.7#~builtin<compat/typescript>::version=4.3.7&hash=c7623e",
+    "children.typescript@patch:typescript@npm%3A4.3.7#~builtin<compat/typescript>::version=4.3.7&hash=c7623e.value.descriptor": "typescript@patch:typescript@4.3.7#~builtin<compat/typescript>",
+    "children.typescript@patch:typescript@npm%3A4.3.7#~builtin<compat/typescript>::version=4.3.7&hash=c7623e.children.url": "https://github.com/Microsoft/TypeScript.git",
+    "children.typescript@patch:typescript@npm%3A4.3.7#~builtin<compat/typescript>::version=4.3.7&hash=c7623e.children.vendorName": "Microsoft Corp.",
+    "children.typescript@patch:typescript@npm%3A4.3.7#~builtin<compat/typescript>::version=4.3.7&hash=c7623e.children.vendorUrl": "https://www.typescriptlang.org/"
+  },
+  {
+    "value": "UNKNOWN",
+    "children.my-space@workspace:..value.locator": "my-space@workspace:.",
+    "children.my-space@workspace:..value.descriptor": "my-space@workspace:."
+  }
+]
