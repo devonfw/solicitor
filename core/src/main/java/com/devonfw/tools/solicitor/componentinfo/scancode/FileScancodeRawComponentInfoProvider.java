@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
-import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,19 +40,14 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
 
   private AllKindsPackageURLHandler packageURLHandler;
 
-  private DirectUrlWebContentProvider contentProvider;
-
   /**
    * The constructor.
    *
-   * @param contentProvider content provider for accessing source files of the packag
    * @param packageURLHandler handler to deal with PackageURLs.
    */
   @Autowired
-  public FileScancodeRawComponentInfoProvider(DirectUrlWebContentProvider contentProvider,
-      AllKindsPackageURLHandler packageURLHandler) {
+  public FileScancodeRawComponentInfoProvider(AllKindsPackageURLHandler packageURLHandler) {
 
-    this.contentProvider = contentProvider;
     this.packageURLHandler = packageURLHandler;
 
   }
@@ -81,7 +77,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ComponentInfoAdapterException, ScancodeProcessingFailedException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
-    String path = this.repoBasePath + "/" + packagePathPart + "/scancode.json";
+    String path = IOHelper.securePath(this.repoBasePath, packagePathPart, "scancode.json");
 
     File scanCodeFile = new File(path);
     if (!scanCodeFile.exists()) {
@@ -114,13 +110,13 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ScancodeProcessingFailedException {
 
     // Check if "sources.failed" exists
-    String sourcesFailedPath = this.repoBasePath + "/" + packagePathPart + "/sources.failed";
+    String sourcesFailedPath = IOHelper.securePath(this.repoBasePath, packagePathPart, "sources.failed");
     File sourcesFailedFile = new File(sourcesFailedPath);
     if (sourcesFailedFile.exists()) {
       throw new ScancodeProcessingFailedException("Downloading of package sources had failed.");
     }
     // Check if "scancodeScan.failed" exists
-    String scancodeScanFailedPath = this.repoBasePath + "/" + packagePathPart + "/scancodeScan.failed";
+    String scancodeScanFailedPath = IOHelper.securePath(this.repoBasePath, packagePathPart, "scancodeScan.failed");
     File scancodeScanFailedFile = new File(scancodeScanFailedPath);
     if (scancodeScanFailedFile.exists()) {
       throw new ScancodeProcessingFailedException("Scanning of package sources had failed.");
@@ -138,7 +134,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ComponentInfoAdapterException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
-    String path = this.repoBasePath + "/" + packagePathPart + "/origin.yaml";
+    String path = IOHelper.securePath(this.repoBasePath, packagePathPart, "origin.yaml");
 
     File originFile = new File(path);
     if (!originFile.exists()) {
@@ -174,17 +170,39 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   public String retrieveContent(String packageUrl, String fileUri) {
 
     if (!fileUri.startsWith(PKG_CONTENT_SCHEMA_PREFIX)) {
+      // we only handle pkgcontent: URIs here!
       return null;
     }
     if (fileUri.contains("..")) {
-      // prevent directory traversal
+      // prevent directory traversal (there are other measures to also prevent this, but lets do it here explicitely)
       LOG.debug("Suspicious file traversal in URI '{}', returning null", fileUri);
       return null;
     }
-    String pathWithoutPrefix = fileUri.substring(PKG_CONTENT_SCHEMA_PREFIX.length());
-    String directUrl = "file:" + this.repoBasePath + "/" + this.packageURLHandler.pathFor(packageUrl) + "/"
-        + SOURCES_DIR + pathWithoutPrefix;
-    return this.contentProvider.getContentForUri(directUrl).getContent();
+    String pkgContentUriWithoutPrefix = fileUri.substring(PKG_CONTENT_SCHEMA_PREFIX.length());
+
+    String relativeFilePathAndName = pkgContentUriWithoutPrefix;
+    String lineInfo = null;
+    int startOfLineInfo = pkgContentUriWithoutPrefix.indexOf("#L");
+    if (startOfLineInfo >= 0) {
+      lineInfo = pkgContentUriWithoutPrefix.substring(startOfLineInfo, pkgContentUriWithoutPrefix.length());
+      relativeFilePathAndName = pkgContentUriWithoutPrefix.substring(0, startOfLineInfo);
+    }
+
+    String fullFilePathAndName = IOHelper.securePath(this.repoBasePath, this.packageURLHandler.pathFor(packageUrl),
+        SOURCES_DIR, relativeFilePathAndName);
+    File file = new File(fullFilePathAndName);
+    try (InputStream is = new FileInputStream(file); Scanner s = new Scanner(is)) {
+      s.useDelimiter("\\A");
+      String result = s.hasNext() ? s.next() : "";
+
+      return MultilineHelper.possiblyExtractLines(result, lineInfo);
+    } catch (IOException e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Could not retrieve content from file '" + fullFilePathAndName + "'", e);
+      }
+      LOG.info(LogMessages.FAILED_READING_FILE.msg(), fullFilePathAndName, e.getClass().getSimpleName());
+    }
+    return null;
   }
 
   @Override

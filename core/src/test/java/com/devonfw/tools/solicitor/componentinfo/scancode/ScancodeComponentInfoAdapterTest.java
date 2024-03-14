@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvider;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
@@ -46,10 +45,11 @@ class ScancodeComponentInfoAdapterTest {
 
     Mockito.when(packageURLHandler.pathFor("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"))
         .thenReturn("pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0");
-    DirectUrlWebContentProvider contentProvider = new DirectUrlWebContentProvider(false);
 
-    this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(contentProvider,
-        packageURLHandler);
+    Mockito.when(packageURLHandler.pathFor("pkg:maven/com.devonfw.tools/unknown@0.1.0"))
+        .thenReturn("pkg/maven/com/devonfw/tools/unknown/0.1.0");
+
+    this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(packageURLHandler);
     this.fileScancodeRawComponentInfoProvider.setRepoBasePath("src/test/resources/scancodefileadapter/Source/repo");
 
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
@@ -70,7 +70,8 @@ class ScancodeComponentInfoAdapterTest {
   }
 
   /**
-   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when such package is known.
+   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when such package is not
+   * known.
    *
    * @throws ComponentInfoAdapterException if something goes wrong
    */

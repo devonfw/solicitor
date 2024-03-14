@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +49,7 @@ public class IOHelper {
   /**
    * Assure that the directory in which the given file should be located exists. Try to create the directory if it does
    * not yet exist.
-   * 
+   *
    * @param targetFilename the name (including path) of a file
    * @see #checkAndCreateLocation(File)
    */
@@ -59,7 +61,7 @@ public class IOHelper {
   /**
    * Assure that the directory in which the given file should be located exists. Try to create the directory if it does
    * not yet exist.
-   * 
+   *
    * @param targetFile a file
    */
   public static void checkAndCreateLocation(File targetFile) {
@@ -80,6 +82,44 @@ public class IOHelper {
       }
     }
 
+  }
+
+  /**
+   * Create a path from the given base path and all provided relative paths. The method assures that each relative path
+   * applied to the already existing (intermediate) path does not point to some place outside the existing path.
+   *
+   * @param basePath the base path
+   * @param relativePaths any number of relative paths to be appended
+   * @return a path built from the given arguments
+   * @throws IllegalArgumentException if any of the relativePaths points to some point outside the already existing path
+   *         or if any of the relativePaths are absolute paths.
+   * @throws NullPointerException if the basePath or any of the relativePaths are <code>null</code>
+   */
+  public static String securePath(String basePath, String... relativePaths) {
+
+    if (basePath == null) {
+      throw new NullPointerException("Base path must not be null");
+    }
+    Path path = Paths.get(basePath).normalize();
+
+    for (String relative : relativePaths) {
+      if (relative == null) {
+        throw new NullPointerException("Relative paths must not be null");
+      }
+
+      Path relativePath = Paths.get(relative);
+      if (relativePath.isAbsolute()) {
+        throw new IllegalArgumentException(
+            "Given path element '" + relative + "' is absolute but only relative paths are allowed");
+      }
+      Path newPath = path.resolve(relativePath).normalize();
+      if (!newPath.startsWith(path)) {
+        throw new IllegalArgumentException(
+            "Given path element '" + relative + "' would result in escaping the parent tree hierarchy and is rejected");
+      }
+      path = newPath;
+    }
+    return path.toString();
   }
 
   /**
