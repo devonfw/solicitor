@@ -174,7 +174,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       return null;
     }
     if (fileUri.contains("..")) {
-      // prevent directory traversal (there are other measures to also prevent this, but lets do it here explicitely)
+      // prevent directory traversal (there are other measures to also prevent this, but lets do it here explicitly)
       LOG.debug("Suspicious file traversal in URI '{}', returning null", fileUri);
       return null;
     }
