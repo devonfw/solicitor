@@ -85,17 +85,17 @@ public class IOHelper {
   }
 
   /**
-   * Create a path from the given base path and all provided relative paths. The method assures that each relative path
-   * applied to the already existing (intermediate) path does not point to some place outside the existing path.
+   * Create a file path from the given base path and all provided relative paths. The method assures that each relative
+   * path applied to the already existing (intermediate) path does not point to some place outside the existing path.
    *
-   * @param basePath the base path
-   * @param relativePaths any number of relative paths to be appended
-   * @return a path built from the given arguments
+   * @param basePath the base file path
+   * @param relativePaths any number of relative file paths to be appended
+   * @return a file path built from the given arguments
    * @throws IllegalArgumentException if any of the relativePaths points to some point outside the already existing path
    *         or if any of the relativePaths are absolute paths.
    * @throws NullPointerException if the basePath or any of the relativePaths are <code>null</code>
    */
-  public static String securePath(String basePath, String... relativePaths) {
+  public static String secureFilePath(String basePath, String... relativePaths) {
 
     if (basePath == null) {
       throw new NullPointerException("Base path must not be null");

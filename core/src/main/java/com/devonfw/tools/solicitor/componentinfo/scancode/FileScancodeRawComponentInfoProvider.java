@@ -77,7 +77,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ComponentInfoAdapterException, ScancodeProcessingFailedException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
-    String path = IOHelper.securePath(this.repoBasePath, packagePathPart, "scancode.json");
+    String path = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, "scancode.json");
 
     File scanCodeFile = new File(path);
     if (!scanCodeFile.exists()) {
@@ -110,13 +110,13 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ScancodeProcessingFailedException {
 
     // Check if "sources.failed" exists
-    String sourcesFailedPath = IOHelper.securePath(this.repoBasePath, packagePathPart, "sources.failed");
+    String sourcesFailedPath = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, "sources.failed");
     File sourcesFailedFile = new File(sourcesFailedPath);
     if (sourcesFailedFile.exists()) {
       throw new ScancodeProcessingFailedException("Downloading of package sources had failed.");
     }
     // Check if "scancodeScan.failed" exists
-    String scancodeScanFailedPath = IOHelper.securePath(this.repoBasePath, packagePathPart, "scancodeScan.failed");
+    String scancodeScanFailedPath = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, "scancodeScan.failed");
     File scancodeScanFailedFile = new File(scancodeScanFailedPath);
     if (scancodeScanFailedFile.exists()) {
       throw new ScancodeProcessingFailedException("Scanning of package sources had failed.");
@@ -134,7 +134,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ComponentInfoAdapterException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
-    String path = IOHelper.securePath(this.repoBasePath, packagePathPart, "origin.yaml");
+    String path = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, "origin.yaml");
 
     File originFile = new File(path);
     if (!originFile.exists()) {
@@ -188,7 +188,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       relativeFilePathAndName = pkgContentUriWithoutPrefix.substring(0, startOfLineInfo);
     }
 
-    String fullFilePathAndName = IOHelper.securePath(this.repoBasePath, this.packageURLHandler.pathFor(packageUrl),
+    String fullFilePathAndName = IOHelper.secureFilePath(this.repoBasePath, this.packageURLHandler.pathFor(packageUrl),
         SOURCES_DIR, relativeFilePathAndName);
     File file = new File(fullFilePathAndName);
     try (InputStream is = new FileInputStream(file); Scanner s = new Scanner(is)) {

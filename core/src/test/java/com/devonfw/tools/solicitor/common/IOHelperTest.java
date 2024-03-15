@@ -24,33 +24,33 @@ class IOHelperTest {
 
   /**
    * Test method for
-   * {@link com.devonfw.tools.solicitor.common.IOHelper#securePath(java.lang.String, java.lang.String[])}.
+   * {@link com.devonfw.tools.solicitor.common.IOHelper#secureFilePath(java.lang.String, java.lang.String[])}.
    */
   @Test
-  void testSecurePath() {
+  void testSecureFilePath() {
 
-    assertEquals(fixSep("base"), IOHelper.securePath("base"));
-    assertEquals(fixSep("base/r1"), IOHelper.securePath("base", "r1"));
-    assertEquals(fixSep("base/r1/r2"), IOHelper.securePath("base", "r1", "r2"));
-    assertEquals(fixSep("base/r1/r2"), IOHelper.securePath("base", "r1///", "r2/././"));
-    assertEquals(fixSep("/base/r1/r2"), IOHelper.securePath("/base", "r1///", "r2/././"));
+    assertEquals(fixSep("base"), IOHelper.secureFilePath("base"));
+    assertEquals(fixSep("base/r1"), IOHelper.secureFilePath("base", "r1"));
+    assertEquals(fixSep("base/r1/r2"), IOHelper.secureFilePath("base", "r1", "r2"));
+    assertEquals(fixSep("base/r1/r2"), IOHelper.secureFilePath("base", "r1///", "r2/././"));
+    assertEquals(fixSep("/base/r1/r2"), IOHelper.secureFilePath("/base", "r1///", "r2/././"));
 
     assertThrows(IllegalArgumentException.class, () -> {
-      IOHelper.securePath("base", "/r1", "r2");
+      IOHelper.secureFilePath("base", "/r1", "r2");
     });
 
     assertThrows(IllegalArgumentException.class, () -> {
-      IOHelper.securePath("base", "../r1", "r2");
+      IOHelper.secureFilePath("base", "../r1", "r2");
     });
 
     assertThrows(IllegalArgumentException.class, () -> {
-      IOHelper.securePath("base", "r1", "../r2");
+      IOHelper.secureFilePath("base", "r1", "../r2");
     });
 
-    assertEquals(fixSep("base/r1/r2"), IOHelper.securePath("base", "a/../r1", "r2"));
+    assertEquals(fixSep("base/r1/r2"), IOHelper.secureFilePath("base", "a/../r1", "r2"));
 
     assertThrows(IllegalArgumentException.class, () -> {
-      IOHelper.securePath("base", "a/../../r1", "r2");
+      IOHelper.secureFilePath("base", "a/../../r1", "r2");
     });
   }
 
