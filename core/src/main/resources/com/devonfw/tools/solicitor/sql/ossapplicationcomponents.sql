@@ -7,7 +7,8 @@ select
 	ac."artifactId",
 	ac."packageUrl",
 	ac."copyrights",
-	l."effectiveNormalizedLicense", 
+	l."effectiveNormalizedLicense",
+	l."effectiveNormalizedLicenseType",	
 	l."effectiveNormalizedLicenseUrl", 
 	l."effectiveNormalizedLicenseContent",
 	UCASE(REGEXP_REPLACE(l."effectiveNormalizedLicenseContent",'\s','')) as "unifiedEffectiveNormalizedLicenseContent"
@@ -25,6 +26,7 @@ group by
 	"packageUrl",
 	"copyrights",
 	"effectiveNormalizedLicense", 
+	"effectiveNormalizedLicenseType",
 	"effectiveNormalizedLicenseUrl", 
 	"effectiveNormalizedLicenseContent",
 	"unifiedEffectiveNormalizedLicenseContent" 
