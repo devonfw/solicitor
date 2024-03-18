@@ -67,7 +67,7 @@ public class FilesystemCachingContentProvider<C extends Content> extends Caching
 
     if (!url.startsWith("file:")) {
       // data of URLs which resolve to local file will not be cached
-      File file = new File(this.resourceDirectory + "/" + getKey(url));
+      File file = new File(IOHelper.secureFilePath(this.resourceDirectory, getKey(url)));
       File targetDir = file.getParentFile();
       try {
         IOHelper.checkAndCreateLocation(file);

@@ -99,7 +99,12 @@ public enum LogMessages {
           + "skipped due to unkown SPDX: {}, mapped using type SCANCODE: {}, mapped using type OSS-SPDX: {}, mapped to IGNORE: {}"), //
   NOT_A_VALID_NPM_PACKAGE_NAME(67, "{} is not a valid name for an NPM package"), //
   SCANCODE_ISSUE_DETECTION_REGEX(68,
-      "The list of regular expressions for detecting licenses from scancode having issues is set to '{}'");
+      "The list of regular expressions for detecting licenses from scancode having issues is set to '{}'"), //
+  MODERN_YARN_VIRTUAL_PACKAGE(69,
+      "When reading yarn license info from file '{}' there was at least one virtual package encountered. Check if package resolution is correct"), //
+  MODERN_YARN_PATCHED_PACKAGE(70,
+      "When reading yarn license info from file '{}' there was at least one patched package encountered. Processing only the base package, not the patched version."), //
+  FAILED_READING_FILE(71, "Reading file '{}' failed");
 
   private final String message;
 

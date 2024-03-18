@@ -26,6 +26,9 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
 
   private boolean skipdownload;
 
+  private static final Pattern SUPPORTED_URL_PATTERNS = Pattern.compile("^http:.*|^https:.*|^jar:http:.*|^jar:https:.*",
+      Pattern.CASE_INSENSITIVE);
+
   /**
    * Constructor.
    *
@@ -40,13 +43,18 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
   /**
    * {@inheritDoc}
    *
-   * Directly tries to access the given URL via the web.
+   * Directly tries to access the given URL via the web. Only URLs matching {@link #SUPPORTED_URL_PATTERNS} will be
+   * processed. All others return an empty WebContent.
    */
   @Override
   public WebContent getContentForUri(String url) {
 
     URL webContentUrl;
     if (url == null) {
+      return new WebContent(null);
+    }
+    if (!isSupportedUrl(url)) {
+      LOG.debug("Accessing URL '{}' is not supported by DirectUrlWebContentProvider, returning empty WebContent", url);
       return new WebContent(null);
     }
     if (this.skipdownload) {
@@ -82,6 +90,17 @@ public class DirectUrlWebContentProvider implements ContentProvider<WebContent> 
       LOG.info(LogMessages.COULD_NOT_DOWNLOAD_CONTENT.msg(), url, e.getClass().getSimpleName());
     }
     return new WebContent(null);
+  }
+
+  /**
+   * Indicates if the given URL is supported by this {@link ContentProvider}.
+   *
+   * @param url the url to check
+   * @return <code>true</code> if url is supported, <code>false</code> otherwise.
+   */
+  boolean isSupportedUrl(String url) {
+
+    return SUPPORTED_URL_PATTERNS.matcher(url).matches();
   }
 
   /**
