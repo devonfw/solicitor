@@ -18,7 +18,7 @@ from
 where
 	a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT AND
 	ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE AND 
-	l."effectiveNormalizedLicenseType" like 'OSS-%' 
+	(l."effectiveNormalizedLicenseType" LIKE 'OSS-%' OR l."effectiveNormalizedLicenseType" = 'SCANCODE')
 group by 
 	"groupId", 
 	"artifactId", 
