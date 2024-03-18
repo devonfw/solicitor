@@ -686,7 +686,7 @@ In _Solicitor_ the data is read with the following part of the config
 } ]
 ----
 
-=== Yarn
+=== Yarn Classic (Yarn 1)
 
 To generate the input file required for Solicitor, yarn needs to be executed with the following command within the directory that contains the project's package.json (we require JSON output here):
 
@@ -713,6 +713,37 @@ In _Solicitor_ the data is read with the following part of the config
   "usagePattern" : "STATIC_LINKING"
 } ]
 ----
+
+=== Yarn Modern (Yarn 2 and above)
+
+In Yarn Modern the functionality to create a licenses report can be achieved with a separate component: https://github.com/mhassan1/yarn-plugin-licenses
+
+To generate the input file required for Solicitor, the plugin needs to be executed with the following command within the directory that contains the project's package.json (we require JSON output here):
+
+----
+yarn licenses list --production --recursive --json > /path/to/yarnmodernlicenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::files/yarnmodernlicenses.json[]
+
+----
+
+Source: https://github.com/mhassan1/yarn-plugin-licenses
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "yarn-modern",
+  "source" : "file:path/to/yarnmodernlicenses.json",
+  "usagePattern" : "STATIC_LINKING"
+} ]
+----
+
 
 === Pip
 
@@ -1667,11 +1698,15 @@ Spring beans implementing this interface will be called at certain points in the
 
 [appendix]
 == Release Notes
+Changes in 1.21.0::
+* https://github.com/devonfw/solicitor/pull/239: Improving some internal components to reduce risk of path traversal attacks in case that these components are (re)used in some webservice implementation.
+* https://github.com/devonfw/solicitor/issues/240: Improve Attributions.html to use packageUrl. Fixed bug where license texts for components with license type 'SCANCODE' were not printed.
+
 Changes in 1.20.0::
 * https://github.com/devonfw/solicitor/issues/232: Set a standard for ordering LicenseNameMapping rules. Rules with an 'or-later' suffix are put before '-only' rules.
 * https://github.com/devonfw/solicitor/issues/234: Correct handling of new data model fields in ModelImporterExporter `dataStatus`,`traceabilityNotes` etc.
 * https://github.com/devonfw/solicitor/pull/235: Improvements in Curation Data Handling. When the curationDataSelector parameter is set to "none," no curations will be applied.
-* https://github.com/devonfw/solicitor/issues/240: Improve Attributions.html to use packageUrl. Fixed bug where license texts for components with license type 'SCANCODE' were not printed.
+* https://github.com/devonfw/solicitor/issues/237: New Reader for license info of systems built with Yarn Modern. See <<Yarn Modern (Yarn 2 and above)>>.
 
 Changes in 1.19.0::
 * https://github.com/devonfw/solicitor/issues/227: Fixed a bug where the `dataStatus` field in the aggregated OSS-Inventory was not filled.
