@@ -47,9 +47,9 @@ This document has 3 sections:
 
 <h2 id="components">Component / License overview</h2>
 
-The following table lists all third party Open Source Components that may be contained in this product. Besides name and version the table lists:
+The following table lists all third party Open Source Components that may be contained in this product. Besides the <a href="https://github.com/package-url/purl-spec">package URL</a> (identifier of the componente) the table lists:
 <ul>
-<li>the URL of the Source-Code-Repository for downloading the source code</li>
+<li>the URL of the Source-Code-Repository or Source-Code archive for downloading the source code</li>
 <li>the names of the OSS licenses attached to the component; in case that the component is dual-/multilicensed <i>(NA)</i> indicates that the component is herein distributed under an alternative license and the license does not apply in the context of this distribution</li>
 <li>copyright information given in the third party component; in case that no direct copyright notices are given then author/contributor information might be given if available</li>
 </ul>
@@ -58,8 +58,7 @@ The following table lists all third party Open Source Components that may be con
 <table>
 	## head row
   <tr>
-		<th>Name</th>
-		<th>Version</th>
+		<th>Package URL</th>
 		<th>Source Code Repository</th>
 		<th>Licenses</th>
 		<th>Copyrights (or Authors/Contributors)</th>
@@ -72,13 +71,21 @@ The following table lists all third party Open Source Components that may be con
 		#set( $aid  = $license.artifactId )
 		#set( $gid  = $license.groupId )
 		#set( $ver  = $license.version )
+		#set( $purl  = $license.packageUrl )
 		#set( $apps = $license.APPS )
-		<td>$license.artifactId</td> ## application component name
-		<td>$license.version</td> ## application component version
-		<td>$license.sourceRepoUrl</td>
+##		<td>$license.artifactId</td> ## application component name
+##		<td>$license.version</td> ## application component version
+		<td>$license.packageUrl</td> ## application component package Url
+		<td>
+		#if( "$!license.sourceRepoUrl" != "" )
+			$license.sourceRepoUrl
+		#else
+			$!license.sourceDownloadUrl
+		#end
+		</td>
 		<td class="licenses">
 		#foreach($ac in $NONCOMMERCIALCOMPONENTS_LICENSES )
-			#if( $aid == $ac.artifactId && $gid == $ac.groupId && $ver == $ac.version )
+			#if( $purl == $ac.packageUrl )
 ##				#set( $key = "${gid}${aid}${ac.normalizedLicense}" ) ## this is not necessarily sufficient as uinque id because version is missing
 ##				<a href="#$esc.hash($key)">$ac.normalizedLicense</a> ## linking does not work currently
 				$ac.normalizedLicense
@@ -89,7 +96,11 @@ The following table lists all third party Open Source Components that may be con
 			#end
 		#end
 		</td>
-		<td class="copyrights">$esc.newLinesAsBreaks($esc.html($license.copyrights))</td> ## copyrights
+		#if( "$!license.copyrights" != "")
+			<td class="copyrights">$esc.newLinesAsBreaks($esc.html($license.copyrights))</td> ## copyrights
+		#else
+			<td class="copyrights"></td> ## no copyrights given
+		#end
 		</tr>
 	#end
 
@@ -130,7 +141,7 @@ options.
 <p>
 <b>Defined/referenced license(s):</b> $ul.normalizedLicense
 <br/>
-<b>Applicable component(s):</b> $ul.artifact
+<b>Applicable component(s):</b> $ul.packageUrl
 </p>
 #end
 <hr/>
@@ -142,7 +153,7 @@ The following additional attribution notices are given within NOTICE files and a
 #foreach($nf in $NOTICEFILES)
 <hr/>
 <p>
-<b>Component(s)</b>: $nf.artifact
+<b>Component(s)</b>: $nf.packageUrl
 </p>
 <p>
 	#if ($nf.noticeFileContent)

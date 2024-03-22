@@ -1700,6 +1700,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.21.0::
 * https://github.com/devonfw/solicitor/pull/239: Improving some internal components to reduce risk of path traversal attacks in case that these components are (re)used in some webservice implementation.
+* https://github.com/devonfw/solicitor/issues/240: Improve Attributions.html to use packageUrl. Fixed bug where license texts for components with license type 'SCANCODE' were not printed.
 
 Changes in 1.20.0::
 * https://github.com/devonfw/solicitor/issues/232: Set a standard for ordering LicenseNameMapping rules. Rules with an 'or-later' suffix are put before '-only' rules.

@@ -7,7 +7,8 @@ select
 	ac."artifactId",
 	ac."packageUrl",
 	ac."copyrights",
-	l."effectiveNormalizedLicense", 
+	l."effectiveNormalizedLicense",
+	l."effectiveNormalizedLicenseType",	
 	l."effectiveNormalizedLicenseUrl", 
 	l."effectiveNormalizedLicenseContent",
 	UCASE(REGEXP_REPLACE(l."effectiveNormalizedLicenseContent",'\s','')) as "unifiedEffectiveNormalizedLicenseContent"
@@ -18,13 +19,14 @@ from
 where
 	a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT AND
 	ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE AND 
-	l."effectiveNormalizedLicenseType" like 'OSS-%' 
+	(l."effectiveNormalizedLicenseType" LIKE 'OSS-%' OR l."effectiveNormalizedLicenseType" = 'SCANCODE')
 group by 
 	"groupId", 
 	"artifactId", 
 	"packageUrl",
 	"copyrights",
 	"effectiveNormalizedLicense", 
+	"effectiveNormalizedLicenseType",
 	"effectiveNormalizedLicenseUrl", 
 	"effectiveNormalizedLicenseContent",
 	"unifiedEffectiveNormalizedLicenseContent" 
