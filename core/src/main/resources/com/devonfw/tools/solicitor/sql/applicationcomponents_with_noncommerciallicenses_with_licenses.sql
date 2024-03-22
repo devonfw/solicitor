@@ -6,8 +6,7 @@ select
 	ac."groupId",
 	ac."artifactId",
 	ac."packageUrl",
-	ac."ossHomepage",
-  ac."sourceRepoUrl",
+	ac."sourceRepoUrl",
 	ac."copyrights",
 	l."normalizedLicense",
 	l."effectiveNormalizedLicense"
@@ -23,7 +22,6 @@ group by
 	"groupId",
 	"artifactId",
 	"packageUrl",
-	"ossHomepage",
 	"sourceRepoUrl",
 	"copyrights",
 	"normalizedLicense",
