@@ -1699,7 +1699,8 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.22.0::
-* https://github.com/devonfw/solicitor/pull/243: Make sure the MavenReader is protected against XXE threats. 
+* https://github.com/devonfw/solicitor/pull/243: Make sure the MavenReader is protected against XXE threats.
+* https://github.com/devonfw/solicitor/pull/244: Updated Drools rule engine to 8.44.0.Final.
 
 Changes in 1.21.0::
 * https://github.com/devonfw/solicitor/pull/239: Improving some internal components to reduce risk of path traversal attacks in case that these components are (re)used in some webservice implementation.
