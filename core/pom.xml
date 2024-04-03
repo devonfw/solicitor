@@ -73,17 +73,17 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
-      <version>8.27.0.Beta</version>
+      <version>8.44.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
-      <version>8.27.0.Beta</version>
+      <version>8.44.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-xml-support</artifactId>
-      <version>8.27.0.Beta</version>
+      <version>8.44.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
