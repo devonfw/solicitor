@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.DefaultLicenseInfoImpl;
@@ -48,18 +49,16 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
    * and the curation.
    *
    * @param componentInfo the componentInfo to curate
-   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
-   *        indicates that the default should be used. The special value "none" indicates that no curations will be
-   *        applied.
+   * @param curationDataHandle identifies which source should be used for the curation data.
    * @return the curated component info
    * @throws ComponentInfoAdapterException if the curation could not be read
    */
   @Override
-  public ComponentInfo curate(ComponentInfo componentInfo, String curationDataSelector)
+  public ComponentInfo curate(ComponentInfo componentInfo, CurationDataHandle curationDataHandle)
       throws ComponentInfoAdapterException {
 
     ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl(),
-        curationDataSelector);
+        curationDataHandle);
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
       applyFoundCurations(componentInfoImpl, foundCuration);

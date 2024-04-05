@@ -132,7 +132,8 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
       ComponentInfoData componentInfoData = null;
       try {
         for (ComponentInfoProvider cia : this.componentInfoAdapters) {
-          componentInfoCandidate = cia.getComponentInfo(ac.getPackageUrl(), this.curationDataSelector);
+          componentInfoCandidate = cia.getComponentInfo(ac.getPackageUrl(),
+              new SelectorCurationDataHandle(this.curationDataSelector));
           if (componentInfoCandidate != null) {
             componentInfo = componentInfoCandidate;
             // stop querying further adapters if some info was returned

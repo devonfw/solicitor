@@ -14,6 +14,7 @@ import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
@@ -93,14 +94,13 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
    * Read scancode information for the given package from local file storage.
    *
    * @param packageUrl The package url of the package
-   * @param curationDataSelector identifies which source should be used for the curation data. <code>null</code>
-   *        indicates that the default should be used. "none" indicates that no curations should be applied.
+   * @param curationDataHandle identifies which source should be used for the curation data.
    * @return the read scancode information
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be returned in such a case.
    */
   @Override
-  public ComponentInfo getComponentInfo(String packageUrl, String curationDataSelector)
+  public ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle)
       throws ComponentInfoAdapterException {
 
     ScancodeRawComponentInfo rawScancodeData;
@@ -114,7 +114,7 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     }
 
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
-        curationDataSelector);
+        curationDataHandle);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
     LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
         componentScancodeInfos.getComponentInfoData().getLicenses().size(),
@@ -140,13 +140,12 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
    *
    * @param packageUrl package URL of the package
    * @param rawScancodeData raw scancode data
-   * @param curationDataSelector identifies which source should be used for the curation data. If the value of
-   *        curationdataselector equals "none," no curations will be applied.
+   * @param curationDataHandle identifies which source should be used for the curation data.
    * @return the ScancodeComponentInfo
    * @throws ComponentInfoAdapterException if there was an issue during parsing
    */
   private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
-      String curationDataSelector) throws ComponentInfoAdapterException {
+      CurationDataHandle curationDataHandle) throws ComponentInfoAdapterException {
 
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
@@ -158,7 +157,7 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     ScancodeComponentInfoData scancodeComponentInfoData = componentScancodeInfos.getComponentInfoData();
 
     // Get the curation for a given packageUrl
-    ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataSelector);
+    ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataHandle);
 
     // Get all excludedPaths in this curation
     List<String> excludedPaths = null;
