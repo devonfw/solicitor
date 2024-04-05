@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
+import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.CurationList;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,16 +58,17 @@ public class SingleFileCurationProvider implements CurationProvider {
    * Return the curation data for a given package.
    *
    * @param packageUrl identifies the package
-   * @param curationDataSelector identifies which source should be used for the curation data. The value "none"
-   *        indicates that no curations should be returned.
+   * @param curationDataHandle identifies which source should be used for the curation data.
    * @return the curation data if it exists. <code>null</code> if no curation exist for the package or the
    *         curationDataSelector was given as "none".
    * @throws ComponentInfoAdapterException if something unexpected happens
    */
   @Override
-  public ComponentInfoCuration findCurations(String packageUrl, String curationDataSelector)
+  public ComponentInfoCuration findCurations(String packageUrl, CurationDataHandle curationDataHandle)
       throws ComponentInfoAdapterException {
 
+    // SelectorCurationDataHandle is the only implementation supported here.
+    String curationDataSelector = ((SelectorCurationDataHandle) curationDataHandle).getCurationDataSelector();
     // Return null if curationDataSelector is "none"
     if ("none".equalsIgnoreCase(curationDataSelector)) {
       return null;

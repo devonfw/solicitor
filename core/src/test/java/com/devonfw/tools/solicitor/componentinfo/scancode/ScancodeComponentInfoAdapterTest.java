@@ -17,6 +17,7 @@ import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
+import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCurator;
 import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCuratorImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
@@ -81,8 +82,8 @@ class ScancodeComponentInfoAdapterTest {
     // given
 
     // when
-    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter
-        .getComponentInfo("pkg:maven/com.devonfw.tools/unknown@0.1.0", "someCurationSelector");
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
+        "pkg:maven/com.devonfw.tools/unknown@0.1.0", new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNull(componentInfo.getComponentInfoData());
@@ -102,7 +103,8 @@ class ScancodeComponentInfoAdapterTest {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(componentInfo.getComponentInfoData());
@@ -148,7 +150,8 @@ class ScancodeComponentInfoAdapterTest {
 
     // given
     CurationProvider curationProvider = Mockito.mock(CurationProvider.class);
-    when(curationProvider.findCurations(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+    when(curationProvider.findCurations(Mockito.anyString(), Mockito.any(SelectorCurationDataHandle.class)))
+        .thenReturn(null);
     this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(curationProvider,
         this.fileScancodeRawComponentInfoProvider);
 
@@ -158,15 +161,16 @@ class ScancodeComponentInfoAdapterTest {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(componentInfo.getComponentInfoData());
 
     ArgumentCaptor<String> captor1 = ArgumentCaptor.forClass(String.class);
-    ArgumentCaptor<String> captor2 = ArgumentCaptor.forClass(String.class);
+    ArgumentCaptor<SelectorCurationDataHandle> captor2 = ArgumentCaptor.forClass(SelectorCurationDataHandle.class);
     Mockito.verify(curationProvider, times(1)).findCurations(captor1.capture(), captor2.capture());
-    assertEquals("someCurationSelector", captor2.getValue());
+    assertEquals("someCurationSelector", captor2.getValue().getCurationDataSelector());
 
   }
 
@@ -180,7 +184,8 @@ class ScancodeComponentInfoAdapterTest {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(componentInfo.getComponentInfoData());

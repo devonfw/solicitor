@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 
@@ -44,9 +45,11 @@ class SingleFileCurationProviderTest {
 
     ComponentInfoCuration result;
 
-    result = this.objectUnderTest.findCurations("pkg:maven/somenamespace/somecomponent@2.3.4", null);
+    result = this.objectUnderTest.findCurations("pkg:maven/somenamespace/somecomponent@2.3.4",
+        new SelectorCurationDataHandle(null));
     assertEquals("https://scancode-licensedb.aboutcode.org/apache-2.0.LICENSE", result.getLicenses().get(0).getUrl());
-    result = this.objectUnderTest.findCurations("pkg:maven/somenamespace/somecomponent@2.3.5", null);
+    result = this.objectUnderTest.findCurations("pkg:maven/somenamespace/somecomponent@2.3.5",
+        new SelectorCurationDataHandle(null));
     assertEquals("https://scancode-licensedb.aboutcode.org/bsd-simplified.LICENSE",
         result.getLicenses().get(0).getUrl());
   }
@@ -62,7 +65,8 @@ class SingleFileCurationProviderTest {
 
     ComponentInfoCuration result;
 
-    result = this.objectUnderTest.findCurations("pkg:maven/somenamespace/somecomponent@2.3.4", "none");
+    result = this.objectUnderTest.findCurations("pkg:maven/somenamespace/somecomponent@2.3.4",
+        new SelectorCurationDataHandle("none"));
     assertNull(result);
   }
 }

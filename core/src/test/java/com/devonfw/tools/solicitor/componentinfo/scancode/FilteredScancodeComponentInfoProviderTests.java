@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 
 /**
@@ -57,7 +58,8 @@ public class FilteredScancodeComponentInfoProviderTests {
 
     // when
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -83,7 +85,8 @@ public class FilteredScancodeComponentInfoProviderTests {
         .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions.yaml");
     // when
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -110,7 +113,8 @@ public class FilteredScancodeComponentInfoProviderTests {
 
     // when
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", "someCurationSelector");
+        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
