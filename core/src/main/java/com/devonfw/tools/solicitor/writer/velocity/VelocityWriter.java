@@ -17,6 +17,7 @@ import org.apache.velocity.app.Velocity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
@@ -35,6 +36,9 @@ public class VelocityWriter implements Writer {
 
   @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
+
+  @Autowired
+  private DeprecationChecker deprecationChecker;
 
   /**
    * {@inheritDoc}
@@ -75,7 +79,10 @@ public class VelocityWriter implements Writer {
     String templateString;
     try (InputStream inp = this.inputStreamFactory.createInputStreamFor(templateSource)) {
       templateString = IOHelper.readStringFromInputStream(inp);
-
+      // guessedLicenseUrl is deprecated and on stage 1
+      if (templateString.contains("guessedLicenseUrl")) {
+        this.deprecationChecker.check(true, "This template uses the 'guessedLicenseUrl' feature which is deprecated.");
+      }
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Reading of template for Velocity report failed", e);
     }
