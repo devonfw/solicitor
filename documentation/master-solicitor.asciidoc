@@ -1026,7 +1026,7 @@ Decision table data: `LicenseAssignmentV2*.xls/csv`
 ** `NormalizedLicense.normalizedLicenseType`
 ** `NormalizedLicense.normalizedLicense`
 ** `NormalizedLicense.normalizedLicenseUrl`
-** `NormalizedLicense.comment`
+** `NormalizedLicense.comment`g
 
 icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
@@ -1339,6 +1339,24 @@ It is possible to manually change this cached information and thus correct it - 
 
 WARNING: License guessing is a new feature as of `Solicitor` 1.3.0.
 The guessing algorithm might be modified in future versions without further notice which might result in different outcomes for the guessed URLs.
+
+=== Feature usage
+WARNING: From version 1.23.0 the license guessing logic will be deprecated.
+
+To use license guessing in a template, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
+
+[listing]
+  "additionalWriters" : [ {
+	"type" : "velo",
+	"templateSource" : "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample_v2.vm",
+	"target" : "${cfgdir}/output/OSS-Report_${project}_v2.html",
+	"description" : "The HTML OSS-Report",
+	"dataTables" : {
+	    "MODELROOT"  : "classpath:com/devonfw/tools/solicitor/sql/modelroot.sql",
+	    "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
+	    "OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents_guessedlicenses.sql",
+	    "UNIQUELICENSES" : "classpath:com/devonfw/tools/solicitor/sql/uniqueguessedlicenses.sql"
+  } ]
 
 == Feature Deprecation
 Within the lifecycle of the _Solicitor_ development features might be discontinued due
