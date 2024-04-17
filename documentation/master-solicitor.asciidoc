@@ -1026,7 +1026,7 @@ Decision table data: `LicenseAssignmentV2*.xls/csv`
 ** `NormalizedLicense.normalizedLicenseType`
 ** `NormalizedLicense.normalizedLicense`
 ** `NormalizedLicense.normalizedLicenseUrl`
-** `NormalizedLicense.comment`g
+** `NormalizedLicense.comment`
 
 icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
