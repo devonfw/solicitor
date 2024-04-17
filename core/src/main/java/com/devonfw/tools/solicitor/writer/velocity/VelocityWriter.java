@@ -80,8 +80,9 @@ public class VelocityWriter implements Writer {
     try (InputStream inp = this.inputStreamFactory.createInputStreamFor(templateSource)) {
       templateString = IOHelper.readStringFromInputStream(inp);
       // guessedLicenseUrl is deprecated and on stage 1
-      if (templateString.contains("guessedLicenseUrl")) {
-        this.deprecationChecker.check(true, "This template " + (templateSource) + " uses the 'guessedLicenseUrl' feature which is deprecated.");
+      if (templateString.toLowerCase().contains("guessedlicense")) {
+        this.deprecationChecker.check(true,
+            "This template " + (templateSource) + " uses the 'guessedLicenseUrl' feature which is deprecated.");
       }
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Reading of template for Velocity report failed", e);
