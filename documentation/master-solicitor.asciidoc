@@ -350,12 +350,25 @@ Within this section the different applications (=deliverables) of the engagement
 <5> multiple readers might be defined per application
 <6> the type of reader; for possible values see <<Reading License Information with Readers>>
 <7> location of the source file to read (ResourceLoader-URL)
-<8> usage pattern; possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT
+<8> usage pattern; possible values: `DYNAMIC_LINKING`, `STATIC_LINKING`, `STANDALONE_PRODUCT`; see description below
 <9> repoType: `repoType` to be set in the `ApplicationComponent` . *This parameter is deprecated and should no longer be used*, see <<List of Deprecated Features>>. The value of `repoType` in `ApplicationComponent` will otherwise be determined from the type info in the PackageURL of the component.
 <10> _placeholder patterns might be used here_
 
+===== Usage Patterns
+The usage pattern describes how the ``ApplicationComponent``s (libraries, packages) which are read in via the Reader are linked (in)to the ``Application``s executable. The kind of linking might affect the legal evaluation of the license compliance.
 
-The different readers are described in chapter <<Reading License Information with Readers>>
+* `DYNAMIC_LINKING` - The component is dynamically linked and is separated/separable from the rest of the executable and might be exchanged.
+This specifically covers two cases:
+** The component is not included in the executable but is either already existing on the target system or is deployed separately from the executable. Exchanging the component can be done by replacing the component without touching the executable / other components of the application.
+** The component is included in the executable and is linked into the executable in a way that allows it to clearly distinguish it from the other components. It is possible to separate the component from the rest of the executable and to replace the component with a modified version of the component just using common tooling.
+* `STATIC_LINKING` - The component is linked into the executable in a way that makes it (practically) impossible to separate it from the rest of the executable. In case that this single component needs to be replaced the linking process has to be re-executed based on the (unlinked) components. De facto this means that separating and/or exchanging the single components with only the executable at hand is practically impossible.
+* `STANDALONE_PRODUCT` - The component is not linked to other components. It is executed in its own process.
+
+WARNING: The semantics of `DYNAMIC_LINKING` and `STATIC_LINKING` within Solicitor might differ from the common software engineers technical understanding of dynamic and static linking.
+The main characteristics important in this context are given above.
+As the legal evaluation of OSS license compliance might rely on the correct specification of the usage pattern you should consult the person being responsible for the legal evaluation if you are not sure about the right value. (Or in case that you are responsible for the legal evaluation: Make sure that the understanding of the possible usage pattern values corresponds to the legal evaluation rules you have defined.)
+
+The different readers are described in chapter <<Reading License Information with Readers>>.
 
 ==== Business Rules
 
@@ -1499,7 +1512,7 @@ When using the Scancode integration the following values are used for field `App
 
 === Automatic mapping of `RawLicense` data obtained from Scancode to `NormalizedLicense`
 
-Within the normal workflow `NormalizedLicense` objects are created from `RawLicense` objects via the rules given in the different LicenseAssignment and LicenseNameMapping decision tables, see <<Phase 1: Determining assigned Licenses>>. The "raw" license data obtained from Scancode represents licenses either by SPDX-IDs or (if licenses 
+Within the normal workflow `NormalizedLicense` objects are created from `RawLicense` objects via the rules given in the different LicenseAssignment and LicenseNameMapping decision tables, see <<Phase 1: Determining assigned Licenses>>. The "raw" license data obtained from Scancode represents licenses either by SPDX-IDs or (if licenses
 are detected which do not have a corresponding SPDX-IDs) via `LicenseRef-scancode-XXXXX` qualifiers. This is an improved data quality as compared to `RawLicenses` obtained from normal Readers. (See <<Reading License Information with Readers>>.) _Solicitor_ makes use of this improved data quality and by default performs an automatic mapping of `RawLicense` data to `NormalizedLicense` s in this case:
 
 * If the raw license matches a SPDX-ID then a `NormalizedLicense` is created with `normalizedLicenseType` set to `OSS-SPDX`.
@@ -1575,7 +1588,7 @@ Using the <<Extended comparison syntax>> it is possible to qualify whether a rul
 | _(empty)_      | ... in both cases
 |====================
 
-Due the automatic mapping of scancode based `RawLicenses` to `NormalizedLicenses` (see <<Automatic mapping of `RawLicense` data obtained from Scancode to `NormalizedLicense`>>) such explicit mapping rules are only required for licenses not handled by the automatism. 
+Due the automatic mapping of scancode based `RawLicenses` to `NormalizedLicenses` (see <<Automatic mapping of `RawLicense` data obtained from Scancode to `NormalizedLicense`>>) such explicit mapping rules are only required for licenses not handled by the automatism.
 
 [appendix]
 == Default Base Configuration
@@ -1722,6 +1735,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.23.0::
 * https://github.com/devonfw/solicitor/issues/255: Deprecate LicenseUrl guessing.
+* https://github.com/devonfw/solicitor/issues/257: Extended the user guide towards semantics of <<Usage Patterns>>.
 
 Changes in 1.22.0::
 * https://github.com/devonfw/solicitor/pull/243: Make sure the MavenReader is protected against XXE threats.
