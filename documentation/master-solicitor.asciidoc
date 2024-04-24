@@ -1735,7 +1735,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.23.0::
 * https://github.com/devonfw/solicitor/issues/255: Deprecate LicenseUrl guessing.
-* https://github.com/devonfw/solicitor/issues/257: Extended the user guide towards semantics of <<Usage Patterns>>.
+* https://github.com/devonfw/solicitor/issues/260: Extended the user guide towards semantics of <<Usage Patterns>>.
 
 Changes in 1.22.0::
 * https://github.com/devonfw/solicitor/pull/243: Make sure the MavenReader is protected against XXE threats.
