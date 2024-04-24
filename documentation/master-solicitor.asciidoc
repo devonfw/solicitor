@@ -1282,7 +1282,7 @@ as follows when using the XLS templating:
 * Fields in non-new rows that have changed their value will be marked with an Excel note indicating the old value.
 
 ==== Generic Excel Writer
-The Generic Excel Writer exists purely for debugging purposes. This writer writes the contents of the `dataTables` defined in the writer configuration to an Excel file. Each `dataTable` will be available in a seperate Excel sheet.  To use this writer, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
+The Generic Excel Writer exists purely for debugging purposes. This writer writes the contents of the `dataTables` defined in the writer configuration to an Excel file. Each `dataTable` will be available in a separate Excel sheet.  To use this writer, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
 [listing]
   "additionalWriters" : [ {
     "type" : "genericxls",
