@@ -1288,8 +1288,8 @@ The Generic Excel Writer exists purely for debugging purposes. This writer write
     "type" : "genericxls",
 	"templateSource" : "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample.xlsx", <1>
 	"target" : "${cfgdir}/output/GenericXLS.xlsx",
-	"description" : "The Generic Table as produced for project xy",
-	"dataTables" : { <2>
+	"description" : "The Generic Table as produced for project",
+	"dataTables" : {
 	    "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
 		"APPLICATIONCOMPONENT" : "classpath:com/devonfw/tools/solicitor/sql/allden_applicationcomponents.sql",
 		"LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql",
@@ -1743,6 +1743,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.23.0::
 * https://github.com/devonfw/solicitor/issues/255: Deprecate LicenseUrl guessing.
+* https://github.com/devonfw/solicitor/issues/258: Add GenericExcelWriter for debugging of SQL scripts.
 
 Changes in 1.22.0::
 * https://github.com/devonfw/solicitor/pull/243: Make sure the MavenReader is protected against XXE threats.
