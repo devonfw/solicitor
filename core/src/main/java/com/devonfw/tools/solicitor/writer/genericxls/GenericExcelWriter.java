@@ -13,22 +13,13 @@ import java.util.Map.Entry;
 import org.apache.poi.EncryptedDocumentException;
 // usermodel api for creating, reading and modifying xls files
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
-import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
@@ -36,15 +27,11 @@ import com.devonfw.tools.solicitor.writer.data.DataTableField;
 import com.devonfw.tools.solicitor.writer.data.DataTableRow;
 
 /**
- * A {@link Writer} which uses a XLS file as a template to create the report.
+ * A {@link Writer} which creates a generic XLS workbook with a separate sheet for each defined dataTable. Field data
+ * will be trimmed when exceeding more than 200 characters. This report is intended for debugging purposes.
  */
 @Component
 public class GenericExcelWriter implements Writer {
-
-  private static final Logger LOG = LoggerFactory.getLogger(GenericExcelWriter.class);
-
-  @Autowired
-  private InputStreamFactory inputStreamFactory;
 
   /**
    * {@inheritDoc}
@@ -57,7 +44,7 @@ public class GenericExcelWriter implements Writer {
     return "genericxls".equals(type);
   }
 
-  private String trimToMaxCellLength(String original) {
+  private String trimToReasonableLength(String original) {
 
     String trimmed = original;
     if (original.length() > 200) {
@@ -65,37 +52,12 @@ public class GenericExcelWriter implements Writer {
     }
     return trimmed;
 
-    // if (original.length() > 32767) {
-    // LOG.warn(LogMessages.SHORTENING_XLS_CELL_CONTENT.msg());
-    // return original.substring(0, 32767);
-    // } else {
-    // return original;
-    // }
-
-  }
-
-  private void addCommentToCell(Cell cell, String commentText) {
-
-    Row row = cell.getRow();
-    Sheet sheet = row.getSheet();
-    CreationHelper helper = sheet.getWorkbook().getCreationHelper();
-    Drawing drawing = sheet.createDrawingPatriarch();
-    ClientAnchor anchor = helper.createClientAnchor();
-    anchor.setCol1(cell.getColumnIndex());
-    anchor.setCol2(cell.getColumnIndex() + 1);
-    anchor.setRow1(row.getRowNum());
-    anchor.setRow2(row.getRowNum() + 3);
-    Comment comment = drawing.createCellComment(anchor);
-    RichTextString str = helper.createRichTextString(commentText);
-    comment.setString(str);
-    comment.setAuthor("Solicitor");
-    cell.setCellComment(comment);
   }
 
   /**
    * {@inheritDoc}
    *
-   * This function will generate a report based on the given excel template.
+   * This function will generate a generic report.
    */
   @Override
   public void writeReport(String templateSource, String target, Map<String, DataTable> dataTables) {
@@ -121,7 +83,7 @@ public class GenericExcelWriter implements Writer {
             Cell cell = row.createCell(i);
             DataTableField value = dataTableRow.getValueByIndex(i);
             String textValue = value.toString() == null ? "" : value.toString();
-            cell.setCellValue(trimToMaxCellLength(textValue));
+            cell.setCellValue(trimToReasonableLength(textValue));
           }
         }
       }
