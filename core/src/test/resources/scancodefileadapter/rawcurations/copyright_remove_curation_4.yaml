@@ -1,0 +1,8 @@
+artifacts: 
+- name: "pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0"
+  note: "some note on the curation"
+  copyrightCurations:
+  - operation: REMOVE
+    path: "sources/src/main/java/com/devonfw/WRONG/tools/test/SampleClass1.java"
+    oldCopyright: "Copyright WRONG 2023 devonfw"
+    comment: "remove rule with all conditions set"

@@ -1,0 +1,9 @@
+artifacts: 
+- name: "pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0"
+  note: "some note on the curation"
+  copyrightCurations:
+  - operation: REPLACE
+    path: "sources/src/main/java/com/devonfw/tools/test/SampleClass1.java"
+    oldCopyright: "Copyright 2023 devonfw"
+    newCopyright: "(c) 2023 devonfw"
+    comment: "replace rule with all conditions set"

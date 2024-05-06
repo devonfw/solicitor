@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.InventoryProcessor;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -145,6 +146,8 @@ public class ComponentInfoInventoryProcessor implements InventoryProcessor {
         }
       } catch (ComponentInfoAdapterException e) {
         throw new SolicitorRuntimeException("Exception when reading component info data source", e);
+      } catch (CurationInvalidException e) {
+        throw new SolicitorRuntimeException("Curation data invalid when reading component info data source", e);
       }
       if (componentInfo == null) {
         // all adapters disabled

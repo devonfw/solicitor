@@ -11,6 +11,7 @@ import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
+import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 
 /**
@@ -49,9 +50,10 @@ public class FilteredScancodeComponentInfoProviderTests {
    * file exists
    *
    * @throws ComponentInfoAdapterException if something goes wrong
+   * @throws CurationInvalidException if the curation data is not valid
    */
   @Test
-  public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException {
+  public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException, CurationInvalidException {
 
     // given
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
@@ -76,9 +78,11 @@ public class FilteredScancodeComponentInfoProviderTests {
    * excluded
    *
    * @throws ComponentInfoAdapterException if something goes wrong
+   * @throws CurationInvalidException if the curation data is not valid
    */
   @Test
-  public void testGetComponentInfoWithCurationsAndExclusions() throws ComponentInfoAdapterException {
+  public void testGetComponentInfoWithCurationsAndExclusions()
+      throws ComponentInfoAdapterException, CurationInvalidException {
 
     // given
     this.singleFileCurationProvider
@@ -104,9 +108,11 @@ public class FilteredScancodeComponentInfoProviderTests {
    * paths are excluded
    *
    * @throws ComponentInfoAdapterException if something goes wrong
+   * @throws CurationInvalidException if the curation data is not valid
    */
   @Test
-  public void testGetComponentInfoWithCurationsAndWithoutExclusions() throws ComponentInfoAdapterException {
+  public void testGetComponentInfoWithCurationsAndWithoutExclusions()
+      throws ComponentInfoAdapterException, CurationInvalidException {
 
     // given
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");

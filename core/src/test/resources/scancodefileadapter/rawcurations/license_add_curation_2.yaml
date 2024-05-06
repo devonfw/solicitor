@@ -1,0 +1,7 @@
+artifacts: 
+- name: "pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0"
+  note: "some note on the curation"
+  licenseCurations:
+  - operation: ADD
+    newLicense: "NewLicense"
+    url: "pkgcontent:/src/main/java/com/devonfw/tools/test/SampleClass2.java#L3"

@@ -55,10 +55,11 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
    * @return the data derived from the scancode results after applying any defined curation.
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be return in such a case.
+   * @throws CurationInvalidException if the curation data is not valid
    */
   @Override
   public ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle)
-      throws ComponentInfoAdapterException {
+      throws ComponentInfoAdapterException, CurationInvalidException {
 
     if (isFeatureActive()) {
 

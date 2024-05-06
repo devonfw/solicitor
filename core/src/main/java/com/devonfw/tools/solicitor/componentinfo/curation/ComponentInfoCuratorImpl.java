@@ -52,17 +52,17 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
    * @param curationDataHandle identifies which source should be used for the curation data.
    * @return the curated component info
    * @throws ComponentInfoAdapterException if the curation could not be read
+   * @throws CurationInvalidException if the curation data is not valid
    */
   @Override
   public ComponentInfo curate(ComponentInfo componentInfo, CurationDataHandle curationDataHandle)
-      throws ComponentInfoAdapterException {
+      throws ComponentInfoAdapterException, CurationInvalidException {
 
     ComponentInfoCuration foundCuration = this.curationProvider.findCurations(componentInfo.getPackageUrl(),
         curationDataHandle);
     if (foundCuration != null) {
       DefaultComponentInfoImpl componentInfoImpl = new DefaultComponentInfoImpl(componentInfo);
       applyFoundCurations(componentInfoImpl, foundCuration);
-      componentInfoImpl.setDataStatus(DataStatusValue.CURATED);
       return componentInfoImpl;
     } else {
       return componentInfo;
@@ -76,9 +76,11 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
       for (String copyright : curation.getCopyrights()) {
         componentInfo.getComponentInfoData().addCopyright(copyright);
       }
+      componentInfo.setDataStatus(DataStatusValue.CURATED);
     }
     if (curation.getUrl() != null) {
       componentInfo.getComponentInfoData().setSourceRepoUrl(curation.getUrl());
+      componentInfo.setDataStatus(DataStatusValue.CURATED);
     }
     if (curation.getLicenses() != null) {
       componentInfo.getComponentInfoData().clearLicenses();
@@ -95,6 +97,7 @@ public class ComponentInfoCuratorImpl implements ComponentInfoCurator {
         licenseInfo.setGivenLicenseText(givenLicenseText);
         componentInfo.getComponentInfoData().addLicense(licenseInfo);
       }
+      componentInfo.setDataStatus(DataStatusValue.CURATED);
     }
   }
 

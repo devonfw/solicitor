@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
-import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.CurationList;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +25,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  *
  */
 @Component
-public class SingleFileCurationProvider implements CurationProvider {
+public class SingleFileCurationProvider extends AbstractHierarchicalCurationProvider {
   private static final Logger LOG = LoggerFactory.getLogger(SingleFileCurationProvider.class);
 
   private static final ObjectMapper yamlMapper;
@@ -41,8 +39,6 @@ public class SingleFileCurationProvider implements CurationProvider {
 
   private boolean curationsExistenceLogged;
 
-  private AllKindsPackageURLHandler packageURLHandler;
-
   /**
    * The constructor.
    *
@@ -51,31 +47,25 @@ public class SingleFileCurationProvider implements CurationProvider {
   @Autowired
   public SingleFileCurationProvider(AllKindsPackageURLHandler packageURLHandler) {
 
-    this.packageURLHandler = packageURLHandler;
+    super(packageURLHandler);
   }
 
   /**
-   * Return the curation data for a given package.
+   * Sets curationsFileName.
    *
-   * @param packageUrl identifies the package
-   * @param curationDataHandle identifies which source should be used for the curation data.
-   * @return the curation data if it exists. <code>null</code> if no curation exist for the package or the
-   *         curationDataSelector was given as "none".
-   * @throws ComponentInfoAdapterException if something unexpected happens
+   * @param curationsFileName new value of curationsFileName.
    */
+  @Value("${solicitor.scancode.curations-filename}")
+  public void setCurationsFileName(String curationsFileName) {
+
+    this.curationsFileName = curationsFileName;
+  }
+
   @Override
-  public ComponentInfoCuration findCurations(String packageUrl, CurationDataHandle curationDataHandle)
-      throws ComponentInfoAdapterException {
+  protected ComponentInfoCuration fetchCurationFromRepository(String effectiveCurationDataSelector,
+      String pathFragmentWithinRepo) throws ComponentInfoAdapterException, CurationInvalidException {
 
-    // SelectorCurationDataHandle is the only implementation supported here.
-    String curationDataSelector = ((SelectorCurationDataHandle) curationDataHandle).getCurationDataSelector();
-    // Return null if curationDataSelector is "none"
-    if ("none".equalsIgnoreCase(curationDataSelector)) {
-      return null;
-    }
     ComponentInfoCuration foundCuration = null;
-
-    String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
 
     File curationsFile = new File(this.curationsFileName);
     if (!curationsFile.exists()) {
@@ -96,7 +86,7 @@ public class SingleFileCurationProvider implements CurationProvider {
 
         for (ComponentInfoCuration curation : curationList.getArtifacts()) {
           String component = curation.getName();
-          if (component.equals(packagePathPart)) {
+          if (component.equals(pathFragmentWithinRepo)) {
             foundCuration = curation;
             break;
           }
@@ -109,15 +99,26 @@ public class SingleFileCurationProvider implements CurationProvider {
     return foundCuration;
   }
 
-  /**
-   * Sets curationsFileName.
-   *
-   * @param curationsFileName new value of curationsFileName.
-   */
-  @Value("${solicitor.scancode.curations-filename}")
-  public void setCurationsFileName(String curationsFileName) {
+  @Override
+  protected void validateEffectiveCurationDataSelector(String effectiveCurationDataSelector)
+      throws ComponentInfoAdapterNonExistingCurationDataSelectorException {
 
-    this.curationsFileName = curationsFileName;
+    // as the curationDataSelector is not supported/used there is nothing to do here
+  }
+
+  @Override
+  protected String determineEffectiveCurationDataSelector(String curationDataSelector) {
+
+    // actually this value is unused in the class
+    return "-";
+  }
+
+  @Override
+  protected void assureCurationDataSelectorAvailable(String effectiveCurationDataSelector)
+      throws ComponentInfoAdapterException, ComponentInfoAdapterNonExistingCurationDataSelectorException {
+
+    // as the curationDataSelector is not supported/used there is nothing to do here
+
   }
 
 }
