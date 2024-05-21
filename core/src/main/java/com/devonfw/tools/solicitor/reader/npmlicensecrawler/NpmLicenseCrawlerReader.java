@@ -69,12 +69,12 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, Map<String, String> configuration) {
 
-    this.deprecationChecker.check(true, "Use of Reader of type '" + SUPPORTED_TYPE
-        + "' is deprecated, use 'npm-license-checker' instead. See https://github.com/devonfw/solicitor/issues/125");
+    this.deprecationChecker.check(false, "Use of Reader of type '" + SUPPORTED_TYPE
+        + "' is deprecated, use 'npm-license-checker' instead. See https://github.com/devonfw/solicitor/issues/263");
 
     if (SUPPORTED_TYPE_DEPRECATED.equals(type)) {
-      this.deprecationChecker.check(true, "Use of type 'npm' is deprecated. Change type in config to '" + SUPPORTED_TYPE
-          + "'. See https://github.com/devonfw/solicitor/issues/62");
+      this.deprecationChecker.check(false, "Use of type 'npm' is deprecated. Change type in config to '" + SUPPORTED_TYPE
+          + "'. See https://github.com/devonfw/solicitor/issues/263");
     }
     int components = 0;
     int licenses = 0;
