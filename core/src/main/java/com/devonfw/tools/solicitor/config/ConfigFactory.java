@@ -127,7 +127,9 @@ public class ConfigFactory {
         rs.setUsagePattern(rc.getUsagePattern());
         if (rc.getRepoType() != null) {
           this.deprecationChecker.check(false,
-              "The parameter 'repoType' in the reader configuration is deprecated, see https://github.com/devonfw/solicitor/issues/263");
+              "The parameter 'repoType' in the reader configuration is deprecated, see "
+                  + "https://github.com/devonfw/solicitor/issues/190 and "
+                  + "https://github.com/devonfw/solicitor/issues/263");
         }
         rs.setRepoType(rc.getRepoType());
         rs.setConfiguration(rc.getConfiguration());
