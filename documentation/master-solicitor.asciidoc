@@ -1755,7 +1755,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.24.0::
-* added a few license name mappings
+* https://github.com/devonfw/solicitor/pull/265: Added some license name mappings.
 
 Changes in 1.23.0::
 * https://github.com/devonfw/solicitor/issues/255: Deprecate LicenseUrl guessing.
