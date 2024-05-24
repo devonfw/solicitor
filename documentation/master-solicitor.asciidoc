@@ -1757,6 +1757,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.24.0::
 * https://github.com/devonfw/solicitor/issues/263: Some features were pushed from deprecation stage 1 to stage 2, which means they do not longer work with default configuration: repoType attribute, npm and npm-license-crawler readers, REGEX prefix notation, LicenseAssignmentProject.xls. See <<List of Deprecated Features>> for details.
 * https://github.com/devonfw/solicitor/pull/265: Added some license name mappings.
+* https://github.com/devonfw/solicitor/pull/266: Improve correlation of records (diff processing, see <<Determining difference to previously stored model>>) for aggregated inventory report `OSS-Inventory_aggregated_*.xlsx`.
 
 Changes in 1.23.0::
 * https://github.com/devonfw/solicitor/issues/255: Deprecate LicenseUrl guessing.
