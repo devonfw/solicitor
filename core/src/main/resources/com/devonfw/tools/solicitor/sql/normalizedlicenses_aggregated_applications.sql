@@ -5,10 +5,10 @@
 -- due to reading from different input files.
 -- This is a replacement of "allden_normalizedlicenses.sql" for generating aggregated reports.
 select 
-    CONCAT(NVL("applicationName",'-'),NVL("groupId",'-'),NVL("artifactId",'-'),NVL("version",'-'),NVL("normalizedLicense",'-')) as CORR_KEY_0,
-    CONCAT(NVL("applicationName",'-'),NVL("groupId",'-'),NVL("artifactId",'-'),NVL("normalizedLicense",'-')) as CORR_KEY_1,
-    CONCAT(NVL("applicationName",'-'),NVL("groupId",'-'),NVL("artifactId",'-'),NVL("version",'-')) as CORR_KEY_2,
-    CONCAT(NVL("applicationName",'-'),NVL("groupId",'-'),NVL("artifactId",'-')) as CORR_KEY_3,
+    CONCAT(NVL("groupId",'-'),NVL("artifactId",'-'),NVL("version",'-'),NVL("normalizedLicense",'-')) as CORR_KEY_0,
+    CONCAT(NVL("groupId",'-'),NVL("artifactId",'-'),NVL("normalizedLicense",'-')) as CORR_KEY_1,
+    CONCAT(NVL("groupId",'-'),NVL("artifactId",'-'),NVL("version",'-')) as CORR_KEY_2,
+    CONCAT(NVL("groupId",'-'),NVL("artifactId",'-')) as CORR_KEY_3,
     "applicationName", 
 	"version" , 
 	"trace" , 
