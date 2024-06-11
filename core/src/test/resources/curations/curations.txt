@@ -1,0 +1,12 @@
+name: "pkg/maven/ch/qos/logback/logback-classic/1.2.3"
+note: "some note"
+copyrights:
+- "Copyright (c) 1999-2010, QOS.ch"
+- "Copyright (c) 1999-2012, QOS.ch"
+- "Copyright (c) 1999-2015, QOS.ch"
+- "Copyright (c) 1999-2016, QOS.ch"
+licenses:
+- license: "EPL-1.0"
+  url: "pkgcontent:/ch/qos/logback/classic/AsyncAppender.java#L5-L12"
+- license: "LGPL-2.1-only"
+  url: "pkgcontent:/ch/qos/logback/classic/AsyncAppender.java#L5-L12"

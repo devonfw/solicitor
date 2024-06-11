@@ -1,5 +1,7 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
+import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
+
 /**
  * Provides {@link ComponentInfo} for components given by their PackageURL. Subinterfaces further specify if the
  * {@link ComponentInfo} is already curated or not.
@@ -19,8 +21,9 @@ public interface ComponentInfoProvider {
    *         {@link ComponentInfo#getComponentInfoData()} on the returned object will return <code>null</code>.
    * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
    *         data available no exception will be thrown. Instead <code>null</code> will be returned in such a case.
+   * @throws CurationInvalidException if the curation data is not valid
    */
   ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle)
-      throws ComponentInfoAdapterException;
+      throws ComponentInfoAdapterException, CurationInvalidException;
 
 }

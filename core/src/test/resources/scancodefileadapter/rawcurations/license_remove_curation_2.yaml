@@ -1,0 +1,10 @@
+artifacts: 
+- name: "pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0"
+  note: "some note on the curation"
+  licenseCurations:
+  - operation: REMOVE
+    path: "sources/src/main/java/WRONG/com/devonfw/tools/test/SampleClass2.java"
+    ruleIdentifier: "license-intro_26.RULE"
+    oldLicense: "LicenseRef-scancode-unknown-license-reference"
+    matchedText: ".*It is licensed under the same license as the rest of Solicitor.*"
+    comment: "remove rule with all conditions set"

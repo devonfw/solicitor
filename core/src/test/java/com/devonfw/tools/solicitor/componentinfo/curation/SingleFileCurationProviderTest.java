@@ -1,4 +1,4 @@
-package com.devonfw.tools.solicitor.componentinfo.curating;
+package com.devonfw.tools.solicitor.componentinfo.curation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
-import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 
 /**
@@ -29,6 +28,8 @@ class SingleFileCurationProviderTest {
         .thenReturn("pkg/maven/somenamespace/somecomponent/2.3.4");
     Mockito.when(packageUrlHandler.pathFor("pkg:maven/somenamespace/somecomponent@2.3.5"))
         .thenReturn("pkg/maven/somenamespace/somecomponent/2.3.5");
+    Mockito.when(packageUrlHandler.pathFor("pkg:maven/othernamespace/othercomponent@1.2.3"))
+        .thenReturn("pkg/maven/othernamespace/othercomponent/1.2.3");
 
     this.objectUnderTest = new SingleFileCurationProvider(packageUrlHandler);
     this.objectUnderTest.setCurationsFileName("src/test/resources/curations/array_of_curations.yaml");
@@ -39,9 +40,10 @@ class SingleFileCurationProviderTest {
    * {@link com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider#findCurations(java.lang.String, java.lang.String)}.
    *
    * @throws ComponentInfoAdapterException
+   * @throws CurationInvalidException
    */
   @Test
-  void testFindCurationsWithSelectorNull() throws ComponentInfoAdapterException {
+  void testFindCurationsWithSelectorNull() throws ComponentInfoAdapterException, CurationInvalidException {
 
     ComponentInfoCuration result;
 
@@ -59,9 +61,10 @@ class SingleFileCurationProviderTest {
    * {@link com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider#findCurations(java.lang.String, java.lang.String)}.
    *
    * @throws ComponentInfoAdapterException
+   * @throws CurationInvalidException
    */
   @Test
-  void testFindCurationsWithSelectorNone() throws ComponentInfoAdapterException {
+  void testFindCurationsWithSelectorNone() throws ComponentInfoAdapterException, CurationInvalidException {
 
     ComponentInfoCuration result;
 
@@ -69,4 +72,23 @@ class SingleFileCurationProviderTest {
         new SelectorCurationDataHandle("none"));
     assertNull(result);
   }
+
+  /**
+   * Test method for
+   * {@link com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider#findCurations(java.lang.String, java.lang.String)}.
+   *
+   * @throws ComponentInfoAdapterException
+   * @throws CurationInvalidException
+   */
+  @Test
+  void testFindCurationsUsingHierarchy() throws ComponentInfoAdapterException, CurationInvalidException {
+
+    ComponentInfoCuration result;
+
+    result = this.objectUnderTest.findCurations("pkg:maven/othernamespace/othercomponent@1.2.3",
+        new SelectorCurationDataHandle(null));
+    assertEquals("some/path/2", result.getLicenseCurations().get(0).getPath());
+    assertEquals("some/path/1", result.getLicenseCurations().get(1).getPath());
+  }
+
 }

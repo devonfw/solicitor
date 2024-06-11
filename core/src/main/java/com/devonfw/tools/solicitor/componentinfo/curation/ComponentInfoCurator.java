@@ -17,8 +17,9 @@ public interface ComponentInfoCurator {
    * @param curationDataHandle identifies which source should be used for the curation data.
    * @return the curated component info or - if no curation are done - the incoming object
    * @throws ComponentInfoAdapterException if the curation could not be read
+   * @throws CurationInvalidException if the curation data is not valid
    */
   ComponentInfo curate(ComponentInfo componentInfo, CurationDataHandle curationDataHandle)
-      throws ComponentInfoAdapterException;
+      throws ComponentInfoAdapterException, CurationInvalidException;
 
 }

@@ -20,8 +20,10 @@ public interface CurationProvider {
    * @throws ComponentInfoAdapterException if something unexpected happens
    * @throws ComponentInfoAdapterNonExistingCurationDataSelectorException if the specified curationDataSelector could
    *         not be resolved
+   * @throws CurationInvalidException if the curation data is not valid
    */
   ComponentInfoCuration findCurations(String packageUrl, CurationDataHandle curationDataHandle)
-      throws ComponentInfoAdapterException, ComponentInfoAdapterNonExistingCurationDataSelectorException;
+      throws ComponentInfoAdapterException, ComponentInfoAdapterNonExistingCurationDataSelectorException,
+      CurationInvalidException;
 
 }

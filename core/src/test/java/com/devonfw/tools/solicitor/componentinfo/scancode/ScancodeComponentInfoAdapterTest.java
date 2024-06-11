@@ -20,6 +20,7 @@ import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
 import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCurator;
 import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCuratorImpl;
+import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
 
@@ -75,9 +76,10 @@ class ScancodeComponentInfoAdapterTest {
    * known.
    *
    * @throws ComponentInfoAdapterException if something goes wrong
+   * @throws CurationInvalidException
    */
   @Test
-  public void testGetComponentInfoNaPackage() throws ComponentInfoAdapterException {
+  public void testGetComponentInfoNaPackage() throws ComponentInfoAdapterException, CurationInvalidException {
 
     // given
 
@@ -94,9 +96,10 @@ class ScancodeComponentInfoAdapterTest {
    * available.
    *
    * @throws ComponentInfoAdapterException if something goes wrong
+   * @throws CurationInvalidException
    */
   @Test
-  public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException {
+  public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException, CurationInvalidException {
 
     // given
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
@@ -144,9 +147,11 @@ class ScancodeComponentInfoAdapterTest {
    * curationDataSelector to downstream beans.
    *
    * @throws ComponentInfoAdapterException if something goes wrong
+   * @throws CurationInvalidException
    */
   @Test
-  public void testGetComponentCheckCurationDataSelector() throws ComponentInfoAdapterException {
+  public void testGetComponentCheckCurationDataSelector()
+      throws ComponentInfoAdapterException, CurationInvalidException {
 
     // given
     CurationProvider curationProvider = Mockito.mock(CurationProvider.class);
@@ -178,9 +183,10 @@ class ScancodeComponentInfoAdapterTest {
    * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when curations are existing.
    *
    * @throws ComponentInfoAdapterException if something goes wrong
+   * @throws CurationInvalidException
    */
   @Test
-  public void testGetComponentInfoWithCurations() throws ComponentInfoAdapterException {
+  public void testGetComponentInfoWithCurations() throws ComponentInfoAdapterException, CurationInvalidException {
 
     // when
     ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(

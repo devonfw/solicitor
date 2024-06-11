@@ -11,3 +11,41 @@ licenses:
 copyrights:
 - "Copyright (c) 2003 First Holder"
 - "Copyright (c) 2004 Second Holder"
+licenseCurations:
+- path: some/path/1
+  operation: REMOVE
+  ruleIdentifier: rule_1
+  matchedText: some text 1
+  comment: just for testing
+- path: "some/path/2"
+  operation: REMOVE
+  ruleIdentifier: "rule_2"
+  matchedText: "some text 2"
+  comment: "just for second test"
+- path: another/path/1
+  operation: ADD
+  newLicense: Apache-2.0
+  url: https://scancode-licensedb.aboutcode.org/apache-2.0.LICENSE
+  comment: just for testing 3
+- path: another/path/2
+  operation: ADD
+  newLicense: MIT
+  url: https://scancode-licensedb.aboutcode.org/MIT.LICENSE
+  comment: just for testing 4  
+copyrightCurations:
+- path: other/path/1
+  operation: REMOVE
+  oldCopyright: "(c) 2024 me"
+  comment: testing 1
+- path: other/path/2
+  operation: REMOVE
+  oldCopyright: "(c) 2024 you"
+  comment: testing 2
+- path: some/path/1
+  operation: ADD
+  newCopyright: "(c) 2024 he"
+  comment: testing 3
+- path: some/path/2
+  operation: ADD
+  newCopyright: "(c) 2024 them"
+  comment: testing 2

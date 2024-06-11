@@ -1561,10 +1561,124 @@ solicitor.feature-flag.scancode.automapping=false
 === Correcting data
 The data obtained from ScanCode might be affected by false positives (wrongly detected a license or copyright) or false negatives (missed to detect a license or copyright).
 To compensate such defects there are two mechanisms:
-Applying Curation information from a "curations" file or changing the License information via the decision table rules.
+Applying Curation information from a "curations" file or changing the license information via the decision table rules.
 
-==== Curations file
+==== Curating data via a curations file
+
+===== Structure of curations file
 To define curations you might create a file `output/curations.yaml` containing the following structure:
+
+[source,yaml]
+----
+artifacts:
+  - name: pkg/npm/@somescope/somepackage/1.2.3                  <1>
+    url: https://github.com/foo/bar                             <2>
+    licenseCurations:                                           <3>
+    - operation: REMOVE 
+      path: "sources/package/readme.md"
+      ruleIdentifier: "proprietary-license_unknown_13.RULE"
+      matchedText: ".* to be paid .*"
+      comment: "just a generic remark, not a license"
+    - operation: ADD
+      newLicense: "Apache-2.0"
+      comment: "License as given on website"
+    copyrightCurations:                                         <4>
+    - operation: REMOVE
+      path: "sources/package/lib/test.js"
+      oldCopyright: "(c) R.apv"
+      comment: "some minified code fragment, not a copyright"
+    excludedPaths:                                              <5>
+    - "sources/src"                                             <6>
+  - name: pkg/npm/@anotherscope/anotherpackage/4.5.6            <7>
+.
+.
+.
+----
+<1> Path of the package information as used in the file tree. Derived from the PackageURL.
+<2> URL of the project, will be stored as `sourceRepoUrl`. (Optional: no change if not existing.)
+<3> Rules for curating license findings, see below.
+<4> Rules for curation copyright findings, see below.
+<5> Excluded paths to be set. Optional. If defined then all scanned files, whose path prefix contain any given string here, are excluded from the ScanCode information.
+<6> A single path prefix. All scanned files starting with this path prefix are excluded from the Scancode information.
+<7> Further packages to follow.
+
+===== Rules for curating licenses
+Curating licenses is done by REMOVING (i.e. ignoring) specific license findings from ScanCode, by REPLACING the detected license with another one or by ADDING license findings either to specific files or on top level (not related to specific file of the package sources). 
+In addition to the conditions/data which is specific for any of the below described operations it is always possible to define a comment which is intended to be included in any audit trail log for documentation purposes (not yet used/implemented). 
+
+
+====== Licenses: REMOVE
+Removing found licenses is done by defining rules which result in ignoring the license finding(s) of scancode rules in files within the scanned codebase. The following "conditions" are used for defining the rule
+
+* `path` of the file within the sources (defined as a regular expression; matches to `files[].path` in the scancode json file)
+* `ruleIdentifier` of the rule (defined as a regular expression; matches to `files[].licenses[].matched_rule.identifier` in the scancode json file)
+* `matchedText` of the finding (defined as a regular expression; matches to `files[].licenses[].matched_text` in the scancode json file)
+* `oldLicense` of the finding (defined as regular expression; matches to `files[].licenses[].spdx_license_key`
+
+The first three conditions can uniquely identify any license finding listed in the scancode json file. The `oldLicense` condition can be used to select findings to be ignored based on the found license instead of the `ruleIdentifier`.
+All conditions are optional but at least one needs to be defined. By using RegEx syntax the curations can be written very flexible. By using solely `oldLicense` as a condition it is e.g. possible to remove all findings of a specific license.
+
+====== Licenses: REPLACE
+Instead of removing licenses (ignoring the finding) they might be replaced with a different license key and/or URL pointing to the license text. The conditions are the same as for REMOVE, the replacement is defined as follows
+
+Data:
+
+* `newLicense` is the key / id of the license to use instead (replacing `files[].licenses[].spdx_license_key`)
+* `url` is the url pointing to the license text 
+
+At least one of the two parameters has to be set.
+
+====== Licenses: ADD
+Adding new licenses is done by defining rules which add new license info (to the licenses found in a source file) - or "on top level".
+
+Conditions:
+
+* `path` of the file within the sources to which the license should be added (defined as a regular expression; matches to `files[].path` in the scancode json file). Note that this will only work if there are `files[].path` in the scancode json for which this conditions matches.
+
+It is not possible to associate licenses to files which are not listed in scancode json. The `path` condition might be omitted which results in the given license to be added to the result without any relation to a specific path.
+
+Data:
+
+* `newLicense`: the key/SPDX-ID of the license to add
+* `url`: URL to the license text
+
+===== Rules for curating copyrights
+Curating copyrights is based on the same principles as curation of licenses, providing REMOVE, REPLACE and ADD operations.
+
+
+====== Copyrights: REMOVE
+REMOVING found copyrights is done by defining rules which result in ignoring the copyright finding(s) in files within the scanned codebase. The following "conditions" are used for defining the rule
+
+* `path` of the file within the sources (defined as a regular expression; matches to `files[].path` in the scancode json file)
+* `oldCopyright` the found copyright text to ignore (defined as a regular expression; matches to `files[].copyrights[].copyright` in the scancode json file)
+
+At least one of the conditions has to be defined.
+
+====== Copyright: REPLACE
+This follows the above principles. It uses the same conditions as REMOVE and uses a parameter to define the copyright to use instead:
+
+Data:
+* `newCopyright`: The copyright entry to use instead of the originally found copyright 
+
+====== Copyright: ADD
+Adding new copyrights is done by defining rules which add new copyright info (to the copyrights found in a source file) - or "on top level".
+
+Conditions:
+
+* `path` of the file within the sources (defined as a regular expression; if omitted the copyright will be applied on "top level"). 
+Note that it is again only possible to add copyrigts to paths which are listed in the scancode json
+
+Data:
+
+* `newCopyright`: the copyright string to add
+
+===== Redefining all licenses / copyrights of a component
+
+Instead of curating license / copyrights on a "per finding" level as given above it is alternatively possible to completely replace the list of found licenses and/or copyrights with a new list.
+
+IMPORTANT: Up to version 1.23.0 this was the only way of doing license / copyright curations. Use of this way of curating data is still possible but discouraged and might be deprecated/removed soon.
+
+The file `output/curations.yaml` looks as follows when doing curations this way:
 
 [source,yaml]
 ----
@@ -1595,6 +1709,33 @@ artifacts:
 <9> Excluded paths to be set. Optional. If defined then all scanned files, whose path prefix contain any given string here, are excluded from the ScanCode information.
 <10> A single path prefix. All scanned files starting with this path prefix are excluded from the Scancode information.
 <11> Further packages to follow.
+
+===== Hierarchical definition of rules
+
+Different version of a package/component or even different packages/components within the same namespace often require mostly the same curations to be applied. To avoid being forced to redefine curations for every single version it is possible to define curations by just specifying a prefix part in the name attribute. 
+
+Example of available levels/prefixes for `pkg:/maven/ch.qos.logback/logback-classic@1.2.3` 
+
+* `pkg`
+* `pkg/maven`
+* `pkg/maven/ch`
+* `pkg/maven/ch/qos`
+* `pkg/maven/ch/qos/logback`
+* `pkg/maven/ch/qos/logback/logback-classic`
+* `pkg/maven/ch/qos/logback/logback-classic/1.2.3`
+
+The complete tree will be checked for curations. Any found curations will be merged
+
+* Attribute `name`: latest encountered in the hierarchy will be taken
+* Attribute `note` will be joined using delimiter " / "
+* Attribute `url`: latest encountered in the hierarchy will be taken
+* Attribute `copyrights` (old style of curations): Lists will be merged
+* Attribute `licenses` (old style of curations): Lists will be merged
+* Attribute `excludedPaths`: Lists will be merged
+* Attribute `licenseCurations`: License curation rule lists (REMOVE/REPLACE/ADD) will be merged; order is more specific ones first; when evaluating for a specific license finding in the scancode json only the first matching curation rule will be taken.
+* Attribute `copyrightCurations`: Copyright curation rule lists (REMOVE/REPLACE/ADD) will be merged; order is more specific ones first; when evaluating for a specific copyright finding in the scancode json only the first matching curation rule will be taken.
+
+The resulting curation will then be applied to the scancode data of the component.
 
 ==== Decision table rules
 As for license information obtained from the Readers the license information from ScanCode can also be altered using decision table rules. A new attribute `origin` was introduced in the `RawLicense` entity as well as condition field in decision table `LicenseAssignmentV2*.xls/csv`. The `origin` attribute in `Rawlicense` either contains the string `scancode` if the license information came from ScanCode or it contains the (lowercase) class name of the used Reader.
@@ -1758,6 +1899,7 @@ Changes in 1.24.0::
 * https://github.com/devonfw/solicitor/issues/263: Some features were pushed from deprecation stage 1 to stage 2, which means they do not longer work with default configuration: repoType attribute, npm and npm-license-crawler readers, REGEX prefix notation, LicenseAssignmentProject.xls. See <<List of Deprecated Features>> for details.
 * https://github.com/devonfw/solicitor/pull/265: Added some license name mappings.
 * https://github.com/devonfw/solicitor/pull/266: Improve correlation of records (diff processing, see <<Determining difference to previously stored model>>) for aggregated inventory report `OSS-Inventory_aggregated_*.xlsx`.
+* https://github.com/devonfw/solicitor/issues/267: Introduce more fine grained and hierarchical curations of licenses and copyrights. See <<Curating data via a curations file>>.
 
 Changes in 1.23.0::
 * https://github.com/devonfw/solicitor/issues/255: Deprecate LicenseUrl guessing.

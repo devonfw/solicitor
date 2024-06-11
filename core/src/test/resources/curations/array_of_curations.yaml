@@ -11,3 +11,17 @@ artifacts:
   - license: "BSD-2-Clause"
     url: "https://scancode-licensedb.aboutcode.org/bsd-simplified.LICENSE"
   copyrights: []
+- name: "pkg/maven/othernamespace"
+  licenseCurations:
+  - path: some/path/1
+    operation: REMOVE
+    ruleIdentifier: rule_1
+    matchedText: some text 1
+    comment: just for testing
+- name: "pkg/maven/othernamespace/othercomponent"
+  licenseCurations:
+  - path: "some/path/2"
+    operation: REMOVE
+    ruleIdentifier: "rule_2"
+    matchedText: "some text 2"
+    comment: "just for second test"

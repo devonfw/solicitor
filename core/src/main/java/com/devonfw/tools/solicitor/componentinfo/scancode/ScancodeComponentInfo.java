@@ -271,7 +271,8 @@ public class ScancodeComponentInfo implements ComponentInfo {
         String resultingFilePath = existingLicenseInfo.getLicenseUrl();
         String resultingGivenText = existingLicenseInfo.getGivenLicenseText();
         int resultingFileScore = existingLicenseInfo.getLicenseFileScore();
-        if (fileScore > existingLicenseInfo.getLicenseFileScore()) {
+        if (fileScore > existingLicenseInfo.getLicenseFileScore() && givenLicenseText != null
+            && !givenLicenseText.isEmpty()) {
           resultingFilePath = filePath;
           resultingFileScore = fileScore;
           resultingGivenText = givenLicenseText;
@@ -281,8 +282,10 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
       } else {
         if (score >= this.minLicenseScore) {
-          this.licenses.put(licenseId, new ScancodeLicenseInfo(licenseId, licenseName, licenseDefaultUrl, score,
-              filePath, givenLicenseText, fileScore, this.minLicensefileNumberOfLines));
+          this.licenses.put(licenseId,
+              new ScancodeLicenseInfo(licenseId, licenseName, licenseDefaultUrl, score, filePath, givenLicenseText,
+                  (givenLicenseText != null && !givenLicenseText.isEmpty()) ? fileScore : 0,
+                  this.minLicensefileNumberOfLines));
         }
       }
     }

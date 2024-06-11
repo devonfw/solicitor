@@ -1,0 +1,7 @@
+artifacts: 
+- name: "pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0"
+  note: "some note on the curation"
+  copyrightCurations:
+  - operation: ADD
+    newCopyright: "(c) 2024 devonfw"
+    comment: "add rule with no condition"

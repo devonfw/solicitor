@@ -2,6 +2,7 @@ package com.devonfw.tools.solicitor.componentinfo.curation.model;
 
 import java.util.List;
 
+import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -22,6 +23,10 @@ public class ComponentInfoCuration {
   private List<LicenseInfoCuration> licenses;
 
   private List<String> excludedPaths;
+
+  private List<LicenseCuration> licenseCurations;
+
+  private List<CopyrightCuration> copyrightCurations;
 
   /**
    * The constructor.
@@ -124,6 +129,58 @@ public class ComponentInfoCuration {
   public void setExcludedPaths(List<String> excludedPaths) {
 
     this.excludedPaths = excludedPaths;
+  }
+
+  /**
+   * @return licenseCurations
+   */
+  public List<LicenseCuration> getLicenseCurations() {
+
+    return this.licenseCurations;
+  }
+
+  /**
+   * @param licenseCurations new value of {@link #getLicenseCurations}.
+   */
+  public void setLicenseCurations(List<LicenseCuration> licenseCurations) {
+
+    this.licenseCurations = licenseCurations;
+  }
+
+  /**
+   * @return copyrightCurations
+   */
+  public List<CopyrightCuration> getCopyrightCurations() {
+
+    return this.copyrightCurations;
+  }
+
+  /**
+   * @param copyrightCurations new value of {@link #getCopyrightCurations}.
+   */
+  public void setCopyrightCurations(List<CopyrightCuration> copyrightCurations) {
+
+    this.copyrightCurations = copyrightCurations;
+  }
+
+  /**
+   * Validates the curation data.
+   *
+   * @throws CurationInvalidException indicates that the curation data is not valid.
+   */
+  public void validate() throws CurationInvalidException {
+
+    if (this.licenseCurations != null) {
+      for (LicenseCuration lc : this.licenseCurations) {
+        lc.validate();
+      }
+    }
+    if (this.copyrightCurations != null) {
+      for (CopyrightCuration cc : this.copyrightCurations) {
+        cc.validate();
+      }
+    }
+
   }
 
 }
