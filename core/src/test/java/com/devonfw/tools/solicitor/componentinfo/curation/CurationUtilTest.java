@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -97,7 +96,7 @@ class CurationUtilTest {
         new String[] { "second copyright 1", "second copyright 2", "first copyright 1", "first copyright 2" })));
     assertTrue(merged.getLicenses().equals(Arrays.asList(new LicenseInfoCuration[] { licSecond, licFirst })));
     assertTrue(merged.getExcludedPaths().equals(Arrays.asList(new String[] { "second path", "first path" })));
-    assertTrue(merged.getLicenseCurations().equals(List.of(lcSecond, lcFirst)));
-    assertTrue(merged.getCopyrightCurations().equals(List.of(ccSecond, ccFirst)));
+    assertTrue(merged.getLicenseCurations().equals(Arrays.asList(new LicenseCuration[] { lcSecond, lcFirst })));
+    assertTrue(merged.getCopyrightCurations().equals(Arrays.asList(new CopyrightCuration[] { ccSecond, ccFirst })));
   }
 }
