@@ -1603,8 +1603,8 @@ artifacts:
 <7> Further packages to follow.
 
 ===== Rules for curating licenses
-Curating licenses is done by REMOVING (i.e. ignoring) specifc license findings from ScanCode, by REPLACING the detected license with another one or by ADDING license findings either to specific files or on top level (not related to specific file of the package sources). 
-In addition to the conditions/data which is specific for any of the below described operations it is always possible to define a comment which is intended to be included in any audit trail log for documentation porposes (not yet used/implemented). 
+Curating licenses is done by REMOVING (i.e. ignoring) specific license findings from ScanCode, by REPLACING the detected license with another one or by ADDING license findings either to specific files or on top level (not related to specific file of the package sources). 
+In addition to the conditions/data which is specific for any of the below described operations it is always possible to define a comment which is intended to be included in any audit trail log for documentation purposes (not yet used/implemented). 
 
 
 ====== Licenses: REMOVE
@@ -1639,7 +1639,7 @@ It is not possible to associate licenses to files which are not listed in scanco
 
 Data:
 
-* `newLicense`: the key/spdxid of the license to add
+* `newLicense`: the key/SPDX-ID of the license to add
 * `url`: URL to the license text
 
 ===== Rules for curating copyrights
