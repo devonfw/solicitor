@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -63,27 +65,27 @@ class CurationUtilTest {
     curationFirst.setName("firstName");
     curationFirst.setNote("firstNote");
     curationFirst.setUrl("firstUrl");
-    curationFirst.setExcludedPaths(List.of("first path"));
-    curationFirst.setCopyrights(List.of("first copyright 1", "first copyright 2"));
+    curationFirst.setExcludedPaths(Collections.singletonList("first path"));
+    curationFirst.setCopyrights(Arrays.asList(new String[] { "first copyright 1", "first copyright 2" }));
     LicenseInfoCuration licFirst = new LicenseInfoCuration();
-    curationFirst.setLicenses(List.of(licFirst));
+    curationFirst.setLicenses(Collections.singletonList(licFirst));
     CopyrightCuration ccFirst = new CopyrightCuration();
-    curationFirst.setCopyrightCurations(List.of(ccFirst));
+    curationFirst.setCopyrightCurations(Collections.singletonList(ccFirst));
     LicenseCuration lcFirst = new LicenseCuration();
-    curationFirst.setLicenseCurations(List.of(lcFirst));
+    curationFirst.setLicenseCurations(Collections.singletonList(lcFirst));
 
     ComponentInfoCuration curationSecond = new ComponentInfoCuration();
     curationSecond.setName("secondName");
     curationSecond.setNote("secondNote");
     curationSecond.setUrl("secondUrl");
-    curationSecond.setExcludedPaths(List.of("second path"));
-    curationSecond.setCopyrights(List.of("second copyright 1", "second copyright 2"));
+    curationSecond.setExcludedPaths(Collections.singletonList("second path"));
+    curationSecond.setCopyrights(Arrays.asList(new String[] { "second copyright 1", "second copyright 2" }));
     LicenseInfoCuration licSecond = new LicenseInfoCuration();
-    curationSecond.setLicenses(List.of(licSecond));
+    curationSecond.setLicenses(Collections.singletonList(licSecond));
     CopyrightCuration ccSecond = new CopyrightCuration();
-    curationSecond.setCopyrightCurations(List.of(ccSecond));
+    curationSecond.setCopyrightCurations(Collections.singletonList(ccSecond));
     LicenseCuration lcSecond = new LicenseCuration();
-    curationSecond.setLicenseCurations(List.of(lcSecond));
+    curationSecond.setLicenseCurations(Collections.singletonList(lcSecond));
 
     ComponentInfoCuration merged = CurationUtil.merge(curationFirst, curationSecond);
     assertEquals("secondName", merged.getName());
@@ -91,10 +93,10 @@ class CurationUtilTest {
     assertTrue(merged.getNote().contains("/"));
     assertTrue(merged.getNote().endsWith("firstNote"));
     assertEquals("secondUrl", merged.getUrl());
-    assertTrue(merged.getCopyrights()
-        .equals(List.of("second copyright 1", "second copyright 2", "first copyright 1", "first copyright 2")));
-    assertTrue(merged.getLicenses().equals(List.of(licSecond, licFirst)));
-    assertTrue(merged.getExcludedPaths().equals(List.of("second path", "first path")));
+    assertTrue(merged.getCopyrights().equals(Arrays.asList(
+        new String[] { "second copyright 1", "second copyright 2", "first copyright 1", "first copyright 2" })));
+    assertTrue(merged.getLicenses().equals(Arrays.asList(new LicenseInfoCuration[] { licSecond, licFirst })));
+    assertTrue(merged.getExcludedPaths().equals(Arrays.asList(new String[] { "second path", "first path" })));
     assertTrue(merged.getLicenseCurations().equals(List.of(lcSecond, lcFirst)));
     assertTrue(merged.getCopyrightCurations().equals(List.of(ccSecond, ccFirst)));
   }

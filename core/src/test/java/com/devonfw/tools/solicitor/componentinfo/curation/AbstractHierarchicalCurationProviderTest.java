@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -161,7 +161,7 @@ class AbstractHierarchicalCurationProviderTest {
         CopyrightCuration cc = new CopyrightCuration();
         cc.setOperation(CurationOperation.ADD);
         cc.setNewCopyright("Copyright " + effectiveCurationDataSelector + " " + pathFragmentWithinRepo);
-        cic.setCopyrightCurations(List.of(cc));
+        cic.setCopyrightCurations(Collections.singletonList(cc));
         return cic;
       }
 
