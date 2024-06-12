@@ -91,11 +91,11 @@ public class OrtReader extends AbstractReader implements Reader {
         List lic = (List) singlePackage.get("declared_licenses");
         if (lic.isEmpty()) {
           // add empty raw license if no license info attached
-          addRawLicense(appComponent, null, null, sourceUrl);
+          addRawLicense(appComponent, null, repo, sourceUrl);
         } else {
           for (Object cl : lic) {
             licenseCount++;
-            addRawLicense(appComponent, cl.toString(), null, sourceUrl);
+            addRawLicense(appComponent, cl.toString(), repo, sourceUrl);
           }
         }
         doLogging(sourceUrl, application, componentCount, licenseCount);

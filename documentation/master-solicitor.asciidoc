@@ -327,7 +327,7 @@ The leading section of the config file defines some metadata and the engagement 
 <9> does the customer provide the OSS? (boolean)
 
 ==== Applications
-Within this section the different applications (=deliverables) of the engagement are defined. Furthermore, for each application at least one reader needs to be defined which imports the component and license information.
+Within this section the different applications (= deliverables) of the engagement are defined. Furthermore, for each application at least one reader needs to be defined which imports the component and license information.
 
 [listing]
  "applications" : [ {
@@ -621,7 +621,7 @@ These configurations may also be used to overwrite options of a https://commons.
 Important: In case that a component has multiple licenses attached, there needs to be a separate
 line in the csv file for each license.
 
-WARNING: The CSV reader currently does not fill the attribute `packageUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read by the CSV reader.
+WARNING: The CSV reader currently does not fill the attribute `packageUrl`. Any functionality/reporting based on this attribute will be dysfunctional for data read by the CSV reader.
 
 === NPM
 
@@ -831,7 +831,13 @@ In _Solicitor_ the data is read with the following part of the config
 } ]
 ----
 
-WARNING: The ORT reader currently does not yet fill the attribute `licenseUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read by the ORT reader.
+It is important to note that a personal Github token is required on executing _Solicitor_ as it is needed to fill the LicenseURL data via Github API requests. You can generate tokens on your account https://github.com/settings/tokens[here]. This token increases the rate limit of the Github API from 60 to 5000.
+The token can be inputted via _Solicitor_ properties like this: 
+
+----
+java -Dsolicitor.githubtoken=token -jar solicitor.jar -c file:solicitor.cfg
+----
+
 
 === Gradle (Windows)
 
@@ -1167,7 +1173,7 @@ groups to be processed in sequence. When using the builtin default base configur
 To use your own rule data there are three approaches:
 
 * Include your own `rules` section in the project configuration file (so not inheriting from the builtin base configuration file) and reference your own decision tables there.
-* Create your own "Solicitor Extension" which might completely redefine/replace the builtin `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
+* Create your own "Solicitor Extension" which might completely redefine/replace the built-in `Solicitor` setup including all decision tables and the base configuration file. See <<Extending Solicitor>> for details.
 * Make use of the optional project specific decision tables which are defined in the default base configuration: For every builtin decision table there is an optional external decision table (expected in the filesystem) which will be checked for existence. If such external decision table exists it will be processed first - before processing the builtin decision table. Thus is it possible to amend / override the builtin rules by project specific rules. When you create the starter configuration of your project as described in <<Starting a new project>>, those project specific decision tables are automatically created.
 
 == Reporting and Creating output documents
@@ -1345,6 +1351,7 @@ In general it is possible to manually correct this by editing the downloaded and
 
 Currently license URL guessing is based solely on the URL given in `NormalizedLicense.effectiveNormalizedLicenseUrl`. It will try the following approaches:
 
+* If the original URL is a remote Github repository URL (with a .git ending) then a Github API call is attempted to retrieve the correct license URL.
 * If the original URL is a Github-URL and matches patterns which are known to return HTML-formatted content then the URL is rewritten to point to a raw version of the content.
 * If the original URL points to a Github project page (not to a file), then the algorithm will try different typical locations (like e.g. looking for file `LICENSE`). If found it will return this URL as result.
 * If no "better" URL could be guessed it will return the original URL.
@@ -2001,6 +2008,7 @@ Changes in 1.6.0::
 * https://github.com/devonfw/solicitor/issues/146: Fixed the bug which prevented already defined velocity macro with same name to be redefined in different template.
 * https://github.com/devonfw/solicitor/issues/135: Introduce `sourceRepoUrl` as new property in `ApplicationComponent`. Depending on the kind of Reader either `ossHomepage` and/or `sourceRepoUrl` will be filled with data.
 * https://github.com/devonfw/solicitor/issues/149: Added name mappings so that for all SPDX-IDs used in the name mapping the SPDX-ID itself is also recognized and formally mapped.
+* Improved ORT-Reader with LicenseURL extraction via Github-API. See <<OSS Review Toolkit (ORT)>>.
 
 Changes in 1.5.0::
 * https://github.com/devonfw/solicitor/issues/6: Fixed the bug by allowing multiple `NormalizedLicense` entries with same id per `ApplicationComponent`  if the declared license differs. This allows to assign multiple licenses of same type (e.g. MIT) to a component and also will allow multiple "UNKNOWN" licenses to be reported for the same component. Note that as a side effect additional and unexpected `NormalizedLicense` entries might now be created. This might be caused from multiple `LicenseAssignment*.xls` rules firing for different `RawLicense` entries in the same `ApplicationComponent` and resulting in identical `NormalizedLicense` id. In this case it is necessary to restrict those different rules to only fire for specific `RawLicense` entries.
