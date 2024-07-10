@@ -12,6 +12,17 @@ public class ScancodeRawComponentInfo {
 
   public String packageDownloadUrl;
 
+ // New attributes for Scancode version 32.x
+  public String detectedLicenseExpressionSpdx;
+
+  public String licenseDetections;
+
+  public String licenses; 
+
+  public String licenseExpressions;  
+
+  public String detectedLicenseExpression;
+  
   /**
    * The constructor.
    */
