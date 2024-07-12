@@ -27,7 +27,7 @@ public class SolicitorCreateOwnLicenseInfoTest {
     SolicitorCliProcessor scp = new SolicitorCliProcessor();
     CommandLineOptions clo = scp.parse(args);
 
-    this.solicitor.run(clo, String.join(" ", args));
+    solicitor.run(clo, String.join(" ", args));
   }
 
 }
