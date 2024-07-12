@@ -93,7 +93,7 @@ public class SingleFileCurationProvider extends AbstractHierarchicalCurationProv
         }
 
       } catch (IOException e) {
-        throw new ComponentInfoAdapterException("Could not read Curations JSON", e);
+        throw new ComponentInfoAdapterException("Could not read Curations YAML", e);
       }
     }
     return foundCuration;
