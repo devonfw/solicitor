@@ -115,26 +115,8 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
       return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.NOT_AVAILABLE);
     }
 
-    ScancodeComponentInfo componentScancodeInfos;
-    JsonNode scancodeJson;
-    try {
-      scancodeJson = mapper.readTree(rawScancodeData.rawScancodeResult);
-    } catch (JsonProcessingException e) {
-      throw new ComponentInfoAdapterException("Could not parse Scancode JSON", e);
-    }
-
-    // Determine the version of the Scancode data
-    String scancodeVersion = determineScancodeVersion(scancodeJson);
-
-    // Process the Scancode data according to the version
-    if ("32.x".equals(scancodeVersion)) {
-      componentScancodeInfos = parseAndMapScancodeJsonV32(packageUrl, scancodeJson, curationDataHandle);
-    } else if ("31.x".equals(scancodeVersion)) {
-      componentScancodeInfos = parseAndMapScancodeJsonV31(packageUrl, scancodeJson, curationDataHandle);
-    } else {
-      throw new ComponentInfoAdapterException("Unsupported Scancode version: " + scancodeVersion);
-    }
-
+    ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
+        curationDataHandle);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
     LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
         componentScancodeInfos.getComponentInfoData().getLicenses().size(),
@@ -153,51 +135,34 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
 
     componentScancodeInfos.getComponentInfoData().setSourceDownloadUrl(rawScancodeData.sourceDownloadUrl);
     componentScancodeInfos.getComponentInfoData().setPackageDownloadUrl(rawScancodeData.packageDownloadUrl);
-    // Add new attributes from Scancode version 32.x if applicable
-    componentScancodeInfos.getComponentInfoData().setDetectedLicenseExpressionSpdx(rawScancodeData.detectedLicenseExpressionSpdx);
-    componentScancodeInfos.getComponentInfoData().setLicenseDetections(rawScancodeData.licenseDetections);
-    componentScancodeInfos.getComponentInfoData().setDetectedLicenseExpression(rawScancodeData.detectedLicenseExpression);
   }
 
-    /**
-   * Determines the Scancode version from the JSON data.
-   *
-   * @param scancodeJson the Scancode JSON data
-   * @return the version of the Scancode data
-   */
-  private String determineScancodeVersion(JsonNode scancodeJson) {
-    // Logic to determine version based on the JSON structure
-    if (scancodeJson.has("files")) {
-      JsonNode firstFile = scancodeJson.get("files").get(0);
-      if (firstFile.has("license_detections")) {
-        return "32.x";
-      } else if (firstFile.has("licenses")) {
-        return "31.x";
-      }
-    }
-    return "unknown";
-  }
-
-    /**
-   * Parses and maps Scancode JSON (version 32.x) to create ScancodeComponentInfo.
+  /**
+   * Parses and maps scancode JSON to create ScancodeComponentInfo.
    *
    * @param packageUrl package URL of the package
-   * @param scancodeJson the Scancode JSON data
+   * @param rawScancodeData raw scancode data
    * @param curationDataHandle identifies which source should be used for the curation data.
    * @return the ScancodeComponentInfo
    * @throws ComponentInfoAdapterException if there was an issue during parsing
    * @throws CurationInvalidException if the curation data is not valid
    */
-  private ScancodeComponentInfo parseAndMapScancodeJsonV32(String packageUrl, JsonNode scancodeJson,
+  private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
       CurationDataHandle curationDataHandle) throws ComponentInfoAdapterException, CurationInvalidException {
 
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
+    // set status to NO_ISSUES. This might be overridden later if issues are detected or curations are applied
     componentScancodeInfos.setDataStatus(DataStatusValue.NO_ISSUES);
+
+    // get the object which hold the actual data
     ScancodeComponentInfoData scancodeComponentInfoData = componentScancodeInfos.getComponentInfoData();
+
+    // Get the curation for a given packageUrl
     ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataHandle);
 
+    // Get all excludedPaths in this curation
     List<String> excludedPaths = null;
     List<LicenseCuration> licenseCurations = null;
     List<CopyrightCuration> copyrightCurations = null;
@@ -207,141 +172,225 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
       copyrightCurations = componentInfoCuration.getCopyrightCurations();
     }
 
-    for (JsonNode fileNode : scancodeJson.get("files")) {
-      String path = fileNode.get("path").asText();
-      if (excludedPaths != null && excludedPaths.contains(path)) {
+    JsonNode scancodeJson;
+    try {
+      scancodeJson = mapper.readTree(rawScancodeData.rawScancodeResult);
+    } catch (JsonProcessingException e) {
+      throw new ComponentInfoAdapterException("Could not parse Scancode JSON", e);
+    }
+
+    // Skip all files, whose path have a prefix which is in the excluded path list
+    for (JsonNode file : scancodeJson.get("files")) {
+      String path = file.get("path").asText();
+      if (isExcluded(path, excludedPaths)) {
+        // this is a curation operation, so set the status
+        componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
         continue;
       }
+      if ("directory".equals(file.get("type").asText())) {
+        continue;
+      }
+      if (path.contains("/NOTICE")) {
+        scancodeComponentInfoData
+            .addNoticeFileUrl(this.fileScancodeRawComponentInfoProvider.pkgContentUriFromPath(packageUrl, path), 100.0);
+      }
+      double licenseTextRatio = file.get("percentage_of_license_text").asDouble();
+      boolean takeCompleteFile = licenseTextRatio >= this.licenseToTextRatioToTakeCompleteFile;
+      for (JsonNode cr : file.get("copyrights")) {
+        String copyright;
+        if (cr.has("copyright")) {
+          copyright = cr.get("copyright").asText();
+        } else {
+          copyright = cr.get("value").asText();
+        }
+        String copyrightAfterCuration = getEffectiveCopyrightWithCuration(path, copyright, copyrightCurations);
+        if (copyrightAfterCuration != null) {
+          if (!copyrightAfterCuration.equals(copyright)) {
+            // the copyright info changed due to applying a curation, so set the status
+            componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
+          }
+          scancodeComponentInfoData.addCopyright(copyrightAfterCuration);
+        } else {
+          if (copyright != null) {
+            // the copyright info was removed due to applying a curation, so set the status
+            componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
 
-      String detectedLicenseExpression = fileNode.get("detected_license_expression").asText();
-      String detectedLicenseExpressionSpdx = fileNode.get("detected_license_expression_spdx").asText();
-
-      for (JsonNode licenseDetectionNode : fileNode.get("license_detections")) {
-        String licenseExpression = licenseDetectionNode.get("license_expression").asText();
-        for (JsonNode match : licenseDetectionNode.get("matches")) {
-          String licenseId = match.get("identifier").asText();
-          double score = match.get("score").asDouble();
-          String filePath = path;
-          String givenLicenseText = null;
-          int fileScore = match.get("matched_length").asInt();
-
-          scancodeComponentInfoData.addLicense(licenseId, detectedLicenseExpressionSpdx, licenseExpression, score, filePath, givenLicenseText, fileScore);
+          }
         }
       }
 
-      for (JsonNode licenseClueNode : fileNode.get("license_clues")) {
-        for (JsonNode match : licenseClueNode.get("matches")) {
-          String licenseId = match.get("identifier").asText();
-          double score = match.get("score").asDouble();
-          String filePath = path;
-          String givenLicenseText = null;
-          int fileScore = match.get("matched_length").asInt();
+      // special handling for Classpath-exception-2.0
+      Map<String, String> spdxIdMap = new HashMap<>();
+      boolean classPathExceptionExists = false, isNewVersion = false;
+      int numberOfGplLicenses = 0;
+      JsonNode licenses = file.get("licenses");
+      String licenseName = "", spdxId = "", ruleIdentifier = "", matchedText = "";
+      if (licenses.isEmpty()) {
+        isNewVersion = true;
+        licenses = file.get("license_detections");
+        spdxId = file.get("detected_license_expression_spdx").asText();
+        for (JsonNode li : licenses) {
+          for (JsonNode matche : li.get("matches")) {
+            ruleIdentifier = matche.get("rule_identifier").asText();
+            matchedText = matche.get("matched_text").asText();
+            LicenseCuration.NewLicenseData effective = getEffectiveLicenseInfoWithCuration(path, ruleIdentifier,
+                matchedText, spdxId, licenseCurations);
+            if (effective == null) {
+              // license finding to be REMOVED via finding
+              continue;
+            }
+            licenseName = effective.license != null ? effective.license : spdxId;
 
-          scancodeComponentInfoData.addLicense(licenseId, detectedLicenseExpressionSpdx, "", score, filePath, givenLicenseText, fileScore);
+            if ("Classpath-exception-2.0".equals(licenseName)) {
+              classPathExceptionExists = true;
+            }
+            if (!spdxIdMap.containsKey(licenseName)) {
+              spdxIdMap.put(licenseName, licenseName);
+              if (licenseName.startsWith("GPL")) {
+                numberOfGplLicenses++;
+              }
+            }
+          }
+        }
+      } else {
+
+        for (JsonNode li : licenses) {
+          ruleIdentifier = li.get("matched_rule").get("identifier").asText();
+          matchedText = li.get("matched_text").asText();
+          spdxId = li.get("spdx_license_key").asText();
+
+          LicenseCuration.NewLicenseData effective = getEffectiveLicenseInfoWithCuration(path, ruleIdentifier,
+              matchedText, spdxId, licenseCurations);
+          if (effective == null) {
+            // license finding to be REMOVED via finding
+            continue;
+          }
+          licenseName = effective.license != null ? effective.license : spdxId;
+
+          if ("Classpath-exception-2.0".equals(licenseName)) {
+            classPathExceptionExists = true;
+          }
+          if (!spdxIdMap.containsKey(licenseName)) {
+            spdxIdMap.put(licenseName, licenseName);
+            if (licenseName.startsWith("GPL")) {
+              numberOfGplLicenses++;
+            }
+          }
+        }
+
+      }
+      if (classPathExceptionExists) {
+        if (numberOfGplLicenses == 0) {
+          LOG.warn(LogMessages.CLASSPATHEXCEPTION_WITHOUT_GPL.msg(), packageUrl);
+        } else if (numberOfGplLicenses > 1) {
+          LOG.warn(LogMessages.CLASSPATHEXCEPTION_MULTIPLE_GPL.msg(), packageUrl);
+        } else {
+          LOG.debug("Adjusting GPL license to contain WITH Classpath-execption-2.0 for " + packageUrl);
+          for (String licenseNameSpdx : spdxIdMap.keySet()) {
+            if (licenseNameSpdx.startsWith("GPL")) {
+              spdxIdMap.put(licenseNameSpdx, licenseNameSpdx + " WITH Classpath-exception-2.0");
+            }
+          }
+          // do not output the Classpath-exception-2.0 as separate License
+          spdxIdMap.remove("Classpath-exception-2.0");
         }
       }
 
-      for (JsonNode copyrightNode : fileNode.get("copyrights")) {
-        String statement = copyrightNode.get("value").asText();
-        scancodeComponentInfoData.addCopyright(statement);
-      }
+      for (JsonNode li : licenses) {
+        LicenseCuration.NewLicenseData effective = null;
+        if (isNewVersion) {
+          for (JsonNode matche : li.get("matches")) {
+            ruleIdentifier = matche.get("rule_identifier").asText();
+            matchedText = matche.get("matched_text").asText();
+            effective = getEffectiveLicenseInfoWithCuration(path, ruleIdentifier, matchedText, spdxId,
+                licenseCurations);
+            if (effective == null) {
+              // license finding to be REMOVED via finding
+              // this is a curation operation, so set the status
+              componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
+              continue;
+            }
+            if (effective.license != null || effective.url != null) {
+              // license or url are altered due to curation, so set the status
+              componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
+            }
+            licenseName = effective.license != null ? effective.license : spdxId;
+          }
 
-      if (fileNode.has("notices")) {
-        for (JsonNode noticeNode : fileNode.get("notices")) {
-          String notice = noticeNode.get("value").asText();
-          scancodeComponentInfoData.setNoticeFileContent(notice);
+        } else {
+          ruleIdentifier = li.get("matched_rule").get("identifier").asText();
+          matchedText = li.get("matched_text").asText();
+          spdxId = li.get("spdx_license_key").asText();
+
+          effective = getEffectiveLicenseInfoWithCuration(path, ruleIdentifier, matchedText, spdxId, licenseCurations);
+          if (effective == null) {
+            // license finding to be REMOVED via finding
+            // this is a curation operation, so set the status
+            componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
+            continue;
+          }
+          if (effective.license != null || effective.url != null) {
+            // license or url are altered due to curation, so set the status
+            componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
+          }
+          licenseName = effective.license != null ? effective.license : li.get("spdx_license_key").asText();
+
         }
+
+        String effectiveLicenseName = spdxIdMap.get(licenseName);
+        if (effectiveLicenseName == null) {
+          // not contained in map --> this must be the Classpath-exception-2.0
+          continue;
+        } else {
+          licenseName = effectiveLicenseName;
+        }
+        String licenseDefaultUrl = li.get("scancode_text_url").asText();
+        if (effective.url != null) {
+          licenseDefaultUrl = effective.url;
+        }
+        licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
+        double score = li.get("score").asDouble();
+        String licenseUrl = path;
+        int startLine = li.get("start_line").asInt();
+        int endLine = li.get("end_line").asInt();
+        if (!takeCompleteFile) {
+          licenseUrl += "#L" + startLine;
+          if (endLine != startLine) {
+            licenseUrl += "-L" + endLine;
+          }
+        }
+        if (effective.url != null) {
+          // curation redefined the license URL
+          licenseUrl = effective.url;
+          // enforce that the filescore always exceeds the threshold
+          startLine = 0;
+          endLine = Integer.MAX_VALUE;
+        }
+
+        licenseUrl = normalizeLicenseUrl(packageUrl, licenseUrl);
+        String givenLicenseText = null;
+        if (licenseUrl != null) {
+          givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseUrl);
+        }
+
+        scancodeComponentInfoData.addLicense(licenseName, licenseName, licenseDefaultUrl, score, licenseUrl,
+            givenLicenseText, endLine - startLine);
       }
+      // do any per scanned file postprocessing
+      addCopyrightsByCuration(path, copyrightCurations, componentScancodeInfos);
+      addLicensesByCuration(packageUrl, path, licenseCurations, componentScancodeInfos);
+
     }
+    // add copyrights / licenses due to curations on package level
+    addCopyrightsByCuration(null, copyrightCurations, componentScancodeInfos);
+    addLicensesByCuration(packageUrl, null, licenseCurations, componentScancodeInfos);
 
-    for (JsonNode packageNode : scancodeJson.get("packages")) {
-      for (JsonNode licenseDetectionNode : packageNode.get("license_detections")) {
-        String licenseExpression = licenseDetectionNode.get("license_expression").asText();
-        for (JsonNode match : licenseDetectionNode.get("matches")) {
-          String licenseId = match.get("identifier").asText();
-          double score = match.get("score").asDouble();
-          String filePath = packageNode.get("path").asText();
-          String givenLicenseText = null;
-          int fileScore = match.get("matched_length").asInt();
-
-          scancodeComponentInfoData.addLicense(licenseId, licenseExpression, licenseExpression, score, filePath, givenLicenseText, fileScore);
-        }
-      }
-
-      for (JsonNode copyrightNode : packageNode.get("copyrights")) {
-        String statement = copyrightNode.get("value").asText();
-        scancodeComponentInfoData.addCopyright(statement);
-      }
+    if (scancodeComponentInfoData.getNoticeFileUrl() != null) {
+      scancodeComponentInfoData.setNoticeFileContent(this.fileScancodeRawComponentInfoProvider
+          .retrieveContent(packageUrl, scancodeComponentInfoData.getNoticeFileUrl()));
     }
-
     return componentScancodeInfos;
   }
-  /**
-   * Parses and maps Scancode JSON (version 31.x) to create ScancodeComponentInfo.
-   *
-   * @param packageUrl package URL of the package
-   * @param scancodeJson the Scancode JSON data
-   * @param curationDataHandle identifies which source should be used for the curation data.
-   * @return the ScancodeComponentInfo
-   * @throws ComponentInfoAdapterException if there was an issue during parsing
-   * @throws CurationInvalidException if the curation data is not valid
-   */
-private ScancodeComponentInfo parseAndMapScancodeJsonV31(String packageUrl, JsonNode scancodeJson,
-                                                             CurationDataHandle curationDataHandle)
-            throws ComponentInfoAdapterException, CurationInvalidException {
-
-        ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
-                this.minLicensefileNumberOfLines);
-        componentScancodeInfos.setPackageUrl(packageUrl);
-        componentScancodeInfos.setDataStatus(DataStatusValue.NO_ISSUES);
-        ScancodeComponentInfoData scancodeComponentInfoData = componentScancodeInfos.getComponentInfoData();
-        ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataHandle);
-
-        List<String> excludedPaths = null;
-        List<LicenseCuration> licenseCurations = null;
-        List<CopyrightCuration> copyrightCurations = null;
-        if (componentInfoCuration != null) {
-            excludedPaths = componentInfoCuration.getExcludedPaths();
-            licenseCurations = componentInfoCuration.getLicenseCurations();
-            copyrightCurations = componentInfoCuration.getCopyrightCurations();
-        }
-
-        for (JsonNode fileNode : scancodeJson.get("files")) {
-            String path = fileNode.get("path").asText();
-            if (excludedPaths != null && excludedPaths.contains(path)) {
-                continue;
-            }
-
-            if (fileNode.has("licenses")) {
-                for (JsonNode licenseNode : fileNode.get("licenses")) {
-                    String licenseId = licenseNode.get("key").asText();
-                    String licenseSpdxId = licenseNode.get("spdx_license_key").asText();
-                    double score = licenseNode.get("score").asDouble();
-                    String filePath = path;
-                    String givenLicenseText = null; // Not available in sample data
-                    int fileScore = licenseNode.get("matched_length").asInt(); // Assuming number of matches
-
-                    scancodeComponentInfoData.addLicense(licenseId, licenseSpdxId, "", score, filePath, givenLicenseText, fileScore);
-                }
-            }
-
-            if (fileNode.has("copyrights")) {
-                for (JsonNode copyrightNode : fileNode.get("copyrights")) {
-                    String statement = copyrightNode.get("value").asText();
-                    scancodeComponentInfoData.addCopyright(statement);
-                }
-            }
-
-            if (fileNode.has("notices")) {
-                for (JsonNode noticeNode : fileNode.get("notices")) {
-                    String notice = noticeNode.get("value").asText();
-                    scancodeComponentInfoData.setNoticeFileContent(notice);
-                }
-            }
-        }
-
-        return componentScancodeInfos;
-    }
 
   /**
    * Gets the effective license info after possibly applying curations for a single license finding.
@@ -351,18 +400,18 @@ private ScancodeComponentInfo parseAndMapScancodeJsonV31(String packageUrl, Json
    * @param licenseCurations
    * @return
    */
-  private LicenseCuration.NewLicenseData getEffectiveLicenseInfoWithCuration(String path, JsonNode li,
-      List<LicenseCuration> licenseCurations) {
+  private LicenseCuration.NewLicenseData getEffectiveLicenseInfoWithCuration(String path, String ruleIdentifier,
+      String matchedText, String spdxId, List<LicenseCuration> licenseCurations) {
 
     if (licenseCurations == null) {
       // NewLicenseData with all members being null indicates: no change
       return new LicenseCuration.NewLicenseData();
     }
 
-    String ruleIdentifier = li.get("matched_rule").get("identifier").asText();
-    String matchedText = li.get("matched_text").asText();
-    String spdxId = li.get("spdx_license_key").asText();
-
+    /*
+     * String ruleIdentifier = li.get("matched_rule").get("identifier").asText(); String matchedText =
+     * li.get("matched_text").asText(); String spdxId = li.get("spdx_license_key").asText();
+     */
     for (LicenseCuration rule : licenseCurations) {
       if (rule.matches(path, ruleIdentifier, matchedText, spdxId)) {
         LicenseCuration.NewLicenseData result = rule.newLicenseData();
@@ -379,6 +428,7 @@ private ScancodeComponentInfo parseAndMapScancodeJsonV31(String packageUrl, Json
         return result;
       }
     }
+
     // NewLicenseData with all members being null indicates: no change
     return new LicenseCuration.NewLicenseData();
   }
