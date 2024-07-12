@@ -12,11 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
-import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
-import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
-import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
-import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
-import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
+import com.devonfw.tools.solicitor.componentinfo.*;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
@@ -127,8 +123,10 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * @param rawScancodeData
-   * @param componentScancodeInfos
+   * Adds supplemented data to the Scancode component information.
+   *
+   * @param rawScancodeData The raw Scancode data.
+   * @param componentScancodeInfos The Scancode component information.
    */
   private void addSupplementedData(ScancodeRawComponentInfo rawScancodeData,
       ScancodeComponentInfo componentScancodeInfos) {
@@ -138,14 +136,14 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * Parses and maps scancode JSON to create ScancodeComponentInfo.
+   * Parses and maps Scancode JSON to create ScancodeComponentInfo.
    *
-   * @param packageUrl package URL of the package
-   * @param rawScancodeData raw scancode data
-   * @param curationDataHandle identifies which source should be used for the curation data.
-   * @return the ScancodeComponentInfo
-   * @throws ComponentInfoAdapterException if there was an issue during parsing
-   * @throws CurationInvalidException if the curation data is not valid
+   * @param packageUrl The package URL.
+   * @param rawScancodeData The raw Scancode data.
+   * @param curationDataHandle Identifies the source for curation data.
+   * @return The created ScancodeComponentInfo.
+   * @throws ComponentInfoAdapterException If an issue occurs during parsing.
+   * @throws CurationInvalidException If the curation data is invalid.
    */
   private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
       CurationDataHandle curationDataHandle) throws ComponentInfoAdapterException, CurationInvalidException {
@@ -393,12 +391,14 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * Gets the effective license info after possibly applying curations for a single license finding.
+   * Gets the effective license information after possibly applying curations for a single license finding.
    *
-   * @param path
-   * @param li
-   * @param licenseCurations
-   * @return
+   * @param path The path to the file.
+   * @param ruleIdentifier The identifier of the rule.
+   * @param matchedText The matched text for the license finding.
+   * @param spdxId The SPDX identifier of the license.
+   * @param licenseCurations The list of license curations to apply.
+   * @return The new license data after applying curations.
    */
   private LicenseCuration.NewLicenseData getEffectiveLicenseInfoWithCuration(String path, String ruleIdentifier,
       String matchedText, String spdxId, List<LicenseCuration> licenseCurations) {
