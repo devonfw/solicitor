@@ -14,7 +14,10 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -22,6 +25,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
+import com.devonfw.tools.solicitor.reader.maven.MavenReader;
 
 /**
  * A {@link Reader} for files in CSV format.
@@ -47,6 +51,7 @@ import com.devonfw.tools.solicitor.reader.Reader;
 
 @Component
 public class CsvReader extends AbstractReader implements Reader {
+  private static final Logger LOG = LoggerFactory.getLogger(CsvReader.class);
 
   /**
    * The supported type of this {@link Reader}.
@@ -265,6 +270,8 @@ public class CsvReader extends AbstractReader implements Reader {
               System.out.println("python set");
               appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(record.get(1), record.get(2)).toString());
               break;
+            default:
+              LOG.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
           }
           
           
