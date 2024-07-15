@@ -55,7 +55,7 @@ public class YarnModernReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      String repoType, String packageType, Map<String, String> configuration) {
 
     String content = readAndPreprocessJson(sourceUrl);
 

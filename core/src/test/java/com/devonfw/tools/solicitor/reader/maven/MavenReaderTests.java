@@ -39,7 +39,7 @@ public class MavenReaderTests {
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
     mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
-        "maven", null);
+        "maven", "maven", null);
     LOG.info(application.toString());
     assertEquals(95, application.getApplicationComponents().size());
 
@@ -74,7 +74,7 @@ public class MavenReaderTests {
 
     try {
       mr.readInventory("maven", "src/test/resources/licenses_sample_with_doctype.xml", application,
-          UsagePattern.DYNAMIC_LINKING, "maven", null);
+          UsagePattern.DYNAMIC_LINKING, "maven", "maven", null);
       fail("Expected exception was not thrown");
     } catch (SolicitorRuntimeException e) {
       // we check detailed message to make sure the exception is not thrown due to other reasons

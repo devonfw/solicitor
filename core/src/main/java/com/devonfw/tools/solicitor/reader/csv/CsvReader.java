@@ -15,6 +15,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -62,7 +63,7 @@ public class CsvReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      String repoType, String packageType, Map<String, String> configuration) {
 
     int components = 0;
     int licenses = 0;
@@ -248,6 +249,25 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setVersion(record.get(2));
           appComponent.setUsagePattern(usagePattern);
           appComponent.setRepoType(repoType);
+          
+          // Set packageURL depending on packageType
+          switch(packageType) {
+            case "maven":
+              System.out.println("maven set");
+              appComponent.setPackageUrl(
+                  PackageURLHelper.fromMavenCoordinates(record.get(0), record.get(1), record.get(2)).toString());
+              break;
+            case "npm":
+              System.out.println("npm set");
+              appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(record.get(1), record.get(2)).toString());
+              break;
+            case "pypi":
+              System.out.println("python set");
+              appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(record.get(1), record.get(2)).toString());
+              break;
+          }
+          
+          
           // merge ApplicationComponentImpl with same key if they appear
           // on
           // subsequent lines (multilicensing)

@@ -49,7 +49,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        "cyclonedx", null);
+        "cyclonedx", "cyclonedx", null);
     LOG.info(application.toString());
 
     assertEquals(32, application.getApplicationComponents().size());
@@ -85,7 +85,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        "cyclonedx", null);
+        "cyclonedx", "cyclonedx", null);
     LOG.info(application.toString());
 
     assertEquals(32, application.getApplicationComponents().size());
@@ -108,7 +108,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        "someRepoType", null);
+        "someRepoType", "someRepoType", null);
     LOG.info(application.toString());
 
     assertEquals(32, application.getApplicationComponents().size());
@@ -170,7 +170,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("npm", "src/test/resources/npmsbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        "cyclonedx", null);
+        "cyclonedx", "cyclonedx", null);
     LOG.info(application.toString());
 
     assertEquals(74, application.getApplicationComponents().size());

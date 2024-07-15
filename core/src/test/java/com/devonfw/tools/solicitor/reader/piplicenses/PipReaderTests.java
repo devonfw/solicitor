@@ -33,7 +33,7 @@ public class PipReaderTests {
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, "pip",
+    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, "pip", "pip",
         null);
 
   }
