@@ -81,42 +81,12 @@ public class FilteredScancodeComponentInfoProviderTests {
    * @throws CurationInvalidException if the curation data is not valid
    */
   @Test
-  public void testGetComponentInfoWithCurationsAndExclusionsV31()
+  public void testGetComponentInfoWithCurationsAndExclusions()
       throws ComponentInfoAdapterException, CurationInvalidException {
 
     // given
     this.singleFileCurationProvider
-        .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions_v31.yaml");
-    // when
-    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"));
-
-    // then
-    assertNotNull(scancodeComponentInfo.getComponentInfoData());
-    assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        scancodeComponentInfo.getPackageUrl());
-    assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
-        scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
-    assertEquals(0, scancodeComponentInfo.getComponentInfoData().getCopyrights().size()); // since the copyright is
-                                                                                          // found under
-    // /src/../SampleClass.java1, it will be excluded
-  }
-
-  /**
-   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when the /src directory is
-   * excluded
-   *
-   * @throws ComponentInfoAdapterException if something goes wrong
-   * @throws CurationInvalidException if the curation data is not valid
-   */
-  //@Test
-  public void testGetComponentInfoWithCurationsAndExclusionsV32()
-      throws ComponentInfoAdapterException, CurationInvalidException {
-
-    // given
-    this.singleFileCurationProvider
-        .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions_v32.yaml");
+        .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions.yaml");
     // when
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
