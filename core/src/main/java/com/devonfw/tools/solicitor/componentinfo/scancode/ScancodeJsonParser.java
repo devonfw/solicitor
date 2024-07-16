@@ -45,16 +45,7 @@ public class ScancodeJsonParser {
   private String licenseName = "", spdxId = "", ruleIdentifier = "", matchedText = "";
 
 
-  /**
-   * Constructor for ScancodeJsonParser.
-   *
-   * @param fileScancodeRawComponentInfoProvider provider for raw Scancode component information.
-   * @param packageUrl URL of the package being processed.
-   * @param rawScancodeData raw Scancode data.
-   * @param componentScancodeInfos component information for Scancode.
-   * @param scancodeComponentInfoData data for Scancode component information.
-   * @param componentInfoCuration curation data for component information.
-   */
+
   public ScancodeJsonParser(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider, String packageUrl, 
       ScancodeRawComponentInfo rawScancodeData, ScancodeComponentInfo componentScancodeInfos, 
       ScancodeComponentInfoData scancodeComponentInfoData, ComponentInfoCuration componentInfoCuration) {
@@ -66,11 +57,7 @@ public class ScancodeJsonParser {
     setComponentInfoCuration(componentInfoCuration);
   }
 
-/**
- * Sets the component information curation.
- *
- * @param componentInfoCuration curation data for component information.
- */
+
   private void setComponentInfoCuration(ComponentInfoCuration componentInfoCuration){
     
       // Get all excludedPaths in this curation
@@ -81,13 +68,7 @@ public class ScancodeJsonParser {
       }
   }
 
-  /**
-   * Check if the given path prefix is excluded in the curation.
-   *
-   * @param path          in the scancode data
-   * @param excludedPaths all excluded paths defined in the curation
-   * @return true if path prefix is excluded in curation
-   */
+
   private boolean isExcluded(String path, List<String> excludedPaths) {
 
     if (excludedPaths != null) {
@@ -100,13 +81,7 @@ public class ScancodeJsonParser {
     return false;
   }
 
-  /**
-   * Parses the Scancode JSON data and extracts relevant component information.
-   *
-   * @param licenseToTextRatioToTakeCompleteFile Ratio to determine if the complete file should be taken.
-   * @return ScancodeComponentInfo containing the parsed component information.
-   * @throws ComponentInfoAdapterException If there is an error in parsing the JSON data.
-   */
+
   public  ScancodeComponentInfo parse(double licenseToTextRatioToTakeCompleteFile) throws ComponentInfoAdapterException {
     JsonNode scancodeJson;
       try {
@@ -179,7 +154,7 @@ public class ScancodeJsonParser {
    * Processes the copyright information from the given JSON node.
    *
    * @param copyrights JSON node containing the copyright information.
-   * @param path       path of the file in the Scancode data.
+   * @param path       Path of the file in the Scancode data.
    */
   private void processCopyrights(JsonNode copyrights, String path){
     for (JsonNode cr : copyrights) {
@@ -206,14 +181,7 @@ public class ScancodeJsonParser {
     }
   }
 
-  /**
-   * Gets the effective copyright after possibly applying curations for a single copyright finding.
-   *
-   * @param path       The path of the file.
-   * @param copyright The original copyright text.
-   * @param copyrightCurations The list of copyright curations to apply.
-   * @return Effective copyright text after applying curations, or null if removed.
-   */
+
   private String getEffectiveCopyrightWithCuration(String path, String copyright,
       List<CopyrightCuration> copyrightCurations) {
 
@@ -244,12 +212,8 @@ public class ScancodeJsonParser {
     // no curations applied: return the original copyright
     return copyright;
   }
-  /**
-   * Sets the license information for Scancode version 3.1 or older.
-   *
-   * @param licenses JSON node containing the license information.
-   * @param path     Path of the file in the Scancode data.
-   */
+
+
   private void setlicensesV31(JsonNode licenses, String path){
     for (JsonNode li : licenses) {
       ruleIdentifier = li.get("matched_rule").get("identifier").asText();
@@ -277,13 +241,7 @@ public class ScancodeJsonParser {
 
   }
 
-  /**
-   * Sets the license information for Scancode version 3.2 or newer.
-   *
-   * @param licenses JSON node containing the license information.
-   * @param file     File node containing the license detections.
-   * @param path     Path of the file in the Scancode data.
-   */
+
   private void setlicensesV32(JsonNode licenses, JsonNode file, String path){
     spdxId = file.get("detected_license_expression_spdx").asText();
         for (JsonNode li : licenses) {
@@ -311,16 +269,7 @@ public class ScancodeJsonParser {
         }
   }
 
-  /**
-   * Gets the effective license information after possibly applying curations for a single license finding.
-   *
-   * @param path The path to the file.
-   * @param ruleIdentifier The identifier of the rule.
-   * @param matchedText The matched text for the license finding.
-   * @param spdxId The SPDX identifier of the license.
-   * @param licenseCurations The list of license curations to apply.
-   * @return The new license data after applying curations.
-   */
+
   private LicenseCuration.NewLicenseData getEffectiveLicenseInfoWithCuration(String path, String ruleIdentifier,
       String matchedText, String spdxId, List<LicenseCuration> licenseCurations) {
 
@@ -370,13 +319,7 @@ public class ScancodeJsonParser {
       }
   }
 
-  /**
-   * Sets the status of a license finding for Scancode version 3.1 or older.
-   *
-   * @param license license node containing the license information.
-   * @param path    path of the file in the Scancode data.
-   * @return license information.
-   */
+
   private LicenseCuration.NewLicenseData setStatusV31(JsonNode license, String path){
     LicenseCuration.NewLicenseData effective =null;
     ruleIdentifier = license.get("matched_rule").get("identifier").asText();
@@ -398,13 +341,7 @@ public class ScancodeJsonParser {
           return effective;
   }
 
-  /**
-   * Sets the status of a license finding for Scancode version 3.2 or newer.
-   *
-   * @param license license node containing the license information.
-   * @param path    path of the file in the Scancode data.
-   * @return license information.
-   */
+
   private LicenseCuration.NewLicenseData setStatusV32(JsonNode license, String path){
     LicenseCuration.NewLicenseData effective = null;
     for (JsonNode matche : license.get("matches")) {
@@ -427,14 +364,7 @@ public class ScancodeJsonParser {
     return effective;
   }
 
-  /**
-   * Reformats the license data and adds it to the Scancode component information.
-   *
-   * @param license JSON node containing the license information.
-   * @param effective Effective license data.
-   * @param path Path of the file in the Scancode data.
-   * @param takeCompleteFile Flag indicating if the complete file should be taken.
-   */
+
   private void reformatData(JsonNode license, LicenseCuration.NewLicenseData effective, String path, boolean takeCompleteFile){
     String effectiveLicenseName = spdxIdMap.get(licenseName);
         if (effectiveLicenseName == null) {
@@ -476,13 +406,7 @@ public class ScancodeJsonParser {
             givenLicenseText, endLine - startLine);
     }
       
-  /**
-   * Adjustment of license paths/urls so that they might retrieved
-   *
-   * @param packageUrl package url of the package
-   * @param licenseUrl the original path or URL
-   * @return adjustedLicenseUrl the adjusted path or url as a url
-   */
+
   private String normalizeLicenseUrl(String packageUrl, String licenseUrl) {
     String adjustedLicenseUrl = licenseUrl;
     if (licenseUrl != null) {
@@ -499,11 +423,7 @@ public class ScancodeJsonParser {
     return adjustedLicenseUrl;
   }
 
-   /**
-   * Adds copyrights entries due to curations.
-   *
-   * @param effective effective license data
-   */
+
   private void addCopyrightsByCuration(String path) {
 
     if (copyrightCurations == null) {
@@ -528,11 +448,7 @@ public class ScancodeJsonParser {
     }
   }
 
-  /**
-   * Adds license entries due to curations.
-   * 
-   * @param path
-   */
+
   private void addLicensesByCuration(String path) {
 
     if (licenseCurations == null) {
