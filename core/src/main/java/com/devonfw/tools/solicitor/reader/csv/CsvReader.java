@@ -221,6 +221,23 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setUsagePattern(usagePattern);
           appComponent.setRepoType(repoType);
 
+          // Set packageURL depending on packageType
+          switch (packageType) {
+            case "maven":
+              appComponent.setPackageUrl(
+                  PackageURLHelper.fromMavenCoordinates(record.get(0), record.get(1), record.get(2)).toString());
+              break;
+            case "npm":
+              appComponent.setPackageUrl(
+                  PackageURLHelper.fromNpmPackageNameAndVersion(record.get(1), record.get(2)).toString());
+              break;
+            case "pypi":
+              appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(record.get(1), record.get(2)).toString());
+              break;
+            default:
+              LOG.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
+          }
+
           // merge ApplicationComponentImpl with same key if they appear
           // on
           // subsequent lines (multilicensing)
@@ -254,27 +271,24 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setVersion(record.get(2));
           appComponent.setUsagePattern(usagePattern);
           appComponent.setRepoType(repoType);
-          
+
           // Set packageURL depending on packageType
-          switch(packageType) {
+          switch (packageType) {
             case "maven":
-              System.out.println("maven set");
               appComponent.setPackageUrl(
                   PackageURLHelper.fromMavenCoordinates(record.get(0), record.get(1), record.get(2)).toString());
               break;
             case "npm":
-              System.out.println("npm set");
-              appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(record.get(1), record.get(2)).toString());
+              appComponent.setPackageUrl(
+                  PackageURLHelper.fromNpmPackageNameAndVersion(record.get(1), record.get(2)).toString());
               break;
             case "pypi":
-              System.out.println("python set");
               appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(record.get(1), record.get(2)).toString());
               break;
             default:
               LOG.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
           }
-          
-          
+
           // merge ApplicationComponentImpl with same key if they appear
           // on
           // subsequent lines (multilicensing)

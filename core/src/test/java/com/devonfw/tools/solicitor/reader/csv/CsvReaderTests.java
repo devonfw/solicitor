@@ -101,4 +101,19 @@ public class CsvReaderTests {
     assertTrue(found);
   }
 
+  @Test
+  public void testFindPackageUrl() {
+
+    List<ApplicationComponent> lapc = this.application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("albireo") && ap.getPackageUrl().equals("pkg:maven/org.eclipse/albireo@0.0.3")) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
+
+  }
+
 }
