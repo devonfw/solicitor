@@ -553,7 +553,8 @@ In _Solicitor_ the data is read with the following part of the config
 "readers" : [ {
   "type" : "csv",
   "source" : "file:path/to/the/file.csv",
-  "usagePattern" : "DYNAMIC_LINKING"
+  "usagePattern" : "DYNAMIC_LINKING",
+  "packageType": "maven",
 } ]
 ----
 
@@ -624,7 +625,6 @@ These configurations may also be used to overwrite options of a https://commons.
 Important: In case that a component has multiple licenses attached, there needs to be a separate
 line in the csv file for each license.
 
-WARNING: The CSV reader currently does not fill the attribute `packageUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read by the CSV reader.
 
 === NPM
 
