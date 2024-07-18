@@ -1,20 +1,24 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
-import com.devonfw.tools.solicitor.componentinfo.*;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
+import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
+import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
+import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
-
 import com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeComponentInfo.ScancodeComponentInfoData;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -25,8 +29,6 @@ import com.github.packageurl.PackageURL;
 public class FilteredScancodeComponentInfoProvider implements FilteredComponentInfoProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(FilteredScancodeComponentInfoProvider.class);
-
-  //private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
   private double minLicenseScore;
 
@@ -78,6 +80,23 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
+   * Determines the tool version from the Scancode raw data.
+   *
+   * @param rawScancodeData The raw Scancode data.
+   * @return The tool version.
+   */
+  public String determineToolVersion(ScancodeRawComponentInfo rawScancodeData) {
+
+    try {
+      JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
+      return scancodeJson.get("headers").get(0).get("tool_version").asText();
+    } catch (Exception e) {
+      LOG.error("Error determining tool version", e);
+      return "Unknown";
+    }
+  }
+
+  /**
    * Read scancode information for the given package from local file storage.
    *
    * @param packageUrl The package url of the package
@@ -101,6 +120,9 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
       return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.NOT_AVAILABLE);
     }
 
+    // Determine the tool version
+    String toolVersion = determineToolVersion(rawScancodeData);
+    LOG.debug("Scancode tool version: {}", toolVersion);
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
         curationDataHandle);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
@@ -149,7 +171,8 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
 
     // Get the curation for a given packageUrl
     ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataHandle);
-    ScancodeJsonParser scancodeJsonParser = new ScancodeJsonParser(fileScancodeRawComponentInfoProvider, packageUrl, rawScancodeData, componentScancodeInfos, scancodeComponentInfoData, componentInfoCuration);    
-    return scancodeJsonParser.parse(licenseToTextRatioToTakeCompleteFile);
+    ScancodeJsonParser scancodeJsonParser = new ScancodeJsonParser(this.fileScancodeRawComponentInfoProvider,
+        packageUrl, rawScancodeData, componentScancodeInfos, scancodeComponentInfoData, componentInfoCuration);
+    return scancodeJsonParser.parse(this.licenseToTextRatioToTakeCompleteFile);
   }
 }
