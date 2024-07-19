@@ -52,8 +52,6 @@ public class ScancodeJsonParser {
 
   private int numberOfGplLicenses = 0;
 
-  // private String licenseName = "", spdxId = "", ruleIdentifier = "", matchedText = "";
-
   /**
    * Constructs a new ScancodeJsonParser.
    *
@@ -163,7 +161,7 @@ public class ScancodeJsonParser {
         LicenseCuration.NewLicenseData effective = isNewVersion ? setStatusV32(license, path)
             : setStatusV31(license, path);
         if (effective != null) {
-          reformatData(license, effective, path, takeCompleteFile);
+          reformatData(license, effective, path, takeCompleteFile, isNewVersion);
         }
       }
       addCopyrightsByCuration(path);
@@ -310,7 +308,7 @@ public class ScancodeJsonParser {
       for (JsonNode matche : matchesNode) {
         String ruleIdentifier = matche.has("rule_identifier") ? matche.get("rule_identifier").asText() : null;
         String matchedText = matche.has("matched_text") ? matche.get("matched_text").asText() : null;
-        String spdxId = li.has("spdx_license_expression") ? li.get("spdx_license_expression").asText() : null;
+        String spdxId = matche.has("spdx_license_expression") ? matche.get("spdx_license_expression").asText() : null;
 
         if (ruleIdentifier == null || matchedText == null || spdxId == null) {
           LOG.error("Required license fields are missing: ruleIdentifier=" + ruleIdentifier + ", matchedText="
@@ -430,9 +428,7 @@ public class ScancodeJsonParser {
       // license or url are altered due to curation, so set the status
       this.componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
     }
-    // Assign licenseName locally
     String licenseName = effective.license != null ? effective.license : spdxId;
-    // Set licenseName to the instance variable
     return effective;
   }
 
@@ -455,7 +451,7 @@ public class ScancodeJsonParser {
     for (JsonNode matche : matchesNode) {
       JsonNode ruleIdentifierNode = matche.get("rule_identifier");
       JsonNode matchedTextNode = matche.get("matched_text");
-      JsonNode spdxIdNode = license.get("spdx_license_expression");
+      JsonNode spdxIdNode = matche.get("spdx_license_expression");
 
       if (ruleIdentifierNode == null || matchedTextNode == null || spdxIdNode == null) {
         LOG.error("Required fields are missing: ruleIdentifier=" + ruleIdentifierNode + ", matchedText="
@@ -478,9 +474,6 @@ public class ScancodeJsonParser {
         // license or url are altered due to curation, so set the status
         this.componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
       }
-      // Assign licenseName locally
-      String licenseName = effective.license != null ? effective.license : spdxId;
-      // Set licenseName to the instance variable
     }
     return effective;
   }
@@ -494,7 +487,7 @@ public class ScancodeJsonParser {
    * @param takeCompleteFile Flag to indicate if the complete file should be taken.
    */
   private void reformatData(JsonNode license, LicenseCuration.NewLicenseData effective, String path,
-      boolean takeCompleteFile) {
+      boolean takeCompleteFile, boolean isNewVersion) {
 
     if (effective == null || this.spdxIdMap == null) {
       // Log or handle the error appropriately
@@ -502,12 +495,36 @@ public class ScancodeJsonParser {
       return;
     }
 
-    String ruleIdentifier = license.get("matched_rule").get("identifier").asText();
-    String matchedText = license.get("matched_text").asText();
-    String spdxId = license.get("spdx_license_key").asText();
-    String licenseName = effective.license != null ? effective.license : spdxId;
+    String spdxId = null;
+    String licenseDefaultUrl = null;
+    double score = 0.0;
+    String licenseUrl = path;
+    int startLine = 0;
+    int endLine = Integer.MAX_VALUE;
+    if (isNewVersion) {
+      for (JsonNode matche : license.get("matches")) {
+        if (matche.get("rule_identifier").toString().contains("mit.LICENSE")) {
+          spdxId = matche.get("spdx_license_expression").toString();
+          score = matche.get("score").asDouble();
+          startLine = matche.get("start_line").asInt();
+          endLine = matche.get("end_line").asInt();
+          licenseDefaultUrl = matche.get("rule_url").toString().replace("\"", "").trim();
+          break;
+        }
+      }
+    } else {
+      spdxId = license.get("spdx_license_key").asText();
+      licenseDefaultUrl = license.get("scancode_text_url").asText();
+      score = license.get("score").asDouble();
+      startLine = license.get("start_line").asInt();
+      endLine = license.get("end_line").asInt();
+    }
+    if (spdxId == null)
+      return;
 
+    String licenseName = effective.license != null ? effective.license : spdxId.replace("\"", "").trim();
     String effectiveLicenseName = this.spdxIdMap.get(licenseName);
+
     if (effectiveLicenseName == null) {
       // not contained in map --> this must be the Classpath-exception-2.0
       return;
@@ -515,15 +532,10 @@ public class ScancodeJsonParser {
       licenseName = effectiveLicenseName;
     }
 
-    String licenseDefaultUrl = license.has("scancode_text_url") ? license.get("scancode_text_url").asText() : null;
     if (effective.url != null) {
       licenseDefaultUrl = effective.url;
     }
     licenseDefaultUrl = normalizeLicenseUrl(this.packageUrl, licenseDefaultUrl);
-    double score = license.has("score") ? license.get("score").asDouble() : 0.0;
-    String licenseUrl = path;
-    int startLine = license.has("start_line") ? license.get("start_line").asInt() : 0;
-    int endLine = license.has("end_line") ? license.get("end_line").asInt() : Integer.MAX_VALUE;
 
     if (!takeCompleteFile) {
       licenseUrl += "#L" + startLine;
