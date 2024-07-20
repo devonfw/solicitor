@@ -192,7 +192,7 @@ public class CsvReaderTests {
   @Test
   public void testNullPackageUrl() {
 
-    String expectedLogMessage = "The packageType is null or empty";
+    String expectedLogMessage = "The package type is null or empty";
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
