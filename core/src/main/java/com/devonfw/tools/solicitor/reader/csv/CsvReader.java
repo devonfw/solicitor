@@ -52,7 +52,8 @@ import com.github.packageurl.PackageURL;
 
 @Component
 public class CsvReader extends AbstractReader implements Reader {
-  private static final Logger LOG = LoggerFactory.getLogger(CsvReader.class);
+  private Logger logger = LoggerFactory.getLogger(CsvReader.class); // not static final for testing
+                                                                    // purposes
 
   /**
    * The supported type of this {@link Reader}.
@@ -295,8 +296,16 @@ public class CsvReader extends AbstractReader implements Reader {
    * @param version the version
    * @return the created PackageURL
    */
-  private String getPackageURL(String packageType, String groupId, String artifactId, String version) {
+  public String getPackageURL(String packageType, String groupId, String artifactId, String version) {
 
+    if (packageType == null) {
+      this.logger.warn(LogMessages.EMPTY_PACKAGE_TYPE.msg(), packageType);
+      return null;
+    }
+    if (packageType.isEmpty()) {
+      this.logger.warn(LogMessages.EMPTY_PACKAGE_TYPE.msg(), packageType);
+      return null;
+    }
     switch (packageType) {
       case "maven":
         return PackageURLHelper.fromMavenCoordinates(groupId, artifactId, version).toString();
@@ -305,9 +314,19 @@ public class CsvReader extends AbstractReader implements Reader {
       case "pypi":
         return PackageURLHelper.fromPyPICoordinates(artifactId, version).toString();
       default:
-        LOG.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
+        this.logger.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
         return null;
     }
+  }
+
+  /**
+   * Sets the logger. Available for testing purposes only.
+   *
+   * @param logger the logger
+   */
+  void setLogger(Logger logger) {
+
+    this.logger = logger;
   }
 
 }
