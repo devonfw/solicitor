@@ -26,6 +26,7 @@ import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.maven.MavenReader;
+import com.github.packageurl.PackageURL;
 
 /**
  * A {@link Reader} for files in CSV format.
@@ -220,23 +221,7 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setVersion(version);
           appComponent.setUsagePattern(usagePattern);
           appComponent.setRepoType(repoType);
-
-          // Set packageURL depending on packageType
-          switch (packageType) {
-            case "maven":
-              appComponent.setPackageUrl(
-                  PackageURLHelper.fromMavenCoordinates(record.get(0), record.get(1), record.get(2)).toString());
-              break;
-            case "npm":
-              appComponent.setPackageUrl(
-                  PackageURLHelper.fromNpmPackageNameAndVersion(record.get(1), record.get(2)).toString());
-              break;
-            case "pypi":
-              appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(record.get(1), record.get(2)).toString());
-              break;
-            default:
-              LOG.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
-          }
+          appComponent.setPackageUrl(getPackageURL(packageType, groupId, artifactId, version));
 
           // merge ApplicationComponentImpl with same key if they appear
           // on
@@ -271,23 +256,7 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setVersion(record.get(2));
           appComponent.setUsagePattern(usagePattern);
           appComponent.setRepoType(repoType);
-
-          // Set packageURL depending on packageType
-          switch (packageType) {
-            case "maven":
-              appComponent.setPackageUrl(
-                  PackageURLHelper.fromMavenCoordinates(record.get(0), record.get(1), record.get(2)).toString());
-              break;
-            case "npm":
-              appComponent.setPackageUrl(
-                  PackageURLHelper.fromNpmPackageNameAndVersion(record.get(1), record.get(2)).toString());
-              break;
-            case "pypi":
-              appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(record.get(1), record.get(2)).toString());
-              break;
-            default:
-              LOG.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
-          }
+          appComponent.setPackageUrl(getPackageURL(packageType, record.get(0), record.get(1), record.get(2)));
 
           // merge ApplicationComponentImpl with same key if they appear
           // on
@@ -314,6 +283,31 @@ public class CsvReader extends AbstractReader implements Reader {
       throw new SolicitorRuntimeException("Could not read CSV inventory source '" + sourceUrl + "'", e1);
     }
 
+  }
+
+  /**
+   * Call the appropriate {@link PackageURLHelper} method to create a packageURL. Returns null if no
+   * {@link PackageURLHelper} exists for the packageType.
+   *
+   * @param packageType the package type
+   * @param groupId the groupId if available
+   * @param artifactId the artifactId
+   * @param version the version
+   * @return the created PackageURL
+   */
+  private String getPackageURL(String packageType, String groupId, String artifactId, String version) {
+
+    switch (packageType) {
+      case "maven":
+        return PackageURLHelper.fromMavenCoordinates(groupId, artifactId, version).toString();
+      case "npm":
+        return PackageURLHelper.fromNpmPackageNameAndVersion(artifactId, version).toString();
+      case "pypi":
+        return PackageURLHelper.fromPyPICoordinates(artifactId, version).toString();
+      default:
+        LOG.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
+        return null;
+    }
   }
 
 }
