@@ -153,7 +153,7 @@ public class CsvReaderTests {
   }
 
   /**
-   * Tests if packageUrl for pypi has been created. Reader runs without config.
+   * Tests if packageUrl for pypi has been created. Reader runs with config and swapped artifactId and version position.
    */
   @Test
   public void testFindPypiPackageUrl() {
@@ -161,11 +161,18 @@ public class CsvReaderTests {
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
     application = modelFactory.newApplication("testAppPypi", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+
+    // configuration settings
+    Map<String, String> configuration = new HashMap<String, String>();
+    configuration.put("artifactId", "2");
+    configuration.put("version", "1");
+    configuration.put("delimiter", ";");
+
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
-        "pypi", "pypi", null);
+        "pypi", "pypi", configuration);
 
     List<ApplicationComponent> lapc = application.getApplicationComponents();
     boolean found = false;

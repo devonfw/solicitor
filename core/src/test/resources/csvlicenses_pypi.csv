@@ -1,3 +1,3 @@
-;APScheduler;3.6.3;MIT;https://github.com/agronholm/apscheduler;;
-;Keras-Applications;1.0.8;MIT;https://github.com/keras-team/keras-applications;;
-;python-dateutil;2.8.1;Dual License;https://dateutil.readthedocs.io;;
+;3.6.3;APScheduler;MIT;https://github.com/agronholm/apscheduler;;
+;1.0.8;Keras-Applications;MIT;https://github.com/keras-team/keras-applications;;
+;2.8.1;python-dateutil;Dual License;https://dateutil.readthedocs.io;;
