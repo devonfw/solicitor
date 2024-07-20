@@ -6,12 +6,15 @@ package com.devonfw.tools.solicitor.reader.csv;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +29,8 @@ public class CsvReaderTests {
   private static final Logger LOG = LoggerFactory.getLogger(CsvReaderTests.class);
 
   Application application;
+
+  private Logger logger;
 
   public CsvReaderTests() {
 
@@ -101,8 +106,11 @@ public class CsvReaderTests {
     assertTrue(found);
   }
 
+  /**
+   * Tests if packageUrl for maven has been created. Reader runs with config.
+   */
   @Test
-  public void testFindPackageUrl() {
+  public void testFindMavenPackageUrl() {
 
     List<ApplicationComponent> lapc = this.application.getApplicationComponents();
     boolean found = false;
@@ -113,6 +121,93 @@ public class CsvReaderTests {
       }
     }
     assertTrue(found);
+
+  }
+
+  /**
+   * Tests if packageUrl for npm has been created. Reader runs without config.
+   */
+  @Test
+  public void testFindNpmPackageUrl() {
+
+    Application application;
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    application = modelFactory.newApplication("testAppNpm", "0.0.0.TEST", "1.1.2111", "http://bla.com", "NPM");
+    CsvReader csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+    csvr.readInventory("csv", "src/test/resources/csvlicenses_npm.csv", application, UsagePattern.DYNAMIC_LINKING,
+        "npm", "npm", null);
+
+    List<ApplicationComponent> lapc = application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("@babel/code-frame")
+          && ap.getPackageUrl().equals("pkg:npm/%40babel/code-frame@7.8.3")) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
+
+  }
+
+  /**
+   * Tests if packageUrl for pypi has been created. Reader runs without config.
+   */
+  @Test
+  public void testFindPypiPackageUrl() {
+
+    Application application;
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    application = modelFactory.newApplication("testAppPypi", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+    CsvReader csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+    csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
+        "pypi", "pypi", null);
+
+    List<ApplicationComponent> lapc = application.getApplicationComponents();
+    boolean found = false;
+    for (ApplicationComponent ap : lapc) {
+      if (ap.getArtifactId().equals("python-dateutil") && ap.getPackageUrl().equals("pkg:pypi/python-dateutil@2.8.1")) {
+        found = true;
+        break;
+      }
+    }
+    assertTrue(found);
+
+  }
+
+  /**
+   * Tests if reader crashes with correct warn message if no packageType is given. Reader runs without config.
+   */
+  @Test
+  public void testNullPackageUrl() {
+
+    String expectedLogMessage = "The packageType is null or empty";
+
+    Application application;
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    application = modelFactory.newApplication("testAppNull", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+    CsvReader csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+
+    this.logger = mock(Logger.class);
+    csvr.setLogger(this.logger); // Set the mock logger
+
+    try {
+      csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
+          null, null, null);
+    } catch (Exception e) {
+      // Capture the log messages
+      ArgumentCaptor<String> logEntry1 = ArgumentCaptor.forClass(String.class);
+      verify(logger).warn(logEntry1.capture());
+
+      // Assert the log message
+      assertEquals(expectedLogMessage, logEntry1.getValue());
+    }
 
   }
 
