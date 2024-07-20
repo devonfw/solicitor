@@ -355,7 +355,7 @@ Within this section the different applications (=deliverables) of the engagement
 <8> usage pattern; possible values: `DYNAMIC_LINKING`, `STATIC_LINKING`, `STANDALONE_PRODUCT`; see description below
 <9> repoType: `repoType` to be set in the `ApplicationComponent` . *This parameter is deprecated and should no longer be used*, see <<List of Deprecated Features>>. The value of `repoType` in `ApplicationComponent` will otherwise be determined from the type info in the PackageURL of the component.
 <10> _placeholder patterns might be used here_
-<11> packageType: type of the packages in the input data. Relevant when using the CSV reader.
+<11> packageType: type of the packages in the input data. Must be a valid packageUrl type (see https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst). Relevant when using the CSV reader.
 
 ===== Usage Patterns
 The usage pattern describes how the ``ApplicationComponent``s (libraries, packages) which are read in via the Reader are linked (in)to the ``Application``s executable. The kind of linking might affect the legal evaluation of the license compliance.
