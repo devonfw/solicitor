@@ -202,7 +202,7 @@ public class CsvReaderTests {
     csvr.setInputStreamFactory(new FileInputStreamFactory());
 
     this.logger = mock(Logger.class);
-    csvr.setLogger(this.logger); // Set the mock logger
+    csvr.setLogger(this.logger);
 
     try {
       csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
@@ -212,7 +212,6 @@ public class CsvReaderTests {
       ArgumentCaptor<String> logEntry1 = ArgumentCaptor.forClass(String.class);
       verify(logger).warn(logEntry1.capture());
 
-      // Assert the log message
       assertEquals(expectedLogMessage, logEntry1.getValue());
     }
 
