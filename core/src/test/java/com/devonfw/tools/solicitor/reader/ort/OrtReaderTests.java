@@ -33,7 +33,7 @@ public class OrtReaderTests {
     OrtReader pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.DYNAMIC_LINKING, "ort", "ort",
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.DYNAMIC_LINKING, "ort", null,
         null);
 
   }

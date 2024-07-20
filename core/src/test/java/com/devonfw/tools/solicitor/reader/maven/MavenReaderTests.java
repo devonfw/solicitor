@@ -39,7 +39,7 @@ public class MavenReaderTests {
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
     mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
-        "maven", "maven", null);
+        "maven", null, null);
     LOG.info(application.toString());
     assertEquals(95, application.getApplicationComponents().size());
 

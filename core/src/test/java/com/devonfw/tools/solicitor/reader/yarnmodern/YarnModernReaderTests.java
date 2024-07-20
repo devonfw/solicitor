@@ -40,7 +40,7 @@ public class YarnModernReaderTests {
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
     yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", this.application,
-        UsagePattern.STATIC_LINKING, "npm", "npm", null);
+        UsagePattern.STATIC_LINKING, "npm", null, null);
 
   }
 
