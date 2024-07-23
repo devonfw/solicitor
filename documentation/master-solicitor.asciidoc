@@ -554,7 +554,7 @@ In _Solicitor_ the data is read with the following part of the config
   "type" : "csv",
   "source" : "file:path/to/the/file.csv",
   "usagePattern" : "DYNAMIC_LINKING",
-  "packageType": "maven",
+  "packageType": "maven"
 } ]
 ----
 
