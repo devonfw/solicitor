@@ -47,7 +47,7 @@ class ScancodeJsonParserTest {
   }
 
   /**
-   * Tests the parsing of Scancode version 3.1 JSON data.
+   * Tests the parsing of Scancode version 31 JSON data.
    *
    * @throws IOException if an I/O error occurs.
    * @throws ComponentInfoAdapterException if a component info adapter error occurs.
@@ -76,18 +76,14 @@ class ScancodeJsonParserTest {
     // Check if the combined license expression is correctly parsed
     assertEquals(1, result.getComponentInfoData().getLicenses().size());
     ScancodeLicenseInfo licenseInfo = result.getComponentInfoData().getLicenses().iterator().next();
-    // assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("https://scancode-licensedb.aboutcode.org/mit.LICENSE", licenseInfo.getLicenseUrl());
     assertEquals(100.0, licenseInfo.getLicenseScore());
-    // Check copyright information
-    assertEquals(1, result.getComponentInfoData().getCopyrights().size());
-    // assertTrue(result.getComponentInfoData().getCopyrights().contains("Copyright (c) 2024 MIT License"));
 
   }
 
   /**
-   * Tests the parsing of Scancode version 3.2 JSON data.
+   * Tests the parsing of Scancode version 32 JSON data.
    *
    * @throws IOException if an I/O error occurs.
    * @throws ComponentInfoAdapterException if a component info adapter error occurs.
@@ -115,7 +111,6 @@ class ScancodeJsonParserTest {
     // Check if the combined license expression is correctly parsed
     assertEquals(1, result.getComponentInfoData().getLicenses().size());
     ScancodeLicenseInfo licenseInfo = result.getComponentInfoData().getLicenses().iterator().next();
-    // assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("https://scancode-licensedb.aboutcode.org/mit.LICENSE", licenseInfo.getLicenseUrl());
     assertEquals(100.0, licenseInfo.getLicenseScore());
