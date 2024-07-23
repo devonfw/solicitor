@@ -119,25 +119,36 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           else if (licensesNode != null && licensesNode.isEmpty() == false) {
             // Iterate over each "license" object within the "licenses" array
             for (JsonNode licenseNode : licensesNode) {
-              // Declared License can be written either in "id" or "name" field. Prefer "id" as its written in SPDX
-              // format.
-              if (licenseNode.get("license").has("id")) {
-                if (licenseNode.get("license").has("url")) {
-                  licenseCount++;
-                  addRawLicense(appComponent, licenseNode.get("license").get("id").asText(),
-                      licenseNode.get("license").get("url").asText(), sourceUrl);
-                } else {
-                  licenseCount++;
-                  addRawLicense(appComponent, licenseNode.get("license").get("id").asText(), null, sourceUrl);
-                }
-              } else if (licenseNode.get("license").has("name")) {
-                if (licenseNode.get("license").has("url")) {
-                  licenseCount++;
-                  addRawLicense(appComponent, licenseNode.get("license").get("name").asText(),
-                      licenseNode.get("license").get("url").asText(), sourceUrl);
-                } else {
-                  licenseCount++;
-                  addRawLicense(appComponent, licenseNode.get("license").get("name").asText(), null, sourceUrl);
+
+              // Check for expressions
+              if (licenseNode.has("expression")) {
+                licenseCount++;
+                addRawLicense(appComponent, licenseNode.get("expression").asText(), null, sourceUrl);
+                System.out.println(licenseNode.get("expression").asText());
+              }
+
+              // Check for licenses
+              if (licenseNode.has("license")) {
+                // Declared License can be written either in "id" or "name" field. Prefer "id" as its written in SPDX
+                // format.
+                if (licenseNode.get("license").has("id")) {
+                  if (licenseNode.get("license").has("url")) {
+                    licenseCount++;
+                    addRawLicense(appComponent, licenseNode.get("license").get("id").asText(),
+                        licenseNode.get("license").get("url").asText(), sourceUrl);
+                  } else {
+                    licenseCount++;
+                    addRawLicense(appComponent, licenseNode.get("license").get("id").asText(), null, sourceUrl);
+                  }
+                } else if (licenseNode.get("license").has("name")) {
+                  if (licenseNode.get("license").has("url")) {
+                    licenseCount++;
+                    addRawLicense(appComponent, licenseNode.get("license").get("name").asText(),
+                        licenseNode.get("license").get("url").asText(), sourceUrl);
+                  } else {
+                    licenseCount++;
+                    addRawLicense(appComponent, licenseNode.get("license").get("name").asText(), null, sourceUrl);
+                  }
                 }
               }
             }
