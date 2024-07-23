@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeComponentInfo.ScancodeLicenseInfo;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Test class for {@link ScancodeJsonParser}.
@@ -58,12 +60,15 @@ class ScancodeJsonParserTest {
     this.rawScancodeData = new ScancodeRawComponentInfo();
     this.rawScancodeData.rawScancodeResult = jsonData;
 
-    // Create parser instance
-    ScancodeJsonParser parser = new ScancodeJsonParser(this.mockProvider, "mockPackageUrl", this.rawScancodeData,
+    JsonNode scancodeJson = new ObjectMapper().readTree(this.rawScancodeData.rawScancodeResult);
+
+    assertNotNull(scancodeJson);
+
+    ScancodeJsonParserV31 parser = new ScancodeJsonParserV31(this.mockProvider, "mockPackageUrl",
         this.componentScancodeInfos, this.scancodeComponentInfoData, this.componentInfoCuration);
 
     // Perform parsing
-    ScancodeComponentInfo result = parser.parse(20.0);
+    ScancodeComponentInfo result = parser.parse(scancodeJson, 20.0);
 
     // Validate the results
     assertNotNull(result);
@@ -74,14 +79,11 @@ class ScancodeJsonParserTest {
     // assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("https://scancode-licensedb.aboutcode.org/mit.LICENSE", licenseInfo.getLicenseUrl());
-
-    // Given License Text assertion (assuming you have a method to retrieve it)
-    String givenLicenseText = retrieveGivenLicenseText("MIT");
-    assertEquals(givenLicenseText, licenseInfo.getGivenLicenseText());
-
+    assertEquals(100.0, licenseInfo.getLicenseScore());
     // Check copyright information
     assertEquals(1, result.getComponentInfoData().getCopyrights().size());
     // assertTrue(result.getComponentInfoData().getCopyrights().contains("Copyright (c) 2024 MIT License"));
+
   }
 
   /**
@@ -98,13 +100,15 @@ class ScancodeJsonParserTest {
     this.rawScancodeData = new ScancodeRawComponentInfo();
     this.rawScancodeData.rawScancodeResult = jsonData;
 
-    // Create parser instance
-    ScancodeJsonParser parser = new ScancodeJsonParser(this.mockProvider, "mockPackageUrl", this.rawScancodeData,
+    JsonNode scancodeJson = new ObjectMapper().readTree(this.rawScancodeData.rawScancodeResult);
+
+    assertNotNull(scancodeJson);
+
+    ScancodeJsonParserV32 parser = new ScancodeJsonParserV32(this.mockProvider, "mockPackageUrl",
         this.componentScancodeInfos, this.scancodeComponentInfoData, this.componentInfoCuration);
 
     // Perform parsing
-    ScancodeComponentInfo result = parser.parse(20.0);
-
+    ScancodeComponentInfo result = parser.parse(scancodeJson, 20.0);
     // Validate the results
     assertNotNull(result);
 
@@ -114,10 +118,7 @@ class ScancodeJsonParserTest {
     // assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("MIT", licenseInfo.getSpdxid());
     assertEquals("https://scancode-licensedb.aboutcode.org/mit.LICENSE", licenseInfo.getLicenseUrl());
-
-    // Given License Text assertion (assuming you have a method to retrieve it)
-    String givenLicenseText = retrieveGivenLicenseText("MIT");
-    assertEquals(givenLicenseText, licenseInfo.getGivenLicenseText());
+    assertEquals(100.0, licenseInfo.getLicenseScore());
 
   }
 
@@ -133,14 +134,4 @@ class ScancodeJsonParserTest {
     return new String(Files.readAllBytes(Paths.get("src/test/resources/" + fileName)));
   }
 
-  /**
-   * Retrieves the given license text based on the SPDX ID.
-   *
-   * @param spdxId the SPDX ID of the license.
-   * @return the given license text.
-   */
-  private String retrieveGivenLicenseText(String spdxId) {
-
-    return null;
-  }
 }

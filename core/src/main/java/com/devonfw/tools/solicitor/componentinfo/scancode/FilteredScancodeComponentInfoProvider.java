@@ -80,23 +80,6 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * Determines the tool version from the Scancode raw data.
-   *
-   * @param rawScancodeData The raw Scancode data.
-   * @return The tool version.
-   */
-  public String determineToolVersion(ScancodeRawComponentInfo rawScancodeData) {
-
-    try {
-      JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
-      return scancodeJson.get("headers").get(0).get("tool_version").asText();
-    } catch (Exception e) {
-      LOG.error("Error determining tool version", e);
-      return "Unknown";
-    }
-  }
-
-  /**
    * Read scancode information for the given package from local file storage.
    *
    * @param packageUrl The package url of the package
@@ -120,9 +103,6 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
       return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.NOT_AVAILABLE);
     }
 
-    // Determine the tool version
-    String toolVersion = determineToolVersion(rawScancodeData);
-    LOG.debug("Scancode tool version: {}", toolVersion);
     ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
         curationDataHandle);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
@@ -148,14 +128,14 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * Parses and maps Scancode JSON to create ScancodeComponentInfo.
+   * Parses and maps the Scancode JSON data to a {@link ScancodeComponentInfo} object.
    *
-   * @param packageUrl The package URL.
-   * @param rawScancodeData The raw Scancode data.
-   * @param curationDataHandle Identifies the source for curation data.
-   * @return The created ScancodeComponentInfo.
-   * @throws ComponentInfoAdapterException If an issue occurs during parsing.
-   * @throws CurationInvalidException If the curation data is invalid.
+   * @param packageUrl the URL of the package.
+   * @param rawScancodeData the raw Scancode data to parse.
+   * @param curationDataHandle identifies the source of curation data.
+   * @return the {@link ScancodeComponentInfo} populated with data from the Scancode JSON.
+   * @throws ComponentInfoAdapterException if an error occurs while parsing the data.
+   * @throws CurationInvalidException if the curation data is invalid.
    */
   private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
       CurationDataHandle curationDataHandle) throws ComponentInfoAdapterException, CurationInvalidException {
@@ -163,16 +143,74 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
     componentScancodeInfos.setPackageUrl(packageUrl);
-    // set status to NO_ISSUES. This might be overridden later if issues are detected or curations are applied
     componentScancodeInfos.setDataStatus(DataStatusValue.NO_ISSUES);
 
-    // get the object which hold the actual data
     ScancodeComponentInfoData scancodeComponentInfoData = componentScancodeInfos.getComponentInfoData();
-
-    // Get the curation for a given packageUrl
     ComponentInfoCuration componentInfoCuration = this.curationProvider.findCurations(packageUrl, curationDataHandle);
-    ScancodeJsonParser scancodeJsonParser = new ScancodeJsonParser(this.fileScancodeRawComponentInfoProvider,
-        packageUrl, rawScancodeData, componentScancodeInfos, scancodeComponentInfoData, componentInfoCuration);
-    return scancodeJsonParser.parse(this.licenseToTextRatioToTakeCompleteFile);
+
+    JsonNode scancodeJson = parseScancodeJson(rawScancodeData.rawScancodeResult);
+    String toolVersion = extractToolVersion(scancodeJson);
+
+    ScancodeJsonParser scancodeJsonParser = createScancodeJsonParser(toolVersion, packageUrl, componentScancodeInfos,
+        scancodeComponentInfoData, componentInfoCuration);
+
+    return scancodeJsonParser.parse(scancodeJson, this.licenseToTextRatioToTakeCompleteFile);
+  }
+
+  /**
+   * Parses the raw Scancode JSON result into a {@link JsonNode}.
+   *
+   * @param rawScancodeResult the raw Scancode JSON result as a string.
+   * @return the parsed {@link JsonNode}.
+   * @throws ComponentInfoAdapterException if an error occurs while parsing the JSON.
+   */
+  private JsonNode parseScancodeJson(String rawScancodeResult) throws ComponentInfoAdapterException {
+
+    try {
+      return new ObjectMapper().readTree(rawScancodeResult);
+    } catch (Exception e) {
+      LOG.error("Error parsing Scancode JSON data", e);
+      throw new ComponentInfoAdapterException("Error parsing Scancode JSON data", e);
+    }
+  }
+
+  /**
+   * Extracts the tool version from the Scancode JSON data.
+   *
+   * @param scancodeJson the parsed Scancode JSON data.
+   * @return the tool version as a {@link String}.
+   * @throws ComponentInfoAdapterException if an error occurs while extracting the tool version.
+   */
+  private String extractToolVersion(JsonNode scancodeJson) throws ComponentInfoAdapterException {
+
+    try {
+      return scancodeJson.get("headers").get(0).get("tool_version").asText();
+    } catch (Exception e) {
+      LOG.error("Error extracting tool version from Scancode JSON", e);
+      throw new ComponentInfoAdapterException("Error extracting tool version from Scancode JSON", e);
+    }
+  }
+
+  /**
+   * Creates an appropriate {@link ScancodeJsonParser} based on the Scancode tool version.
+   *
+   * @param toolVersion the version of the Scancode tool.
+   * @param packageUrl the URL of the package.
+   * @param componentScancodeInfos the Scancode component information to populate.
+   * @param scancodeComponentInfoData the Scancode component information data.
+   * @param componentInfoCuration the curation data for the component.
+   * @return the {@link ScancodeJsonParser} instance for the specified tool version.
+   */
+  private ScancodeJsonParser createScancodeJsonParser(String toolVersion, String packageUrl,
+      ScancodeComponentInfo componentScancodeInfos, ScancodeComponentInfoData scancodeComponentInfoData,
+      ComponentInfoCuration componentInfoCuration) {
+
+    if (toolVersion.startsWith("32.")) {
+      return new ScancodeJsonParserV32(this.fileScancodeRawComponentInfoProvider, packageUrl, componentScancodeInfos,
+          scancodeComponentInfoData, componentInfoCuration);
+    } else {
+      return new ScancodeJsonParserV31(this.fileScancodeRawComponentInfoProvider, packageUrl, componentScancodeInfos,
+          scancodeComponentInfoData, componentInfoCuration);
+    }
   }
 }
