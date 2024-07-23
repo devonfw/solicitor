@@ -60,7 +60,7 @@ public class ScancodeJsonParserV31 extends ScancodeJsonParserEngine implements S
 
     if (effective == null || this.spdxIdMap == null) {
       // Log or handle the error appropriately
-      System.err.println("Effective license or spdxIdMap is null");
+      LOG.error("Effective license or spdxIdMap is null");
       return;
     }
 

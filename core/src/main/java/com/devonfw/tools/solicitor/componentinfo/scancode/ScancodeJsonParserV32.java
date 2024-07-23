@@ -59,8 +59,7 @@ public class ScancodeJsonParserV32 extends ScancodeJsonParserEngine implements S
       boolean takeCompleteFile) {
 
     if (effective == null || this.spdxIdMap == null) {
-      // Log or handle the error appropriately
-      System.err.println("Effective license or spdxIdMap is null");
+      LOG.error("Effective license or spdxIdMap is null");
       return;
     }
 
@@ -71,7 +70,7 @@ public class ScancodeJsonParserV32 extends ScancodeJsonParserEngine implements S
     int endLine = Integer.MAX_VALUE;
 
     for (JsonNode matche : license.get("matches")) {
-      if (matche.get("rule_identifier").toString().contains("mit.LICENSE")) {
+      if (matche.get("rule_identifier").toString().contains(".LICENSE")) {
         spdxId = matche.get("spdx_license_expression").toString();
         score = matche.get("score").asDouble();
         startLine = matche.get("start_line").asInt();
