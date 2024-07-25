@@ -106,7 +106,9 @@ public enum LogMessages {
       "When reading yarn license info from file '{}' there was at least one patched package encountered. Processing only the base package, not the patched version."), //
   FAILED_READING_FILE(71, "Reading file '{}' failed"), //
   EMPTY_PACKAGE_URL(72, "The package URL is null or empty."), //
-  EMPTY_PACKAGE_PATH(73, "The package path is null or empty.");
+  EMPTY_PACKAGE_PATH(73, "The package path is null or empty."), //
+  CONTENT_FILE_TOO_LARGE(74,
+      "The size of the content file '{}' is '{}' (max. allowed is '{}'). Reading will be skipped.");
 
   private final String message;
 

@@ -1307,7 +1307,7 @@ The Generic Excel Writer exists purely for debugging purposes. This writer write
 		"APPLICATIONCOMPONENT" : "classpath:com/devonfw/tools/solicitor/sql/allden_applicationcomponents.sql",
 		"LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql",
 		"OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents.sql",
-		... 
+		...
 	}
   } ]
 
@@ -1574,7 +1574,7 @@ artifacts:
   - name: pkg/npm/@somescope/somepackage/1.2.3                  <1>
     url: https://github.com/foo/bar                             <2>
     licenseCurations:                                           <3>
-    - operation: REMOVE 
+    - operation: REMOVE
       path: "sources/package/readme.md"
       ruleIdentifier: "proprietary-license_unknown_13.RULE"
       matchedText: ".* to be paid .*"
@@ -1603,8 +1603,8 @@ artifacts:
 <7> Further packages to follow.
 
 ===== Rules for curating licenses
-Curating licenses is done by REMOVING (i.e. ignoring) specific license findings from ScanCode, by REPLACING the detected license with another one or by ADDING license findings either to specific files or on top level (not related to specific file of the package sources). 
-In addition to the conditions/data which is specific for any of the below described operations it is always possible to define a comment which is intended to be included in any audit trail log for documentation purposes (not yet used/implemented). 
+Curating licenses is done by REMOVING (i.e. ignoring) specific license findings from ScanCode, by REPLACING the detected license with another one or by ADDING license findings either to specific files or on top level (not related to specific file of the package sources).
+In addition to the conditions/data which is specific for any of the below described operations it is always possible to define a comment which is intended to be included in any audit trail log for documentation purposes (not yet used/implemented).
 
 
 ====== Licenses: REMOVE
@@ -1624,7 +1624,7 @@ Instead of removing licenses (ignoring the finding) they might be replaced with 
 Data:
 
 * `newLicense` is the key / id of the license to use instead (replacing `files[].licenses[].spdx_license_key`)
-* `url` is the url pointing to the license text 
+* `url` is the url pointing to the license text
 
 At least one of the two parameters has to be set.
 
@@ -1658,14 +1658,14 @@ At least one of the conditions has to be defined.
 This follows the above principles. It uses the same conditions as REMOVE and uses a parameter to define the copyright to use instead:
 
 Data:
-* `newCopyright`: The copyright entry to use instead of the originally found copyright 
+* `newCopyright`: The copyright entry to use instead of the originally found copyright
 
 ====== Copyright: ADD
 Adding new copyrights is done by defining rules which add new copyright info (to the copyrights found in a source file) - or "on top level".
 
 Conditions:
 
-* `path` of the file within the sources (defined as a regular expression; if omitted the copyright will be applied on "top level"). 
+* `path` of the file within the sources (defined as a regular expression; if omitted the copyright will be applied on "top level").
 Note that it is again only possible to add copyrigts to paths which are listed in the scancode json
 
 Data:
@@ -1712,9 +1712,9 @@ artifacts:
 
 ===== Hierarchical definition of rules
 
-Different version of a package/component or even different packages/components within the same namespace often require mostly the same curations to be applied. To avoid being forced to redefine curations for every single version it is possible to define curations by just specifying a prefix part in the name attribute. 
+Different version of a package/component or even different packages/components within the same namespace often require mostly the same curations to be applied. To avoid being forced to redefine curations for every single version it is possible to define curations by just specifying a prefix part in the name attribute.
 
-Example of available levels/prefixes for `pkg:/maven/ch.qos.logback/logback-classic@1.2.3` 
+Example of available levels/prefixes for `pkg:/maven/ch.qos.logback/logback-classic@1.2.3`
 
 * `pkg`
 * `pkg/maven`
@@ -1896,6 +1896,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.25.0::
+* https://github.com/devonfw/solicitor/issues/277: When reading content (license texts or notice files) within the scancode adapter files which are greater than 1 million bytes will be skipped. This avoids large memory consumption and resulting instability.
 
 Changes in 1.24.2::
 * https://github.com/devonfw/solicitor/pull/271: Fixed an incompatibility with JDK 8.
