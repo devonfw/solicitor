@@ -209,6 +209,11 @@ public class ExcelWriter implements Writer {
           }
         }
       }
+      if (rowData.getRowDiffStatus() == RowDiffStatus.DELETED) {
+        Cell firstCellInRow = row.getCell(row.getFirstCellNum());
+        addCommentToCell(firstCellInRow, "DELETED LINE");
+
+      }
       if (rowIterator.hasNext()) { // update row for next iteration
         row = row.getSheet().getRow(row.getRowNum() + 1);
       }

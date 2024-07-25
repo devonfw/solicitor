@@ -30,7 +30,12 @@ public interface DataTableRow extends Cloneable {
     /**
      * row is new
      */
-    NEW
+    NEW,
+
+    /**
+     * row is deleted (so data represented here is only existing in old table)
+     */
+    DELETED
   }
 
   /**

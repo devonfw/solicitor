@@ -27,7 +27,7 @@ public class DataTableImpl implements DataTable {
 
     /**
      * Creates a {@link DataTableRow}. The field {@link #rowDiffStatus} is set to {@link RowDiffStatus#UNAVAILABLE}.
-     * 
+     *
      * @param data the row data
      */
     DataTableRowImpl(DataTableField[] data) {
@@ -37,7 +37,7 @@ public class DataTableImpl implements DataTable {
 
     /**
      * Creates a {@link DataTableRow}.
-     * 
+     *
      * @param data the row data
      * @param rowDiffStatus the difference status of the row
      */
@@ -50,35 +50,35 @@ public class DataTableImpl implements DataTable {
     @Override
     public DataTableRow clone() {
 
-      return new DataTableRowImpl(data);
+      return new DataTableRowImpl(this.data);
     }
 
     @Override
     public DataTableField get(String fieldName) {
 
-      Integer i = fieldnameToIndexMap.get(fieldName);
+      Integer i = DataTableImpl.this.fieldnameToIndexMap.get(fieldName);
       if (i == null) {
         return null;
       }
-      return data[i];
+      return this.data[i];
     }
 
     @Override
     public RowDiffStatus getRowDiffStatus() {
 
-      return rowDiffStatus;
+      return this.rowDiffStatus;
     }
 
     @Override
     public int getSize() {
 
-      return data.length;
+      return this.data.length;
     }
 
     @Override
     public DataTableField getValueByIndex(int index) {
 
-      return data[index];
+      return this.data[index];
     }
 
     @Override
@@ -98,18 +98,18 @@ public class DataTableImpl implements DataTable {
 
   /**
    * Constructor.
-   * 
+   *
    * @param headline an array of {@link java.lang.String} objects.
    */
   public DataTableImpl(String[] headline) {
 
     super();
     this.headline = headline;
-    fieldnameToIndexMap = new HashMap<>();
+    this.fieldnameToIndexMap = new HashMap<>();
     for (int i = 0; i < headline.length; i++) {
-      fieldnameToIndexMap.put(headline[i], i);
+      this.fieldnameToIndexMap.put(headline[i], i);
     }
-    data = new ArrayList<>();
+    this.data = new ArrayList<>();
   }
 
   /**
@@ -119,24 +119,37 @@ public class DataTableImpl implements DataTable {
    */
   public void addRow(DataTableField[] dataRow) {
 
-    if (dataRow.length != headline.length) {
+    if (dataRow.length != this.headline.length) {
       throw new IllegalArgumentException("Number of data columns must match columns of headline");
     }
-    data.add(new DataTableRowImpl(dataRow));
+    this.addRow(new DataTableRowImpl(dataRow));
+  }
+
+  /**
+   * Adds a row to this table.
+   *
+   * @param dataRow a data row.
+   */
+  public void addRow(DataTableRowImpl dataRow) {
+
+    if (dataRow.getSize() != this.headline.length) {
+      throw new IllegalArgumentException("Number of data columns must match columns of headline");
+    }
+    this.data.add(dataRow);
   }
 
   /** {@inheritDoc} */
   @Override
   public DataTableRow getDataRow(int rowNum) {
 
-    return data.get(rowNum);
+    return this.data.get(rowNum);
   }
 
   /** {@inheritDoc} */
   @Override
   public String[] getHeadRow() {
 
-    return headline.clone();
+    return this.headline.clone();
   }
 
   /** {@inheritDoc} */
@@ -144,18 +157,18 @@ public class DataTableImpl implements DataTable {
   public Iterator<DataTableRow> iterator() {
 
     return new Iterator<DataTableRow>() {
-      private Iterator<DataTableRow> delegateIterator = data.iterator();
+      private Iterator<DataTableRow> delegateIterator = DataTableImpl.this.data.iterator();
 
       @Override
       public boolean hasNext() {
 
-        return delegateIterator.hasNext();
+        return this.delegateIterator.hasNext();
       }
 
       @Override
       public DataTableRow next() {
 
-        return delegateIterator.next();
+        return this.delegateIterator.next();
       }
 
     };
@@ -165,7 +178,7 @@ public class DataTableImpl implements DataTable {
   @Override
   public boolean isEmpty() {
 
-    return data.isEmpty();
+    return this.data.isEmpty();
   }
 
 }

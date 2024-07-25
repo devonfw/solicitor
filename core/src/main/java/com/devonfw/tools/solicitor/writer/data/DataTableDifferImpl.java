@@ -6,8 +6,8 @@ package com.devonfw.tools.solicitor.writer.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,11 +20,12 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.writer.data.DataTableField.FieldDiffStatus;
+import com.devonfw.tools.solicitor.writer.data.DataTableImpl.DataTableRowImpl;
 import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
 
 /**
  * Default implementation of the {@link DataTableDiffer} interface.
- * 
+ *
  * <p>
  * The calculation of the diff is done as follows:
  * </p>
@@ -43,7 +44,7 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * <li>there are no unmatched rows on oldTable OR</li>
  * <li>all existing correlations keys have been processed</li>
  * </ul>
- * 
+ *
  * <p>
  * <b>Merging the corresponding data of newTable and oldTable</b>
  * </p>
@@ -75,7 +76,7 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * </ul>
  * If any of the remaining fields is of status {@link FieldDiffStatus#CHANGED} the {@link RowDiffStatus} will be
  * {@link RowDiffStatus#CHANGED}, otherwise it will be {@link RowDiffStatus#UNCHANGED}.
- * 
+ *
  */
 @Component
 public class DataTableDifferImpl implements DataTableDiffer {
@@ -91,7 +92,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * For a given correlation key name try to map not yet mapped old rows to not yet mapped new rows.
-   * 
+   *
    * @param newTable the new table
    * @param newTableIndexToOldTableRowMap a map which hold for each index of rows in the new table the corresponding
    *        found old row
@@ -120,14 +121,14 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Correlate both tables and merge corresponding rows of the old table to the new table.
-   * 
+   *
    * @param newTable the new table
    * @param oldTable the old table
    */
   private void correlateTable(DataTable newTable, DataTable oldTable) {
 
     Map<Integer, DataTableRow> newTableIndexToOldTableRowMap = new HashMap<>();
-    Set<DataTableRow> oldTableRowSet = new HashSet<>();
+    Set<DataTableRow> oldTableRowSet = new LinkedHashSet<>();
     // initialize a Map with the index of the newTable as a key and the
     // assigned DataTableRow of the old table as value
     int i = 0;
@@ -162,6 +163,13 @@ public class DataTableDifferImpl implements DataTableDiffer {
       }
       i++;
     }
+
+    if (oldTableRowSet.size() > 0) {
+      for (DataTableRow oldRow : oldTableRowSet) {
+        ((DataTableImpl) newTable).addRow((DataTableRowImpl) oldRow);
+        oldRow.setRowDiffStatus(RowDiffStatus.DELETED);
+      }
+    }
   }
 
   /**
@@ -181,7 +189,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Calculate the {@link RowDiffStatus} for each row.
-   * 
+   *
    * @param newTable the table where the row diff status should be recalculated.
    */
   private void evaluateRowDiff(DataTable newTable) {
@@ -199,6 +207,9 @@ public class DataTableDifferImpl implements DataTableDiffer {
       if (oneRow.getRowDiffStatus() == RowDiffStatus.NEW) {
         continue;
       }
+      if (oneRow.getRowDiffStatus() == RowDiffStatus.DELETED) {
+        continue;
+      }
       for (String fieldToCheck : fieldsRelevantForDiff) {
         if (oneRow.get(fieldToCheck).getDiffStatus() == FieldDiffStatus.CHANGED) {
           changed = true;
@@ -214,7 +225,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Get the value of the correlation key with the given name from the row.
-   * 
+   *
    * @param tableRow the row
    * @param corrKeyColumn the name of the correlation key column
    * @return the value of the correlation key
@@ -231,7 +242,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Merge a single row.
-   * 
+   *
    * @param newTableRow the row to merge to
    * @param correspondingOldRow the row to merge from
    */
@@ -244,7 +255,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Search a corresponding row in the Set of not yet matched old rows. If a row is found remove it from the Set.
-   * 
+   *
    * @param newTableRow the row of the new table to which the corresponding old row is searched
    * @param oldTableRowSet the set of not yet matched old rows
    * @param corrKeyColumn the name of the correlation key column to check
