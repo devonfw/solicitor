@@ -1904,7 +1904,7 @@ Changes in 1.24.2::
 Changes in 1.24.1::
 * https://github.com/devonfw/solicitor/pull/270: Fixed an incompatibility with JDK 8.
 
-Changes in 1.24.2::
+Changes in 1.24.0::
 * https://github.com/devonfw/solicitor/issues/263: Some features were pushed from deprecation stage 1 to stage 2, which means they do not longer work with default configuration: repoType attribute, npm and npm-license-crawler readers, REGEX prefix notation, LicenseAssignmentProject.xls. See <<List of Deprecated Features>> for details.
 * https://github.com/devonfw/solicitor/pull/265: Added some license name mappings.
 * https://github.com/devonfw/solicitor/pull/266: Improve correlation of records (diff processing, see <<Determining difference to previously stored model>>) for aggregated inventory report `OSS-Inventory_aggregated_*.xlsx`.
@@ -1982,7 +1982,7 @@ Changes in 1.10.0::
 
 Changes in 1.9.0::
 * https://github.com/devonfw/solicitor/issues/171: Multiple improvements in processing of ScanCode results.
-* https://github.com/devonfw/solicitor/issues/167: Fixed a bug which prevented license URLs given in scancode curations (see <<Curations file>>) to be resolved properly when they point to the local file system (starting with `file:`).
+* https://github.com/devonfw/solicitor/issues/167: Fixed a bug which prevented license URLs given in scancode curations (see <<Structure of curations file>>) to be resolved properly when they point to the local file system (starting with `file:`).
 
 
 Changes in 1.8.1::
