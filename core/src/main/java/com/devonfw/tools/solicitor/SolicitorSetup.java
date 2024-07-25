@@ -35,6 +35,8 @@ public class SolicitorSetup {
     private UsagePattern usagePattern;
 
     private String repoType;
+    
+    private String packageType;
 
     private Map<String, String> configuration;
 
@@ -88,6 +90,15 @@ public class SolicitorSetup {
       return this.repoType;
     }
 
+    /**
+     * This method gets the field <code>packageType</code>.
+     *
+     * @return the field packageType
+     */
+    public String getPackageType() {
+
+      return this.packageType;
+    }
     /**
      * This method gets the field <code>configuration</code>.
      *
@@ -157,8 +168,19 @@ public class SolicitorSetup {
 
       this.repoType = repoType;
     }
+    
+    /**
+     * This method sets the field <code>packageType</code>.
+     *
+     * @param packageType the new value of the field packageType
+     */
+    public void setPackageType(String packageType) {
+
+      this.packageType = packageType;
+    }
   }
 
+  
   private String engagementName;
 
   private List<ReaderSetup> readerSetups = new ArrayList<>();

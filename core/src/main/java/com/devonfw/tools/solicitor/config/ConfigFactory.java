@@ -132,6 +132,7 @@ public class ConfigFactory {
                   + "https://github.com/devonfw/solicitor/issues/263");
         }
         rs.setRepoType(rc.getRepoType());
+        rs.setPackageType(rc.getPackageType());
         rs.setConfiguration(rc.getConfiguration());
         rs = resolvePlaceholdersInReader(rs, placeHolderMap);
         this.solicitorSetup.getReaderSetups().add(rs);

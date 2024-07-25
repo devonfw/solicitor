@@ -14,13 +14,19 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
+import com.devonfw.tools.solicitor.reader.maven.MavenReader;
+import com.github.packageurl.PackageURL;
 
 /**
  * A {@link Reader} for files in CSV format.
@@ -46,6 +52,8 @@ import com.devonfw.tools.solicitor.reader.Reader;
 
 @Component
 public class CsvReader extends AbstractReader implements Reader {
+  private Logger logger = LoggerFactory.getLogger(CsvReader.class); // not static final for testing
+                                                                    // purposes
 
   /**
    * The supported type of this {@link Reader}.
@@ -62,7 +70,7 @@ public class CsvReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      String repoType, String packageType, Map<String, String> configuration) {
 
     int components = 0;
     int licenses = 0;
@@ -214,6 +222,7 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setVersion(version);
           appComponent.setUsagePattern(usagePattern);
           appComponent.setRepoType(repoType);
+          appComponent.setPackageUrl(getPackageURL(packageType, groupId, artifactId, version));
 
           // merge ApplicationComponentImpl with same key if they appear
           // on
@@ -248,6 +257,8 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setVersion(record.get(2));
           appComponent.setUsagePattern(usagePattern);
           appComponent.setRepoType(repoType);
+          appComponent.setPackageUrl(getPackageURL(packageType, record.get(0), record.get(1), record.get(2)));
+
           // merge ApplicationComponentImpl with same key if they appear
           // on
           // subsequent lines (multilicensing)
@@ -273,6 +284,45 @@ public class CsvReader extends AbstractReader implements Reader {
       throw new SolicitorRuntimeException("Could not read CSV inventory source '" + sourceUrl + "'", e1);
     }
 
+  }
+
+  /**
+   * Call the appropriate {@link PackageURLHelper} method to create a packageURL. Returns null if no
+   * {@link PackageURLHelper} exists for the packageType.
+   *
+   * @param packageType the package type
+   * @param groupId the groupId if available
+   * @param artifactId the artifactId
+   * @param version the version
+   * @return the created PackageURL
+   */
+  public String getPackageURL(String packageType, String groupId, String artifactId, String version) {
+
+    if (packageType == null || packageType.isEmpty()) {
+      this.logger.warn(LogMessages.EMPTY_PACKAGE_TYPE.msg(), packageType);
+      return null;
+    }
+    switch (packageType) {
+      case "maven":
+        return PackageURLHelper.fromMavenCoordinates(groupId, artifactId, version).toString();
+      case "npm":
+        return PackageURLHelper.fromNpmPackageNameAndVersion(artifactId, version).toString();
+      case "pypi":
+        return PackageURLHelper.fromPyPICoordinates(artifactId, version).toString();
+      default:
+        this.logger.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
+        return null;
+    }
+  }
+
+  /**
+   * Sets the logger. Available for testing purposes only.
+   *
+   * @param logger the logger
+   */
+  void setLogger(Logger logger) {
+
+    this.logger = logger;
   }
 
 }

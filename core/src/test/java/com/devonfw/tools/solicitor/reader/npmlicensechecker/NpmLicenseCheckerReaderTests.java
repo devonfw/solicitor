@@ -34,7 +34,7 @@ public class NpmLicenseCheckerReaderTests {
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", this.application,
-        UsagePattern.DYNAMIC_LINKING, "npm", null);
+        UsagePattern.DYNAMIC_LINKING, "npm", null, null);
 
   }
 

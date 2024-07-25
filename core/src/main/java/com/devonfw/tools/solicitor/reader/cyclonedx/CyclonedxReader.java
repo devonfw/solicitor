@@ -55,7 +55,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      String repoType, String packageType, Map<String, String> configuration) {
 
     int componentCount = 0;
     int licenseCount = 0;

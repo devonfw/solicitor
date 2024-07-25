@@ -61,7 +61,7 @@ public class GradleReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration) {
+      String repoType, String packageType, Map<String, String> configuration) {
 
     this.deprecationChecker.check(false,
         "Use of Reader of type 'gradle' is deprecated, use 'gradle2' instead. See https://github.com/devonfw/solicitor/issues/58");
