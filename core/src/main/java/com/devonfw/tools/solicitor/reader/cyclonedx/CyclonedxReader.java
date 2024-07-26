@@ -2,7 +2,6 @@ package com.devonfw.tools.solicitor.reader.cyclonedx;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -24,10 +23,6 @@ import com.devonfw.tools.solicitor.reader.Reader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
-import org.spdx.library.model.license.AnyLicenseInfo;
-import org.spdx.library.model.license.LicenseInfoFactory;
-import org.spdx.library.model.license.LicenseSet;
 
 /**
  * A {@link Reader} which reads data produced by the <a href="https://github.com/CycloneDX/cdxgen">CDXGEN Tool</a>.
