@@ -1,0 +1,84 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:dd714b36-700a-4a2c-be85-eeb8723c2489",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2024-07-08T17:39:55Z",
+    "tools": {
+      "components": [
+        {
+          "group": "@cyclonedx",
+          "name": "cdxgen",
+          "version": "10.7.1",
+          "purl": "pkg:npm/%40cyclonedx/cdxgen@10.7.1",
+          "type": "application",
+          "bom-ref": "pkg:npm/@cyclonedx/cdxgen@10.7.1",
+          "author": "OWASP Foundation",
+          "publisher": "OWASP Foundation"
+        }
+      ]
+    },
+    "authors": [
+      {
+        "name": "OWASP Foundation"
+      }
+    ],
+    "lifecycles": [
+      {
+        "phase": "build"
+      }
+    ],
+    "component": {
+      "group": "",
+      "name": "lib",
+      "version": "latest",
+      "type": "application",
+      "bom-ref": "pkg:maven/lib@latest",
+      "purl": "pkg:maven/lib@latest"
+    }
+  },
+  "components": [
+    {
+      "publisher": "Oracle Corporation",
+      "group": "org.glassfish.hk2",
+      "name": "hk2-locator",
+      "version": "2.5.0-b42",
+      "description": "${project.name}",
+      "licenses": [
+        {
+          "expression": "(CDDL-1.0 OR GPL-2.0-with-classpath-exception)"
+        }
+      ],
+      "purl": "pkg:maven/org.glassfish.hk2/hk2-locator@2.5.0-b42?type=jar",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://hk2-project.github.io"
+        }
+      ],
+      "type": "library",
+      "bom-ref": "pkg:maven/org.glassfish.hk2/hk2-locator@2.5.0-b42?type=jar",
+      "evidence": {
+        "identity": {
+          "field": "purl",
+          "confidence": 1,
+          "methods": [
+            {
+              "technique": "manifest-analysis",
+              "confidence": 1,
+              "value": "hk2-locator-2.5.0-b42.jar"
+            }
+          ]
+        }
+      },
+      "properties": [
+        {
+          "name": "SrcFile",
+          "value": "hk2-locator-2.5.0-b42.jar"
+        }
+      ]
+    }
+  ],
+  "dependencies": []
+}
