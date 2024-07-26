@@ -1901,6 +1901,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.25.0::
 * https://github.com/devonfw/solicitor/issues/277: When reading content (license texts or notice files) within the scancode adapter files which are greater than 1 million bytes will be skipped. This avoids large memory consumption and resulting instability.
 * https://github.com/devonfw/solicitor/issues/274: Fixed issue where no packageURL was created when using the CSV reader. Added attribute 'packageType'.
+* https://github.com/devonfw/solicitor/issues/279: Fixed issue where the CycloneDX reader could not read licenses declared as 'expression'.
 
 Changes in 1.24.2::
 * https://github.com/devonfw/solicitor/pull/271: Fixed an incompatibility with JDK 8.

@@ -185,4 +185,34 @@ public class CyclonedxReaderTests {
     }
     assertTrue(found);
   }
+
+  /**
+   * Test the {@link CyclonedxReader#readInventory()} method. Input file is an SBOM containing expressions.
+   */
+  @Test
+  public void readExpression() {
+
+    // Always return a non-empty String for npm purls
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
+
+    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Angular");
+    this.cdxr.setModelFactory(this.modelFactory);
+    this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
+    this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
+    this.cdxr.readInventory("npm", "src/test/resources/expressionsbom.json", application, UsagePattern.DYNAMIC_LINKING,
+        "cyclonedx", null, null);
+    LOG.info(application.toString());
+
+    boolean found = false;
+
+    for (ApplicationComponent ap : application.getApplicationComponents()) {
+      if (ap.getArtifactId().equals("hk2-locator") && ap.getVersion().equals("2.5.0-b42")) {
+        found = true;
+        assertEquals("(CDDL-1.0 OR GPL-2.0-with-classpath-exception)", ap.getRawLicenses().get(0).getDeclaredLicense());
+
+      }
+    }
+    assertTrue(found);
+  }
 }
