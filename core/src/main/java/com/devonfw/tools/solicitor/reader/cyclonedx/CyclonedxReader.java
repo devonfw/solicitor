@@ -2,6 +2,7 @@ package com.devonfw.tools.solicitor.reader.cyclonedx;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,10 @@ import com.devonfw.tools.solicitor.reader.Reader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import org.spdx.library.model.license.AnyLicenseInfo;
+import org.spdx.library.model.license.LicenseInfoFactory;
+import org.spdx.library.model.license.LicenseSet;
 
 /**
  * A {@link Reader} which reads data produced by the <a href="https://github.com/CycloneDX/cdxgen">CDXGEN Tool</a>.
@@ -115,16 +120,13 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           else if (licensesNode != null && licensesNode.isEmpty()) {
             addRawLicense(appComponent, null, null, sourceUrl);
           }
-          // Case if licenses field exists and contains licenses
+          // Case if licenses field exists and contains expressions or licenses
           else if (licensesNode != null && licensesNode.isEmpty() == false) {
-            // Iterate over each "license" object within the "licenses" array
             for (JsonNode licenseNode : licensesNode) {
-
               // Check for expressions
               if (licenseNode.has("expression")) {
                 licenseCount++;
                 addRawLicense(appComponent, licenseNode.get("expression").asText(), null, sourceUrl);
-                System.out.println(licenseNode.get("expression").asText());
               }
 
               // Check for licenses
