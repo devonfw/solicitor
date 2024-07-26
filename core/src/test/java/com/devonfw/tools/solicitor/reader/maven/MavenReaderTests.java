@@ -74,7 +74,7 @@ public class MavenReaderTests {
 
     try {
       mr.readInventory("maven", "src/test/resources/licenses_sample_with_doctype.xml", application,
-          UsagePattern.DYNAMIC_LINKING, "maven", "maven", null);
+          UsagePattern.DYNAMIC_LINKING, "maven", null, null);
       fail("Expected exception was not thrown");
     } catch (SolicitorRuntimeException e) {
       // we check detailed message to make sure the exception is not thrown due to other reasons

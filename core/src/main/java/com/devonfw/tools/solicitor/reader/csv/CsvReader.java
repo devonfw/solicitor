@@ -298,11 +298,7 @@ public class CsvReader extends AbstractReader implements Reader {
    */
   public String getPackageURL(String packageType, String groupId, String artifactId, String version) {
 
-    if (packageType == null) {
-      this.logger.warn(LogMessages.EMPTY_PACKAGE_TYPE.msg(), packageType);
-      return null;
-    }
-    if (packageType.isEmpty()) {
+    if (packageType == null || packageType.isEmpty()) {
       this.logger.warn(LogMessages.EMPTY_PACKAGE_TYPE.msg(), packageType);
       return null;
     }

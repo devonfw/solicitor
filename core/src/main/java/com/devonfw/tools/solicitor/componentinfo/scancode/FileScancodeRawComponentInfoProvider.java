@@ -38,6 +38,8 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
 
   private String repoBasePath;
 
+  private long maxContentFileSize = 1000000L; // set this to the default even if spring is not used
+
   private AllKindsPackageURLHandler packageURLHandler;
 
   /**
@@ -61,6 +63,17 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   public void setRepoBasePath(String repoBasePath) {
 
     this.repoBasePath = repoBasePath;
+  }
+
+  /**
+   * Sets the maximum content file size. Files larger that this will not be processed to avoid OOM.
+   *
+   * @param maxContentFileSize new limit.
+   */
+  @Value("${solicitor.scancode.max-content-file-size:1000000}")
+  public void setMaxContentFileSize(long maxContentFileSize) {
+
+    this.maxContentFileSize = maxContentFileSize;
   }
 
   /**
@@ -191,6 +204,11 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
     String fullFilePathAndName = IOHelper.secureFilePath(this.repoBasePath, this.packageURLHandler.pathFor(packageUrl),
         SOURCES_DIR, relativeFilePathAndName);
     File file = new File(fullFilePathAndName);
+    long fileSize = file.length();
+    if (fileSize > this.maxContentFileSize) {
+      LOG.info(LogMessages.CONTENT_FILE_TOO_LARGE.msg(), fullFilePathAndName, fileSize, this.maxContentFileSize);
+      return null;
+    }
     try (InputStream is = new FileInputStream(file); Scanner s = new Scanner(is)) {
       s.useDelimiter("\\A");
       String result = s.hasNext() ? s.next() : "";
