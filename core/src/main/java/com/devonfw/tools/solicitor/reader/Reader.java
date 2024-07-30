@@ -36,9 +36,10 @@ public interface Reader {
    * @param application all read {@link ApplicationComponent} need to be linked with this {@link Application}
    * @param usagePattern the {@link UsagePattern} which applies for all read {@link ApplicationComponent}s
    * @param repoType the type of Repository to download the sources from
+   * @param packageType the packageType to create the packageUrl
    * @param configuration optional configuration settings for readers
    */
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, Map<String, String> configuration);
+      String repoType, String packageType, Map<String, String> configuration);
 
 }

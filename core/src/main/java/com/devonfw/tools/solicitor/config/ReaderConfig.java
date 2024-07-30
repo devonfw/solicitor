@@ -27,6 +27,9 @@ public class ReaderConfig {
 
   @JsonProperty
   private String repoType;
+  
+  @JsonProperty
+  private String packageType;
 
   @JsonProperty
   private Map<String, String> configuration;
@@ -48,6 +51,16 @@ public class ReaderConfig {
   public String getRepoType() {
 
     return this.repoType;
+  }
+  
+  /**
+   * This method gets the field <code>packageType</code>.
+   *
+   * @return the field packageType
+   */
+  public String getPackageType() {
+
+    return this.packageType;
   }
 
   /**
@@ -99,7 +112,16 @@ public class ReaderConfig {
 
     this.repoType = repoType;
   }
+  
+  /**
+   * This method sets the field <code>packageType</code>.
+   *
+   * @param packageType the new value of the field packageType
+   */
+  public void setPackageType(String packageType) {
 
+    this.packageType = packageType;
+  }
   /**
    * This method sets the field <code>configuration</code>.
    *
