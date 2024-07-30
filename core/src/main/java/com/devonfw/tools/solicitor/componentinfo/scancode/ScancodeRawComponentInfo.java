@@ -19,4 +19,13 @@ public class ScancodeRawComponentInfo {
 
   }
 
+  /**
+   * Constructor to initialize with raw JSON data.
+   *
+   * @param rawScancodeResult JSON data as a string.
+   */
+  public ScancodeRawComponentInfo(String rawScancodeResult) {
+
+    this.rawScancodeResult = rawScancodeResult;
+  }
 }

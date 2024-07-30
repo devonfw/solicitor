@@ -1,0 +1,310 @@
+{
+  "headers": [
+    {
+      "tool_name": "scancode-toolkit",
+      "tool_version": "32.1.0",
+      "options": {
+        "input": [
+          "/repo/pkg/npm/bl/1.2.2/sources"
+        ],
+        "--consolidate": true,
+        "--copyright": true,
+        "--json-pp": "/repo/pkg/npm/bl/1.2.2/scancode.json",
+        "--license": true,
+        "--license-text": true,
+        "--only-findings": true,
+        "--processes": "16",
+        "--timeout": "600.0"
+      },
+      "notice": "Generated with ScanCode and provided on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. No content created from\nScanCode should be considered or used as legal advice. Consult an Attorney\nfor any legal advice.\nScanCode is a free software code scanning tool from nexB Inc. and others.\nVisit https://github.com/nexB/scancode-toolkit/ for support and download.",
+      "start_timestamp": "2024-07-17T085604.785243",
+      "end_timestamp": "2024-07-17T085608.745285",
+      "output_format_version": "3.1.0",
+      "duration": 3.960059881210327,
+      "message": null,
+      "errors": [],
+      "warnings": [
+        "The --consolidate option will be deprecated in a future version of scancode-toolkit."
+      ],
+      "extra_data": {
+        "system_environment": {
+          "operating_system": "linux",
+          "cpu_architecture": "64",
+          "platform": "Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+          "platform_version": "#1 SMP Thu Jan 11 04:09:03 UTC 2024",
+          "python_version": "3.10.12 (main, Mar 22 2024, 16:50:05) [GCC 11.4.0]"
+        },
+        "spdx_license_list_version": "3.23",
+        "files_count": 3
+      }
+    }
+  ],
+  "license_detections": [
+    {
+      "identifier": "mit-3fce6ea2-8abd-6c6b-3ede-a37af7c6efee",
+      "license_expression": "mit",
+      "license_expression_spdx": "MIT",
+      "detection_count": 1,
+      "reference_matches": [
+        {
+          "license_expression": "mit",
+          "license_expression_spdx": "MIT",
+          "from_file": "sources/package/package.json",
+          "start_line": 25,
+          "end_line": 25,
+          "matcher": "2-aho",
+          "score": 100.0,
+          "matched_length": 2,
+          "match_coverage": 100.0,
+          "rule_relevance": 100,
+          "rule_identifier": "mit_30.RULE",
+          "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/rules/mit_30.RULE",
+          "matched_text": "  \"license\": \"MIT\","
+        }
+      ]
+    },
+    {
+      "identifier": "mit-cacd5c0c-204a-85c2-affc-e4c125b2492a",
+      "license_expression": "mit",
+      "license_expression_spdx": "MIT",
+      "detection_count": 1,
+      "reference_matches": [
+        {
+          "license_expression": "mit",
+          "license_expression_spdx": "MIT",
+          "from_file": "sources/package/LICENSE.md",
+          "start_line": 9,
+          "end_line": 13,
+          "matcher": "2-aho",
+          "score": 100.0,
+          "matched_length": 161,
+          "match_coverage": 100.0,
+          "rule_relevance": 100,
+          "rule_identifier": "mit.LICENSE",
+          "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/mit.LICENSE",
+          "matched_text": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,\n subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+        }
+      ]
+    },
+    {
+      "identifier": "mit-d5ea549d-8e03-2a31-f0cc-bdb0a5b86996",
+      "license_expression": "mit",
+      "license_expression_spdx": "MIT",
+      "detection_count": 1,
+      "reference_matches": [
+        {
+          "license_expression": "mit",
+          "license_expression_spdx": "MIT",
+          "from_file": "sources/package/LICENSE.md",
+          "start_line": 1,
+          "end_line": 1,
+          "matcher": "2-aho",
+          "score": 100.0,
+          "matched_length": 4,
+          "match_coverage": 100.0,
+          "rule_relevance": 100,
+          "rule_identifier": "mit_26.RULE",
+          "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/rules/mit_26.RULE",
+          "matched_text": "The MIT License (MIT)"
+        }
+      ]
+    }
+  ],
+  "consolidated_components": [
+    {
+      "type": "holders",
+      "identifier": "bl_contributors_1",
+      "consolidated_license_expression": "mit",
+      "consolidated_holders": [
+        "bl contributors"
+      ],
+      "consolidated_copyright": "Copyright (c) bl contributors",
+      "core_license_expression": "mit",
+      "core_holders": [
+        "bl contributors"
+      ],
+      "other_license_expression": null,
+      "other_holders": [],
+      "files_count": 2
+    }
+  ],
+  "consolidated_packages": [],
+  "files": [
+    {
+      "path": "sources/package",
+      "type": "directory",
+      "detected_license_expression": null,
+      "detected_license_expression_spdx": null,
+      "license_detections": [],
+      "license_clues": [],
+      "percentage_of_license_text": 0,
+      "copyrights": [],
+      "holders": [],
+      "authors": [],
+      "consolidated_to": [
+        "bl_contributors_1"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "sources/package/LICENSE.md",
+      "type": "file",
+      "detected_license_expression": "mit",
+      "detected_license_expression_spdx": "MIT",
+      "license_detections": [
+        {
+          "license_expression": "mit",
+          "license_expression_spdx": "MIT",
+          "matches": [
+            {
+              "license_expression": "mit",
+              "spdx_license_expression": "MIT",
+              "from_file": "sources/package/LICENSE.md",
+              "start_line": 1,
+              "end_line": 1,
+              "matcher": "2-aho",
+              "score": 100.0,
+              "matched_length": 4,
+              "match_coverage": 100.0,
+              "rule_relevance": 100,
+              "rule_identifier": "mit_26.RULE",
+              "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/rules/mit_26.RULE",
+              "matched_text": "The MIT License (MIT)"
+            }
+          ],
+          "identifier": "mit-d5ea549d-8e03-2a31-f0cc-bdb0a5b86996"
+        },
+        {
+          "license_expression": "mit",
+          "license_expression_spdx": "MIT",
+          "matches": [
+            {
+              "license_expression": "mit",
+              "spdx_license_expression": "MIT",
+              "from_file": "sources/package/LICENSE.md",
+              "start_line": 9,
+              "end_line": 13,
+              "matcher": "2-aho",
+              "score": 100.0,
+              "matched_length": 161,
+              "match_coverage": 100.0,
+              "rule_relevance": 100,
+              "rule_identifier": "mit.LICENSE",
+              "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/licenses/mit.LICENSE",
+              "matched_text": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,\n subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+            }
+          ],
+          "identifier": "mit-cacd5c0c-204a-85c2-affc-e4c125b2492a"
+        }
+      ],
+      "license_clues": [],
+      "percentage_of_license_text": 91.16,
+      "copyrights": [
+        {
+          "copyright": "Copyright (c) 2013-2016 bl contributors",
+          "start_line": 4,
+          "end_line": 4
+        }
+      ],
+      "holders": [
+        {
+          "holder": "bl contributors",
+          "start_line": 4,
+          "end_line": 4
+        }
+      ],
+      "authors": [],
+      "consolidated_to": [
+        "bl_contributors_1"
+      ],
+      "scan_errors": []
+    },
+    {
+      "path": "sources/package/package.json",
+      "type": "file",
+      "detected_license_expression": "mit",
+      "detected_license_expression_spdx": "MIT",
+      "license_detections": [
+        {
+          "license_expression": "mit",
+          "license_expression_spdx": "MIT",
+          "matches": [
+            {
+              "license_expression": "mit",
+              "spdx_license_expression": "MIT",
+              "from_file": "sources/package/package.json",
+              "start_line": 25,
+              "end_line": 25,
+              "matcher": "2-aho",
+              "score": 100.0,
+              "matched_length": 2,
+              "match_coverage": 100.0,
+              "rule_relevance": 100,
+              "rule_identifier": "mit_30.RULE",
+              "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/rules/mit_30.RULE",
+              "matched_text": "  \"license\": \"MIT\","
+            }
+          ],
+          "identifier": "mit-3fce6ea2-8abd-6c6b-3ede-a37af7c6efee"
+        }
+      ],
+      "license_clues": [],
+      "percentage_of_license_text": 1.87,
+      "copyrights": [],
+      "holders": [],
+      "authors": [
+        {
+          "author": "Rod Vagg <rod@vagg.org> (https://github.com/rvagg) Matteo Collina <matteo.collina@gmail.com> (https://github.com/mcollina)",
+          "start_line": 14,
+          "end_line": 16
+        }
+      ],
+      "consolidated_to": [],
+      "scan_errors": []
+    },
+    {
+      "path": "sources/package/README.md",
+      "type": "file",
+      "detected_license_expression": null,
+      "detected_license_expression_spdx": null,
+      "license_detections": [],
+      "license_clues": [
+        {
+          "license_expression": "mit",
+          "spdx_license_expression": "MIT",
+          "from_file": "sources/package/README.md",
+          "start_line": 208,
+          "end_line": 208,
+          "matcher": "3-seq",
+          "score": 50.0,
+          "matched_length": 8,
+          "match_coverage": 50.0,
+          "rule_relevance": 100,
+          "rule_identifier": "mit_478.RULE",
+          "rule_url": "https://github.com/nexB/scancode-toolkit/tree/develop/src/licensedcode/data/rules/mit_478.RULE",
+          "matched_text": "is licensed under the MIT license. All rights not explicitly granted in the MIT license"
+        }
+      ],
+      "percentage_of_license_text": 0.55,
+      "copyrights": [
+        {
+          "copyright": "Copyright (c) 2013-2016 bl contributors",
+          "start_line": 206,
+          "end_line": 206
+        }
+      ],
+      "holders": [
+        {
+          "holder": "bl contributors",
+          "start_line": 206,
+          "end_line": 206
+        }
+      ],
+      "authors": [],
+      "consolidated_to": [
+        "bl_contributors_1"
+      ],
+      "scan_errors": []
+    }
+  ]
+}
