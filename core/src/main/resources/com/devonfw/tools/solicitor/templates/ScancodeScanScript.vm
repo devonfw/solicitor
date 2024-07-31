@@ -1,4 +1,4 @@
-scancodeoptions="--processes 16 --copyright --only-findings --license --license-text --consolidate"
+scancodeoptions="--processes 16 --copyright --only-findings --license --license-text --license-references --consolidate"
 beginning=$(pwd)
 mkdir scancodeOutput
 so=$(pwd)/scancodeOutput

@@ -11,36 +11,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
-import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
-import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
-import com.devonfw.tools.solicitor.componentinfo.curation.FilteredComponentInfoProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.CopyrightCuration;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.CurationOperation;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.LicenseCuration;
 import com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeComponentInfo.ScancodeComponentInfoData;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.github.packageurl.PackageURL;
 
 /**
- * {@link FilteredComponentInfoProvider} which delivers data based on scancode data.
+ * {@link FilteredScancodeVersionComponentInfoProvider} which delivers data based on scancode data.
  *
  */
 @Component
-public class FilteredScancodeComponentInfoProvider implements FilteredComponentInfoProvider {
+public class FilteredScancodeV31ComponentInfoProvider implements FilteredScancodeVersionComponentInfoProvider {
 
-  private static final Logger LOG = LoggerFactory.getLogger(FilteredScancodeComponentInfoProvider.class);
-
-  private static final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+  private static final Logger LOG = LoggerFactory.getLogger(FilteredScancodeV31ComponentInfoProvider.class);
 
   private double minLicenseScore;
 
@@ -56,13 +47,12 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
    * The constructor.
    *
    * @param fileScancodeRawComponentInfoProvider the provide for the raw scancode data
-   * @param packageURLHandler the handler for dealing with {@link PackageURL}s.
    * @param curationProvider for getting the filter information used for filtering findings based on the paths in the
    *        code
    */
   @Autowired
-  public FilteredScancodeComponentInfoProvider(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider,
-      AllKindsPackageURLHandler packageURLHandler, CurationProvider curationProvider) {
+  public FilteredScancodeV31ComponentInfoProvider(ScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider,
+      CurationProvider curationProvider) {
 
     this.fileScancodeRawComponentInfoProvider = fileScancodeRawComponentInfoProvider;
     this.curationProvider = curationProvider;
@@ -91,32 +81,29 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     this.minLicensefileNumberOfLines = minLicensefileNumberOfLines;
   }
 
+  @Override
+  public boolean accept(String toolVersion) {
+
+    return toolVersion.startsWith("30.") || toolVersion.startsWith("31.");
+  }
+
   /**
-   * Read scancode information for the given package from local file storage.
+   * Reads Scancode information for the given package from local file storage.
    *
-   * @param packageUrl The package url of the package
-   * @param curationDataHandle identifies which source should be used for the curation data.
-   * @return the read scancode information
-   * @throws ComponentInfoAdapterException if there was an exception when reading the data. In case that there is no
-   *         data available no exception will be thrown. Instead <code>null</code> will be returned in such a case.
-   * @throws CurationInvalidException if the curation data is not valid
+   * @param packageUrl the package URL of the package
+   * @param curationDataHandle identifies the source for the curation data
+   * @param rawScancodeData the raw Scancode data
+   * @param scancodeJson the parsed Scancode JSON data
+   * @return the component information based on the Scancode data
+   * @throws ComponentInfoAdapterException if an error occurs while reading the data
+   * @throws CurationInvalidException if the curation data is invalid
    */
   @Override
-  public ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle)
+  public ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle,
+      ScancodeRawComponentInfo rawScancodeData, JsonNode scancodeJson)
       throws ComponentInfoAdapterException, CurationInvalidException {
 
-    ScancodeRawComponentInfo rawScancodeData;
-    try {
-      rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(packageUrl);
-    } catch (ScancodeProcessingFailedException e) {
-      return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.PROCESSING_FAILED);
-    }
-    if (rawScancodeData == null) {
-      return new DefaultComponentInfoImpl(packageUrl, DataStatusValue.NOT_AVAILABLE);
-    }
-
-    ScancodeComponentInfo componentScancodeInfos = parseAndMapScancodeJson(packageUrl, rawScancodeData,
-        curationDataHandle);
+    ScancodeComponentInfo componentScancodeInfos = mapScancodeJson(packageUrl, scancodeJson, curationDataHandle);
     addSupplementedData(rawScancodeData, componentScancodeInfos);
     LOG.debug("Scancode info for package {}: {} license, {} copyrights, {} NOTICE files", packageUrl,
         componentScancodeInfos.getComponentInfoData().getLicenses().size(),
@@ -127,8 +114,10 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * @param rawScancodeData
-   * @param componentScancodeInfos
+   * Adds supplemented data to the component Scancode information.
+   *
+   * @param rawScancodeData the raw Scancode data
+   * @param componentScancodeInfos the component Scancode information to be updated
    */
   private void addSupplementedData(ScancodeRawComponentInfo rawScancodeData,
       ScancodeComponentInfo componentScancodeInfos) {
@@ -138,17 +127,24 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   }
 
   /**
-   * Parses and maps scancode JSON to create ScancodeComponentInfo.
+   * Maps scancode JSON to create ScancodeComponentInfo.
    *
-   * @param packageUrl package URL of the package
-   * @param rawScancodeData raw scancode data
-   * @param curationDataHandle identifies which source should be used for the curation data.
-   * @return the ScancodeComponentInfo
-   * @throws ComponentInfoAdapterException if there was an issue during parsing
-   * @throws CurationInvalidException if the curation data is not valid
+   * @param packageUrl the URL of the package for which Scancode data is being processed
+   * @param scancodeJson the parsed JSON data from Scancode results
+   * @param curationDataHandle identifies which source should be used for the curation data
+   * @return the {@link ScancodeComponentInfo} containing the processed data
+   * @throws ComponentInfoAdapterException if there is an issue with parsing the Scancode JSON or if a suitable provider
+   *         for the Scancode version is not found
+   * @throws CurationInvalidException if the curation data is not valid or if there is an error applying curation data
    */
-  private ScancodeComponentInfo parseAndMapScancodeJson(String packageUrl, ScancodeRawComponentInfo rawScancodeData,
+  private ScancodeComponentInfo mapScancodeJson(String packageUrl, JsonNode scancodeJson,
       CurationDataHandle curationDataHandle) throws ComponentInfoAdapterException, CurationInvalidException {
+
+    String toolVersion = scancodeJson.get("headers").get(0).get("tool_version").asText();
+    if (!accept(toolVersion)) {
+      throw new ComponentInfoAdapterException(
+          "Can only handle version 30 and 31 but found version was '" + toolVersion + "'");
+    }
 
     ScancodeComponentInfo componentScancodeInfos = new ScancodeComponentInfo(this.minLicenseScore,
         this.minLicensefileNumberOfLines);
@@ -170,13 +166,6 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
       excludedPaths = componentInfoCuration.getExcludedPaths();
       licenseCurations = componentInfoCuration.getLicenseCurations();
       copyrightCurations = componentInfoCuration.getCopyrightCurations();
-    }
-
-    JsonNode scancodeJson;
-    try {
-      scancodeJson = mapper.readTree(rawScancodeData.rawScancodeResult);
-    } catch (JsonProcessingException e) {
-      throw new ComponentInfoAdapterException("Could not parse Scancode JSON", e);
     }
 
     // Skip all files, whose path have a prefix which is in the excluded path list
@@ -328,10 +317,15 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   /**
    * Gets the effective license info after possibly applying curations for a single license finding.
    *
-   * @param path
-   * @param li
-   * @param licenseCurations
-   * @return
+   * @param path the path of the license finding which is used in the curation rules matching.
+   * @param li a {@link JsonNode} representing the license finding data that includes information such as the matched
+   *        rule identifier, matched text, and SPDX license key.
+   * @param licenseCurations s a list of {@link LicenseCuration} objects that may contain rules for curating license
+   *        data.
+   * @return a {@link LicenseCuration.NewLicenseData} object containing the effective license information after applying
+   *         the curation. If no applicable curation is found or if the curation list is {@code null}, a new
+   *         {@link LicenseCuration.NewLicenseData} instance with all members being {@code null} is returned, indicating
+   *         no change.
    */
   private LicenseCuration.NewLicenseData getEffectiveLicenseInfoWithCuration(String path, JsonNode li,
       List<LicenseCuration> licenseCurations) {
@@ -406,10 +400,10 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
   /**
    * Gets the effective copyright after possibly applying curations for a single copyright finding.
    *
-   * @param path
-   * @param copyright
-   * @param copyrightCurations
-   * @return
+   * @param path the path of the file or component for which the copyright curation is applied
+   * @param copyright the original copyright information
+   * @param copyrightCurations a list of copyright curation rules to be applied
+   * @return the effective copyright string after applying curations
    */
   private String getEffectiveCopyrightWithCuration(String path, String copyright,
       List<CopyrightCuration> copyrightCurations) {
@@ -516,4 +510,5 @@ public class FilteredScancodeComponentInfoProvider implements FilteredComponentI
     }
     return false;
   }
+
 }

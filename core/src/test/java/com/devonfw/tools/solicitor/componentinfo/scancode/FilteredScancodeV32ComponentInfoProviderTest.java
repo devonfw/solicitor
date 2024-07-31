@@ -13,14 +13,18 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * This class contains JUnit test methods for the {@link FilteredScancodeComponentInfoProvider} class.
+ * This class contains JUnit test methods for the {@link FilteredScancodeV31ComponentInfoProvider} class.
  */
-public class FilteredScancodeComponentInfoProviderTests {
+public class FilteredScancodeV32ComponentInfoProviderTest {
 
   // the object under test
-  FilteredScancodeComponentInfoProvider filteredScancodeComponentInfoProvider;
+  FilteredScancodeV32ComponentInfoProvider filteredScancodeV32ComponentInfoProvider;
 
   FileScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
 
@@ -40,28 +44,37 @@ public class FilteredScancodeComponentInfoProviderTests {
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
-    this.filteredScancodeComponentInfoProvider = new FilteredScancodeComponentInfoProvider(
-        this.fileScancodeRawComponentInfoProvider, packageURLHandler, this.singleFileCurationProvider);
+    this.filteredScancodeV32ComponentInfoProvider = new FilteredScancodeV32ComponentInfoProvider(
+        this.fileScancodeRawComponentInfoProvider, this.singleFileCurationProvider);
 
   }
 
   /**
-   * Test the {@link FilteredScancodeComponentInfoProvider#getComponentInfo(String,String)} method when no curations
-   * file exists
+   * Test the
+   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String,String,ScancodeRawComponentInfo,JsonNode)}
+   * method when no curations file exists
    *
    * @throws ComponentInfoAdapterException if something goes wrong
    * @throws CurationInvalidException if the curation data is not valid
+   * @throws ScancodeProcessingFailedException
+   * @throws JsonProcessingException
+   * @throws JsonMappingException
    */
   @Test
-  public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException, CurationInvalidException {
+  public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException, CurationInvalidException,
+      ScancodeProcessingFailedException, JsonMappingException, JsonProcessingException {
 
     // given
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
-    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
+    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
+        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+    JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
+
+    ComponentInfo scancodeComponentInfo = this.filteredScancodeV32ComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"));
+        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -74,23 +87,32 @@ public class FilteredScancodeComponentInfoProviderTests {
   }
 
   /**
-   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when the /src directory is
-   * excluded
+   * Test the
+   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String,String,ScancodeRawComponentInfo,JsonNode)}
+   * method when the /src directory is excluded
    *
    * @throws ComponentInfoAdapterException if something goes wrong
    * @throws CurationInvalidException if the curation data is not valid
+   * @throws ScancodeProcessingFailedException
+   * @throws JsonProcessingException
+   * @throws JsonMappingException
    */
   @Test
-  public void testGetComponentInfoWithCurationsAndExclusions()
-      throws ComponentInfoAdapterException, CurationInvalidException {
+  public void testGetComponentInfoWithCurationsAndExclusions() throws ComponentInfoAdapterException,
+      CurationInvalidException, ScancodeProcessingFailedException, JsonMappingException, JsonProcessingException {
 
     // given
     this.singleFileCurationProvider
         .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions.yaml");
+
+    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
+        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+    JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
+
     // when
-    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
+    ComponentInfo scancodeComponentInfo = this.filteredScancodeV32ComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"));
+        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -104,23 +126,31 @@ public class FilteredScancodeComponentInfoProviderTests {
   }
 
   /**
-   * Test the {@link ScancodeComponentInfoAdapter#getComponentInfo(String,String)} method when curations exist but no
-   * paths are excluded
+   * Test the
+   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String,String,ScancodeRawComponentInfo,JsonNode)}
+   * method when curations exist but no paths are excluded
    *
    * @throws ComponentInfoAdapterException if something goes wrong
    * @throws CurationInvalidException if the curation data is not valid
+   * @throws ScancodeProcessingFailedException
+   * @throws JsonProcessingException
+   * @throws JsonMappingException
    */
   @Test
-  public void testGetComponentInfoWithCurationsAndWithoutExclusions()
-      throws ComponentInfoAdapterException, CurationInvalidException {
+  public void testGetComponentInfoWithCurationsAndWithoutExclusions() throws ComponentInfoAdapterException,
+      CurationInvalidException, ScancodeProcessingFailedException, JsonMappingException, JsonProcessingException {
 
     // given
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
+    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
+        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+    JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
+
     // when
-    ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
+    ComponentInfo scancodeComponentInfo = this.filteredScancodeV32ComponentInfoProvider.getComponentInfo(
         "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"));
+        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
