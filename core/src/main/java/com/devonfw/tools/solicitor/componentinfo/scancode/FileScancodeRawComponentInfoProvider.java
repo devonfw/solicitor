@@ -38,6 +38,8 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
 
   private String repoBasePath;
 
+  private String scancodeFileName = "scancode.json";
+
   private long maxContentFileSize = 1000000L; // set this to the default even if spring is not used
 
   private AllKindsPackageURLHandler packageURLHandler;
@@ -77,6 +79,17 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   }
 
   /**
+   * Sets the name of the scancode json file.
+   *
+   * @param scancodeFileName new value of {@link #scancodeFileName}.
+   */
+  @Value("${solicitor.scancode.file-name:scancode.json}")
+  public void setScancodeFileName(String scancodeFileName) {
+
+    this.scancodeFileName = scancodeFileName;
+  }
+
+  /**
    * Retrieve the {@link ScancodeRawComponentInfo} for the package given by its PackageURL.
    *
    * @param packageUrl the identifier for the package
@@ -90,7 +103,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ComponentInfoAdapterException, ScancodeProcessingFailedException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
-    String path = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, "scancode.json");
+    String path = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, this.scancodeFileName);
 
     File scanCodeFile = new File(path);
     if (!scanCodeFile.exists()) {

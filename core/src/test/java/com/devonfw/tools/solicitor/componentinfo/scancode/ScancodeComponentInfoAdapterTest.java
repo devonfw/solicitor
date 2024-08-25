@@ -32,9 +32,13 @@ class ScancodeComponentInfoAdapterTest {
   // the object under test
   ScancodeComponentInfoAdapter scancodeComponentInfoAdapter;
 
-  FilteredScancodeComponentInfoProvider filteredScancodeComponentInfoProvider;
+  FilteredScancodeV31ComponentInfoProvider filteredScancodeComponentInfoProvider31;
+
+  FilteredScancodeV32ComponentInfoProvider filteredScancodeComponentInfoProvider32;
 
   FileScancodeRawComponentInfoProvider fileScancodeRawComponentInfoProvider;
+
+  MultiversionFilteredScancodeComponentInfoProvider multiversionFilteredScancodeComponentInfoProvider;
 
   ComponentInfoCurator componentInfoCuratorImpl;
 
@@ -57,16 +61,25 @@ class ScancodeComponentInfoAdapterTest {
     this.singleFileCurationProvider = new SingleFileCurationProvider(packageURLHandler);
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
-    this.filteredScancodeComponentInfoProvider = new FilteredScancodeComponentInfoProvider(
-        this.fileScancodeRawComponentInfoProvider, packageURLHandler, this.singleFileCurationProvider);
-    this.filteredScancodeComponentInfoProvider.setMinLicensefileNumberOfLines(5);
-    this.filteredScancodeComponentInfoProvider.setMinLicenseScore(90.0);
+    this.filteredScancodeComponentInfoProvider31 = new FilteredScancodeV31ComponentInfoProvider(
+        this.fileScancodeRawComponentInfoProvider, this.singleFileCurationProvider);
+    this.filteredScancodeComponentInfoProvider31.setMinLicensefileNumberOfLines(5);
+    this.filteredScancodeComponentInfoProvider31.setMinLicenseScore(90.0);
+
+    this.filteredScancodeComponentInfoProvider32 = new FilteredScancodeV32ComponentInfoProvider(
+        this.fileScancodeRawComponentInfoProvider, this.singleFileCurationProvider);
+    this.filteredScancodeComponentInfoProvider32.setMinLicensefileNumberOfLines(5);
+    this.filteredScancodeComponentInfoProvider32.setMinLicenseScore(90.0);
+
+    this.multiversionFilteredScancodeComponentInfoProvider = new MultiversionFilteredScancodeComponentInfoProvider(
+        new FilteredScancodeVersionComponentInfoProvider[] { this.filteredScancodeComponentInfoProvider32,
+        this.filteredScancodeComponentInfoProvider31 }, this.fileScancodeRawComponentInfoProvider);
 
     this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(this.singleFileCurationProvider,
         this.fileScancodeRawComponentInfoProvider);
 
-    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.filteredScancodeComponentInfoProvider,
-        this.componentInfoCuratorImpl);
+    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(
+        this.multiversionFilteredScancodeComponentInfoProvider, this.componentInfoCuratorImpl);
     this.scancodeComponentInfoAdapter.setFeatureFlag(true);
 
   }
@@ -160,8 +173,8 @@ class ScancodeComponentInfoAdapterTest {
     this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(curationProvider,
         this.fileScancodeRawComponentInfoProvider);
 
-    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(this.filteredScancodeComponentInfoProvider,
-        this.componentInfoCuratorImpl);
+    this.scancodeComponentInfoAdapter = new ScancodeComponentInfoAdapter(
+        this.multiversionFilteredScancodeComponentInfoProvider, this.componentInfoCuratorImpl);
     this.scancodeComponentInfoAdapter.setFeatureFlag(true);
 
     // when

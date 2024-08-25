@@ -33,7 +33,8 @@ public class ScancodeComponentInfoAdapter extends CuratingComponentInfoAdapter {
    * @param componentInfoCurator the curator to use
    */
   @Autowired
-  public ScancodeComponentInfoAdapter(FilteredScancodeComponentInfoProvider filteredScancodeComponentInfoProvider,
+  public ScancodeComponentInfoAdapter(
+      MultiversionFilteredScancodeComponentInfoProvider filteredScancodeComponentInfoProvider,
       ComponentInfoCurator componentInfoCurator) {
 
     super(filteredScancodeComponentInfoProvider, componentInfoCurator);
