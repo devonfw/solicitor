@@ -1482,7 +1482,7 @@ The following features are deprecated via the above mechanism:
 * Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
 * Running Solicitor on Java 8; Stage 1 from Version 1.22.0 on; see https://github.com/devonfw/solicitor/issues/247
 * LicenseUrl guessing; Stage 1 from Version 1.23.0 on; see https://github.com/devonfw/solicitor/issues/255
-* Reader of type "gradle2" (use Gradle Licence Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
+* Reader of type "gradle2" (use Gradle License Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
 
 == Experimental Scancode Integration
 
