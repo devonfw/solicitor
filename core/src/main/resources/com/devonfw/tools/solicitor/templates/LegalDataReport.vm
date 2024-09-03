@@ -7,19 +7,9 @@
     #set($count = $row.count)
     
     #if($category == "legal-evaluation")
-        #if($legalEvaluationMap.containsKey($value))
-            #set($currentCount = $legalEvaluationMap.get($value))
-            #set($legalEvaluationMap.put($value, $currentCount + $count))
-        #else
-            #set($legalEvaluationMap.put($value, $count))
-        #end
+        $legalEvaluationMap.put($value, $legalEvaluationMap.get($value) + $count)
     #elseif($category == "data-status")
-        #if($dataStatusMap.containsKey($value))
-            #set($currentCount = $dataStatusMap.get($value))
-            #set($dataStatusMap.put($value, $currentCount + $count))
-        #else
-            #set($dataStatusMap.put($value, $count))
-        #end
+        $dataStatusMap.put($value, $dataStatusMap.get($value) + $count)
     #end
 #end
 
