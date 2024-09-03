@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -38,6 +40,14 @@ public class GradleReader2 extends AbstractReader implements Reader {
    */
   public static final String SUPPORTED_TYPE = "gradle2";
 
+  private DeprecationChecker deprecationChecker;
+
+  @Autowired
+  public void setDeprecationChecker(DeprecationChecker deprecationChecker) {
+
+    this.deprecationChecker = deprecationChecker;
+  }
+
   /** {@inheritDoc} */
   @Override
   public Set<String> getSupportedTypes() {
@@ -49,6 +59,10 @@ public class GradleReader2 extends AbstractReader implements Reader {
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
+
+    this.deprecationChecker.check(false,
+        "Support for the 'Gradle License Plugin' via the 'gradle2' Reader is deprecated. Use the 'Gradle License Report' with"
+            + " Reader 'gradle-license-report-json' instead. See https://github.com/devonfw/solicitor/issues/283");
 
     int components = 0;
     int licenses = 0;

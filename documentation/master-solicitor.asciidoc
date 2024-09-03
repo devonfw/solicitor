@@ -836,7 +836,62 @@ In _Solicitor_ the data is read with the following part of the config
 
 WARNING: The ORT reader currently does not yet fill the attribute `licenseUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read by the ORT reader.
 
-=== Gradle (Windows)
+=== Gradle
+
+Gradle projects should use the https://github.com/jk1/Gradle-License-Report[Gradle License Report] to generate the Solicitor input files. Support for the https://github.com/jaredsburrows/gradle-license-plugin[Gradle License Plugin] is deprecated as it might lead to incomplete results.
+
+==== Gradle License Report Plugin
+
+Pick the correct version of the https://github.com/jk1/Gradle-License-Report[Gradle License Report Plugin] depending on you Gradle version. Add the plugin to the list of plugins in your `build.gradle` file:
+
+Gradle v7+:
+----
+plugins {
+    id 'com.github.jk1.dependency-license-report' version '2.9'
+}
+----
+
+Gradle v1.x to v6.x:
+----
+plugins {
+    id 'com.github.jk1.dependency-license-report' version '1.17'
+}
+----
+
+Add also the following to the `build.gradle` file to configure the plugin:
+----
+import com.github.jk1.license.render.*
+licenseReport {
+    configurations = ['runtimeClasspath', 'releaseRuntimeClasspath']
+
+    renderers = [new JsonReportRenderer('dependencies.json', false)]
+}
+----
+
+Execute the plugin:
+----
+gradle generateLicenseReport
+----
+
+The report is stored at `$projectfolder/build/reports/dependency-license/dependencies.json` and should look like this:
+----
+include::files/gradleLicenseReport.json[]
+----
+
+In Solicitor the Data is read with the following part of the config
+
+----
+      "readers" : [ {
+        "type" : ""type" : "gradle-license-report-json",",
+        "source" : "file:$/input/dependencies.json",
+        "usagePattern" : "DYNAMIC_LINKING"
+      } ]
+----
+
+==== gradle-license-plugin, Windows
+
+WARNING: The gradle-license-plugin does not include dependencies into the report if they have no license info declared. This might result in incomplete data in the Solicitor output. The usage
+of this plugin is discouraged and the 'gradle2' reader is deprecated (stage 2). Use the <<Gradle License Report Plugin>> instead.
 
 For the export of the licenses from a Gradle based project the Gradle License Plugin is used.
 
@@ -882,9 +937,11 @@ In _Solicitor_ the data is read with the following part of the config
 } ]
 ----
 
-NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
+==== gradle-license-plugin, Android
 
-=== Gradle (Android)
+WARNING: The gradle-license-plugin does not include dependencies into the report if they have no license info declared. This might result in incomplete data in the Solicitor output. The usage
+of this plugin is discouraged and the 'gradle2' reader is deprecated (stage 2). Use the <<Gradle License Report Plugin>> instead.
+
 For the Export of the the Licenses from a Gradle based Android Projects the Gradle License Plugin is used.
 
 To install the Plugin some changes need to be done in the build.gradle of the Project, like following example
@@ -924,14 +981,12 @@ Source: https://github.com/jaredsburrows/gradle-license-plugin
 In Solicitor the Data is read with the following part of the config
 
 ----
-"readers" : [ {
-      "type" : "gradle2",
-      "source" : "file:$/input/licenses.json",
-      "usagePattern" : "DYNAMIC_LINKING"
-   	} ]
+      "readers" : [ {
+        "type" : "gradle2",
+        "source" : "file:$/input/licenses.json",
+        "usagePattern" : "DYNAMIC_LINKING"
+      } ]
 ----
-
-NOTE: The former reader of type `gradle` is deprecated and should no longer be used. See <<List of Deprecated Features>>.
 
 === CycloneDX
 
@@ -1421,13 +1476,13 @@ wrong/misleading output) the first stage of deprecation will be skipped.
 The following features are deprecated via the above mechanism:
 
 * Reader of type "npm-license-crawler-csv" (use Reader of type "npm-license-checker" instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/125 and https://github.com/devonfw/solicitor/issues/263
-* Reader of type "gradle"  (use Reader of type "gradle2" instead); Stage 2 from Version 1.0.5 on; see https://github.com/devonfw/solicitor/issues/58
 * Reader of type "npm"; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/62 and https://github.com/devonfw/solicitor/issues/263
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
 * Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
 * Running Solicitor on Java 8; Stage 1 from Version 1.22.0 on; see https://github.com/devonfw/solicitor/issues/247
 * LicenseUrl guessing; Stage 1 from Version 1.23.0 on; see https://github.com/devonfw/solicitor/issues/255
+* Reader of type "gradle2" (use Gradle Licence Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
 
 == Experimental Scancode Integration
 
@@ -1899,6 +1954,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.27.0::
+* https://github.com/devonfw/solicitor/issues/283: New Reader for data generated by the Gradle License Report Plugin. See <<Gradle License Report Plugin>>. Reader `gradle2` deprecated (stage 2). Reader `gradle` removed.
 
 Changes in 1.26.0::
 * https://github.com/devonfw/solicitor/issues/281: Solicitor now assumes ScanCode v32 to be used within the ScanCode integration. ScanCode JSON result files of v30 and v31 can still be processed but the scripting for doing the scans assumes v32 to be installed.

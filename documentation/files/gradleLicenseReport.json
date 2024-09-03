@@ -1,0 +1,38 @@
+{
+  "dependencies": [
+    {
+      "moduleName": "androidx.activity:activity",
+      "moduleVersion": "1.2.4",
+      "moduleUrls": [
+        "https://developer.android.com/jetpack/androidx/releases/activity#1.2.4"
+      ],
+      "moduleLicenses": [
+        {
+          "moduleLicense": "The Apache Software License, Version 2.0",
+          "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ]
+    },
+    {
+      "moduleName": "com.sun.activation:javax.activation",
+      "moduleVersion": "1.2.0",
+      "moduleUrls": [
+        "http://www.oracle.com"
+      ],
+      "moduleLicenses": [
+        {
+          "moduleLicense": "CDDL/GPLv2+CE",
+          "moduleLicenseUrl": "https://github.com/javaee/activation/blob/master/LICENSE.txt"
+        },
+        {
+          "moduleLicense": "COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0",
+          "moduleLicenseUrl": "https://opensource.org/licenses/CDDL-1.0"
+        }
+      ]
+    },
+    {
+      "moduleName": "androidx.annotation:annotation",
+      "moduleVersion": "1.3.0"
+    }
+  ]
+}

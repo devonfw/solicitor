@@ -1,0 +1,30 @@
+{
+  "dependencies": [
+    {
+      "moduleName": "androidx.activity:activity",
+      "moduleUrl": "https://developer.android.com/jetpack/androidx/releases/activity#1.2.4",
+      "moduleVersion": "1.2.4",
+      "moduleLicenses": [
+        {
+          "moduleLicense": "The Apache Software License, Version 2.0",
+          "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ]
+    },
+    {
+      "moduleName": "com.sun.istack:istack-commons-runtime",
+      "moduleUrl": "http://www.oracle.com/",
+      "moduleVersion": "3.0.7",
+      "moduleLicenses": [
+        {
+      	  "moduleLicense": "GPL2 w/ CPE",
+      	  "moduleLicenseUrl": "https://glassfish.java.net/public/CDDL+GPL_1_1.html"
+        }
+	  ]
+    },
+    {
+      "moduleName": "androidx.annotation:annotation",
+      "moduleVersion": "1.3.0"
+    }
+  ]
+}

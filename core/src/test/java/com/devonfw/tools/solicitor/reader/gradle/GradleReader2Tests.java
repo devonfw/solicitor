@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.FileInputStreamFactory;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
@@ -31,6 +32,14 @@ public class GradleReader2Tests {
 
     this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
     GradleReader2 gr = new GradleReader2();
+    gr.setDeprecationChecker(new DeprecationChecker() {
+
+      @Override
+      public void check(boolean warnOnly, String detailsString) {
+
+        // do nothing...
+      }
+    });
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("gradle2", "src/test/resources/licenseReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
