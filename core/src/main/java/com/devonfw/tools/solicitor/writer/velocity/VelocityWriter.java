@@ -6,9 +6,11 @@ package com.devonfw.tools.solicitor.writer.velocity;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -91,7 +93,8 @@ public class VelocityWriter implements Writer {
     // write output
     File file = new File(target);
     IOHelper.checkAndCreateLocation(file);
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+    try (BufferedWriter writer = new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
       Velocity.evaluate(context, writer, "solicitor report velocity", templateString);
       writer.flush();
     } catch (IOException e) {
