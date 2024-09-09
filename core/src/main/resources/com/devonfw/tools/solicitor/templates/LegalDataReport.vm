@@ -1,0 +1,27 @@
+#set($legalEvaluationMap = {})
+#set($dataStatusMap = {})
+
+#foreach($row in $rows)
+    #set($category = $row.category)
+    #set($value = $row.value)
+    #set($count = $row.count)
+    
+    #if($category == "legal-evaluation")
+        $legalEvaluationMap.put($value, $legalEvaluationMap.get($value) + $count)
+    #elseif($category == "data-status")
+        $dataStatusMap.put($value, $dataStatusMap.get($value) + $count)
+    #end
+#end
+
+{
+  "legal-evaluation": {
+    #foreach($entry in $legalEvaluationMap.entrySet())
+        "$entry.key": $entry.value#if($foreach.hasNext),#end
+    #end
+  },
+  "data-status": {
+    #foreach($entry in $dataStatusMap.entrySet())
+        "$entry.key": $entry.value#if($foreach.hasNext),#end
+    #end
+  }
+}
