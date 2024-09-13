@@ -1,27 +1,26 @@
-#set($legalEvaluationMap = {})
-#set($dataStatusMap = {})
+## Initialize a list to store unique categories
+#set($uniqueCategories = [])
 
-#foreach($row in $rows)
-    #set($category = $row.category)
-    #set($value = $row.value)
-    #set($count = $row.count)
-    
-    #if($category == "legal-evaluation")
-        $legalEvaluationMap.put($value, $legalEvaluationMap.get($value) + $count)
-    #elseif($category == "data-status")
-        $dataStatusMap.put($value, $dataStatusMap.get($value) + $count)
+#foreach($row in $STATISTICS)
+    #set($category = $row.CATEGORY)
+        #if(!$uniqueCategories.contains($category))
+        #set($dummy = $uniqueCategories.add($category))
     #end
 #end
 
+## Print JSON Output
 {
-  "legal-evaluation": {
-    #foreach($entry in $legalEvaluationMap.entrySet())
-        "$entry.key": $entry.value#if($foreach.hasNext),#end
+  "Statistics": [
+    #foreach($category in $uniqueCategories)
+      "$category": {
+      #foreach($row in $STATISTICS)
+        #if(($category == $row.CATEGORY))
+          "$row.VALUE": $row.COUNT,
+        #end
+      #end
+    #if($foreach.hasNext)
+      },
     #end
-  },
-  "data-status": {
-    #foreach($entry in $dataStatusMap.entrySet())
-        "$entry.key": $entry.value#if($foreach.hasNext),#end
     #end
-  }
+  ]
 }
