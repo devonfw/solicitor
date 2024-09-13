@@ -1817,21 +1817,23 @@ The Velocity template `Statistics.vm` creates a `Statistics.json` file that curr
 [source,json]
 ----
 {
-  "legal-evaluation": {
-    "yes": 100,
-    "no": 2,
-    "Conditional": 30,
-    "blank": 10
-  },
-  "data-status": {
-    "ND:NOT_AVAILABLE": 5,
-    "ND:PROCESSING_FAILED": 7,
-    "NL:WITH_ISSUES": 10,
-    "NL:NO_ISSUES": 2,
-    "NL:CURATED": 1,
-    "DA:NO_ISSUES": 70,
-    "DA:CURATED": 20
-  }
+  "Statistics"[
+    "legal-evaluation": {
+      "yes": 100,
+      "no": 2,
+      "Conditional": 30,
+      "blank": 10
+    },
+    "data-status": {
+      "ND:NOT_AVAILABLE": 5,
+      "ND:PROCESSING_FAILED": 7,
+      "NL:WITH_ISSUES": 10,
+      "NL:NO_ISSUES": 2,
+      "NL:CURATED": 1,
+      "DA:NO_ISSUES": 70,
+      "DA:CURATED": 20
+    }
+  ]
 }
 ----
 
