@@ -17,6 +17,7 @@ fas
 gradle
 http
 https
+jq
 jwt
 licenseRefUrl
 licenseToIgnoreN
