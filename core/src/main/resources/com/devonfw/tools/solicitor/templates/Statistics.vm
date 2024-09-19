@@ -1,26 +1,28 @@
-## Initialize a list to store unique categories
-#set($uniqueCategories = [])
-
-#foreach($row in $STATISTICS)
-    #set($category = $row.CATEGORY)
-        #if(!$uniqueCategories.contains($category))
-        #set($dummy = $uniqueCategories.add($category))
-    #end
-#end
+#set($previousCategory = "")
+#set($firstCategory = true)
 
 ## Print JSON Output
 {
-  "Statistics": [
-    #foreach($category in $uniqueCategories)
-      "$category": {
-      #foreach($row in $STATISTICS)
-        #if(($category == $row.CATEGORY))
-          "$row.VALUE": $row.COUNT,
-        #end
+  "Statistics": {
+  #foreach($row in $STATISTICS)
+    #set($currentCategory = $row.CATEGORY)
+    #if($currentCategory != $previousCategory)
+      #if(!$firstCategory)
+      
+   },
       #end
+   "$currentCategory": {
+	     #set($previousCategory = $currentCategory)
+		 #set($firstCategory = false)
+    #else
+,
+    #end
+      "$row.VALUE": $row.COUNT##
     #if($foreach.hasNext)
-      },
+    #else
+    
+    }
     #end
-    #end
-  ]
+  #end
+  }
 }
