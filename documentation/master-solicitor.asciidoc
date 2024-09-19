@@ -1817,7 +1817,7 @@ The Velocity template `Statistics.vm` creates a `Statistics.json` file that curr
 [source,json]
 ----
 {
-  "Statistics"[
+  "Statistics": {
     "legal-evaluation": {
       "yes": 100,
       "no": 2,
@@ -1833,7 +1833,7 @@ The Velocity template `Statistics.vm` creates a `Statistics.json` file that curr
       "DA:NO_ISSUES": 70,
       "DA:CURATED": 20
     }
-  ]
+  }
 }
 ----
 
@@ -1846,14 +1846,14 @@ To achieve this, you can use the JSON processor `jq` and add a script like the f
 [source,bash]
 ----
 # Check if the count for "no" is greater than 0
-NO_COUNT=$(jq '.["legal-evaluation"]["no"]' Statistics.json)
+NO_COUNT=$(jq '.["Statistics"]["legal-evaluation"]["no"]' Statistics.json)
 
 # If NO_COUNT is greater than 0, break the build
-if [ "$NO_COUNT" -gt 0 ]; then
+if [ -n "$NO_COUNT" ] && [ "$NO_COUNT" != "null" ] && [ "$NO_COUNT" -gt 0 ]; then
   echo "Build failed: 'no' count in legal-evaluation is $NO_COUNT"
   exit 1
 else
-  echo "'no' count is acceptable: $NO_COUNT"
+  echo "Build successful"
 fi
 ----
 
