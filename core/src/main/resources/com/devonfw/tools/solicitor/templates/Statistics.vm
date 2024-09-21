@@ -8,19 +8,19 @@
     #set($currentCategory = $row.CATEGORY)
     #if($currentCategory != $previousCategory)
       #if(!$firstCategory)
-      
-   },
+
+    },
       #end
-   "$currentCategory": {
-	     #set($previousCategory = $currentCategory)
-		 #set($firstCategory = false)
+    "$currentCategory": {
+         #set($previousCategory = $currentCategory)
+         #set($firstCategory = false)
     #else
 ,
     #end
       "$row.VALUE": $row.COUNT##
     #if($foreach.hasNext)
     #else
-    
+
     }
     #end
   #end
