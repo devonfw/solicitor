@@ -1,0 +1,28 @@
+#set($previousCategory = "")
+#set($firstCategory = true)
+
+## Print JSON Output
+{
+  "Statistics": {
+  #foreach($row in $STATISTICS)
+    #set($currentCategory = $row.CATEGORY)
+    #if($currentCategory != $previousCategory)
+      #if(!$firstCategory)
+
+    },
+      #end
+    "$currentCategory": {
+         #set($previousCategory = $currentCategory)
+         #set($firstCategory = false)
+    #else
+,
+    #end
+      "$row.VALUE": $row.COUNT##
+    #if($foreach.hasNext)
+    #else
+
+    }
+    #end
+  #end
+  }
+}
