@@ -66,6 +66,14 @@ public interface Application {
   String getSourceRepo();
 
   /**
+   * This method gets the field <code>reportingGroups</code>. Reporting groups are stored within one String in
+   * concatenated form.
+   *
+   * @return the field reportingGroups
+   */
+  String getReportingGroups();
+
+  /**
    * Sets the {@link Engagement} to which this {@link Application} belongs.
    *
    * @param engagement the parent in the data model
@@ -106,6 +114,14 @@ public interface Application {
    * @param sourceRepo the new value of the field sourceRepo
    */
   void setSourceRepo(String sourceRepo);
+
+  /**
+   * This method sets the field <code>reportingGroups</code>. Reporting groups are stored within one String in
+   * concatenated form.
+   *
+   * @param reportingGroups the new value of the field reportingGroups
+   */
+  void setReportingGroups(String reportingGroups);
 
   /**
    * Complete the data of this object by setting members which are derived from other members.

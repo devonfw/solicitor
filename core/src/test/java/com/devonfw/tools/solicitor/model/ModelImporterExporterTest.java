@@ -75,10 +75,18 @@ public class ModelImporterExporterTest {
   /**
    * Test method for {@link com.devonfw.tools.solicitor.model.ModelImporterExporter#loadModel(java.lang.String)}.
    */
-  @Test
   public void testLoadModelVersion6() {
 
-    ModelRoot modelRoot = this.mie.loadModel("src/test/resources/models/model_version_6.json");
+    this.mie.loadModel("src/test/resources/models/model_version_6.json");
+  }
+
+  /**
+   * Test method for {@link com.devonfw.tools.solicitor.model.ModelImporterExporter#loadModel(java.lang.String)}.
+   */
+  @Test
+  public void testLoadModelVersion7() {
+
+    ModelRoot modelRoot = this.mie.loadModel("src/test/resources/models/model_version_7.json");
 
     // Assert
     Assertions.assertNotNull(modelRoot);
@@ -89,6 +97,7 @@ public class ModelImporterExporterTest {
 
     Application application = applications.get(0);
     Assertions.assertNotNull(application);
+    Assertions.assertEquals("#default#", application.getReportingGroups());
 
     List<ApplicationComponent> applicationComponents = application.getApplicationComponents();
     Assertions.assertFalse(applicationComponents.isEmpty());
@@ -115,7 +124,7 @@ public class ModelImporterExporterTest {
   @Test
   public void testSaveModel() throws IOException {
 
-    ModelRoot mr = this.mie.loadModel("src/test/resources/models/model_version_6.json");
+    ModelRoot mr = this.mie.loadModel("src/test/resources/models/model_version_7.json");
     File tempFile = File.createTempFile("solicitor_model", "json");
     String fileName = tempFile.getPath();
 

@@ -32,6 +32,8 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
 
   private Engagement engagement;
 
+  private String reportingGroups;
+
   /**
    * Constructor.
    *
@@ -42,7 +44,7 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
    * @param programmingEcosystem name of the programming ecosystem
    */
   public ApplicationImpl(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem) {
+      String programmingEcosystem, String reportingGroups) {
 
     super();
     this.name = name;
@@ -50,6 +52,7 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
     this.releaseDate = releaseDate;
     this.sourceRepo = sourceRepo;
     this.programmingEcosystem = programmingEcosystem;
+    this.reportingGroups = reportingGroups;
   }
 
   /** {@inheritDoc} */
@@ -77,7 +80,8 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
   @Override
   public String[] getDataElements() {
 
-    return new String[] { this.name, this.releaseId, this.releaseDate, this.sourceRepo, this.programmingEcosystem };
+    return new String[] { this.name, this.releaseId, this.releaseDate, this.sourceRepo, this.programmingEcosystem,
+    this.reportingGroups };
   }
 
   /** {@inheritDoc} */
@@ -92,7 +96,8 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
   @Override
   public String[] getHeadElements() {
 
-    return new String[] { "applicationName", "releaseId", "releaseDate", "sourceRepo", "programmingEcosystem" };
+    return new String[] { "applicationName", "releaseId", "releaseDate", "sourceRepo", "programmingEcosystem",
+    "reportingGroups" };
   }
 
   /** {@inheritDoc} */
@@ -128,6 +133,13 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
   public String getSourceRepo() {
 
     return this.sourceRepo;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getReportingGroups() {
+
+    return this.reportingGroups;
   }
 
   /** {@inheritDoc} */
@@ -174,6 +186,13 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
   public void setSourceRepo(String sourceRepo) {
 
     this.sourceRepo = sourceRepo;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setReportingGroups(String reportingGroups) {
+
+    this.reportingGroups = reportingGroups;
   }
 
   /** {@inheritDoc} */

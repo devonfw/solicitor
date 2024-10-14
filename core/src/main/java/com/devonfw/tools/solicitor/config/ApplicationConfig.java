@@ -27,6 +27,9 @@ public class ApplicationConfig {
   private String programmingEcosystem;
 
   @JsonProperty
+  private List<String> reportingGroups;
+
+  @JsonProperty
   private List<ReaderConfig> readers = new ArrayList<>();
 
   /**
@@ -80,6 +83,16 @@ public class ApplicationConfig {
   }
 
   /**
+   * This method gets the field <code>reportingGroups</code>.
+   *
+   * @return the field reportingGroups
+   */
+  public List<String> getReportingGroups() {
+
+    return this.reportingGroups;
+  }
+
+  /**
    * This method sets the field <code>name</code>.
    *
    * @param name the new value of the field name
@@ -127,5 +140,15 @@ public class ApplicationConfig {
   public void setSourceRepo(String sourceRepo) {
 
     this.sourceRepo = sourceRepo;
+  }
+
+  /**
+   * This method sets the field <code>reportingGroups</code>.
+   *
+   * @param reportingGroups the new value of the field reportingGroups
+   */
+  public void setReportingGroups(List<String> reportingGroups) {
+
+    this.reportingGroups = reportingGroups;
   }
 }

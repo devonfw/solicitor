@@ -34,7 +34,7 @@ public class MavenReaderTests {
     ModelFactory modelFactory = new ModelFactoryImpl();
 
     Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8");
+        "Java8", "#default#");
     MavenReader mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
@@ -67,7 +67,7 @@ public class MavenReaderTests {
     ModelFactory modelFactory = new ModelFactoryImpl();
 
     Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8");
+        "Java8", "#default#");
     MavenReader mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());

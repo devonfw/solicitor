@@ -13,6 +13,7 @@ from
 	APPLICATIONCOMPONENT ac 
 where 
 	e.ID_ENGAGEMENT = a.PARENT_APPLICATION AND 
+	a."reportingGroups" LIKE '%#reportingGroup#%' AND 
 	a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT
 order by
 	UPPER("ID_APPLICATION"), -- sort by ID so assuring we have the same order as defined in config

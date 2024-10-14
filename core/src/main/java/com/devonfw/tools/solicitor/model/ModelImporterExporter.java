@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
+import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.impl.ModelRootImpl;
@@ -55,6 +56,9 @@ public class ModelImporterExporter {
 
   @Autowired
   private ModelFactoryImpl modelFactory;
+
+  @Autowired
+  private ReportingGroupHandler reportingGroupHandler;
 
   /**
    * Loads the data model from a JSON file. The loaded data model is represented by a root object of type
@@ -216,9 +220,15 @@ public class ModelImporterExporter {
       String releaseDate = applicationNode.get("releaseDate").asText(null);
       String sourceRepo = applicationNode.get("sourceRepo").asText(null);
       String programmingEcosystem = applicationNode.get("programmingEcosystem").asText(null);
+      String reportingGroups = ReportingGroupHandler.DEFAULT_REPORTING_GROUP_LIST;
+      JsonNode reportingGroupsNode = applicationNode.get("reportingGroups");
+      if (reportingGroupsNode != null) {
+        reportingGroups = reportingGroupsNode.asText();
+        this.reportingGroupHandler.validateReportingGroupList(reportingGroups);
+      }
       JsonNode applicationComponentsNode = applicationNode.get("applicationComponents");
       ApplicationImpl application = this.modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo,
-          programmingEcosystem);
+          programmingEcosystem, reportingGroups);
       application.setEngagement(engagement);
       readApplicationComponents(application, applicationComponentsNode, readModelVersion);
 

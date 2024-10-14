@@ -30,7 +30,8 @@ public class NpmLicenseCrawlerReaderTests {
   public NpmLicenseCrawlerReaderTests() {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
     NpmLicenseCrawlerReader nr = new NpmLicenseCrawlerReader();
     nr.setDeprecationChecker(new DeprecationChecker() {
 
@@ -42,8 +43,8 @@ public class NpmLicenseCrawlerReaderTests {
     });
     nr.setModelFactory(modelFactory);
     nr.setInputStreamFactory(new FileInputStreamFactory());
-    nr.readInventory("npm", "src/test/resources/npmlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING, "npm", null,
-        null);
+    nr.readInventory("npm", "src/test/resources/npmlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING, "npm",
+        null, null);
   }
 
   @Test

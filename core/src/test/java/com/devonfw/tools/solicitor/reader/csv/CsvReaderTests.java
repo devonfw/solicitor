@@ -59,7 +59,8 @@ public class CsvReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -132,7 +133,8 @@ public class CsvReaderTests {
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
-    application = modelFactory.newApplication("testAppNpm", "0.0.0.TEST", "1.1.2111", "http://bla.com", "NPM");
+    application = modelFactory.newApplication("testAppNpm", "0.0.0.TEST", "1.1.2111", "http://bla.com", "NPM",
+        "#default#");
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -160,7 +162,8 @@ public class CsvReaderTests {
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
-    application = modelFactory.newApplication("testAppPypi", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+    application = modelFactory.newApplication("testAppPypi", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
 
     // configuration settings
     Map<String, String> configuration = new HashMap<String, String>();
@@ -196,7 +199,8 @@ public class CsvReaderTests {
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
-    application = modelFactory.newApplication("testAppNull", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+    application = modelFactory.newApplication("testAppNull", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -210,7 +214,7 @@ public class CsvReaderTests {
     } catch (Exception e) {
       // Capture the log messages
       ArgumentCaptor<String> logEntry1 = ArgumentCaptor.forClass(String.class);
-      verify(logger).warn(logEntry1.capture());
+      verify(this.logger).warn(logEntry1.capture());
 
       assertEquals(expectedLogMessage, logEntry1.getValue());
     }

@@ -44,7 +44,7 @@ public class CyclonedxReaderTests {
     Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8");
+        "Java8", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
@@ -80,7 +80,7 @@ public class CyclonedxReaderTests {
         new SolicitorPackageURLException("No applicable SingleKindPackageURLHandler found for type 'maven'"));
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8");
+        "Java8", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
@@ -103,7 +103,7 @@ public class CyclonedxReaderTests {
     Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8");
+        "Java8", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
@@ -165,7 +165,7 @@ public class CyclonedxReaderTests {
     Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:npm/"))).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Angular");
+        "Angular", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
@@ -196,7 +196,7 @@ public class CyclonedxReaderTests {
     Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Angular");
+        "Angular", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);

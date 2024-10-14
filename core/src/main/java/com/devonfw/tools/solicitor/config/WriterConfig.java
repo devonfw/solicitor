@@ -28,6 +28,9 @@ public class WriterConfig {
   private String description;
 
   @JsonProperty
+  private boolean enableReportingGroups;
+
+  @JsonProperty
   private Map<String, String> dataTables;
 
   /**
@@ -99,6 +102,16 @@ public class WriterConfig {
   }
 
   /**
+   * This method gets the field <code>enableReportingGroups</code>.
+   *
+   * @return enableReportingGroups
+   */
+  public boolean isEnableReportingGroups() {
+
+    return this.enableReportingGroups;
+  }
+
+  /**
    * This method sets the field <code>dataTables</code>.
    *
    * @param dataTables the new value of the field dataTables
@@ -147,4 +160,15 @@ public class WriterConfig {
 
     this.type = type;
   }
+
+  /**
+   * This method sets the field <code>enableReportingGroups</code>.
+   *
+   * @param enableReportingGroups new value of {@link #isEnableReportingGroups}.
+   */
+  public void setEnableReportingGroups(boolean enableReportingGroups) {
+
+    this.enableReportingGroups = enableReportingGroups;
+  }
+
 }
