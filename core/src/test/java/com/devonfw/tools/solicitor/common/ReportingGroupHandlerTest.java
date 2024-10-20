@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.PatternSyntaxException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -101,11 +103,12 @@ class ReportingGroupHandlerTest {
     assertEquals(1, result.size());
     assertTrue(result.contains("default"));
 
-    result = this.handlerUnderTest.normalizeReportingGroups(List.of("a", "b", "c", "b"));
+    result = this.handlerUnderTest.normalizeReportingGroups(Arrays.asList(new String[] { "a", "b", "c", "b" }));
     assertEquals(3, result.size());
-    assertTrue(result.containsAll(List.of("a", "b", "c")));
+    assertTrue(result.containsAll(Arrays.asList(new String[] { "a", "b", "c" })));
 
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.normalizeReportingGroups(List.of("/")));
+    assertThrows(SolicitorRuntimeException.class,
+        () -> this.handlerUnderTest.normalizeReportingGroups(Arrays.asList(new String[] { "/" })));
   }
 
   /**
@@ -115,7 +118,8 @@ class ReportingGroupHandlerTest {
   @Test
   void testStringifyReportingGroups() {
 
-    String result = this.handlerUnderTest.stringifyReportingGroups(Set.of("a", "b"));
+    String result = this.handlerUnderTest
+        .stringifyReportingGroups(new TreeSet<>(Arrays.asList(new String[] { "a", "b" })));
 
     assertTrue(result.equals("#a#b#") || result.equals("#b#a#"));
   }
@@ -175,7 +179,7 @@ class ReportingGroupHandlerTest {
   void testLogReportingGroups() {
 
     this.handlerUnderTest.setReportingGroupActivationFilterPattern("bar");
-    this.handlerUnderTest.logReportingGroups(List.of("foo", "bar"));
+    this.handlerUnderTest.logReportingGroups(Arrays.asList(new String[] { "foo", "bar" }));
     // no assertion of actual log message; just assuring no exception is thrown
   }
 
