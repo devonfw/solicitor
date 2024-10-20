@@ -151,7 +151,7 @@ public class ConfigFactory {
       }
     }
     this.reportingGroupHandler.logReportingGroups(allReportingGroups);
-    this.solicitorSetup.setReportingGroups(List.copyOf(allReportingGroups));
+    this.solicitorSetup.setReportingGroups(new ArrayList<>(allReportingGroups));
     this.solicitorSetup.setRuleSetups(resolvePlaceholdersInRules(sc.getRules(), placeHolderMap));
     this.solicitorSetup.setWriterSetups(resolvePlaceholdersInWriters(sc.getWriters(), placeHolderMap));
     return modelRoot;
