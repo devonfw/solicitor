@@ -1387,16 +1387,16 @@ The Generic Excel Writer exists purely for debugging purposes. This writer write
 Reporting Groups is an advanced reporting feature which might be used to create reports for defined subsets of the `Applications`  defined in the project configuration. This might be useful if e.g. separate and dedicated attribution documents need to be created for some of the applications which might then be included into each of those applications.
 
 ==== Default Behavior
-Without any dedicated configuration each `Application` is assigned to the reporting group `default`. Each defined report (defined in the `writers` or `additionalWriters` section of the configuration) will then be written for the `default` reporting group. The templating mechanism for determining the reports target file includes some special handling so that the reporting group name `default` is not propagated to the final filename. Overall the introduction of the feature "Reporting Groups" (with _Solicitor_ 1.28.0) does not change any report output unless reporting groups are explicitely defined.
+Without any dedicated configuration each `Application` is assigned to the reporting group `default`. Each defined report (defined in the `writers` or `additionalWriters` section of the configuration) will then be written for the `default` reporting group. The templating mechanism for determining the reports target file includes some special handling so that the reporting group name `default` is not propagated to the final filename. Overall the introduction of the feature "Reporting Groups" (with _Solicitor_ 1.28.0) does not change any report output unless reporting groups are explicitly defined.
 
 ==== Defining Reporting Groups and assigning `Applications`
-Reporting groups are implicitely created by assigning `Applications` to them. So in case that an `Application`
-shall be assigned to reporting groups `default` and `web app` then an additional `reportingGroups` node has to be defined within the configuration of the `Application`, see the configuration example in <<Applications>>. Note that in this case it is also required to explicitely include the `default` reporting group if the `Application` shall be assigned to it.
+Reporting groups are implicitly created by assigning `Applications` to them. So in case that an `Application`
+shall be assigned to reporting groups `default` and `web app` then an additional `reportingGroups` node has to be defined within the configuration of the `Application`, see the configuration example in <<Applications>>. Note that in this case it is also required to explicitly include the `default` reporting group if the `Application` shall be assigned to it.
 
 Reporting Group names might only consist of US-ASCII uppercase (A-Z) and lowercase characters (a-z), digits (0-9), hyphens ("-"), underscores ("_") and spaces (" "). The name must start with an alphanumeric character.
 
 ==== Enabling Reports/Writers to support Reporting Groups
-Due to compatibility reasons with prior Solicitor configurations it is required to explicitely enable support for reporting groups for each configured writer/report. This is done by setting property `enableReportingGroups` to true in the configuration as shown in the configuration snippet in <<Writers and Reporting>>.
+Due to compatibility reasons with prior Solicitor configurations it is required to explicitly enable support for reporting groups for each configured writer/report. This is done by setting property `enableReportingGroups` to true in the configuration as shown in the configuration snippet in <<Writers and Reporting>>.
 
 NOTE: All writers/reports which are predefined in the _Solicitor_ base configuration are enabled for reporting groups.
 
@@ -1411,7 +1411,7 @@ Within the WHERE clause of the SQL statement the following snippet can be used t
 a."reportingGroups" LIKE '%#reportingGroup#%'`
 ----
 
-Writers/Reports which are enabled for reporting group processing will replace any occurence of `\#reportingGroup#` in the SQL with the current value of the reporting group (resulting in `\#default#` and `\#web app#` in the above example). Writers where the reporting group processing is not enabled will replace `\#reportingGroup#` with `\#default#`.
+Writers/Reports which are enabled for reporting group processing will replace any occurrence of `\#reportingGroup#` in the SQL with the current value of the reporting group (resulting in `\#default#` and `\#web app#` in the above example). Writers where the reporting group processing is not enabled will replace `\#reportingGroup#` with `\#default#`.
 
 NOTE: All SQL statements which are included in the _Solicitor_ built in configuration are supporting reporting groups.
 
