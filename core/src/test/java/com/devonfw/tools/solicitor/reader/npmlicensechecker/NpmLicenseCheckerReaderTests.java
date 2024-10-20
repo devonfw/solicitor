@@ -29,7 +29,8 @@ public class NpmLicenseCheckerReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
     NpmLicenseCheckerReader gr = new NpmLicenseCheckerReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());

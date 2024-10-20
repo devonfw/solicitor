@@ -81,6 +81,14 @@ public interface ModelRoot {
   public String getExtensionBuilddate();
 
   /**
+   * This method gets the field <code>reportingGroup</code>. Note that the value of the field is volatile and is set to
+   * the reportingGroup that is currently processed.
+   *
+   * @return the field reportingGroup
+   */
+  public String getReportingGroup();
+
+  /**
    * This method sets the field <code>engagement</code>.
    *
    * @param engagement the new value of the field engagement
@@ -149,6 +157,14 @@ public interface ModelRoot {
    * @param extensionBuilddate the new value of the field extensionBuilddate
    */
   public void setExtensionBuilddate(String extensionBuilddate);
+
+  /**
+   * This method sets the field <code>reportingGroup</code>. This might be set/changed throughout the Solicitor run if
+   * multiple reporting groups are processed.
+   *
+   * @param reportingGroup the new value of the field reportingGroup
+   */
+  public void setReportingGroup(String reportingGroup);
 
   /**
    * Complete the data of this object by setting members which are derived from other members.

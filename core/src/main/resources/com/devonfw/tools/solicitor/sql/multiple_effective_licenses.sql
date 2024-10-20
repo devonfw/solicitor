@@ -29,6 +29,7 @@ from (
 		APPLICATIONCOMPONENT ac, 
 		NORMALIZEDLICENSE l 
 	where
+		a."reportingGroups" LIKE '%#reportingGroup#%' AND 
 		a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT AND
 		ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE AND
 		l."effectiveNormalizedLicenseType" != 'IGNORE'

@@ -11,7 +11,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +27,7 @@ import com.devonfw.tools.solicitor.SolicitorSetup;
 import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
 import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -56,6 +59,9 @@ public class ConfigFactory {
 
   @Autowired
   private DeprecationChecker deprecationChecker;
+
+  @Autowired
+  private ReportingGroupHandler reportingGroupHandler;
 
   @Value("${solicitor.base-config-url}")
   private String baseConfigUrl;
@@ -114,10 +120,16 @@ public class ConfigFactory {
     engagement.setContractAllowsOss(sc.isContractAllowsOss());
     engagement.setOssPolicyFollowed(sc.isOssPolicyFollowed());
     engagement.setCustomerProvidesOss(sc.isCustomerProvidesOss());
+    Set<String> allReportingGroups = new TreeSet<>();
     for (ApplicationConfig ac : sc.getApplications()) {
+      List<String> reportingGroups = ac.getReportingGroups();
+      Set<String> normalizedReportingGroups = this.reportingGroupHandler.normalizeReportingGroups(reportingGroups);
+      allReportingGroups.addAll(normalizedReportingGroups);
+
       LOG.info(LogMessages.CREATING_APPLICATION.msg(), ac.getName());
       Application app = this.modelFactory.newApplication(ac.getName(), ac.getReleaseId(), "-UNDEFINED-",
-          ac.getSourceRepo(), ac.getProgrammingEcosystem());
+          ac.getSourceRepo(), ac.getProgrammingEcosystem(),
+          this.reportingGroupHandler.stringifyReportingGroups(normalizedReportingGroups));
       app.setEngagement(engagement);
       for (ReaderConfig rc : ac.getReaders()) {
         SolicitorSetup.ReaderSetup rs = new SolicitorSetup.ReaderSetup();
@@ -138,6 +150,8 @@ public class ConfigFactory {
         this.solicitorSetup.getReaderSetups().add(rs);
       }
     }
+    this.reportingGroupHandler.logReportingGroups(allReportingGroups);
+    this.solicitorSetup.setReportingGroups(List.copyOf(allReportingGroups));
     this.solicitorSetup.setRuleSetups(resolvePlaceholdersInRules(sc.getRules(), placeHolderMap));
     this.solicitorSetup.setWriterSetups(resolvePlaceholdersInWriters(sc.getWriters(), placeHolderMap));
     return modelRoot;

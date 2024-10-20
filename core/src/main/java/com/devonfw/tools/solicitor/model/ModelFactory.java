@@ -33,10 +33,11 @@ public abstract class ModelFactory {
    * @param releaseDate the date of the release
    * @param sourceRepo pointer to the source repo
    * @param programmingEcosystem name of the programming ecosystem
+   * @param reportingGroups the reporting groups this application belongs to in concatenated form
    * @return the new instance
    */
   public abstract Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem);
+      String programmingEcosystem, String reportingGroups);
 
   /**
    * Creates a new {@link ApplicationComponent}

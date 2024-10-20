@@ -15,7 +15,7 @@ public interface Writer {
 
   /**
    * Determines if the {@link Writer} instance is capable of handling the given template type.
-   * 
+   *
    * @param type the template type
    * @return <code>true</code> if the writer is capable of handling this type, <code>false</code> otherwise
    */

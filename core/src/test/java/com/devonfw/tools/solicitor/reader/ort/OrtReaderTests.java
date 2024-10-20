@@ -29,12 +29,13 @@ public class OrtReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
     OrtReader pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.DYNAMIC_LINKING, "ort", null,
-        null);
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.DYNAMIC_LINKING,
+        "ort", null, null);
 
   }
 
@@ -67,7 +68,8 @@ public class OrtReaderTests {
     List<ApplicationComponent> lapc = this.application.getApplicationComponents();
     boolean found = false;
     for (ApplicationComponent ap : lapc) {
-      if (ap.getArtifactId().equals("testArtifactId") && ap.getRawLicenses().get(0).getDeclaredLicense().equals("Apache License, Version 2.0")) {
+      if (ap.getArtifactId().equals("testArtifactId")
+          && ap.getRawLicenses().get(0).getDeclaredLicense().equals("Apache License, Version 2.0")) {
         found = true;
         break;
       }

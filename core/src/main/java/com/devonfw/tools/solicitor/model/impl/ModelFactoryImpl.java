@@ -80,9 +80,9 @@ public class ModelFactoryImpl extends ModelFactory {
   /** {@inheritDoc} */
   @Override
   public ApplicationImpl newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem) {
+      String programmingEcosystem, String reportingGroups) {
 
-    return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
+    return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo, programmingEcosystem, reportingGroups);
   }
 
   /** {@inheritDoc} */

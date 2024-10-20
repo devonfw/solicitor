@@ -110,7 +110,8 @@ The internal business data model consists of 6 entities:
 | extensionArtifactId | String | artifactId of the active _Solicitor_ Extension ("NONE" if no extension)
 | extensionVersion | String | Version of the active Extension (or "NONE")
 | extensionGitHash | String | Buildnumber / GitHash of the Extension (or "NONE")
-| extensionBuilddate | String build date of the Extension (or "NONE")
+| extensionBuilddate | String | build date of the Extension (or "NONE")
+| reportingGroup | String | name of the reporting group currently being processed; the value is volatile/changing and is only defined when processing writers; see <<Reporting Groups>>
 |===
 
 ==== Engagement
@@ -135,6 +136,7 @@ The internal business data model consists of 6 entities:
 | releaseDate | Sting | release data of the application
 | sourceRepo | String | URL of the source repo of the application (should be an URL)
 | programmingEcosystem | String | programming ecosystem (e.g. Java8; Android/Java, iOS / Objective C)
+| reportingGroups | String | concatenated list of reporting groups this application is assigned to within _Solicitor_; used to create reports for subsets of Applications; see <<Reporting Groups>>
 |===
 
 ==== ApplicationComponent
@@ -336,12 +338,16 @@ Within this section the different applications (=deliverables) of the engagement
     "releaseId" : "3.1.0-SNAPSHOT", <2>
     "sourceRepo" : "https://github.com/devonfw/devon4j.git", <3>
     "programmingEcosystem" : "Java8", <4>
-    "readers" : [ { <5>
-      "type" : "maven", <6>
-      "source" : "classpath:samples/licenses_devon4j.xml", <7> <10>
-      "usagePattern" : "DYNAMIC_LINKING", <8>
-      "repoType" : "maven" <9>
-      "packageType" : "maven" <11>
+    "reportingGroups" : [ <5>
+        "default",
+        "web app"
+    ],
+    "readers" : [ { <6>
+      "type" : "maven", <7>
+      "source" : "classpath:samples/licenses_devon4j.xml", <8> <11>
+      "usagePattern" : "DYNAMIC_LINKING", <9>
+      "repoType" : "maven" <10>
+      "packageType" : "maven" <12>
     } ]
   } ],
 
@@ -349,13 +355,14 @@ Within this section the different applications (=deliverables) of the engagement
 <2> Version identifier of the application (any string)
 <3> URL of the source repo of the application (string; should be an URL)
 <4> programming ecosystem (any string; e.g. Java8; Android/Java, iOS / Objective C)
-<5> multiple readers might be defined per application
-<6> the type of reader; for possible values see <<Reading License Information with Readers>>
-<7> location of the source file to read (ResourceLoader-URL)
-<8> usage pattern; possible values: `DYNAMIC_LINKING`, `STATIC_LINKING`, `STANDALONE_PRODUCT`; see description below
-<9> repoType: `repoType` to be set in the `ApplicationComponent` . *This parameter is deprecated and should no longer be used*, see <<List of Deprecated Features>>. The value of `repoType` in `ApplicationComponent` will otherwise be determined from the type info in the PackageURL of the component.
-<10> _placeholder patterns might be used here_
-<11> packageType: type of the packages in the input data. Must be a valid packageUrl type (see https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst). Relevant when using the CSV reader.
+<5> optional definition of the reporting groups this Application will be assigned to; if not defined then the Application will be assigned to the reporting group `default`; see <<Reporting Groups>>
+<6> multiple readers might be defined per application
+<7> the type of reader; for possible values see <<Reading License Information with Readers>>
+<8> location of the source file to read (ResourceLoader-URL)
+<9> usage pattern; possible values: `DYNAMIC_LINKING`, `STATIC_LINKING`, `STANDALONE_PRODUCT`; see description below
+<10> repoType: `repoType` to be set in the `ApplicationComponent` . *This parameter is deprecated and should no longer be used*, see <<List of Deprecated Features>>. The value of `repoType` in `ApplicationComponent` will otherwise be determined from the type info in the PackageURL of the component.
+<11> _placeholder patterns might be used here_
+<12> packageType: type of the packages in the input data. Must be a valid packageUrl type (see https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst). Relevant when using the CSV reader.
 
 ===== Usage Patterns
 The usage pattern describes how the ``ApplicationComponent``s (libraries, packages) which are read in via the Reader are linked (in)to the ``Application``s executable. The kind of linking might affect the legal evaluation of the license compliance.
@@ -431,10 +438,11 @@ The writer configuration defines how the processed data will be exported and/or 
 [listing]
   "writers" : [ {
     "type" : "xls", <1>
-    "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <6>
-    "target" : "OSS-Inventory-devonfw.xlsx", <3> <6>
+    "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <7>
+    "target" : "OSS-Inventory-devonfw${-reportingGroup}.xlsx", <3> <7> <8>
     "description" : "The XLS OSS-Inventory document", <4>
-    "dataTables" : { <5>
+    "enableReportingGroups" : true, <5>
+    "dataTables" : { <6>
       "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
       "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql"
     }
@@ -444,8 +452,10 @@ The writer configuration defines how the processed data will be exported and/or 
 <2> path to the template to be used
 <3> location of the output file
 <4> some textual description
-<5> reference to SQL statements used to transform the internal data model to data tables used for reporting
-<6> _placeholder patterns might be used here_
+<5> flag which enables use of reporting groups for this writer (optional, see <<Reporting Groups>>)
+<6> reference to SQL statements used to transform the internal data model to data tables used for reporting
+<7> _placeholder patterns might be used here_
+<8> for the `target` value special additional placeholders are available to handle reporting group information. See <<Using Reporting Group Information in Report Filename>>.
 
 If a `writers` section is defined in the project configuration then it will replace the writer configuration given in the
 builtin default configuration.
@@ -500,11 +510,11 @@ of the https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boo
 
 The default property values are given in <<Built in Default Properties>>.
 
-In case that a property shall be overridden when executing _Solicitor_ this can easiest be done via the command line when executing
-_Solicitor_:
+In case that a property shall be overridden when executing _Solicitor_ this can easiest be done via the command line when executing _Solicitor_.
+In case that the property value contains whitespaces it needs to be enclosed in double quotes:
 
 [listing]
-java -Dsome.property.name1=value -Dsome.property.name2=another_value -jar solicitor.jar <any other arguments>
+java -Dsome.property.name1=value -Dsome.property.name2="another value with spaces" -jar solicitor.jar <any other arguments>
 
 == Reading License Information with Readers
 Different Readers are available to import raw component / license information for different
@@ -574,12 +584,12 @@ Additionally, an optional configuration can be set in order to customize the giv
   "source" : "file:path/to/the/file.csv",
   "usagePattern" : "DYNAMIC_LINKING",
   "configuration" : {
-	"charset" = "UTF-8",
-	"artifactId" : "0",
-	"version" : "1",
-	"format" : "EXCEL",
-	"skipHeaderRecord" : "true",
-	"delimiter" : ";"
+    "charset" = "UTF-8",
+    "artifactId" : "0",
+    "version" : "1",
+    "format" : "EXCEL",
+    "skipHeaderRecord" : "true",
+    "delimiter" : ";"
   }
 } ]
 ----
@@ -1017,7 +1027,7 @@ In Solicitor, the data is read with the following part of the config
       "type" : "cyclonedx",
       "source" : "file:$/input/sbom.json",
       "usagePattern" : "DYNAMIC_LINKING"
-   	} ]
+    } ]
 ----
 
 NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl.
@@ -1310,6 +1320,8 @@ include::files/allden_normalizedlicenses.sql[]
 
 NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL
 
+NOTE: The handling of reporting groups as included in the above statement (`a."reportingGroups" LIKE '%\#reportingGroup#%'`) is described in <<Evaluation of the Reporting Group in SQL>>.
+
 === Writers
 
 The above described SQL processing is identical for all Writers. Writers only differ in the
@@ -1357,19 +1369,157 @@ The Generic Excel Writer exists purely for debugging purposes. This writer write
 [listing]
   "additionalWriters" : [ {
     "type" : "genericxls",
-	"templateSource" : "", <1>
-	"target" : "${cfgdir}/output/GenericXLS.xlsx",
-	"description" : "Excel workbook with a separate sheet for each defined dataTable",
-	"dataTables" : {
-	    "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
-		"APPLICATIONCOMPONENT" : "classpath:com/devonfw/tools/solicitor/sql/allden_applicationcomponents.sql",
-		"LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql",
-		"OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents.sql",
-		... 
-	}
+    "templateSource" : "", <1>
+    "target" : "${cfgdir}/output/GenericXLS.xlsx",
+    "description" : "Excel workbook with a separate sheet for each defined dataTable",
+    "dataTables" : {
+        "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
+        "APPLICATIONCOMPONENT" : "classpath:com/devonfw/tools/solicitor/sql/allden_applicationcomponents.sql",
+        "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql",
+        "OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents.sql",
+        ... 
+    }
   } ]
 
 <1> This is unused and can be left empty.
+
+=== Reporting Groups
+Reporting Groups is an advanced reporting feature which might be used to create reports for defined subsets of the `Applications`  defined in the project configuration. This might be useful if e.g. separate and dedicated attribution documents need to be created for some of the applications which might then be included into each of those applications.
+
+==== Default Behavior
+Without any dedicated configuration each `Application` is assigned to the reporting group `default`. Each defined report (defined in the `writers` or `additionalWriters` section of the configuration) will then be written for the `default` reporting group. The templating mechanism for determining the reports target file includes some special handling so that the reporting group name `default` is not propagated to the final filename. Overall the introduction of the feature "Reporting Groups" (with _Solicitor_ 1.28.0) does not change any report output unless reporting groups are explicitly defined.
+
+==== Defining Reporting Groups and assigning `Applications`
+Reporting groups are implicitly created by assigning `Applications` to them. So in case that an `Application`
+shall be assigned to reporting groups `default` and `web app` then an additional `reportingGroups` node has to be defined within the configuration of the `Application`, see the configuration example in <<Applications>>. Note that in this case it is also required to explicitly include the `default` reporting group if the `Application` shall be assigned to it.
+
+Reporting Group names might only consist of US-ASCII uppercase (A-Z) and lowercase characters (a-z), digits (0-9), hyphens ("-"), underscores ("_") and spaces (" "). The name must start with an alphanumeric character.
+
+==== Enabling Reports/Writers to support Reporting Groups
+Due to compatibility reasons with prior Solicitor configurations it is required to explicitly enable support for reporting groups for each configured writer/report. This is done by setting property `enableReportingGroups` to true in the configuration as shown in the configuration snippet in <<Writers and Reporting>>.
+
+NOTE: All writers/reports which are predefined in the _Solicitor_ base configuration are enabled for reporting groups.
+
+Besides enabling/activating the reporting group feature within the writer configuration it is also required to adopt the SQL statements and target filename pattern to support reporting groups as given in the following.
+
+===== Evaluation of the Reporting Group in SQL
+Reporting groups are used to write reports for a subset of the defined `Applications` or even for single `Applications`. To do so it is normally required to include specific selection criteria into the SQL statements which limit the selected data to only those `Applications` which belong to the reporting group currently processed. To enable this the `Application` entity includes the field `reportingGroups` which stores the list of reporting groups this `Application` is assigned to. The list is stored as concatenated string, where `\#` is used as prefix, suffix and delimiter, which results in `#default#wepp app#` in the above case.
+
+Within the WHERE clause of the SQL statement the following snippet can be used to limit the selection of data to only those `Applications` which belong to the currently processed reporting group (see <<Sample SQL statement>> for the complete sample).  
+
+----
+a."reportingGroups" LIKE '%#reportingGroup#%'`
+----
+
+Writers/Reports which are enabled for reporting group processing will replace any occurrence of `\#reportingGroup#` in the SQL with the current value of the reporting group (resulting in `\#default#` and `\#web app#` in the above example). Writers where the reporting group processing is not enabled will replace `\#reportingGroup#` with `\#default#`.
+
+NOTE: All SQL statements which are included in the _Solicitor_ built in configuration are supporting reporting groups.
+
+===== Using Reporting Group Information in Report Filename
+If writing the same report for different reporting groups it is required to control the target filename depending on the reporting group being processed. To support this a set of special placeholders is available for the target property of the writer configuration if the writer is enabled for reporting groups (see also sample in <<Writers and Reporting>>). 
+
+
+.Placeholders for reporting group within the target property of the writer configuration
+[width="100%",options="header"]
+|====================
+| Placeholder | Replacement for reporting group `default`  | Replacement for other reporting groups (using `web app` as sample value); spaces in the reporting group name will be repaced by "_")   
+| `${reportingGroup}` | _empty String_   | `web_app`  
+| `${-reportingGroup}` | _empty String_   | `-web_app`  
+| `${_reportingGroup}` | _empty String_   | `_web_app`  
+| `${/reportingGroup}` | _empty String_   | `/web_app`  
+|====================
+
+These placeholders allow to include the reporting groups name also with leading hyphen, underscore or slash, which will be omitted in case of the "default" reporting group. This enables to preserve the prior naming scheme for the "default" reporting group. It also allows to store the report of non default reporting groups to dedicated subdirectories.
+
+===== Using Reporting Group Information in Report Content
+The reporting group currently being processed is accessible via the property `reportingGroup` of entity `ModelRoot`, see <<ModelRoot>>.
+
+==== Controlling which Reporting Groups to process
+When defining and processing additional reporting groups the execution time of _Solicitor_ increases as well as the number of generated report files. Often it not required or desired to always create reports for all reporting groups. The application property `solicitor.reportinggroups.filterpattern` is used to define a (java) regular expression pattern which must be matched by the name of a reporting group for this reporting group to be processed. The default is
+
+----
+solicitor.reportinggroups.filterpattern=.*
+----
+
+which matches any processing group. In the above sample this might e.g. be changed to 
+
+----
+solicitor.reportinggroups.filterpattern=web app
+----
+
+to only generate reports of this reporting group. The property might also be defined on command line (see <<Configuration of Technical Properties>>) to change it for a single execution of _Solicitor_.
+
+==== Configuration Example
+
+The below given excerpt from a project configuration file illustrates the interaction of writer configurations and reporting group definitions of `Applications`.
+
+----
+{
+  .
+  .
+  .
+  "applications" : [ <1>
+    {   
+      "name" : "App1",       
+      "reportingGroups" : [
+        "deliverableA",
+        "web app"
+      ]
+    },{   
+      "name" : "App2",       
+      "reportingGroups" : [
+        "default",
+        "deliverableA",
+        "backend"
+      ]
+    },{   
+      "name" : "App3"  <2>   
+    }
+  ],
+  .
+  .
+  .
+  "additionalWriters" : [ <1> <3>
+    {
+      "target" : "out${/reportingGroup}/report1${-reportingGroup}.txt",
+      "enableReportingGroups" : true
+    },{
+      "target" : "out/report2.txt" <4>
+    }
+  ]
+}
+
+----
+
+<1> parameters which might be required but are not relevant for the sample are omitted here
+<2> no reporting groups defined here
+<3> this sample makes use of the `additionalWriters` section; same applies for `writers`. 
+<4> `enableReportingGroups`  not set here
+
+The following table shows the reporting groups and corresponding application assignments resulting from this configuration:
+
+[width="100%",cols="<3,^2,^2,^2,^2"]
+|====================
+|      | default | deliverableA | web app | backend  
+|App1  |         |       X      |   X     |
+|App2  |   X     |       X      |         |    X
+|App3  |   X     |              |         |  
+|====================
+
+Assuming the setting
+----
+solicitor.reportinggroups.filterpattern=default|deliverableA|backend
+----
+the following reports will be created:
+
+[width="100%",options="header",cols="1,2,1"]
+|====================
+|Reporting Group | Report File | Applications contained in Report  
+|default | out/report1.txt | App2, App3
+|default | out/report2.txt | App2, App3
+|deliverableA |out/deliverableA/report1-deliverableA.txt | App1, App2
+|backend |out/backend/report1-backend.txt | App2
+|====================
 
 
 == Resolving of License URLs
@@ -1438,16 +1588,16 @@ To use license guessing in a template, an `additionalWriter` (see <<Writers and 
 
 [listing]
   "additionalWriters" : [ {
-	"type" : "velo",
-	"templateSource" : "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample_v2.vm",
-	"target" : "${cfgdir}/output/OSS-Report_${project}_v2.html",
-	"description" : "The HTML OSS-Report",
-	"dataTables" : {
-	    "MODELROOT"  : "classpath:com/devonfw/tools/solicitor/sql/modelroot.sql",
-	    "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
-	    "OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents_guessedlicenses.sql",
-	    "UNIQUELICENSES" : "classpath:com/devonfw/tools/solicitor/sql/uniqueguessedlicenses.sql"
-	}
+    "type" : "velo",
+    "templateSource" : "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample_v2.vm",
+    "target" : "${cfgdir}/output/OSS-Report_${project}_v2.html",
+    "description" : "The HTML OSS-Report",
+    "dataTables" : {
+        "MODELROOT"  : "classpath:com/devonfw/tools/solicitor/sql/modelroot.sql",
+        "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
+        "OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents_guessedlicenses.sql",
+        "UNIQUELICENSES" : "classpath:com/devonfw/tools/solicitor/sql/uniqueguessedlicenses.sql"
+    }
   } ]
 
 == Feature Deprecation
@@ -1933,6 +2083,7 @@ NOTE: Generating these scripts is an experimental feature and might be changed o
 This template creates an attributions document which lists all used OSS components with their licenses, license texts and found copyrights information as well as found information from NOTICE files.
 The template is part of the <<Experimental Scancode Integration>> and requires ScanCode to be used to collect all necessary information.
 
+
 [appendix]
 == Extending Solicitor
 `Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
@@ -2002,7 +2153,8 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.28.0::
-https://github.com/devonfw/solicitor/issues/12: New `statistics` Velocity and SQL template which can be used in a build-breaker.
+* https://github.com/devonfw/solicitor/issues/288: New feature "reporting groups" for creating reports for subsets of Applications. See <<Reporting Groups>>.
+* https://github.com/devonfw/solicitor/issues/12: New `statistics` Velocity and SQL template which can be used in a build-breaker.
 
 Changes in 1.27.0::
 * https://github.com/devonfw/solicitor/issues/283: New Reader for data generated by the Gradle License Report Plugin. See <<Gradle License Report Plugin>>. Reader `gradle2` deprecated (stage 2). Reader `gradle` removed.

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.ModelRoot;
@@ -51,13 +52,16 @@ public class ResultDatabaseFactory {
   @Autowired
   private ModelFactory modelFactory;
 
+  @Autowired
+  private ReportingGroupHandler reportingGroupHandler;
+
   private Set<Class<? extends AbstractModelObject>> definedTablesSet = new HashSet<>();
 
   private Map<String, AbstractModelObject> allModelObjectInstances = new TreeMap<>();
 
   /**
    * Creates a database table for storing the given {@link AbstractModelObject}.
-   * 
+   *
    * @param modelObject the model object for which the table should be defined
    */
   private void createTable(AbstractModelObject modelObject) {
@@ -76,7 +80,7 @@ public class ResultDatabaseFactory {
     sb.append(" );");
     LOG.debug("Creating Reporting table '{}'", name);
     String sql = sb.toString();
-    jdbcTemplate.execute(sql);
+    this.jdbcTemplate.execute(sql);
 
   }
 
@@ -93,7 +97,7 @@ public class ResultDatabaseFactory {
 
   /**
    * Drop the database table which corresponds to the given {@link AbstractModelObject}.
-   * 
+   *
    * @param oneTable the model class for which the corresponding database table should be dropped
    */
   private void dropExistingTable(Class<? extends AbstractModelObject> oneTable) {
@@ -103,26 +107,29 @@ public class ResultDatabaseFactory {
     sb.append("drop table ").append(name).append(";");
     LOG.debug("Dropping Reporting table '{}'", name);
     String sql = sb.toString();
-    jdbcTemplate.execute(sql);
+    this.jdbcTemplate.execute(sql);
   }
 
   /**
    * Creates a {@link DataTable} by executing the referenced SQL.
    *
    * @param sqlResourceUrl URL which references an SQL statement
+   * @param reportingGroup parameter which denotes the reportingGroup to select data from
    * @return the result of the SQL statement
    */
-  public DataTable getDataTable(String sqlResourceUrl) {
+  public DataTable getDataTable(String sqlResourceUrl, String reportingGroup) {
 
     String sql;
 
-    try (InputStream inp = inputStreamFactory.createInputStreamFor(sqlResourceUrl)) {
+    try (InputStream inp = this.inputStreamFactory.createInputStreamFor(sqlResourceUrl)) {
       sql = IOHelper.readStringFromInputStream(inp);
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read SQL statement", e);
     }
 
-    List<Map<String, Object>> rawResult = jdbcTemplate.queryForList(sql);
+    sql = this.reportingGroupHandler.replacePlaceholderInSql(sql, reportingGroup);
+
+    List<Map<String, Object>> rawResult = this.jdbcTemplate.queryForList(sql);
 
     // put the final data in a result DataTable
 
@@ -162,7 +169,7 @@ public class ResultDatabaseFactory {
   /**
    * Checks if the referenced field name starts with prefix "ID_" if yes then return the {@link AbstractModelObject}
    * given by its id.
-   * 
+   *
    * @param oneRow the row of data
    * @param fieldname the name of the field
    * @return the {@link AbstractModelObject} or <code>null</code> if the field does not start with "ID_"
@@ -170,7 +177,7 @@ public class ResultDatabaseFactory {
   private Object getEntity(Map<String, Object> oneRow, String fieldname) {
 
     if (fieldname.startsWith("ID_")) {
-      return allModelObjectInstances.get(oneRow.get(fieldname));
+      return this.allModelObjectInstances.get(oneRow.get(fieldname));
     } else {
       return null;
     }
@@ -178,29 +185,29 @@ public class ResultDatabaseFactory {
 
   /**
    * Initializes the database with the data of the internal data model.
-   * 
+   *
    * @param modelRoot the root object of the internal data model which gives access to the complete data model
    */
   public void initDataModel(ModelRoot modelRoot) {
 
     // delete all possibly existing entries in the model instances map
-    allModelObjectInstances.clear();
+    this.allModelObjectInstances.clear();
     // drop any already existing tables
-    for (Class<? extends AbstractModelObject> oneTable : definedTablesSet) {
+    for (Class<? extends AbstractModelObject> oneTable : this.definedTablesSet) {
       dropExistingTable(oneTable);
     }
-    definedTablesSet.clear();
+    this.definedTablesSet.clear();
     // create all needed tables and add all data; also store object in map
     // to access it via given id
-    for (Object amo : modelFactory.getAllModelObjects(modelRoot)) {
+    for (Object amo : this.modelFactory.getAllModelObjects(modelRoot)) {
       saveToDatabase((AbstractModelObject) amo);
-      allModelObjectInstances.put(((AbstractModelObject) amo).getId(), (AbstractModelObject) amo);
+      this.allModelObjectInstances.put(((AbstractModelObject) amo).getId(), (AbstractModelObject) amo);
     }
   }
 
   /**
    * Logs the data of the given table on level {@link Level#TRACE}.
-   * 
+   *
    * @param dataTable the data to log
    */
   private void logData(DataTable dataTable) {
@@ -220,7 +227,7 @@ public class ResultDatabaseFactory {
 
   /**
    * Modifies the array of header strings by replacing any prefixes "ID_" with "OBJ_".
-   * 
+   *
    * @param finalHeaders the array of strings to modify
    * @return the modified array
    */
@@ -241,7 +248,7 @@ public class ResultDatabaseFactory {
   /**
    * Save the given {@link AbstractModelObject} to the database. In case that no appropriate database table exist it
    * will be created.
-   * 
+   *
    * @param modelObject the object to save
    */
   public void saveToDatabase(AbstractModelObject modelObject) {
@@ -249,8 +256,8 @@ public class ResultDatabaseFactory {
     String[] params = modelObject.getDataElements();
 
     Class<? extends AbstractModelObject> clazz = modelObject.getClass();
-    if (!definedTablesSet.contains(clazz)) {
-      definedTablesSet.add(clazz);
+    if (!this.definedTablesSet.contains(clazz)) {
+      this.definedTablesSet.add(clazz);
       createTable(modelObject);
     }
     StringBuilder sb = new StringBuilder();
@@ -267,7 +274,7 @@ public class ResultDatabaseFactory {
     sb.append(" );");
     String sql = sb.toString();
     params = AbstractModelObject.concatRow(params, new String[] { modelObject.getId() });
-    jdbcTemplate.update(sql, (Object[]) params);
+    this.jdbcTemplate.update(sql, (Object[]) params);
 
   }
 

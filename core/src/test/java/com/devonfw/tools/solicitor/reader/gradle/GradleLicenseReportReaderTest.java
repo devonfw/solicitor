@@ -21,7 +21,8 @@ class GradleLicenseReportReaderTest {
   public GradleLicenseReportReaderTest() {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
     GradleLicenseReportReader gr = new GradleLicenseReportReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());

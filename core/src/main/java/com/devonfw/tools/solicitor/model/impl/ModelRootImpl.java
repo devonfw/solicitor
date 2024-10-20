@@ -7,13 +7,14 @@ import java.util.Date;
 
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Implementation class of the root of the Solicitor data model.
  */
 public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
 
-  private static final int DEFAULT_MODEL_VERSION = 6;
+  private static final int DEFAULT_MODEL_VERSION = 7;
 
   private String executionTime;
 
@@ -32,6 +33,8 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   private String extensionGitHash;
 
   private String extensionBuilddate;
+
+  private String reportingGroup;
 
   private Engagement engagement;
 
@@ -55,7 +58,7 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
 
     return new String[] { this.executionTime, Integer.toString(this.modelVersion), this.solicitorVersion,
     this.solicitorGitHash, this.solicitorBuilddate, this.extensionArtifactId, this.extensionVersion,
-    this.extensionGitHash, this.extensionBuilddate };
+    this.extensionGitHash, this.extensionBuilddate, this.reportingGroup };
   }
 
   /** {@inheritDoc} */
@@ -77,7 +80,7 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   public String[] getHeadElements() {
 
     return new String[] { "executionTime", "modelVersion", "solicitorVersion", "solicitorGitHash", "solicitorBuilddate",
-    "extensionArtifactId", "extensionVersion", "extensionGitHash", "extensionBuilddate" };
+    "extensionArtifactId", "extensionVersion", "extensionGitHash", "extensionBuilddate", "reportingGroup" };
   }
 
   /** {@inheritDoc} */
@@ -134,6 +137,14 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   public String getExtensionBuilddate() {
 
     return this.extensionBuilddate;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  @JsonIgnore
+  public String getReportingGroup() {
+
+    return this.reportingGroup;
   }
 
   /** {@inheritDoc} */
@@ -204,6 +215,13 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   public void setExtensionBuilddate(String extensionBuilddate) {
 
     this.extensionBuilddate = extensionBuilddate;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setReportingGroup(String reportingGroup) {
+
+    this.reportingGroup = reportingGroup;
   }
 
   /**

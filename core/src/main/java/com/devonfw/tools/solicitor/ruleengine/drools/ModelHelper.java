@@ -114,19 +114,20 @@ public class ModelHelper {
 
   /**
    * Creates a new {@link Application} by calling
-   * {@link ModelFactory#newApplication(String, String, String, String, String)}.
+   * {@link ModelFactory#newApplication(String, String, String, String, String, String)}.
    *
    * @param name the application name
    * @param releaseId the release id.
    * @param releaseDate the date of the release
    * @param sourceRepo pointer to the source repo
    * @param programmingEcosystem name of the programming ecosystem
+   * @param reportingGroups the reporting groups this application belongs to (concatenated form)
    * @return the new instance
    */
   public static Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem) {
+      String programmingEcosystem, String reportingGroups) {
 
-    return modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo, programmingEcosystem);
+    return modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo, programmingEcosystem, reportingGroups);
   }
 
   /**

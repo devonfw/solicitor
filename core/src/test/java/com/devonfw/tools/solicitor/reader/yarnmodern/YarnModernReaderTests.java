@@ -35,7 +35,8 @@ public class YarnModernReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
     YarnModernReader yr = new YarnModernReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());

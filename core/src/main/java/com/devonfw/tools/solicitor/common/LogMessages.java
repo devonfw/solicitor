@@ -29,7 +29,8 @@ public enum LogMessages {
   FINISHED_WRITER(16, "Finished writing report with writer '{}' using template '{}' to file '{}'"), //
   INIT_SQL(17, "Initializing SQL reporting database with Solicitor model data"), //
   INIT_SQL_OLD(18, "Initializing SQL reporting database with OLD Solicitor model data"), //
-  EXECUTE_SQL(19, "Creating data of result table '{}' by executing SQL statement given in '{}'"), //
+  EXECUTE_SQL(19,
+      "Creating data of result table '{}' by executing SQL statement given in '{}' with reportingGroup '{}'"), //
   CREATING_DIFF(20, "Calculating DIFF information for result table '{}'"), //
   FILE_EXISTS(21, "At least '{}' already exists. Please remove existing files and retry."), //
   PROJECT_CREATED(22,
@@ -111,7 +112,15 @@ public enum LogMessages {
   UNKNOWN_PACKAGE_TYPE(75,
       "The CSV file contains packageType '{}' which is not supported and will be ignored. Solicitor reports might be incomplete"), //
   CONTENT_FILE_TOO_LARGE(76,
-      "The size of the content file '{}' is '{}' (max. allowed is '{}'). Reading will be skipped.");
+      "The size of the content file '{}' is '{}' (max. allowed is '{}'). Reading will be skipped."), //
+  ILLEGAL_CHARACTER_IN_REPORTING_GROUP(77,
+      "The name of the reporting group '{}' consists of illegal characters. Allowed are alphanumeric characters (US-ASCII), hyphen, underscore and space. The reporting group name must start with an alphanumeric character."), //
+  REPORTING_GROUP_NOT_MATCHING_FILTER(78,
+      "The reporting group '{}' does not match the filter expression. Processing of writer for "
+          + "template source '{}' will be skipped for this reporting group"), //
+  REPORTING_GROUP_FILTER_EXPRESSION_SET_TO_NONDEFAULT(79,
+      "The filter expression for reporting groups to be processed is set to a non default value: '{}'"), //
+  REPORTING_GROUPS_DETECTED(80, "The following reporting groups are defined in this project: {} ");
 
   private final String message;
 

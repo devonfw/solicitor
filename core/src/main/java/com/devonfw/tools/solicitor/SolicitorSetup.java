@@ -35,7 +35,7 @@ public class SolicitorSetup {
     private UsagePattern usagePattern;
 
     private String repoType;
-    
+
     private String packageType;
 
     private Map<String, String> configuration;
@@ -99,6 +99,7 @@ public class SolicitorSetup {
 
       return this.packageType;
     }
+
     /**
      * This method gets the field <code>configuration</code>.
      *
@@ -168,7 +169,7 @@ public class SolicitorSetup {
 
       this.repoType = repoType;
     }
-    
+
     /**
      * This method sets the field <code>packageType</code>.
      *
@@ -180,8 +181,9 @@ public class SolicitorSetup {
     }
   }
 
-  
   private String engagementName;
+
+  private List<String> reportingGroups;
 
   private List<ReaderSetup> readerSetups = new ArrayList<>();
 
@@ -207,6 +209,26 @@ public class SolicitorSetup {
   public void setEngagementName(String engagementName) {
 
     this.engagementName = engagementName;
+  }
+
+  /**
+   * This method gets the field <code>reportingGroups</code>.
+   *
+   * @return reportingGroups
+   */
+  public List<String> getReportingGroups() {
+
+    return this.reportingGroups;
+  }
+
+  /**
+   * This method sets the field <code>reportingGroups</code>.
+   *
+   * @param reportingGroups new value of {@link #getReportingGroups}.
+   */
+  public void setReportingGroups(List<String> reportingGroups) {
+
+    this.reportingGroups = reportingGroups;
   }
 
   /**

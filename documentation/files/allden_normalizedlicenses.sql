@@ -17,6 +17,7 @@ from
 	NORMALIZEDLICENSE l
 where 
 	e.ID_ENGAGEMENT = a.PARENT_APPLICATION AND 
+	a."reportingGroups" LIKE '%#reportingGroup#%' AND 
 	a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT AND 
 	ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE
 order by
@@ -25,4 +26,5 @@ order by
 	UPPER("artifactId"),
 	UPPER("version"),
 	UPPER("effectiveNormalizedLicense"),
-	UPPER("normalizedLicense")
+	UPPER("normalizedLicense"),
+	UPPER("declaredLicense")

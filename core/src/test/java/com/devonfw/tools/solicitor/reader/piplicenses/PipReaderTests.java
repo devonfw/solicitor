@@ -29,12 +29,13 @@ public class PipReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, "pip", null,
-        null);
+    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, "pip",
+        null, null);
 
   }
 

@@ -30,7 +30,8 @@ public class GradleReader2Tests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8");
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
     GradleReader2 gr = new GradleReader2();
     gr.setDeprecationChecker(new DeprecationChecker() {
 
