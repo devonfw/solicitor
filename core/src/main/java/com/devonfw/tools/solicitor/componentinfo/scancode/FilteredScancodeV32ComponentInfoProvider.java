@@ -254,64 +254,74 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
         for (JsonNode ma : ld.get("matches")) {
 
           String licenseExpression = ma.get("spdx_license_expression").asText();
-          String[] spdxIds = spdxIdsFromExpression(licenseExpression);
-          for (String spdxId : spdxIds) {
-            LicenseCuration.NewLicenseData effective = getEffectiveLicenseInfoWithCuration(path, ma, spdxId,
-                licenseCurations);
-            if (effective == null) {
-              // license finding to be REMOVED via finding
-              // this is a curation operation, so set the status
-              componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
-              continue;
-            }
-            if (effective.license != null || effective.url != null) {
-              // license or url are altered due to curation, so set the status
-              componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
-            }
-            String licenseName = effective.license != null ? effective.license : spdxId;
-            String effectiveLicenseName = spdxIdMap.get(licenseName);
-            if (effectiveLicenseName == null) {
-              // not contained in map --> this must be the Classpath-exception-2.0
-              continue;
-            } else {
-              licenseName = effectiveLicenseName;
-            }
-            // get the default license Url
-            String licenseDefaultUrl = null;
-            JsonNode licenseReference = licenseReferencesMap.get(spdxId);
-            if (licenseReference != null) {
-              licenseDefaultUrl = licenseReference.get("scancode_url").asText();
-            }
-            if (effective.url != null) {
-              licenseDefaultUrl = effective.url;
-            }
-            licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
-            double score = ma.get("score").asDouble();
-            String licenseUrl = path;
-            int startLine = ma.get("start_line").asInt();
-            int endLine = ma.get("end_line").asInt();
-            if (!takeCompleteFile) {
-              licenseUrl += "#L" + startLine;
-              if (endLine != startLine) {
-                licenseUrl += "-L" + endLine;
+          String currentMatchPath = ma.get("from_file").asText();
+          if (!path.equals(currentMatchPath)) {
+            // the matches array might list matches which do not belong to the current path.
+            // We skip those items. Probably those matches are referenced files.
+            LOG.debug(
+                "The license expression match for '{}' in file '{}' "
+                    + "does not belong to the current path '{}' and will be ignored",
+                licenseExpression, currentMatchPath, path);
+          } else {
+            String[] spdxIds = spdxIdsFromExpression(licenseExpression);
+            for (String spdxId : spdxIds) {
+              LicenseCuration.NewLicenseData effective = getEffectiveLicenseInfoWithCuration(path, ma, spdxId,
+                  licenseCurations);
+              if (effective == null) {
+                // license finding to be REMOVED via finding
+                // this is a curation operation, so set the status
+                componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
+                continue;
               }
-            }
-            if (effective.url != null) {
-              // curation redefined the license URL
-              licenseUrl = effective.url;
-              // enforce that the filescore always exceeds the threshold
-              startLine = 0;
-              endLine = Integer.MAX_VALUE;
-            }
+              if (effective.license != null || effective.url != null) {
+                // license or url are altered due to curation, so set the status
+                componentScancodeInfos.setDataStatus(DataStatusValue.CURATED);
+              }
+              String licenseName = effective.license != null ? effective.license : spdxId;
+              String effectiveLicenseName = spdxIdMap.get(licenseName);
+              if (effectiveLicenseName == null) {
+                // not contained in map --> this must be the Classpath-exception-2.0
+                continue;
+              } else {
+                licenseName = effectiveLicenseName;
+              }
+              // get the default license Url
+              String licenseDefaultUrl = null;
+              JsonNode licenseReference = licenseReferencesMap.get(spdxId);
+              if (licenseReference != null) {
+                licenseDefaultUrl = licenseReference.get("scancode_url").asText();
+              }
+              if (effective.url != null) {
+                licenseDefaultUrl = effective.url;
+              }
+              licenseDefaultUrl = normalizeLicenseUrl(packageUrl, licenseDefaultUrl);
+              double score = ma.get("score").asDouble();
+              String licenseUrl = path;
+              int startLine = ma.get("start_line").asInt();
+              int endLine = ma.get("end_line").asInt();
+              if (!takeCompleteFile) {
+                licenseUrl += "#L" + startLine;
+                if (endLine != startLine) {
+                  licenseUrl += "-L" + endLine;
+                }
+              }
+              if (effective.url != null) {
+                // curation redefined the license URL
+                licenseUrl = effective.url;
+                // enforce that the filescore always exceeds the threshold
+                startLine = 0;
+                endLine = Integer.MAX_VALUE;
+              }
 
-            licenseUrl = normalizeLicenseUrl(packageUrl, licenseUrl);
-            String givenLicenseText = null;
-            if (licenseUrl != null) {
-              givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseUrl);
-            }
+              licenseUrl = normalizeLicenseUrl(packageUrl, licenseUrl);
+              String givenLicenseText = null;
+              if (licenseUrl != null) {
+                givenLicenseText = this.fileScancodeRawComponentInfoProvider.retrieveContent(packageUrl, licenseUrl);
+              }
 
-            scancodeComponentInfoData.addLicense(licenseName, licenseName, licenseDefaultUrl, score, licenseUrl,
-                givenLicenseText, endLine - startLine);
+              scancodeComponentInfoData.addLicense(licenseName, licenseName, licenseDefaultUrl, score, licenseUrl,
+                  givenLicenseText, endLine - startLine);
+            }
           }
         }
 
