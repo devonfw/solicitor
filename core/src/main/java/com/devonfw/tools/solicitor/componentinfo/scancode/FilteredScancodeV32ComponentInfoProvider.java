@@ -350,11 +350,17 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
    * @param licenseExpression the spdx expression
    * @return array of found spdx ids.
    */
-  private String[] spdxIdsFromExpression(String licenseExpression) {
+  protected String[] spdxIdsFromExpression(String licenseExpression) {
 
+    // Remove brackets and operators with spaces
     String plainString = licenseExpression.replace("(", " ").replace(")", " ").replace(" AND ", " ")
         .replace(" OR ", " ").replace(" WITH ", " ");
-    return plainString.split("\\s+");
+
+    // Trim and consolidate spaces
+    plainString = plainString.trim().replaceAll("\\s+", " ");
+
+    // Split the string based on the spaces
+    return plainString.isEmpty() ? new String[0] : plainString.split(" ");
   }
 
   /**
