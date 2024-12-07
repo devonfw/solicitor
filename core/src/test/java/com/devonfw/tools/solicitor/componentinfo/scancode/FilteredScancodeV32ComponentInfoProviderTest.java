@@ -1,6 +1,8 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -170,14 +172,14 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
    * Tests for the method spdxIdsFromExpression, which extracts SPDX license IDs from a given expression.
    */
   @Test
-  public void testSpdxIdsFromExpression() {
+  public void testSpdxIdsFromExpressionRemoveDuplicates() {
 
     // Example expression
-    String expression1 = "EPL-2.0 GPL-2.0-only BSD-3-Clause";
-    String[] result1 = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression1);
+    String expression1 = "EPL-2.0 AND GPL-2.0-only AND BSD-3-Clause AND GPL-2.0-only";
+    String[] result1 = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression1);
 
     // Verify the result
-    assertArrayEquals(new String[] { "EPL-2.0", "GPL-2.0-only", "BSD-3-Clause" }, result1);
+    assertArrayEquals(new String[] { "BSD-3-Clause", "EPL-2.0", "GPL-2.0-only" }, result1);
   }
 
   /**
@@ -187,13 +189,13 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
   public void testSpdxIdsWithOperators() {
 
     // Input containing logical operators
-    String expression = "(EPL-2.0 AND GPL-2.0-only) OR BSD-3-Clause WITH MIT";
+    String expression = "(EPL-2.0 AND GPL-2.0-only) OR BSD-3-Clause WITH someException";
 
     // Expected output
-    String[] expected = { "EPL-2.0", "GPL-2.0-only", "BSD-3-Clause", "MIT" };
+    String[] expected = { "BSD-3-Clause", "EPL-2.0", "GPL-2.0-only", "someException" };
 
     // Call the method
-    String[] result = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
 
     // Verify the result
     assertArrayEquals(expected, result);
@@ -212,7 +214,7 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
     String[] expected = { "EPL-2.0", "GPL-2.0-only" };
 
     // Call the method
-    String[] result = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
 
     // Verify the result
     assertArrayEquals(expected, result);
@@ -231,7 +233,7 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
     String[] expected = { "MIT" };
 
     // Call the method
-    String[] result = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
 
     // Verify the result
     assertArrayEquals(expected, result);
@@ -247,10 +249,10 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
     String expression = "Apache-2.0 GPL-3.0 BSD-2-Clause";
 
     // Expected output
-    String[] expected = { "Apache-2.0", "GPL-3.0", "BSD-2-Clause" };
+    String[] expected = { "Apache-2.0", "BSD-2-Clause", "GPL-3.0" };
 
     // Call the method
-    String[] result = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
 
     // Verify the result
     assertArrayEquals(expected, result);
@@ -266,10 +268,10 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
     String expression = "  Apache-2.0   GPL-3.0  BSD-2-Clause   ";
 
     // Expected output
-    String[] expected = { "Apache-2.0", "GPL-3.0", "BSD-2-Clause" };
+    String[] expected = { "Apache-2.0", "BSD-2-Clause", "GPL-3.0", };
 
     // Call the method
-    String[] result = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
 
     // Verify the result
     assertArrayEquals(expected, result);
@@ -288,7 +290,7 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
     String[] expected = {};
 
     // Call the method
-    String[] result = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
 
     // Verify the result
     assertArrayEquals(expected, result);
@@ -304,10 +306,10 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
     String expression = "((MIT OR Apache-2.0) AND (BSD-2-Clause OR GPL-3.0))";
 
     // Expected output
-    String[] expected = { "MIT", "Apache-2.0", "BSD-2-Clause", "GPL-3.0" };
+    String[] expected = { "Apache-2.0", "BSD-2-Clause", "GPL-3.0", "MIT" };
 
     // Call the method
-    String[] result = filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
 
     // Verify the result
     assertArrayEquals(expected, result);

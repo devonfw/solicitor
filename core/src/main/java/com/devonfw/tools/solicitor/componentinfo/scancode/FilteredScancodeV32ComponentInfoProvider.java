@@ -1,8 +1,11 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -345,7 +348,7 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
 
   /**
    * Extracts the array of spdxIds (licenses and exceptions) from a given SPDX expression. Ignores all structural
-   * information as AND, OR, WITH.
+   * information as AND, OR, WITH. Any duplicates will be removed and the list will be sorted alphabetically.
    *
    * @param licenseExpression the spdx expression
    * @return array of found spdx ids.
@@ -360,7 +363,10 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
     plainString = plainString.trim().replaceAll("\\s+", " ");
 
     // Split the string based on the spaces
-    return plainString.isEmpty() ? new String[0] : plainString.split(" ");
+    String[] allIds = plainString.isEmpty() ? new String[0] : plainString.split(" ");
+    // Remove duplicates and sort
+    Set<String> uniqueIds = new TreeSet<>(Arrays.asList(allIds));
+    return uniqueIds.toArray(new String[0]);
   }
 
   /**
