@@ -1,5 +1,6 @@
 package com.devonfw.tools.solicitor.componentinfo.scancode;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -51,7 +52,7 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
 
   /**
    * Test the
-   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String,String,ScancodeRawComponentInfo,JsonNode)}
+   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String, String, ScancodeRawComponentInfo, JsonNode)}
    * method when no curations file exists
    *
    * @throws ComponentInfoAdapterException if something goes wrong
@@ -88,7 +89,7 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
 
   /**
    * Test the
-   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String,String,ScancodeRawComponentInfo,JsonNode)}
+   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String, String, ScancodeRawComponentInfo, JsonNode)}
    * method when the /src directory is excluded
    *
    * @throws ComponentInfoAdapterException if something goes wrong
@@ -121,13 +122,13 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals(0, scancodeComponentInfo.getComponentInfoData().getCopyrights().size()); // since the copyright is
-                                                                                          // found under
+    // found under
     // /src/../SampleClass.java1, it will be excluded
   }
 
   /**
    * Test the
-   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String,String,ScancodeRawComponentInfo,JsonNode)}
+   * {@link FilteredScancodeV31ComponentInfoProvider#getComponentInfo(String, String, ScancodeRawComponentInfo, JsonNode)}
    * method when curations exist but no paths are excluded
    *
    * @throws ComponentInfoAdapterException if something goes wrong
@@ -160,10 +161,157 @@ public class FilteredScancodeV32ComponentInfoProviderTest {
         scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals(1, scancodeComponentInfo.getComponentInfoData().getCopyrights().size());
     assertEquals("Copyright 2023 devonfw", scancodeComponentInfo.getComponentInfoData().getCopyrights().toArray()[0]); // The
-                                                                                                                       // copyright
+    // copyright
     // curation does not
     // apply on the
     // scancodeComponentInfo
     // object.
+  }
+
+  /**
+   * Tests for the method spdxIdsFromExpression, which extracts SPDX license IDs from a given expression.
+   */
+  @Test
+  public void testSpdxIdsFromExpressionRemoveDuplicates() {
+
+    // Example expression
+    String expression1 = "EPL-2.0 AND GPL-2.0-only AND BSD-3-Clause AND GPL-2.0-only";
+    String[] result1 = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression1);
+
+    // Verify the result
+    assertArrayEquals(new String[] { "BSD-3-Clause", "EPL-2.0", "GPL-2.0-only" }, result1);
+  }
+
+  /**
+   * Tests the spdxIdsFromExpression method with an input containing operators.
+   */
+  @Test
+  public void testSpdxIdsWithOperators() {
+
+    // Input containing logical operators
+    String expression = "(EPL-2.0 AND GPL-2.0-only) OR BSD-3-Clause WITH someException";
+
+    // Expected output
+    String[] expected = { "BSD-3-Clause", "EPL-2.0", "GPL-2.0-only", "someException" };
+
+    // Call the method
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+
+    // Verify the result
+    assertArrayEquals(expected, result);
+  }
+
+  /**
+   * Tests the spdxIdsFromExpression method with an input containing parentheses.
+   */
+  @Test
+  public void testSpdxIdsWithParentheses() {
+
+    // Input containing parentheses
+    String expression = "(EPL-2.0 OR GPL-2.0-only)";
+
+    // Expected output
+    String[] expected = { "EPL-2.0", "GPL-2.0-only" };
+
+    // Call the method
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+
+    // Verify the result
+    assertArrayEquals(expected, result);
+  }
+
+  /**
+   * Tests the spdxIdsFromExpression method with a single license as input.
+   */
+  @Test
+  public void testSpdxIdsSingleLicense() {
+
+    // Input containing a single license
+    String expression = "MIT";
+
+    // Expected output
+    String[] expected = { "MIT" };
+
+    // Call the method
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+
+    // Verify the result
+    assertArrayEquals(expected, result);
+  }
+
+  /**
+   * Tests the spdxIdsFromExpression method with licenses separated by spaces.
+   */
+  @Test
+  public void testSpdxIdsWithSpaces() {
+
+    // Input containing licenses separated by spaces
+    String expression = "Apache-2.0 GPL-3.0 BSD-2-Clause";
+
+    // Expected output
+    String[] expected = { "Apache-2.0", "BSD-2-Clause", "GPL-3.0" };
+
+    // Call the method
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+
+    // Verify the result
+    assertArrayEquals(expected, result);
+  }
+
+  /**
+   * Tests the spdxIdsFromExpression method with input containing extra spaces.
+   */
+  @Test
+  public void testSpdxIdsWithExtraSpaces() {
+
+    // Input containing extra spaces
+    String expression = "  Apache-2.0   GPL-3.0  BSD-2-Clause   ";
+
+    // Expected output
+    String[] expected = { "Apache-2.0", "BSD-2-Clause", "GPL-3.0", };
+
+    // Call the method
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+
+    // Verify the result
+    assertArrayEquals(expected, result);
+  }
+
+  /**
+   * Tests the spdxIdsFromExpression method with an empty string as input.
+   */
+  @Test
+  public void testSpdxIdsEmptyString() {
+
+    // Empty input
+    String expression = "";
+
+    // Expected output
+    String[] expected = {};
+
+    // Call the method
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+
+    // Verify the result
+    assertArrayEquals(expected, result);
+  }
+
+  /**
+   * Tests the spdxIdsFromExpression method with complex nested operators.
+   */
+  @Test
+  public void testSpdxIdsComplexOperators() {
+
+    // Input with complex nested operators
+    String expression = "((MIT OR Apache-2.0) AND (BSD-2-Clause OR GPL-3.0))";
+
+    // Expected output
+    String[] expected = { "Apache-2.0", "BSD-2-Clause", "GPL-3.0", "MIT" };
+
+    // Call the method
+    String[] result = this.filteredScancodeV32ComponentInfoProvider.spdxIdsFromExpression(expression);
+
+    // Verify the result
+    assertArrayEquals(expected, result);
   }
 }
