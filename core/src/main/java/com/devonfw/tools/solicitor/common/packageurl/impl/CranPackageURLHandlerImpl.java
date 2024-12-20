@@ -17,17 +17,7 @@ public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
   public CranPackageURLHandlerImpl(@Value("${packageurls.cran.repobaseurl}") String repoBaseUrl) {
 
     super();
-    // Debug-Log hinzufügen, um den ursprünglichen Wert zu prüfen
-    System.out.println("Original repoBaseUrl: " + repoBaseUrl);
-
-    // Sicherstellen, dass repoBaseUrl mit '/' endet
-    if (!repoBaseUrl.endsWith("/")) {
-      repoBaseUrl += "/";
-    }
     this.repoBaseUrl = repoBaseUrl;
-
-    // Debug-Log hinzufügen, um den finalen Wert zu prüfen
-    System.out.println("Final repoBaseUrl: " + this.repoBaseUrl);
   }
 
   /**
@@ -45,24 +35,17 @@ public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
   @Override
   protected String doSourceDownloadUrlFor(PackageURL purl) {
 
-    StringBuilder sb = new StringBuilder(this.repoBaseUrl);
-
-    // Debug-Log für Konstruktion
-    System.out.println("Constructing Source URL for: " + purl);
-
-    // Sicherstellen, dass der Pfad korrekt ist
+    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
+    // Fixed path for sources
     sb.append("src/contrib/");
     sb.append(purl.getName()).append("_").append(purl.getVersion()).append(".tar.gz");
-
-    // Debug-Log für die generierte URL
-    System.out.println("Generated SourceDownloadUrl: " + sb.toString());
     return sb.toString();
   }
 
   @Override
   protected String doPackageDownloadUrlFor(PackageURL purl) {
 
-    StringBuilder sb = new StringBuilder(this.repoBaseUrl);
+    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
     // Fixed path for binaries
     sb.append("bin/windows/contrib/");
     sb.append(purl.getName()).append("_").append(purl.getVersion()).append(".zip");
