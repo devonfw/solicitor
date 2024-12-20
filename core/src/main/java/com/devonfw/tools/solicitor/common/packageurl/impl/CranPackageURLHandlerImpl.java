@@ -17,14 +17,19 @@ public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
   public CranPackageURLHandlerImpl(@Value("${packageurls.cran.repobaseurl}") String repoBaseUrl) {
 
     super();
+    // Debug-Log hinzufügen, um den ursprünglichen Wert zu prüfen
+    System.out.println("Original repoBaseUrl: " + repoBaseUrl);
+
+    // Sicherstellen, dass repoBaseUrl mit '/' endet
+    if (!repoBaseUrl.endsWith("/")) {
+      repoBaseUrl += "/";
+    }
     this.repoBaseUrl = repoBaseUrl;
+
+    // Debug-Log hinzufügen, um den finalen Wert zu prüfen
+    System.out.println("Final repoBaseUrl: " + this.repoBaseUrl);
   }
 
-  // @Override
-  // public boolean canHandle(PackageURL packageURL) {
-
-  // return (PackageURL.StandardTypes.NPM.equals(packageURL.getType()));
-  // }
   /**
    * Determines if this handler can handle the given package URL.
    *
@@ -37,41 +42,32 @@ public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
     return "cran".equalsIgnoreCase(packageURL.getType());
   }
 
-  /**
-   * Generates the download URL for the source archive of a CRAN package.
-   *
-   * @param purl the package URL.
-   * @return the source download URL.
-   */
   @Override
   protected String doSourceDownloadUrlFor(PackageURL purl) {
 
-    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
-    sb.append(purl.getName()).append("/src/contrib/");
+    StringBuilder sb = new StringBuilder(this.repoBaseUrl);
+
+    // Debug-Log für Konstruktion
+    System.out.println("Constructing Source URL for: " + purl);
+
+    // Sicherstellen, dass der Pfad korrekt ist
+    sb.append("src/contrib/");
     sb.append(purl.getName()).append("_").append(purl.getVersion()).append(".tar.gz");
+
+    // Debug-Log für die generierte URL
+    System.out.println("Generated SourceDownloadUrl: " + sb.toString());
     return sb.toString();
   }
 
-  /**
-   * Generates the download URL for the binary package for a CRAN package.
-   *
-   * @param purl the package URL.
-   * @return the binary package download URL.
-   */
   @Override
   protected String doPackageDownloadUrlFor(PackageURL purl) {
 
-    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
-    sb.append(purl.getName()).append("/bin/windows/contrib/");
+    StringBuilder sb = new StringBuilder(this.repoBaseUrl);
+    // Fixed path for binaries
+    sb.append("bin/windows/contrib/");
     sb.append(purl.getName()).append("_").append(purl.getVersion()).append(".zip");
     return sb.toString();
   }
-
-  /*
-   *
-   * @Override protected String doPackageDownloadUrlFor(PackageURL purl) { // URL to download binary package from CRAN
-   * return cranRepoBaseUrl + "/bin/" + purl.getName() + "_" + purl.getVersion() + ".tar.gz"; }
-   */
 
   /**
    * Returns the suffix for source archive files for CRAN packages.
@@ -84,5 +80,4 @@ public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
 
     return "tar.gz";
   }
-
 }

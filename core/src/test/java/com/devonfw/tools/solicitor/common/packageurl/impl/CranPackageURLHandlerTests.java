@@ -17,7 +17,7 @@ class CranPackageURLHandlerTests {
   void testSourceDownloadUrlFor() {
 
     CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
-    assertEquals("http://test/someprod/src/contrib/someprod_4.5.35.tar.gz",
+    assertEquals("http://test/src/contrib/someprod_4.5.35.tar.gz",
         handler.sourceDownloadUrlFor("pkg:cran/someprod@4.5.35"));
 
   }
