@@ -13,10 +13,19 @@ import com.github.packageurl.PackageURL;
 public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandler {
   private String repoBaseUrl;
 
+  /**
+   * The constructor.
+   *
+   * @param repoBaseUrl the repository base url
+   */
   @Autowired
   public CranPackageURLHandlerImpl(@Value("${packageurls.cran.repobaseurl}") String repoBaseUrl) {
 
     super();
+    // Sicherstellen, dass repoBaseUrl mit einem "/" endet
+    if (!repoBaseUrl.endsWith("/")) {
+      repoBaseUrl += "/";
+    }
     this.repoBaseUrl = repoBaseUrl;
   }
 
@@ -32,23 +41,37 @@ public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
     return "cran".equalsIgnoreCase(packageURL.getType());
   }
 
+  /**
+   * Returns the source download URL for CRAN packages.
+   *
+   * @param purl the package URL.
+   * @return the source download URL.
+   */
   @Override
   protected String doSourceDownloadUrlFor(PackageURL purl) {
 
-    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
-    // Fixed path for sources
+    StringBuilder sb = new StringBuilder(this.repoBaseUrl);
     sb.append("src/contrib/");
-    sb.append(purl.getName()).append("_").append(purl.getVersion()).append(".tar.gz");
+    sb.append(purl.getName());
+    sb.append("_").append(purl.getVersion());
+    sb.append(".tar.gz");
     return sb.toString();
   }
 
+  /**
+   * Returns the package download URL for CRAN packages.
+   *
+   * @param purl the package URL.
+   * @return the package download URL.
+   */
   @Override
   protected String doPackageDownloadUrlFor(PackageURL purl) {
 
-    StringBuffer sb = new StringBuffer(this.repoBaseUrl);
-    // Fixed path for binaries
+    StringBuilder sb = new StringBuilder(this.repoBaseUrl);
     sb.append("bin/windows/contrib/");
-    sb.append(purl.getName()).append("_").append(purl.getVersion()).append(".zip");
+    sb.append(purl.getName());
+    sb.append("_").append(purl.getVersion());
+    sb.append(".zip");
     return sb.toString();
   }
 

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
  */
 class CranPackageURLHandlerTests {
 
-  // Test for source download URL
   @Test
   void testSourceDownloadUrlFor() {
 
@@ -22,7 +21,6 @@ class CranPackageURLHandlerTests {
 
   }
 
-  // Test for can handle
   @Test
   void testCanHandle() {
 
@@ -31,7 +29,6 @@ class CranPackageURLHandlerTests {
     assertFalse(handler.canHandle(handler.parse("pkg:crana/a@1")));
   }
 
-  // Test for source archive suffix
   @Test
   void testSourceArchiveSuffixFor() {
 
@@ -39,7 +36,6 @@ class CranPackageURLHandlerTests {
     assertEquals("tar.gz", handler.sourceArchiveSuffixFor("pkg:cran/someprod@4.5.35"));
   }
 
-  // Test for path
   @Test
   void testPathFor() {
 
