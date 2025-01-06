@@ -62,16 +62,18 @@ public class CranPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
    * Returns the package download URL for CRAN packages.
    *
    * @param purl the package URL.
-   * @return the package download URL.
+   * @return the package download URL. This will return the archive of sources (same as
+   *         {@link #doSourceDownloadUrlFor(PackageURL)}. There are pre-compiled binaries available on the server, but
+   *         those are OS and version specific, so no universal binary.
    */
   @Override
   protected String doPackageDownloadUrlFor(PackageURL purl) {
 
     StringBuilder sb = new StringBuilder(this.repoBaseUrl);
-    sb.append("bin/windows/contrib/");
+    sb.append("src/contrib/");
     sb.append(purl.getName());
     sb.append("_").append(purl.getVersion());
-    sb.append(".zip");
+    sb.append(".tar.gz");
     return sb.toString();
   }
 
