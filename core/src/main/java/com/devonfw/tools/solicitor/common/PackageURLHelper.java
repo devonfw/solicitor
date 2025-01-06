@@ -122,4 +122,25 @@ public class PackageURLHelper {
           "The given PyPI coordinates '" + name + "'/'" + version + "' could not be converted to a package URL", e);
     }
   }
+
+  /**
+   * Create a {@link PackageURL} for the CRAN coordinates.
+   *
+   * @param name the package name
+   * @param version the version
+   * @return the created Package URL
+   */
+  public static PackageURL fromCranCoordinates(String name, String version) {
+
+    PackageURLBuilder builder = PackageURLBuilder.aPackageURL().withType("cran");
+    builder.withName(name);
+    builder.withVersion(version);
+
+    try {
+      return builder.build();
+    } catch (MalformedPackageURLException e) {
+      throw new SolicitorRuntimeException(
+          "The given CRAN coordinates '" + name + "'/'" + version + "' could not be converted to a package URL", e);
+    }
+  }
 }
