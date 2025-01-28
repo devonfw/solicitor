@@ -28,5 +28,4 @@ public class SolicitorPackageURLException extends SolicitorRuntimeException {
 
     super(message, cause);
   }
-
 }

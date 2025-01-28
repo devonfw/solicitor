@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
-import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLException;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLTypException;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -28,7 +28,7 @@ public class DelegatingPackageURLHandlerImpl extends AbstractPackageURLHandler i
         return singleKindHandler;
       }
     }
-    throw new SolicitorPackageURLException(
+    throw new SolicitorPackageURLTypException(
         "No applicable SingleKindPackageURLHandler found for type '" + packageURL.getType() + "'");
   }
 
