@@ -2156,6 +2156,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.31.0::
 * https://github.com/devonfw/solicitor/issues/295: Add PackageUrlHandler for cran packages. 
+* https://github.com/devonfw/solicitor/issues/299: Add missing Exception Handling for Type-Related Errors in Package URL
 
 Changes in 1.30.0::
 * https://github.com/devonfw/solicitor/pull/292: Improved the extraction of spdxids from spdx expressions when parsing ScanCode V32 result files. Previously the result might have contained empty strings to be returned as spdxids.
