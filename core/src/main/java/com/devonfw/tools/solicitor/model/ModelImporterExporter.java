@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLException;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.impl.ModelRootImpl;
 import com.devonfw.tools.solicitor.model.impl.TextPool;
@@ -33,6 +36,7 @@ import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.packageurl.PackageURL;
 
 /**
  * The {@code ModelImporterExporter} class handles the import and export of the data model. It provides methods for
@@ -150,9 +154,16 @@ public class ModelImporterExporter {
       String artifactId = applicationComponentNode.get("artifactId").asText(null);
       String version = applicationComponentNode.get("version").asText(null);
       String repoType = applicationComponentNode.get("repoType").asText(null);
-      String packageUrl = null;
+      PackageURL packageUrl = null;
       if (readModelVersion >= LOWEST_VERSION_WITH_PACKAGE_URL) {
-        packageUrl = applicationComponentNode.get("packageUrl").asText(null);
+        String packageUrlAsString = applicationComponentNode.get("packageUrl").asText(null);
+        if (packageUrlAsString != null) {
+          try {
+            packageUrl = PackageURLHelper.fromString(packageUrlAsString);
+          } catch (SolicitorMalformedPackageURLException e) {
+            throw new SolicitorPackageURLException("PackageURL read from model file is malformed", e);
+          }
+        }
       }
       JsonNode copyrightNode = applicationComponentNode.get("copyrights");
       String copyrights = copyrightNode != null ? copyrightNode.asText(null) : null;

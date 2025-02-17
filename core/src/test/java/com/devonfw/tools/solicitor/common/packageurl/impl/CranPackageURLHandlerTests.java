@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
+
 /**
  * Tests for {@link CranPackageURLHandlerImpl}
  *
@@ -13,20 +16,20 @@ import org.junit.jupiter.api.Test;
 class CranPackageURLHandlerTests {
 
   @Test
-  void testSourceDownloadUrlFor() {
+  void testSourceDownloadUrlFor() throws SolicitorMalformedPackageURLException {
 
     CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
     assertEquals("http://test/src/contrib/someprod_4.5.35.tar.gz",
-        handler.sourceDownloadUrlFor("pkg:cran/someprod@4.5.35"));
+        handler.sourceDownloadUrlFor(PackageURLHelper.fromString("pkg:cran/someprod@4.5.35")));
 
   }
 
   @Test
-  void testPackageDownloadUrlFor() {
+  void testPackageDownloadUrlFor() throws SolicitorMalformedPackageURLException {
 
     CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
     assertEquals("http://test/src/contrib/someprod_4.5.35.tar.gz",
-        handler.packageDownloadUrlFor("pkg:cran/someprod@4.5.35"));
+        handler.packageDownloadUrlFor(PackageURLHelper.fromString("pkg:cran/someprod@4.5.35")));
 
   }
 
@@ -39,16 +42,16 @@ class CranPackageURLHandlerTests {
   }
 
   @Test
-  void testSourceArchiveSuffixFor() {
+  void testSourceArchiveSuffixFor() throws SolicitorMalformedPackageURLException {
 
     CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
-    assertEquals("tar.gz", handler.sourceArchiveSuffixFor("pkg:cran/someprod@4.5.35"));
+    assertEquals("tar.gz", handler.sourceArchiveSuffixFor(PackageURLHelper.fromString("pkg:cran/someprod@4.5.35")));
   }
 
   @Test
-  void testPathFor() {
+  void testPathFor() throws SolicitorMalformedPackageURLException {
 
     CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
-    assertEquals("pkg/cran/someprod/4.5.35", handler.pathFor("pkg:cran/someprod@4.5.35"));
+    assertEquals("pkg/cran/someprod/4.5.35", handler.pathFor(PackageURLHelper.fromString("pkg:cran/someprod@4.5.35")));
   }
 }

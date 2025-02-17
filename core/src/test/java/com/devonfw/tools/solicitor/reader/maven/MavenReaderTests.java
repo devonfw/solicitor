@@ -50,7 +50,7 @@ public class MavenReaderTests {
           ap.getVersion().equals("2.1.4.RELEASE")) {
         found = true;
         assertEquals("pkg:maven/org.springframework.boot/spring-boot-starter-logging@2.1.4.RELEASE",
-            ap.getPackageUrl());
+            ap.getPackageUrl().toString());
         break;
       }
     }

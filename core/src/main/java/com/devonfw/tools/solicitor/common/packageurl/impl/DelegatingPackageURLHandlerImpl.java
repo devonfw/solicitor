@@ -33,31 +33,27 @@ public class DelegatingPackageURLHandlerImpl extends AbstractPackageURLHandler i
   }
 
   @Override
-  public String sourceDownloadUrlFor(String packageUrl) {
+  public String sourceDownloadUrlFor(PackageURL packageUrl) {
 
-    PackageURL packageURL = parse(packageUrl);
-    return findApplicableSingleKindHandler(packageURL).sourceDownloadUrlFor(packageUrl);
+    return findApplicableSingleKindHandler(packageUrl).sourceDownloadUrlFor(packageUrl);
   }
 
   @Override
-  public String packageDownloadUrlFor(String packageUrl) {
+  public String packageDownloadUrlFor(PackageURL packageUrl) {
 
-    PackageURL packageURL = parse(packageUrl);
-    return findApplicableSingleKindHandler(packageURL).packageDownloadUrlFor(packageUrl);
+    return findApplicableSingleKindHandler(packageUrl).packageDownloadUrlFor(packageUrl);
   }
 
   @Override
-  public String pathFor(String packageUrl) {
+  public String pathFor(PackageURL packageUrl) {
 
-    PackageURL packageURL = parse(packageUrl);
-    return findApplicableSingleKindHandler(packageURL).pathFor(packageUrl);
+    return findApplicableSingleKindHandler(packageUrl).pathFor(packageUrl);
   }
 
   @Override
-  public String sourceArchiveSuffixFor(String packageUrl) {
+  public String sourceArchiveSuffixFor(PackageURL packageUrl) {
 
-    PackageURL packageURL = parse(packageUrl);
-    return findApplicableSingleKindHandler(packageURL).sourceArchiveSuffixFor(packageUrl);
+    return findApplicableSingleKindHandler(packageUrl).sourceArchiveSuffixFor(packageUrl);
   }
 
 }

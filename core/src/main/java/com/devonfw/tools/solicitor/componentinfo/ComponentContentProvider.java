@@ -1,5 +1,7 @@
 package com.devonfw.tools.solicitor.componentinfo;
 
+import com.github.packageurl.PackageURL;
+
 /**
  * Allows retrieving content from a (sub)path within the component given by its PackageURL.
  */
@@ -18,6 +20,6 @@ public interface ComponentContentProvider {
    * @return the found data. <code>null</code> if the uri does not start with {@link #PKG_CONTENT_SCHEMA_PREFIX} or
    *         nothing was found.
    */
-  String retrieveContent(String packageUrl, String contentUri);
+  String retrieveContent(PackageURL packageUrl, String contentUri);
 
 }

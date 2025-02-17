@@ -9,9 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.devonfw.tools.solicitor.common.LicenseTextHelper;
-import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
+import com.devonfw.tools.solicitor.common.packageurl.PackageURLSerializer;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -19,7 +19,7 @@ import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.packageurl.MalformedPackageURLException;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -49,7 +49,7 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   private String repoType;
 
-  private String packageUrl;
+  private PackageURL packageUrl;
 
   private String copyrights;
 
@@ -113,8 +113,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getDataElements() {
 
-    return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl(), getOssHomepage(),
-    getSourceRepoUrl(), getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(),
+    return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl().toString(),
+    getOssHomepage(), getSourceRepoUrl(), getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(),
     isOssModified() ? "true" : "false", getCopyrights(), getPackageDownloadUrl(), getSourceDownloadUrl(),
     getDataStatus(), getTraceabilityNotes() };
   }
@@ -211,7 +211,8 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   /** {@inheritDoc} */
   @Override
-  public String getPackageUrl() {
+  @JsonSerialize(using = PackageURLSerializer.class)
+  public PackageURL getPackageUrl() {
 
     return this.packageUrl;
   }
@@ -342,19 +343,14 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
 
   /** {@inheritDoc} */
   @Override
-  public void setPackageUrl(String packageUrl) {
+  public void setPackageUrl(PackageURL packageUrl) {
 
     // Assures we have the canonical representation and the packageUrl is valid;
     if (packageUrl != null) {
-      try {
-        PackageURL pUrl = new PackageURL(packageUrl);
-        this.packageUrl = pUrl.toString();
-        if (this.repoType == null) {
-          // if repoType is not set then set it via the type of the PackageURL
-          this.repoType = pUrl.getType();
-        }
-      } catch (MalformedPackageURLException e) {
-        throw new SolicitorRuntimeException("The given packageUrl '" + packageUrl + "' has an invalid format", e);
+      this.packageUrl = packageUrl;
+      if (this.repoType == null) {
+        // if repoType is not set then set it via the type of the PackageURL
+        this.repoType = packageUrl.getType();
       }
     } else {
       this.packageUrl = null;

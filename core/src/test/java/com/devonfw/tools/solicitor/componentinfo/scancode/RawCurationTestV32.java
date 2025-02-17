@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
@@ -21,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.packageurl.PackageURL;
 
 /**
  * This class contains JUnit test methods for the testing the raw curations of
@@ -28,6 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 public class RawCurationTestV32 {
+
+  PackageURL testPackageURL;
 
   // the object under test
   FilteredScancodeV32ComponentInfoProvider filteredScancodeComponentInfoProvider;
@@ -37,10 +42,13 @@ public class RawCurationTestV32 {
   SingleFileCurationProvider singleFileCurationProvider;
 
   @BeforeEach
-  public void setup() {
+  public void setup() throws SolicitorMalformedPackageURLException {
+
+    this.testPackageURL = PackageURLHelper
+        .fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
 
     AllKindsPackageURLHandler packageURLHandler = Mockito.mock(AllKindsPackageURLHandler.class);
-    Mockito.when(packageURLHandler.pathFor("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"))
+    Mockito.when(packageURLHandler.pathFor(this.testPackageURL))
         .thenReturn("pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0");
 
     this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(packageURLHandler);
@@ -73,12 +81,11 @@ public class RawCurationTestV32 {
         .setCurationsFileName("src/test/resources/scancodefileadapter/rawcurations/license_remove_curation_1.yaml");
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals(DataStatusValue.CURATED, scancodeComponentInfo.getDataStatus());
@@ -107,12 +114,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertNotEquals(DataStatusValue.CURATED, scancodeComponentInfo.getDataStatus());
@@ -140,12 +146,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertNotEquals(DataStatusValue.CURATED, scancodeComponentInfo.getDataStatus());
@@ -170,12 +175,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertNotEquals(DataStatusValue.CURATED, scancodeComponentInfo.getDataStatus());
@@ -202,12 +206,11 @@ public class RawCurationTestV32 {
         .setCurationsFileName("src/test/resources/scancodefileadapter/rawcurations/license_remove_curation_5.yaml");
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertNotEquals(DataStatusValue.CURATED, scancodeComponentInfo.getDataStatus());
@@ -234,12 +237,11 @@ public class RawCurationTestV32 {
         .setCurationsFileName("src/test/resources/scancodefileadapter/rawcurations/license_remove_curation_7.yaml");
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals(DataStatusValue.CURATED, scancodeComponentInfo.getDataStatus());
@@ -266,12 +268,11 @@ public class RawCurationTestV32 {
         .setCurationsFileName("src/test/resources/scancodefileadapter/rawcurations/license_replace_curation_1.yaml");
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -310,12 +311,11 @@ public class RawCurationTestV32 {
         .setCurationsFileName("src/test/resources/scancodefileadapter/rawcurations/license_replace_curation_2.yaml");
 
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -355,12 +355,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -399,12 +398,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -443,12 +441,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -487,12 +484,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -521,12 +517,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -556,12 +551,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -593,12 +587,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -630,12 +623,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -664,12 +656,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals(DataStatusValue.CURATED, scancodeComponentInfo.getDataStatus());
@@ -698,12 +689,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -735,12 +725,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
@@ -772,12 +761,11 @@ public class RawCurationTestV32 {
 
     // when
     ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+        .readScancodeData(this.testPackageURL);
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
+        this.testPackageURL, new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());

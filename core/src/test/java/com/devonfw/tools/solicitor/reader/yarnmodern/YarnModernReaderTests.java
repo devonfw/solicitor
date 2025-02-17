@@ -95,7 +95,7 @@ public class YarnModernReaderTests {
       if (ap.getArtifactId().equals(artifactId) && //
           ap.getVersion().equals(version)) {
         found = true;
-        assertEquals(packageUrl, ap.getPackageUrl());
+        assertEquals(packageUrl, ap.getPackageUrl().toString());
         assertEquals(license, ap.getRawLicenses().get(0).getDeclaredLicense());
         assertEquals(ossHomepage, ap.getOssHomepage());
         assertEquals(sourceRepoUrl, ap.getSourceRepoUrl());

@@ -19,6 +19,7 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.packageurl.PackageURL;
 
 /**
  * Provider for {@link ScancodeRawComponentInfo} which reads the scancode (and supplementary data) from the file system.
@@ -99,7 +100,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
    *         downloading/scanning the package data.
    */
   @Override
-  public ScancodeRawComponentInfo readScancodeData(String packageUrl)
+  public ScancodeRawComponentInfo readScancodeData(PackageURL packageUrl)
       throws ComponentInfoAdapterException, ScancodeProcessingFailedException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
@@ -156,7 +157,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
    * @param componentScancodeInfos the componentScancodeInfos to add the origin data to
    * @throws ComponentInfoAdapterException if there was an error when reading the file
    */
-  private void addOriginData(String packageUrl, ScancodeRawComponentInfo componentScancodeInfos)
+  private void addOriginData(PackageURL packageUrl, ScancodeRawComponentInfo componentScancodeInfos)
       throws ComponentInfoAdapterException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
@@ -193,7 +194,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   }
 
   @Override
-  public String retrieveContent(String packageUrl, String fileUri) {
+  public String retrieveContent(PackageURL packageUrl, String fileUri) {
 
     if (!fileUri.startsWith(PKG_CONTENT_SCHEMA_PREFIX)) {
       // we only handle pkgcontent: URIs here!
@@ -237,13 +238,13 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   }
 
   @Override
-  public boolean isLocalContentPath(String packageUrl, String path) {
+  public boolean isLocalContentPath(PackageURL packageUrl, String path) {
 
     return (path != null && path.startsWith(SOURCES_DIR));
   }
 
   @Override
-  public String pkgContentUriFromPath(String packageUrl, String path) {
+  public String pkgContentUriFromPath(PackageURL packageUrl, String path) {
 
     if (!isLocalContentPath(packageUrl, path)) {
       throw new IllegalArgumentException("'" + path + "' is not a valid path to content within the package");

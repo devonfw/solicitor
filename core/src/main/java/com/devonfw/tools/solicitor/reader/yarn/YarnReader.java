@@ -91,7 +91,7 @@ public class YarnReader extends AbstractReader implements Reader {
       appComponent.setOssHomepage(homePage);
       appComponent.setSourceRepoUrl(repo);
       appComponent.setRepoType(repoType);
-      appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(name, version).toString());
+      appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(name, version));
 
       addRawLicense(appComponent, license, licenseUrl, sourceUrl);
     }

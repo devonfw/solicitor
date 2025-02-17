@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.packageurl.PackageURL;
 
 /**
  * A provider that filters and retrieves component information based on Scancode results for multiple versions. This
@@ -46,7 +47,7 @@ public class MultiversionFilteredScancodeComponentInfoProvider implements Filter
   }
 
   @Override
-  public ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle)
+  public ComponentInfo getComponentInfo(PackageURL packageUrl, CurationDataHandle curationDataHandle)
       throws ComponentInfoAdapterException, CurationInvalidException {
 
     ScancodeRawComponentInfo rawScancodeData;

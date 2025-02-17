@@ -13,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
@@ -23,11 +25,16 @@ import com.devonfw.tools.solicitor.componentinfo.curation.ComponentInfoCuratorIm
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationProvider;
 import com.devonfw.tools.solicitor.componentinfo.curation.SingleFileCurationProvider;
+import com.github.packageurl.PackageURL;
 
 /**
  * This class contains JUnit test methods for the {@link ScancodeComponentInfoAdapter} class.
  */
 class ScancodeComponentInfoAdapterTest {
+
+  PackageURL testPackageURL;
+
+  PackageURL unknownTestPackageURL;
 
   // the object under test
   ScancodeComponentInfoAdapter scancodeComponentInfoAdapter;
@@ -45,14 +52,18 @@ class ScancodeComponentInfoAdapterTest {
   SingleFileCurationProvider singleFileCurationProvider;
 
   @BeforeEach
-  public void setup() {
+  public void setup() throws SolicitorMalformedPackageURLException {
+
+    this.testPackageURL = PackageURLHelper
+        .fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+    this.unknownTestPackageURL = PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/unknown@0.1.0");
 
     AllKindsPackageURLHandler packageURLHandler = Mockito.mock(AllKindsPackageURLHandler.class);
 
-    Mockito.when(packageURLHandler.pathFor("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"))
+    Mockito.when(packageURLHandler.pathFor(this.testPackageURL))
         .thenReturn("pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0");
 
-    Mockito.when(packageURLHandler.pathFor("pkg:maven/com.devonfw.tools/unknown@0.1.0"))
+    Mockito.when(packageURLHandler.pathFor(this.unknownTestPackageURL))
         .thenReturn("pkg/maven/com/devonfw/tools/unknown/0.1.0");
 
     this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(packageURLHandler);
@@ -97,8 +108,8 @@ class ScancodeComponentInfoAdapterTest {
     // given
 
     // when
-    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/unknown@0.1.0", new SelectorCurationDataHandle("someCurationSelector"));
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(this.unknownTestPackageURL,
+        new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNull(componentInfo.getComponentInfoData());
@@ -118,13 +129,12 @@ class ScancodeComponentInfoAdapterTest {
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
-    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(this.testPackageURL,
         new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(componentInfo.getComponentInfoData());
-    assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
+    assertEquals(this.testPackageURL, componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getComponentInfoData().getNoticeFileUrl());
@@ -168,7 +178,7 @@ class ScancodeComponentInfoAdapterTest {
 
     // given
     CurationProvider curationProvider = Mockito.mock(CurationProvider.class);
-    when(curationProvider.findCurations(Mockito.anyString(), Mockito.any(SelectorCurationDataHandle.class)))
+    when(curationProvider.findCurations(Mockito.any(PackageURL.class), Mockito.any(SelectorCurationDataHandle.class)))
         .thenReturn(null);
     this.componentInfoCuratorImpl = new ComponentInfoCuratorImpl(curationProvider,
         this.fileScancodeRawComponentInfoProvider);
@@ -178,14 +188,13 @@ class ScancodeComponentInfoAdapterTest {
     this.scancodeComponentInfoAdapter.setFeatureFlag(true);
 
     // when
-    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(this.testPackageURL,
         new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(componentInfo.getComponentInfoData());
 
-    ArgumentCaptor<String> captor1 = ArgumentCaptor.forClass(String.class);
+    ArgumentCaptor<PackageURL> captor1 = ArgumentCaptor.forClass(PackageURL.class);
     ArgumentCaptor<SelectorCurationDataHandle> captor2 = ArgumentCaptor.forClass(SelectorCurationDataHandle.class);
     Mockito.verify(curationProvider, times(1)).findCurations(captor1.capture(), captor2.capture());
     assertEquals("someCurationSelector", captor2.getValue().getCurationDataSelector());
@@ -202,13 +211,12 @@ class ScancodeComponentInfoAdapterTest {
   public void testGetComponentInfoWithCurations() throws ComponentInfoAdapterException, CurationInvalidException {
 
     // when
-    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+    ComponentInfo componentInfo = this.scancodeComponentInfoAdapter.getComponentInfo(this.testPackageURL,
         new SelectorCurationDataHandle("someCurationSelector"));
 
     // then
     assertNotNull(componentInfo.getComponentInfoData());
-    assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0", componentInfo.getPackageUrl());
+    assertEquals(this.testPackageURL, componentInfo.getPackageUrl());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         componentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals("pkgcontent:/NOTICE.txt", componentInfo.getComponentInfoData().getNoticeFileUrl());

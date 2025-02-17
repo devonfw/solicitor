@@ -18,12 +18,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.packageurl.PackageURL;
 
 /**
  * Unit test for {@link MultiversionFilteredScancodeComponentInfoProvider}.
@@ -87,7 +89,7 @@ public class MultiversionFilteredScancodeComponentInfoProviderTest {
   @Test
   void testGetComponentInfoVersion31() throws Exception {
 
-    String packageUrl = "pkg:maven/com.mycompany/mycomponent@1.0.0";
+    PackageURL packageUrl = PackageURLHelper.fromString("pkg:maven/com.mycompany/mycomponent@1.0.0");
     CurationDataHandle curationDataHandle = mock(CurationDataHandle.class);
 
     String jsonData = loadJsonData("scancode_v31.json");
@@ -115,7 +117,7 @@ public class MultiversionFilteredScancodeComponentInfoProviderTest {
   @Test
   void testGetComponentInfoVersion32() throws Exception {
 
-    String packageUrl = "pkg:maven/com.mycompany/mycomponent@1.0.0";
+    PackageURL packageUrl = PackageURLHelper.fromString("pkg:maven/com.mycompany/mycomponent@1.0.0");
     CurationDataHandle curationDataHandle = mock(CurationDataHandle.class);
 
     String jsonData = loadJsonData("scancode_v32.json");
@@ -143,7 +145,7 @@ public class MultiversionFilteredScancodeComponentInfoProviderTest {
   @Test
   void testGetComponentInfoVersionNotSupported() throws Exception {
 
-    String packageUrl = "pkg:maven/com.mycompany/mycomponent@1.0.0";
+    PackageURL packageUrl = PackageURLHelper.fromString("pkg:maven/com.mycompany/mycomponent@1.0.0");
     CurationDataHandle curationDataHandle = mock(CurationDataHandle.class);
 
     String jsonData = loadJsonData("scancode_v99.json");
@@ -167,7 +169,7 @@ public class MultiversionFilteredScancodeComponentInfoProviderTest {
   void testGetComponentInfoScancodeDataNull() throws Exception {
 
     // Arrange
-    String packageUrl = "pkg:maven/com.mycompany/mycomponent@1.0.0";
+    PackageURL packageUrl = PackageURLHelper.fromString("pkg:maven/com.mycompany/mycomponent@1.0.0");
     CurationDataHandle curationDataHandle = mock(CurationDataHandle.class);
 
     when(this.rawComponentInfoProvider.readScancodeData(packageUrl)).thenReturn(null);

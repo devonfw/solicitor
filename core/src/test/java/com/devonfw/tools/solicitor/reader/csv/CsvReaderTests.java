@@ -116,7 +116,8 @@ public class CsvReaderTests {
     List<ApplicationComponent> lapc = this.application.getApplicationComponents();
     boolean found = false;
     for (ApplicationComponent ap : lapc) {
-      if (ap.getArtifactId().equals("albireo") && ap.getPackageUrl().equals("pkg:maven/org.eclipse/albireo@0.0.3")) {
+      if (ap.getArtifactId().equals("albireo")
+          && ap.getPackageUrl().toString().equals("pkg:maven/org.eclipse/albireo@0.0.3")) {
         found = true;
         break;
       }
@@ -145,7 +146,7 @@ public class CsvReaderTests {
     boolean found = false;
     for (ApplicationComponent ap : lapc) {
       if (ap.getArtifactId().equals("@babel/code-frame")
-          && ap.getPackageUrl().equals("pkg:npm/%40babel/code-frame@7.8.3")) {
+          && ap.getPackageUrl().toString().equals("pkg:npm/%40babel/code-frame@7.8.3")) {
         found = true;
         break;
       }
@@ -180,7 +181,8 @@ public class CsvReaderTests {
     List<ApplicationComponent> lapc = application.getApplicationComponents();
     boolean found = false;
     for (ApplicationComponent ap : lapc) {
-      if (ap.getArtifactId().equals("python-dateutil") && ap.getPackageUrl().equals("pkg:pypi/python-dateutil@2.8.1")) {
+      if (ap.getArtifactId().equals("python-dateutil")
+          && ap.getPackageUrl().toString().equals("pkg:pypi/python-dateutil@2.8.1")) {
         found = true;
         break;
       }

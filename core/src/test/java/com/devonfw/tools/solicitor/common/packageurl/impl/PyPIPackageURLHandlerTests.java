@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
+
 /**
  * Tests for {@link PyPIPackageURLHandlerImpl}
  *
@@ -13,11 +16,11 @@ import org.junit.jupiter.api.Test;
 class PyPIPackageURLHandlerTests {
 
   @Test
-  void testSourceDownloadUrlFor() {
+  void testSourceDownloadUrlFor() throws SolicitorMalformedPackageURLException {
 
     PyPIPackageURLHandlerImpl handler = new PyPIPackageURLHandlerImpl("http://test/");
     assertEquals("http://test/source/s/somepackage/somepackage-1.2.3.tar.gz",
-        handler.sourceDownloadUrlFor("pkg:pypi/somepackage@1.2.3"));
+        handler.sourceDownloadUrlFor(PackageURLHelper.fromString("pkg:pypi/somepackage@1.2.3")));
   }
 
   @Test
@@ -29,16 +32,17 @@ class PyPIPackageURLHandlerTests {
   }
 
   @Test
-  void testSourceArchiveSuffixFor() {
+  void testSourceArchiveSuffixFor() throws SolicitorMalformedPackageURLException {
 
     PyPIPackageURLHandlerImpl handler = new PyPIPackageURLHandlerImpl("http://test/");
-    assertEquals("tar.gz", handler.sourceArchiveSuffixFor("pkg:pypi/somepackage@1.2.3"));
+    assertEquals("tar.gz", handler.sourceArchiveSuffixFor(PackageURLHelper.fromString("pkg:pypi/somepackage@1.2.3")));
   }
 
   @Test
-  void testPathFor() {
+  void testPathFor() throws SolicitorMalformedPackageURLException {
 
     PyPIPackageURLHandlerImpl handler = new PyPIPackageURLHandlerImpl("http://test/");
-    assertEquals("pkg/pypi/somepackage/1.2.3", handler.pathFor("pkg:pypi/somepackage@1.2.3"));
+    assertEquals("pkg/pypi/somepackage/1.2.3",
+        handler.pathFor(PackageURLHelper.fromString("pkg:pypi/somepackage@1.2.3")));
   }
 }

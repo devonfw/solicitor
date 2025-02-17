@@ -4,6 +4,7 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
+import com.github.packageurl.PackageURL;
 
 /**
  * Provides curation data for {@link ComponentInfo} data.
@@ -22,7 +23,7 @@ public interface CurationProvider {
    *         not be resolved
    * @throws CurationInvalidException if the curation data is not valid
    */
-  ComponentInfoCuration findCurations(String packageUrl, CurationDataHandle curationDataHandle)
+  ComponentInfoCuration findCurations(PackageURL packageUrl, CurationDataHandle curationDataHandle)
       throws ComponentInfoAdapterException, ComponentInfoAdapterNonExistingCurationDataSelectorException,
       CurationInvalidException;
 

@@ -8,6 +8,7 @@ import com.devonfw.tools.solicitor.InventoryProcessor;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
+import com.github.packageurl.PackageURL;
 
 /**
  * An {@link InventoryProcessor} which fills the {@link ApplicationComponent#getPackageDownloadUrl()} and
@@ -34,8 +35,8 @@ public class DefaultDownloadUrlInventoryProcessor implements InventoryProcessor 
 
     for (Application application : modelRoot.getEngagement().getApplications()) {
       for (ApplicationComponent ac : application.getApplicationComponents()) {
-        String packageUrl = ac.getPackageUrl();
-        if (packageUrl != null && !packageUrl.isEmpty()) {
+        PackageURL packageUrl = ac.getPackageUrl();
+        if (packageUrl != null) {
           if (ac.getPackageDownloadUrl() == null) {
             ac.setPackageDownloadUrl(this.packageURLHandler.packageDownloadUrlFor(packageUrl));
           }

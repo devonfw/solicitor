@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.packageurl.PackageURL;
+
 /**
  * Default POJO implementation of a {@link ComponentInfo}.
  *
  */
 public class DefaultComponentInfoImpl implements ComponentInfo {
 
-  private String packageUrl;
+  private PackageURL packageUrl;
 
   private String dataStatus;
 
@@ -32,7 +34,7 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
    * @param packageUrl the PackageUrl of the component
    * @param dataStatus the dataStatus
    */
-  public DefaultComponentInfoImpl(String packageUrl, String dataStatus) {
+  public DefaultComponentInfoImpl(PackageURL packageUrl, String dataStatus) {
 
     this();
     this.packageUrl = packageUrl;
@@ -62,7 +64,7 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   /**
    * @param packageUrl new value of {@link #getPackageUrl}.
    */
-  public void setPackageUrl(String packageUrl) {
+  public void setPackageUrl(PackageURL packageUrl) {
 
     this.packageUrl = packageUrl;
   }
@@ -84,7 +86,7 @@ public class DefaultComponentInfoImpl implements ComponentInfo {
   }
 
   @Override
-  public String getPackageUrl() {
+  public PackageURL getPackageUrl() {
 
     return this.packageUrl;
   }

@@ -2,6 +2,7 @@ package com.devonfw.tools.solicitor.componentinfo.scancode;
 
 import com.devonfw.tools.solicitor.componentinfo.ComponentContentProvider;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
+import com.github.packageurl.PackageURL;
 
 /**
  * Provider for {@link ScancodeRawComponentInfo}
@@ -18,7 +19,7 @@ public interface ScancodeRawComponentInfoProvider extends ComponentContentProvid
    * @throws ScancodeProcessingFailedException if no data can be provided due to previous issues when
    *         downloading/scanning the package data.
    */
-  ScancodeRawComponentInfo readScancodeData(String packageUrl)
+  ScancodeRawComponentInfo readScancodeData(PackageURL packageUrl)
       throws ComponentInfoAdapterException, ScancodeProcessingFailedException;
 
   /**
@@ -29,9 +30,9 @@ public interface ScancodeRawComponentInfoProvider extends ComponentContentProvid
    * @param path the path referencing file content
    *
    * @return a pkgContent URI which might be used for retrieving the content vis
-   *         {@link ComponentContentProvider#retrieveContent(String, String)}
+   *         {@link ComponentContentProvider#retrieveContent(PackageURL, String)}
    */
-  String pkgContentUriFromPath(String packageUrl, String path);
+  String pkgContentUriFromPath(PackageURL packageUrl, String path);
 
   /**
    * Checks if the argument seems to be a (relative) path pointing to some content within the package.
@@ -42,6 +43,6 @@ public interface ScancodeRawComponentInfoProvider extends ComponentContentProvid
    *
    * @return <code>true</code> if the seems to be a correct path, <code>false</code> otherwise.
    */
-  boolean isLocalContentPath(String packageUrl, String path);
+  boolean isLocalContentPath(PackageURL packageUrl, String path);
 
 }
