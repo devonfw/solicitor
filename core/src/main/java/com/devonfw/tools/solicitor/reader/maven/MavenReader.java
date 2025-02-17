@@ -104,7 +104,7 @@ public class MavenReader extends AbstractReader implements Reader {
       appComponent.setUsagePattern(usagePattern);
       appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(
-          PackageURLHelper.fromMavenCoordinates(dep.getGroupId(), dep.getArtifactId(), dep.getVersion()).toString());
+          PackageURLHelper.fromMavenCoordinates(dep.getGroupId(), dep.getArtifactId(), dep.getVersion()));
       components++;
       if (dep.getLicenses().isEmpty()) {
         // in case no license is found insert an empty entry

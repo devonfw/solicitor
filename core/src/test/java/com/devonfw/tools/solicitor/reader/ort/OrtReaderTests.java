@@ -48,7 +48,7 @@ public class OrtReaderTests {
       if (ap.getArtifactId().equals("testArtifactId") && //
           ap.getVersion().equals("testVersion")) {
         found = true;
-        assertEquals("pkg:maven/testGroupId/testArtifactId@testVersion", ap.getPackageUrl());
+        assertEquals("pkg:maven/testGroupId/testArtifactId@testVersion", ap.getPackageUrl().toString());
         break;
       }
     }

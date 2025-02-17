@@ -18,17 +18,16 @@ public abstract class AbstractSingleKindPackageURLHandler extends AbstractPackag
   }
 
   @Override
-  public String pathFor(String packageUrl) {
+  public String pathFor(PackageURL packageUrl) {
 
     StringBuffer sb = new StringBuffer();
-    PackageURL purl = parse(packageUrl);
-    sb.append(purl.getScheme()).append("/");
-    sb.append(purl.getType()).append("/");
-    if (purl.getNamespace() != null) {
-      sb.append(purl.getNamespace().replace('.', '/')).append("/");
+    sb.append(packageUrl.getScheme()).append("/");
+    sb.append(packageUrl.getType()).append("/");
+    if (packageUrl.getNamespace() != null) {
+      sb.append(packageUrl.getNamespace().replace('.', '/')).append("/");
     }
-    sb.append(purl.getName()).append("/");
-    sb.append(purl.getVersion());
+    sb.append(packageUrl.getName()).append("/");
+    sb.append(packageUrl.getVersion());
 
     String result = sb.toString();
     if (result.contains("..")) {
@@ -38,10 +37,10 @@ public abstract class AbstractSingleKindPackageURLHandler extends AbstractPackag
   }
 
   @Override
-  public String sourceDownloadUrlFor(String packageUrl) {
+  public String sourceDownloadUrlFor(PackageURL packageUrl) {
 
-    PackageURL purl = parsePackageURLAndCheckType(packageUrl);
-    return doSourceDownloadUrlFor(purl);
+    checkType(packageUrl);
+    return doSourceDownloadUrlFor(packageUrl);
   }
 
   /**
@@ -53,10 +52,10 @@ public abstract class AbstractSingleKindPackageURLHandler extends AbstractPackag
   protected abstract String doSourceDownloadUrlFor(PackageURL purl);
 
   @Override
-  public String packageDownloadUrlFor(String packageUrl) {
+  public String packageDownloadUrlFor(PackageURL packageUrl) {
 
-    PackageURL purl = parsePackageURLAndCheckType(packageUrl);
-    return doPackageDownloadUrlFor(purl);
+    checkType(packageUrl);
+    return doPackageDownloadUrlFor(packageUrl);
   }
 
   /**
@@ -68,27 +67,24 @@ public abstract class AbstractSingleKindPackageURLHandler extends AbstractPackag
   protected abstract String doPackageDownloadUrlFor(PackageURL purl);
 
   /**
-   * Parse the given String into a {@link PackageURL} and assures if it can be handled.
+   * Check if the type of {@link PackageURL} can be handled by this handler.
    *
    * @param packageUrl the package url as a string
-   * @return the parsed package URL
-   * @throws SolicitorPackageURLException if either parsing failed or the kind can not be handled by this instance
+   * @throws SolicitorPackageURLException if the kind of PackageURL can not be handled by this instance
    */
-  private PackageURL parsePackageURLAndCheckType(String packageUrl) {
+  private void checkType(PackageURL packageUrl) {
 
-    PackageURL purl = parse(packageUrl);
-    if (!canHandle(purl)) {
+    if (!canHandle(packageUrl)) {
       throw new SolicitorPackageURLException(
           "This kind of package URL ('" + packageUrl + "') cannot be handled by this SingleKindPackareURLHandler");
     }
-    return purl;
   }
 
   @Override
-  public String sourceArchiveSuffixFor(String packageUrl) {
+  public String sourceArchiveSuffixFor(PackageURL packageUrl) {
 
-    PackageURL purl = parsePackageURLAndCheckType(packageUrl);
-    return doSourceArchiveSuffixFor(purl);
+    checkType(packageUrl);
+    return doSourceArchiveSuffixFor(packageUrl);
   }
 
   /**

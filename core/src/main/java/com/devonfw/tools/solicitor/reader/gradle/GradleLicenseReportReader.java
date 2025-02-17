@@ -80,8 +80,8 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
 
         appComponent.setUsagePattern(usagePattern);
         appComponent.setRepoType(repoType);
-        appComponent.setPackageUrl(PackageURLHelper
-            .fromMavenCoordinates(dependencyParts[0], dependencyParts[1], dependency.get("moduleVersion")).toString());
+        appComponent.setPackageUrl(PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1],
+            dependency.get("moduleVersion")));
 
         // Extract and process moduleLicenses
         Object licensesObject = dependency.get("moduleLicenses");

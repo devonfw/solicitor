@@ -41,7 +41,7 @@ public class CyclonedxReaderTests {
   public void readMavenFileAndCheckSize() {
 
     // Always return a non-empty String for maven purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Java8", "#default#");
@@ -61,7 +61,7 @@ public class CyclonedxReaderTests {
           ap.getVersion().equals("2.3.3.RELEASE")) {
         found = true;
         assertEquals("pkg:maven/org.springframework.boot/spring-boot-starter-logging@2.3.3.RELEASE?type=jar",
-            ap.getPackageUrl());
+            ap.getPackageUrl().toString());
         break;
       }
     }
@@ -76,7 +76,7 @@ public class CyclonedxReaderTests {
   public void readMavenFileAndCheckSizeNegative() {
 
     // Always throw exception for maven purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenThrow(
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenThrow(
         new SolicitorPackageURLException("No applicable SingleKindPackageURLHandler found for type 'maven'"));
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
@@ -100,7 +100,7 @@ public class CyclonedxReaderTests {
   public void readMavenFileAndCheckSingleContentSize() {
 
     // Always return a non-empty String for maven purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Java8", "#default#");
@@ -121,7 +121,7 @@ public class CyclonedxReaderTests {
         found = true;
         assertEquals(UsagePattern.DYNAMIC_LINKING, ap.getUsagePattern());
         assertEquals("someRepoType", ap.getRepoType());
-        assertEquals("pkg:maven/ch.qos.logback/logback-classic@1.2.3?type=jar", ap.getPackageUrl());
+        assertEquals("pkg:maven/ch.qos.logback/logback-classic@1.2.3?type=jar", ap.getPackageUrl().toString());
         assertEquals(4, ap.getRawLicenses().size());
         boolean l1found = false;
         boolean l2found = false;
@@ -162,7 +162,7 @@ public class CyclonedxReaderTests {
   public void readNpmFileAndCheckSize() {
 
     // Always return a non-empty String for npm purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:npm/"))).thenReturn("foo");
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Angular", "#default#");
@@ -179,7 +179,7 @@ public class CyclonedxReaderTests {
     for (ApplicationComponent ap : application.getApplicationComponents()) {
       if (ap.getArtifactId().equals("async") && ap.getVersion().equals("3.2.4")) {
         found = true;
-        assertEquals("pkg:npm/async@3.2.4", ap.getPackageUrl());
+        assertEquals("pkg:npm/async@3.2.4", ap.getPackageUrl().toString());
         break;
       }
     }
@@ -193,7 +193,7 @@ public class CyclonedxReaderTests {
   public void readExpression() {
 
     // Always return a non-empty String for npm purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.startsWith("pkg:maven/"))).thenReturn("foo");
+    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
 
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Angular", "#default#");

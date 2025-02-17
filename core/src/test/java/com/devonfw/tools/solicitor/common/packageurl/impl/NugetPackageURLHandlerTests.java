@@ -6,12 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
+
 public class NugetPackageURLHandlerTests {
   @Test
-  void testSourceDownloadUrlFor() {
+  void testSourceDownloadUrlFor() throws SolicitorMalformedPackageURLException {
 
     NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
-    assertEquals(null, handler.sourceDownloadUrlFor("pkg:nuget/com.someorg@4.5.35"));
+    assertEquals(null, handler.sourceDownloadUrlFor(PackageURLHelper.fromString("pkg:nuget/com.someorg@4.5.35")));
   }
 
   @Test
@@ -23,16 +26,17 @@ public class NugetPackageURLHandlerTests {
   }
 
   @Test
-  void testSourceArchiveSuffixFor() {
+  void testSourceArchiveSuffixFor() throws SolicitorMalformedPackageURLException {
 
     NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
-    assertEquals("nupkg", handler.sourceArchiveSuffixFor("pkg:nuget/com.someorg@4.5.35"));
+    assertEquals("nupkg", handler.sourceArchiveSuffixFor(PackageURLHelper.fromString("pkg:nuget/com.someorg@4.5.35")));
   }
 
   @Test
-  void testPathFor() {
+  void testPathFor() throws SolicitorMalformedPackageURLException {
 
     NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
-    assertEquals("pkg/nuget/com.someorg/4.5.35", handler.pathFor("pkg:nuget/com.someorg@4.5.35"));
+    assertEquals("pkg/nuget/com.someorg/4.5.35",
+        handler.pathFor(PackageURLHelper.fromString("pkg:nuget/com.someorg@4.5.35")));
   }
 }

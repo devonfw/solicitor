@@ -49,7 +49,7 @@ class GradleLicenseReportReaderTest {
           ap.getArtifactId().equals("activity") && //
           ap.getVersion().equals("1.2.4")) {
         found = true;
-        assertEquals("pkg:maven/androidx.activity/activity@1.2.4", ap.getPackageUrl());
+        assertEquals("pkg:maven/androidx.activity/activity@1.2.4", ap.getPackageUrl().toString());
         break;
       }
     }

@@ -26,6 +26,7 @@ import com.devonfw.tools.solicitor.componentinfo.curation.model.CurationOperatio
 import com.devonfw.tools.solicitor.componentinfo.curation.model.LicenseCuration;
 import com.devonfw.tools.solicitor.componentinfo.scancode.ScancodeComponentInfo.ScancodeComponentInfoData;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.packageurl.PackageURL;
 
 /**
  * {@link FilteredScancodeVersionComponentInfoProvider} which delivers data based on scancode data.
@@ -102,7 +103,7 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
    * @throws CurationInvalidException if the curation data is invalid
    */
   @Override
-  public ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle,
+  public ComponentInfo getComponentInfo(PackageURL packageUrl, CurationDataHandle curationDataHandle,
       ScancodeRawComponentInfo rawScancodeData, JsonNode scancodeJson)
       throws ComponentInfoAdapterException, CurationInvalidException {
 
@@ -140,7 +141,7 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
    *         for the Scancode version is not found
    * @throws CurationInvalidException if the curation data is not valid or if there is an error applying curation data
    */
-  private ScancodeComponentInfo mapScancodeJson(String packageUrl, JsonNode scancodeJson,
+  private ScancodeComponentInfo mapScancodeJson(PackageURL packageUrl, JsonNode scancodeJson,
       CurationDataHandle curationDataHandle) throws ComponentInfoAdapterException, CurationInvalidException {
 
     String toolVersion = scancodeJson.get("headers").get(0).get("tool_version").asText();
@@ -438,7 +439,7 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
    * @param licenseCurations
    * @param componentScancodeInfos
    */
-  private void addLicensesByCuration(String packageUrl, String path, List<LicenseCuration> licenseCurations,
+  private void addLicensesByCuration(PackageURL packageUrl, String path, List<LicenseCuration> licenseCurations,
       ScancodeComponentInfo componentScancodeInfos) {
 
     if (licenseCurations == null) {
@@ -546,7 +547,7 @@ public class FilteredScancodeV32ComponentInfoProvider implements FilteredScancod
    * @param licenseUrl the original path or URL
    * @return the adjusted path or url as a url
    */
-  private String normalizeLicenseUrl(String packageUrl, String licenseUrl) {
+  private String normalizeLicenseUrl(PackageURL packageUrl, String licenseUrl) {
 
     String adjustedLicenseUrl = licenseUrl;
     if (licenseUrl != null) {

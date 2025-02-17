@@ -9,7 +9,9 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
@@ -25,11 +27,12 @@ class AbstractHierarchicalCurationProviderTest {
   @Test
   void testFindCurationsHierarchyOnDefaultCurationDataSelector()
       throws ComponentInfoAdapterNonExistingCurationDataSelectorException, ComponentInfoAdapterException,
-      CurationInvalidException {
+      CurationInvalidException, SolicitorMalformedPackageURLException {
 
     AbstractHierarchicalCurationProvider provider = createObjectUnderTest(true);
 
-    ComponentInfoCuration result = provider.findCurations("pkg:/maven/ch.qos.logback/logback-classic@1.2.3",
+    ComponentInfoCuration result = provider.findCurations(
+        PackageURLHelper.fromString("pkg:/maven/ch.qos.logback/logback-classic@1.2.3"),
         new SelectorCurationDataHandle(null));
     assertEquals("pkg/maven/ch/qos/logback/logback-classic/1.2.3", result.getName());
     assertEquals(7, result.getCopyrightCurations().size());
@@ -43,11 +46,12 @@ class AbstractHierarchicalCurationProviderTest {
   @Test
   void testFindCurationsHierarchyOnNonDefaultCurationDataSelector()
       throws ComponentInfoAdapterNonExistingCurationDataSelectorException, ComponentInfoAdapterException,
-      CurationInvalidException {
+      CurationInvalidException, SolicitorMalformedPackageURLException {
 
     AbstractHierarchicalCurationProvider provider = createObjectUnderTest(true);
 
-    ComponentInfoCuration result = provider.findCurations("pkg:/maven/ch.qos.logback/logback-classic@1.2.3",
+    ComponentInfoCuration result = provider.findCurations(
+        PackageURLHelper.fromString("pkg:/maven/ch.qos.logback/logback-classic@1.2.3"),
         new SelectorCurationDataHandle("someSelector"));
     assertEquals("pkg/maven/ch/qos/logback/logback-classic/1.2.3", result.getName());
     assertEquals(7, result.getCopyrightCurations().size());
@@ -61,11 +65,12 @@ class AbstractHierarchicalCurationProviderTest {
   @Test
   void testFindCurationsHierarchyWhenCurationExistOnlyForVersion()
       throws ComponentInfoAdapterNonExistingCurationDataSelectorException, ComponentInfoAdapterException,
-      CurationInvalidException {
+      CurationInvalidException, SolicitorMalformedPackageURLException {
 
     AbstractHierarchicalCurationProvider provider = createObjectUnderTest(true);
 
-    ComponentInfoCuration result = provider.findCurations("pkg:/maven/ch.qos.logback/logback-classic@1.2.3",
+    ComponentInfoCuration result = provider.findCurations(
+        PackageURLHelper.fromString("pkg:/maven/ch.qos.logback/logback-classic@1.2.3"),
         new SelectorCurationDataHandle("curationonlyonversion"));
     assertEquals("pkg/maven/ch/qos/logback/logback-classic/1.2.3", result.getName());
     assertEquals(1, result.getCopyrightCurations().size());
@@ -76,11 +81,12 @@ class AbstractHierarchicalCurationProviderTest {
 
   @Test
   void testFindCurationsHierarchyDisabled() throws ComponentInfoAdapterNonExistingCurationDataSelectorException,
-      ComponentInfoAdapterException, CurationInvalidException {
+      ComponentInfoAdapterException, CurationInvalidException, SolicitorMalformedPackageURLException {
 
     AbstractHierarchicalCurationProvider provider = createObjectUnderTest(false);
 
-    ComponentInfoCuration result = provider.findCurations("pkg:/maven/ch.qos.logback/logback-classic@1.2.3",
+    ComponentInfoCuration result = provider.findCurations(
+        PackageURLHelper.fromString("pkg:/maven/ch.qos.logback/logback-classic@1.2.3"),
         new SelectorCurationDataHandle(null));
     assertEquals("pkg/maven/ch/qos/logback/logback-classic/1.2.3", result.getName());
     assertEquals(1, result.getCopyrightCurations().size());
@@ -91,26 +97,26 @@ class AbstractHierarchicalCurationProviderTest {
 
   @Test
   void testFindCurationsInvalidSelector() throws ComponentInfoAdapterNonExistingCurationDataSelectorException,
-      ComponentInfoAdapterException, CurationInvalidException {
+      ComponentInfoAdapterException, CurationInvalidException, SolicitorMalformedPackageURLException {
 
     AbstractHierarchicalCurationProvider provider = createObjectUnderTest(true);
 
     ComponentInfoAdapterNonExistingCurationDataSelectorException e = assertThrows(
         ComponentInfoAdapterNonExistingCurationDataSelectorException.class,
-        () -> provider.findCurations("pkg:/maven/ch.qos.logback/logback-classic@1.2.3",
+        () -> provider.findCurations(PackageURLHelper.fromString("pkg:/maven/ch.qos.logback/logback-classic@1.2.3"),
             new SelectorCurationDataHandle("invalid")));
     assertEquals("test1", e.getMessage());
   }
 
   @Test
   void testFindCurationsNonexistentSelector() throws ComponentInfoAdapterNonExistingCurationDataSelectorException,
-      ComponentInfoAdapterException, CurationInvalidException {
+      ComponentInfoAdapterException, CurationInvalidException, SolicitorMalformedPackageURLException {
 
     AbstractHierarchicalCurationProvider provider = createObjectUnderTest(true);
 
     ComponentInfoAdapterNonExistingCurationDataSelectorException e = assertThrows(
         ComponentInfoAdapterNonExistingCurationDataSelectorException.class,
-        () -> provider.findCurations("pkg:/maven/ch.qos.logback/logback-classic@1.2.3",
+        () -> provider.findCurations(PackageURLHelper.fromString("pkg:/maven/ch.qos.logback/logback-classic@1.2.3"),
             new SelectorCurationDataHandle("nonexistent")));
     assertEquals("test2", e.getMessage());
   }
@@ -120,11 +126,14 @@ class AbstractHierarchicalCurationProviderTest {
    * allow for testing.
    *
    * @return the object to be tested.
+   * @throws SolicitorMalformedPackageURLException
    */
-  private AbstractHierarchicalCurationProvider createObjectUnderTest(boolean evaluateHierarchy) {
+  private AbstractHierarchicalCurationProvider createObjectUnderTest(boolean evaluateHierarchy)
+      throws SolicitorMalformedPackageURLException {
 
     AllKindsPackageURLHandler packageUrlHandler = Mockito.mock(AllKindsPackageURLHandler.class);
-    Mockito.when(packageUrlHandler.pathFor("pkg:/maven/ch.qos.logback/logback-classic@1.2.3"))
+    Mockito
+        .when(packageUrlHandler.pathFor(PackageURLHelper.fromString("pkg:/maven/ch.qos.logback/logback-classic@1.2.3")))
         .thenReturn("pkg/maven/ch/qos/logback/logback-classic/1.2.3");
 
     AbstractHierarchicalCurationProvider provider = new AbstractHierarchicalCurationProvider(packageUrlHandler) {

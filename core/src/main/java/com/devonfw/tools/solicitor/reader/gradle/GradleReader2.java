@@ -114,7 +114,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
       appComponent.setUsagePattern(usagePattern);
       appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(
-          PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1], dependencyParts[2]).toString());
+          PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1], dependencyParts[2]));
       if (dep.getLicenses().isEmpty()) {
         // in case no license is found insert an empty entry
         addRawLicense(appComponent, null, null, sourceUrl);

@@ -13,9 +13,9 @@ import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
@@ -25,7 +25,6 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
-import com.devonfw.tools.solicitor.reader.maven.MavenReader;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -76,7 +75,7 @@ public class CsvReader extends AbstractReader implements Reader {
     int licenses = 0;
     InputStream is;
     try {
-      is = inputStreamFactory.createInputStreamFor(sourceUrl);
+      is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
 
       if (configuration != null) {
         // CSVReader setting with customizable configuration
@@ -245,7 +244,7 @@ public class CsvReader extends AbstractReader implements Reader {
         }
       } else {
         // previous CSVReader setting without configuration
-        is = inputStreamFactory.createInputStreamFor(sourceUrl);
+        is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
 
         java.io.Reader reader = new InputStreamReader(is);
         ApplicationComponent lastAppComponent = null;
@@ -296,7 +295,7 @@ public class CsvReader extends AbstractReader implements Reader {
    * @param version the version
    * @return the created PackageURL
    */
-  public String getPackageURL(String packageType, String groupId, String artifactId, String version) {
+  public PackageURL getPackageURL(String packageType, String groupId, String artifactId, String version) {
 
     if (packageType == null || packageType.isEmpty()) {
       this.logger.warn(LogMessages.EMPTY_PACKAGE_TYPE.msg(), packageType);
@@ -304,11 +303,11 @@ public class CsvReader extends AbstractReader implements Reader {
     }
     switch (packageType) {
       case "maven":
-        return PackageURLHelper.fromMavenCoordinates(groupId, artifactId, version).toString();
+        return PackageURLHelper.fromMavenCoordinates(groupId, artifactId, version);
       case "npm":
-        return PackageURLHelper.fromNpmPackageNameAndVersion(artifactId, version).toString();
+        return PackageURLHelper.fromNpmPackageNameAndVersion(artifactId, version);
       case "pypi":
-        return PackageURLHelper.fromPyPICoordinates(artifactId, version).toString();
+        return PackageURLHelper.fromPyPICoordinates(artifactId, version);
       default:
         this.logger.warn(LogMessages.UNKNOWN_PACKAGE_TYPE.msg(), packageType);
         return null;

@@ -122,7 +122,7 @@ public interface ApplicationComponent {
    *
    * @return the field packageUrl
    */
-  public String getPackageUrl();
+  public PackageURL getPackageUrl();
 
   /**
    * This method gets the field <code>ossModified</code>.
@@ -233,7 +233,7 @@ public interface ApplicationComponent {
 
   /**
    * This method sets the field <code>repoType</code>. Note that this field might also be set under certain conditions
-   * via {@link #setPackageUrl(String)}.
+   * via {@link #setPackageUrl(PackageURL)}.
    *
    * @param repoType the new value of the field repoType
    */
@@ -255,7 +255,7 @@ public interface ApplicationComponent {
    * @see <a href="https://github.com/package-url/purl-spec">purl-spec</a>
    *
    */
-  public void setPackageUrl(String packageUrl);
+  public void setPackageUrl(PackageURL packageUrl);
 
   /**
    * Sets the url to download the package.

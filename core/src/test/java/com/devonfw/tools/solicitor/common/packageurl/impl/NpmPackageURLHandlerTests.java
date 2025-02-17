@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
+
 /**
  * Tests for {@link NpmPackageURLHandlerImpl}
  *
@@ -13,11 +16,11 @@ import org.junit.jupiter.api.Test;
 class NpmPackageURLHandlerTests {
 
   @Test
-  void testSourceDownloadUrlFor() {
+  void testSourceDownloadUrlFor() throws SolicitorMalformedPackageURLException {
 
     AbstractSingleKindPackageURLHandler handler = new NpmPackageURLHandlerImpl("http://test/");
     assertEquals("http://test/@somenamespace/package/-/package-4.5.35.tgz",
-        handler.sourceDownloadUrlFor("pkg:npm/%40somenamespace/package@4.5.35"));
+        handler.sourceDownloadUrlFor(PackageURLHelper.fromString("pkg:npm/%40somenamespace/package@4.5.35")));
   }
 
   @Test
@@ -29,16 +32,18 @@ class NpmPackageURLHandlerTests {
   }
 
   @Test
-  void testSourceArchiveSuffixFor() {
+  void testSourceArchiveSuffixFor() throws SolicitorMalformedPackageURLException {
 
     AbstractSingleKindPackageURLHandler handler = new NpmPackageURLHandlerImpl("http://test/");
-    assertEquals("tgz", handler.sourceArchiveSuffixFor("pkg:npm/%40somenamespace/package@4.5.35"));
+    assertEquals("tgz",
+        handler.sourceArchiveSuffixFor(PackageURLHelper.fromString("pkg:npm/%40somenamespace/package@4.5.35")));
   }
 
   @Test
-  void testPathFor() {
+  void testPathFor() throws SolicitorMalformedPackageURLException {
 
     AbstractSingleKindPackageURLHandler handler = new NpmPackageURLHandlerImpl("http://test/");
-    assertEquals("pkg/npm/@somenamespace/package/4.5.35", handler.pathFor("pkg:npm/%40somenamespace/package@4.5.35"));
+    assertEquals("pkg/npm/@somenamespace/package/4.5.35",
+        handler.pathFor(PackageURLHelper.fromString("pkg:npm/%40somenamespace/package@4.5.35")));
   }
 }

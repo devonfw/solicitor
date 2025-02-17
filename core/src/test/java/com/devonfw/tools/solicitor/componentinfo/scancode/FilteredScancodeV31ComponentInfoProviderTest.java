@@ -7,7 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
@@ -31,11 +33,13 @@ public class FilteredScancodeV31ComponentInfoProviderTest {
   SingleFileCurationProvider singleFileCurationProvider;
 
   @BeforeEach
-  public void setup() {
+  public void setup() throws SolicitorMalformedPackageURLException {
 
     AllKindsPackageURLHandler packageURLHandler = Mockito.mock(AllKindsPackageURLHandler.class);
 
-    Mockito.when(packageURLHandler.pathFor("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"))
+    Mockito
+        .when(packageURLHandler.pathFor(
+            PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0")))
         .thenReturn("pkg/maven/com/devonfw/tools/test-project-for-deep-license-scan/0.1.0");
 
     this.fileScancodeRawComponentInfoProvider = new FileScancodeRawComponentInfoProvider(packageURLHandler);
@@ -60,27 +64,29 @@ public class FilteredScancodeV31ComponentInfoProviderTest {
    * @throws ScancodeProcessingFailedException
    * @throws JsonProcessingException
    * @throws JsonMappingException
+   * @throws SolicitorMalformedPackageURLException
    */
   @Test
-  public void testGetComponentInfoWithoutCurations() throws ComponentInfoAdapterException, CurationInvalidException,
-      ScancodeProcessingFailedException, JsonMappingException, JsonProcessingException {
+  public void testGetComponentInfoWithoutCurations()
+      throws ComponentInfoAdapterException, CurationInvalidException, ScancodeProcessingFailedException,
+      JsonMappingException, JsonProcessingException, SolicitorMalformedPackageURLException {
 
     // given
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/nonexisting.yaml");
 
     // when
-    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(
+        PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"));
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     ComponentInfo scancodeComponentInfo = this.filteredScancodeV31ComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"),
         new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        scancodeComponentInfo.getPackageUrl());
+        scancodeComponentInfo.getPackageUrl().toString());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals(1, scancodeComponentInfo.getComponentInfoData().getCopyrights().size());
@@ -97,28 +103,30 @@ public class FilteredScancodeV31ComponentInfoProviderTest {
    * @throws ScancodeProcessingFailedException
    * @throws JsonProcessingException
    * @throws JsonMappingException
+   * @throws SolicitorMalformedPackageURLException
    */
   @Test
-  public void testGetComponentInfoWithCurationsAndExclusions() throws ComponentInfoAdapterException,
-      CurationInvalidException, ScancodeProcessingFailedException, JsonMappingException, JsonProcessingException {
+  public void testGetComponentInfoWithCurationsAndExclusions()
+      throws ComponentInfoAdapterException, CurationInvalidException, ScancodeProcessingFailedException,
+      JsonMappingException, JsonProcessingException, SolicitorMalformedPackageURLException {
 
     // given
     this.singleFileCurationProvider
         .setCurationsFileName("src/test/resources/scancodefileadapter/curations_with_exclusions.yaml");
 
-    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(
+        PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"));
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     // when
     ComponentInfo scancodeComponentInfo = this.filteredScancodeV31ComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"),
         new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        scancodeComponentInfo.getPackageUrl());
+        scancodeComponentInfo.getPackageUrl().toString());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals(0, scancodeComponentInfo.getComponentInfoData().getCopyrights().size()); // since the copyright is
@@ -136,27 +144,29 @@ public class FilteredScancodeV31ComponentInfoProviderTest {
    * @throws ScancodeProcessingFailedException
    * @throws JsonProcessingException
    * @throws JsonMappingException
+   * @throws SolicitorMalformedPackageURLException
    */
   @Test
-  public void testGetComponentInfoWithCurationsAndWithoutExclusions() throws ComponentInfoAdapterException,
-      CurationInvalidException, ScancodeProcessingFailedException, JsonMappingException, JsonProcessingException {
+  public void testGetComponentInfoWithCurationsAndWithoutExclusions()
+      throws ComponentInfoAdapterException, CurationInvalidException, ScancodeProcessingFailedException,
+      JsonMappingException, JsonProcessingException, SolicitorMalformedPackageURLException {
 
     // given
     this.singleFileCurationProvider.setCurationsFileName("src/test/resources/scancodefileadapter/curations.yaml");
 
-    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider
-        .readScancodeData("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0");
+    ScancodeRawComponentInfo rawScancodeData = this.fileScancodeRawComponentInfoProvider.readScancodeData(
+        PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"));
     JsonNode scancodeJson = new ObjectMapper().readTree(rawScancodeData.rawScancodeResult);
 
     // when
     ComponentInfo scancodeComponentInfo = this.filteredScancodeV31ComponentInfoProvider.getComponentInfo(
-        "pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
+        PackageURLHelper.fromString("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0"),
         new SelectorCurationDataHandle("someCurationSelector"), rawScancodeData, scancodeJson);
 
     // then
     assertNotNull(scancodeComponentInfo.getComponentInfoData());
     assertEquals("pkg:maven/com.devonfw.tools/test-project-for-deep-license-scan@0.1.0",
-        scancodeComponentInfo.getPackageUrl());
+        scancodeComponentInfo.getPackageUrl().toString());
     assertEquals("This is a dummy notice file for testing. Code is under Apache-2.0.",
         scancodeComponentInfo.getComponentInfoData().getNoticeFileContent());
     assertEquals(1, scancodeComponentInfo.getComponentInfoData().getCopyrights().size());

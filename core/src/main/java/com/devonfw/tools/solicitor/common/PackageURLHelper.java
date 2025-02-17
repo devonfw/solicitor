@@ -3,6 +3,7 @@ package com.devonfw.tools.solicitor.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.github.packageurl.PackageURLBuilder;
@@ -20,6 +21,26 @@ public class PackageURLHelper {
    * Private Constructor prevents initialization.
    */
   private PackageURLHelper() {
+
+  }
+
+  /**
+   * Create a {@link PackageURL} from the standard string representation of PackageURLs. Mainly a wrapper around
+   * {@link PackageURL#PackageURL(String)}.
+   *
+   * @param packageUrl the string representation of a PackageURL.
+   * @return the parsed Package URL
+   * @throws SolicitorMalformedPackageURLException if the given argument is not a valid string representation of a
+   *         PackageURL.
+   */
+  public static PackageURL fromString(String packageUrl) throws SolicitorMalformedPackageURLException {
+
+    try {
+      return new PackageURL(packageUrl);
+    } catch (MalformedPackageURLException e) {
+      throw new SolicitorMalformedPackageURLException(
+          "String '" + packageUrl + "' does note represent a valid PackageURL", e);
+    }
 
   }
 

@@ -97,7 +97,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         appComponent.setOssHomepage(homePage);
         appComponent.setSourceRepoUrl(repo);
         appComponent.setRepoType(repoType);
-        appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(name).toString());
+        appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(name));
         if (licenseList.isEmpty()) {
           // add empty raw license if no license info attached
           addRawLicense(appComponent, null, null, sourceUrl);

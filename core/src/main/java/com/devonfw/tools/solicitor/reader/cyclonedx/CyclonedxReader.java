@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
-import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLException;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 import com.devonfw.tools.solicitor.common.packageurl.impl.DelegatingPackageURLHandlerImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
@@ -23,6 +24,7 @@ import com.devonfw.tools.solicitor.reader.Reader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.packageurl.PackageURL;
 
 /**
  * A {@link Reader} which reads data produced by the <a href="https://github.com/CycloneDX/cdxgen">CDXGEN Tool</a>.
@@ -93,15 +95,13 @@ public class CyclonedxReader extends AbstractReader implements Reader {
 
           // Fill purl
           try {
-            // check if handler exists for the package type defined in purl
-            if (!this.delegatingPackageURLHandler.pathFor(purl).isEmpty()) {
-              appComponent.setPackageUrl(purl);
-            }
-          } catch (SolicitorPackageURLException ex) {
+            PackageURL packageURL = PackageURLHelper.fromString(purl);
+            appComponent.setPackageUrl(packageURL);
+          } catch (SolicitorMalformedPackageURLException ex) {
             if (LOG.isDebugEnabled()) {
               LOG.debug("Problem with PackageURL", ex);
             }
-            LOG.warn(LogMessages.CYCLONEDX_UNSUPPORTED_PURL.msg(), purl);
+            LOG.warn(LogMessages.READER_PURL_MALFORMED.msg(), purl);
           }
 
           // Fill license information

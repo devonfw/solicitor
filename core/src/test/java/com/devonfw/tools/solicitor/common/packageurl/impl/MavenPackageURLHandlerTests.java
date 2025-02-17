@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
+
 /**
  * Tests for {@link MavenPackageURLHandlerImpl}
  *
@@ -14,11 +17,11 @@ import org.junit.jupiter.api.Test;
 class MavenPackageURLHandlerTests {
 
   @Test
-  void testSourceDownloadUrlFor() {
+  void testSourceDownloadUrlFor() throws SolicitorMalformedPackageURLException {
 
     MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
     assertEquals("http://test/com/someorg/someprod/4.5.35/someprod-4.5.35-sources.jar",
-        handler.sourceDownloadUrlFor("pkg:maven/com.someorg/someprod@4.5.35"));
+        handler.sourceDownloadUrlFor(PackageURLHelper.fromString("pkg:maven/com.someorg/someprod@4.5.35")));
 
   }
 
@@ -31,17 +34,19 @@ class MavenPackageURLHandlerTests {
   }
 
   @Test
-  void testSourceArchiveSuffixFor() {
+  void testSourceArchiveSuffixFor() throws SolicitorMalformedPackageURLException {
 
     MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
-    assertEquals("jar", handler.sourceArchiveSuffixFor("pkg:maven/com.someorg/someprod@4.5.35"));
+    assertEquals("jar",
+        handler.sourceArchiveSuffixFor(PackageURLHelper.fromString("pkg:maven/com.someorg/someprod@4.5.35")));
   }
 
   @Test
-  void testPathFor() {
+  void testPathFor() throws SolicitorMalformedPackageURLException {
 
     MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
-    assertEquals("pkg/maven/com/someorg/someprod/4.5.35", handler.pathFor("pkg:maven/com.someorg/someprod@4.5.35"));
+    assertEquals("pkg/maven/com/someorg/someprod/4.5.35",
+        handler.pathFor(PackageURLHelper.fromString("pkg:maven/com.someorg/someprod@4.5.35")));
   }
 
   @Test
@@ -49,7 +54,7 @@ class MavenPackageURLHandlerTests {
 
     MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      handler.pathFor("pkg:maven/com.someorg/some..prod@4.5.35");
+      handler.pathFor(PackageURLHelper.fromString("pkg:maven/com.someorg/some..prod@4.5.35"));
     });
   }
 }

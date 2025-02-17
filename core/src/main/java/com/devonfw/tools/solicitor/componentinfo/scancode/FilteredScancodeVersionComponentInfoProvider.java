@@ -6,6 +6,7 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoProvider;
 import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.CurationInvalidException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.packageurl.PackageURL;
 
 /**
  * A {@link ComponentInfoProvider} which provides filtered {@link ComponentInfo}s based on Scancode data of a specific
@@ -33,7 +34,7 @@ public interface FilteredScancodeVersionComponentInfoProvider {
    * @throws ComponentInfoAdapterException if there was an exception when reading the data
    * @throws CurationInvalidException if the curation data is not valid
    */
-  ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle,
+  ComponentInfo getComponentInfo(PackageURL packageUrl, CurationDataHandle curationDataHandle,
       ScancodeRawComponentInfo rawScancodeData, JsonNode scancodeJson)
       throws ComponentInfoAdapterException, CurationInvalidException;
 }

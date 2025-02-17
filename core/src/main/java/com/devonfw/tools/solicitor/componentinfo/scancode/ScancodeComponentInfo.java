@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfo;
 import com.devonfw.tools.solicitor.componentinfo.ComponentInfoData;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
+import com.github.packageurl.PackageURL;
 
 /**
  * Data structure for holding the scan information from scancode for a single package.
@@ -439,7 +440,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
 
   private ScancodeComponentInfoData scancodeComponentInfoData;
 
-  private String packageUrl;
+  private PackageURL packageUrl;
 
   private String dataStatus;
 
@@ -504,7 +505,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
   }
 
   @Override
-  public String getPackageUrl() {
+  public PackageURL getPackageUrl() {
 
     return this.packageUrl;
   }
@@ -512,7 +513,7 @@ public class ScancodeComponentInfo implements ComponentInfo {
   /**
    * @param packageUrl new value of {@link #getPackageUrl}.
    */
-  public void setPackageUrl(String packageUrl) {
+  public void setPackageUrl(PackageURL packageUrl) {
 
     this.packageUrl = packageUrl;
   }

@@ -58,7 +58,7 @@ public class GradleReader2Tests {
           ap.getArtifactId().equals("xmlbeans") && //
           ap.getVersion().equals("3.0.2")) {
         found = true;
-        assertEquals("pkg:maven/org.apache.xmlbeans/xmlbeans@3.0.2", ap.getPackageUrl());
+        assertEquals("pkg:maven/org.apache.xmlbeans/xmlbeans@3.0.2", ap.getPackageUrl().toString());
         break;
       }
     }

@@ -105,7 +105,7 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
         appComponent.setGroupId("");
         appComponent.setSourceRepoUrl(record.get(2));
         appComponent.setRepoType(repoType);
-        appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(record.get(0)).toString());
+        appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(record.get(0)));
 
         // merge ApplicationComponentImpl with same key if they appear
         // on subsequent lines (multilicensing)

@@ -13,12 +13,13 @@ import com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapterException;
 import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.SelectorCurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.curation.model.ComponentInfoCuration;
+import com.github.packageurl.PackageURL;
 
 /**
  * Abstract base implementation of {@link CurationProvider} which supports storing curations in a hierarchical structure
  * so that curations are not required to be defined for specific component versions but might be defined for groups of
- * components. The hierarchy is derived from the PackageURL, see {@link PackageURLHandler#pathFor(String)}. The
- * {@link CurationProvider#findCurations(String, CurationDataHandle)} method of this class requires the
+ * components. The hierarchy is derived from the PackageURL, see {@link PackageURLHandler#pathFor(PackageURL)}. The
+ * {@link CurationProvider#findCurations(PackageURL, CurationDataHandle)} method of this class requires the
  * {@link CurationDataHandle} to be a {@link SelectorCurationDataHandle}.
  *
  */
@@ -61,11 +62,11 @@ public abstract class AbstractHierarchicalCurationProvider extends AbstractCurat
    *         exist.
    */
   @Override
-  protected ComponentInfoCuration doFindCurations(String packageUrl, CurationDataHandle curationDataHandle)
+  protected ComponentInfoCuration doFindCurations(PackageURL packageUrl, CurationDataHandle curationDataHandle)
       throws ComponentInfoAdapterException, ComponentInfoAdapterNonExistingCurationDataSelectorException {
 
     LOG.debug("Received packageUrl: '{}'", packageUrl);
-    if (packageUrl == null || packageUrl.isEmpty()) {
+    if (packageUrl == null) {
       LOG.error(LogMessages.EMPTY_PACKAGE_URL.msg());
       throw new ComponentInfoAdapterException("The package URL cannot be null or empty.");
     }
@@ -117,7 +118,7 @@ public abstract class AbstractHierarchicalCurationProvider extends AbstractCurat
    *
    * @param effectiveCurationDataSelector the effective curationDataSelector
    * @param pathFragmentWithinRepo the path of the curation data or fragment. This will be either the value returned by
-   *        {@link PackageURLHandler#pathFor(String)} or a (trailing) subpath.
+   *        {@link PackageURLHandler#pathFor(PackageURL)} or a (trailing) subpath.
    * @return The found curation object (might be a fragment). <code>null</code> if nothing is defined.
    * @throws ComponentInfoAdapterException if there was any unforeseen error when trying to retrieve the curation
    *         object.
@@ -200,7 +201,7 @@ public abstract class AbstractHierarchicalCurationProvider extends AbstractCurat
    *
    * @param effectiveCurationDataSelector the effective curationDataSelector
    * @param pathFromPackageUrl the path as determined from the PackageURL (see
-   *        {@link PackageURLHandler#pathFor(String)})
+   *        {@link PackageURLHandler#pathFor(PackageURL)})
    * @return the list of found curation objects/fragments. Sorting of list is with increasing priority (curations being
    *         less specific appear first).
    * @throws ComponentInfoAdapterException if there was some unforseen issue when accessing the coration repository

@@ -73,7 +73,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
         appComponent.setRepoType(repoType);
-        appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(name, version).toString());
+        appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(name, version));
 
         addRawLicense(appComponent, license, licenseUrl, sourceUrl);
       }

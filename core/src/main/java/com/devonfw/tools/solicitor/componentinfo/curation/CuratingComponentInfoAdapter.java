@@ -15,6 +15,7 @@ import com.devonfw.tools.solicitor.componentinfo.CurationDataHandle;
 import com.devonfw.tools.solicitor.componentinfo.DataStatusValue;
 import com.devonfw.tools.solicitor.componentinfo.DefaultComponentInfoImpl;
 import com.devonfw.tools.solicitor.componentinfo.LicenseInfo;
+import com.github.packageurl.PackageURL;
 
 /**
  * A {@link ComponentInfoAdapter} which takes filtered {@link ComponentInfo} data from the configuret
@@ -58,7 +59,7 @@ public class CuratingComponentInfoAdapter implements ComponentInfoAdapter {
    * @throws CurationInvalidException if the curation data is not valid
    */
   @Override
-  public ComponentInfo getComponentInfo(String packageUrl, CurationDataHandle curationDataHandle)
+  public ComponentInfo getComponentInfo(PackageURL packageUrl, CurationDataHandle curationDataHandle)
       throws ComponentInfoAdapterException, CurationInvalidException {
 
     if (isFeatureActive()) {
