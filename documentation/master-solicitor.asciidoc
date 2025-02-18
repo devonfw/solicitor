@@ -2158,7 +2158,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.31.0::
 * https://github.com/devonfw/solicitor/issues/295: Add PackageUrlHandler for cran packages.
 * https://github.com/devonfw/solicitor/issues/195: PackageURLs are now consequently represented within the _Solicitor_ code via the PackageURL java class. This should not result in functional changes but any possible Java code used in (optional) Solicitor Extensions (see <<Java Extensions>>) might need to be adopted to the the new data structures.
-* https://github.com/devonfw/solicitor/issues/299: Restructuration of PackageURLHandler class structure and processing to better handle PackageURL types for which no specific SingleKindPackageURLHandler is defined. This might result in PackageURLs to be processed which were ignored until now.
+* https://github.com/devonfw/solicitor/issues/299: Restructuring of PackageURLHandler class structure and processing to better handle PackageURL types for which no specific SingleKindPackageURLHandler is defined. This might result in PackageURLs to be processed which were ignored until now.
 
 Changes in 1.30.0::
 * https://github.com/devonfw/solicitor/pull/292: Improved the extraction of spdxids from spdx expressions when parsing ScanCode V32 result files. Previously the result might have contained empty strings to be returned as spdxids.
