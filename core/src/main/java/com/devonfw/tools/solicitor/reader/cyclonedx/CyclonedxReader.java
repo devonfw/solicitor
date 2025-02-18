@@ -8,14 +8,12 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
-import com.devonfw.tools.solicitor.common.packageurl.impl.DelegatingPackageURLHandlerImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
@@ -38,14 +36,6 @@ public class CyclonedxReader extends AbstractReader implements Reader {
    * The supported type of this {@link Reader}.
    */
   public static final String SUPPORTED_TYPE = "cyclonedx";
-
-  @Autowired
-  private DelegatingPackageURLHandlerImpl delegatingPackageURLHandler;
-
-  public void setDelegatingPackageURLHandler(DelegatingPackageURLHandlerImpl delegatingPackageURLHandler) {
-
-    this.delegatingPackageURLHandler = delegatingPackageURLHandler;
-  }
 
   /** {@inheritDoc} */
   @Override

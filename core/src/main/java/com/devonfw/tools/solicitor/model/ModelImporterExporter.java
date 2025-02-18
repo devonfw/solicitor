@@ -16,7 +16,6 @@ import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
-import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLException;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.impl.ModelRootImpl;
 import com.devonfw.tools.solicitor.model.impl.TextPool;
@@ -161,7 +160,7 @@ public class ModelImporterExporter {
           try {
             packageUrl = PackageURLHelper.fromString(packageUrlAsString);
           } catch (SolicitorMalformedPackageURLException e) {
-            throw new SolicitorPackageURLException("PackageURL read from model file is malformed", e);
+            throw new SolicitorRuntimeException("PackageURL read from model file is malformed", e);
           }
         }
       }

@@ -18,11 +18,11 @@ public class NugetPackageURLHandlerTests {
   }
 
   @Test
-  void testCanHandle() {
+  void testCanHandle() throws SolicitorMalformedPackageURLException {
 
     NugetPackageURLHandlerImpl handler = new NugetPackageURLHandlerImpl("http://test/");
-    assertTrue(handler.canHandle(handler.parse("pkg:nuget/a@1")));
-    assertFalse(handler.canHandle(handler.parse("pkg:nuget1/a@1")));
+    assertTrue(handler.canHandle(PackageURLHelper.fromString("pkg:nuget/a@1")));
+    assertFalse(handler.canHandle(PackageURLHelper.fromString("pkg:nuget1/a@1")));
   }
 
   @Test

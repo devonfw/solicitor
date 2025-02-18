@@ -6,13 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.devonfw.tools.solicitor.common.FileInputStreamFactory;
-import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLException;
-import com.devonfw.tools.solicitor.common.packageurl.impl.DelegatingPackageURLHandlerImpl;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -30,9 +27,6 @@ public class CyclonedxReaderTests {
 
   ModelFactory modelFactory = new ModelFactoryImpl();
 
-  // Create Mock for DelegatingPackageURLHandlerImpl
-  DelegatingPackageURLHandlerImpl delegatingPurlHandler = Mockito.mock(DelegatingPackageURLHandlerImpl.class);
-
   /**
    * Test the {@link CyclonedxReader#readInventory()} method. Input file is an SBOM containing maven components. Mock
    * the case, that a maven PurlHandler exists.
@@ -40,14 +34,10 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckSize() {
 
-    // Always return a non-empty String for maven purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
-
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Java8", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
-    this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
         "cyclonedx", null, null);
     LOG.info(application.toString());
@@ -75,15 +65,10 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckSizeNegative() {
 
-    // Always throw exception for maven purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenThrow(
-        new SolicitorPackageURLException("No applicable SingleKindPackageURLHandler found for type 'maven'"));
-
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Java8", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
-    this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
         "cyclonedx", null, null);
     LOG.info(application.toString());
@@ -99,14 +84,10 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckSingleContentSize() {
 
-    // Always return a non-empty String for maven purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
-
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Java8", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
-    this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
         "someRepoType", null, null);
     LOG.info(application.toString());
@@ -161,14 +142,10 @@ public class CyclonedxReaderTests {
   @Test
   public void readNpmFileAndCheckSize() {
 
-    // Always return a non-empty String for npm purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
-
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Angular", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
-    this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("npm", "src/test/resources/npmsbom.json", application, UsagePattern.DYNAMIC_LINKING,
         "cyclonedx", null, null);
     LOG.info(application.toString());
@@ -192,14 +169,10 @@ public class CyclonedxReaderTests {
   @Test
   public void readExpression() {
 
-    // Always return a non-empty String for npm purls
-    Mockito.when(this.delegatingPurlHandler.pathFor(Mockito.any())).thenReturn("foo");
-
     Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
         "Angular", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
-    this.cdxr.setDelegatingPackageURLHandler(this.delegatingPurlHandler);
     this.cdxr.readInventory("npm", "src/test/resources/expressionsbom.json", application, UsagePattern.DYNAMIC_LINKING,
         "cyclonedx", null, null);
     LOG.info(application.toString());
