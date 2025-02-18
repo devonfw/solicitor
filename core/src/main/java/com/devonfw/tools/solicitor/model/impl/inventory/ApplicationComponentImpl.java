@@ -113,10 +113,10 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   @Override
   public String[] getDataElements() {
 
-    return new String[] { this.groupId, this.artifactId, this.version, getRepoType(), getPackageUrl().toString(),
-    getOssHomepage(), getSourceRepoUrl(), getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(),
-    isOssModified() ? "true" : "false", getCopyrights(), getPackageDownloadUrl(), getSourceDownloadUrl(),
-    getDataStatus(), getTraceabilityNotes() };
+    return new String[] { this.groupId, this.artifactId, this.version, getRepoType(),
+    getPackageUrl() == null ? null : getPackageUrl().toString(), getOssHomepage(), getSourceRepoUrl(),
+    getNoticeFileUrl(), getNoticeFileContent(), getUsagePattern().toString(), isOssModified() ? "true" : "false",
+    getCopyrights(), getPackageDownloadUrl(), getSourceDownloadUrl(), getDataStatus(), getTraceabilityNotes() };
   }
 
   /** {@inheritDoc} */
