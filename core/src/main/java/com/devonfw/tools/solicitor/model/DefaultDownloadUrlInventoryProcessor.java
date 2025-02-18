@@ -1,11 +1,15 @@
 package com.devonfw.tools.solicitor.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.InventoryProcessor;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLUnavailableOperationException;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.github.packageurl.PackageURL;
@@ -19,6 +23,7 @@ import com.github.packageurl.PackageURL;
 @Component
 @Order(InventoryProcessor.AFTER_READERS)
 public class DefaultDownloadUrlInventoryProcessor implements InventoryProcessor {
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultDownloadUrlInventoryProcessor.class);
 
   @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
@@ -38,10 +43,18 @@ public class DefaultDownloadUrlInventoryProcessor implements InventoryProcessor 
         PackageURL packageUrl = ac.getPackageUrl();
         if (packageUrl != null) {
           if (ac.getPackageDownloadUrl() == null) {
-            ac.setPackageDownloadUrl(this.packageURLHandler.packageDownloadUrlFor(packageUrl));
+            try {
+              ac.setPackageDownloadUrl(this.packageURLHandler.packageDownloadUrlFor(packageUrl));
+            } catch (SolicitorPackageURLUnavailableOperationException e) {
+              LOG.info(LogMessages.NO_PACKAGE_DOWNLOAD_URL_FOR_PACKAGEURL.msg(), packageUrl);
+            }
           }
           if (ac.getSourceDownloadUrl() == null) {
-            ac.setSourceDownloadUrl(this.packageURLHandler.sourceDownloadUrlFor(packageUrl));
+            try {
+              ac.setSourceDownloadUrl(this.packageURLHandler.sourceDownloadUrlFor(packageUrl));
+            } catch (SolicitorPackageURLUnavailableOperationException e) {
+              LOG.info(LogMessages.NO_SOURCE_DOWNLOAD_URL_FOR_PACKAGEURL.msg(), packageUrl);
+            }
           }
 
         }

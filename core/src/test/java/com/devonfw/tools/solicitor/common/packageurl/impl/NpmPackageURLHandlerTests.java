@@ -24,11 +24,11 @@ class NpmPackageURLHandlerTests {
   }
 
   @Test
-  void testCanHandle() {
+  void testCanHandle() throws SolicitorMalformedPackageURLException {
 
     AbstractSingleKindPackageURLHandler handler = new NpmPackageURLHandlerImpl("http://test/");
-    assertTrue(handler.canHandle(handler.parse("pkg:npm/a@1")));
-    assertFalse(handler.canHandle(handler.parse("pkg:npma/a@1")));
+    assertTrue(handler.canHandle(PackageURLHelper.fromString("pkg:npm/a@1")));
+    assertFalse(handler.canHandle(PackageURLHelper.fromString("pkg:npma/a@1")));
   }
 
   @Test

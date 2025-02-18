@@ -34,11 +34,11 @@ class CranPackageURLHandlerTests {
   }
 
   @Test
-  void testCanHandle() {
+  void testCanHandle() throws SolicitorMalformedPackageURLException {
 
     CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
-    assertTrue(handler.canHandle(handler.parse("pkg:cran/a@1")));
-    assertFalse(handler.canHandle(handler.parse("pkg:crana/a@1")));
+    assertTrue(handler.canHandle(PackageURLHelper.fromString("pkg:cran/a@1")));
+    assertFalse(handler.canHandle(PackageURLHelper.fromString("pkg:crana/a@1")));
   }
 
   @Test

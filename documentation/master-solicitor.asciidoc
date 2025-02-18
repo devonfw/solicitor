@@ -1033,7 +1033,8 @@ In Solicitor, the data is read with the following part of the config
     } ]
 ----
 
-NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm, R and pip. For all other package types, Solicitor will ignore the packageUrl.
+NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm, R and pip. For all other package types, some functionality (like determining URLs for downloading
+the package archive and corresponding source archives) will be unavailable.
 
 == Working with Decision Tables
 
@@ -1379,7 +1380,7 @@ The Generic Excel Writer exists purely for debugging purposes. This writer write
         "APPLICATIONCOMPONENT" : "classpath:com/devonfw/tools/solicitor/sql/allden_applicationcomponents.sql",
         "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql",
         "OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents.sql",
-        ... 
+        ...
     }
   } ]
 
@@ -1407,7 +1408,7 @@ Besides enabling/activating the reporting group feature within the writer config
 ===== Evaluation of the Reporting Group in SQL
 Reporting groups are used to write reports for a subset of the defined `Applications` or even for single `Applications`. To do so it is normally required to include specific selection criteria into the SQL statements which limit the selected data to only those `Applications` which belong to the reporting group currently processed. To enable this the `Application` entity includes the field `reportingGroups` which stores the list of reporting groups this `Application` is assigned to. The list is stored as concatenated string, where `\#` is used as prefix, suffix and delimiter, which results in `#default#wepp app#` in the above case.
 
-Within the WHERE clause of the SQL statement the following snippet can be used to limit the selection of data to only those `Applications` which belong to the currently processed reporting group (see <<Sample SQL statement>> for the complete sample).  
+Within the WHERE clause of the SQL statement the following snippet can be used to limit the selection of data to only those `Applications` which belong to the currently processed reporting group (see <<Sample SQL statement>> for the complete sample).
 
 ----
 a."reportingGroups" LIKE '%#reportingGroup#%'`
@@ -1418,17 +1419,17 @@ Writers/Reports which are enabled for reporting group processing will replace an
 NOTE: All SQL statements which are included in the _Solicitor_ built in configuration are supporting reporting groups.
 
 ===== Using Reporting Group Information in Report Filename
-If writing the same report for different reporting groups it is required to control the target filename depending on the reporting group being processed. To support this a set of special placeholders is available for the target property of the writer configuration if the writer is enabled for reporting groups (see also sample in <<Writers and Reporting>>). 
+If writing the same report for different reporting groups it is required to control the target filename depending on the reporting group being processed. To support this a set of special placeholders is available for the target property of the writer configuration if the writer is enabled for reporting groups (see also sample in <<Writers and Reporting>>).
 
 
 .Placeholders for reporting group within the target property of the writer configuration
 [width="100%",options="header"]
 |====================
-| Placeholder | Replacement for reporting group `default`  | Replacement for other reporting groups (using `web app` as sample value); spaces in the reporting group name will be repaced by "_")   
-| `${reportingGroup}` | _empty String_   | `web_app`  
-| `${-reportingGroup}` | _empty String_   | `-web_app`  
-| `${_reportingGroup}` | _empty String_   | `_web_app`  
-| `${/reportingGroup}` | _empty String_   | `/web_app`  
+| Placeholder | Replacement for reporting group `default`  | Replacement for other reporting groups (using `web app` as sample value); spaces in the reporting group name will be repaced by "_")
+| `${reportingGroup}` | _empty String_   | `web_app`
+| `${-reportingGroup}` | _empty String_   | `-web_app`
+| `${_reportingGroup}` | _empty String_   | `_web_app`
+| `${/reportingGroup}` | _empty String_   | `/web_app`
 |====================
 
 These placeholders allow to include the reporting groups name also with leading hyphen, underscore or slash, which will be omitted in case of the "default" reporting group. This enables to preserve the prior naming scheme for the "default" reporting group. It also allows to store the report of non default reporting groups to dedicated subdirectories.
@@ -1443,7 +1444,7 @@ When defining and processing additional reporting groups the execution time of _
 solicitor.reportinggroups.filterpattern=.*
 ----
 
-which matches any processing group. In the above sample this might e.g. be changed to 
+which matches any processing group. In the above sample this might e.g. be changed to
 
 ----
 solicitor.reportinggroups.filterpattern=web app
@@ -1461,21 +1462,21 @@ The below given excerpt from a project configuration file illustrates the intera
   .
   .
   "applications" : [ <1>
-    {   
-      "name" : "App1",       
+    {
+      "name" : "App1",
       "reportingGroups" : [
         "deliverableA",
         "web app"
       ]
-    },{   
-      "name" : "App2",       
+    },{
+      "name" : "App2",
       "reportingGroups" : [
         "default",
         "deliverableA",
         "backend"
       ]
-    },{   
-      "name" : "App3"  <2>   
+    },{
+      "name" : "App3"  <2>
     }
   ],
   .
@@ -1495,17 +1496,17 @@ The below given excerpt from a project configuration file illustrates the intera
 
 <1> parameters which might be required but are not relevant for the sample are omitted here
 <2> no reporting groups defined here
-<3> this sample makes use of the `additionalWriters` section; same applies for `writers`. 
+<3> this sample makes use of the `additionalWriters` section; same applies for `writers`.
 <4> `enableReportingGroups`  not set here
 
 The following table shows the reporting groups and corresponding application assignments resulting from this configuration:
 
 [width="100%",cols="<3,^2,^2,^2,^2"]
 |====================
-|      | default | deliverableA | web app | backend  
+|      | default | deliverableA | web app | backend
 |App1  |         |       X      |   X     |
 |App2  |   X     |       X      |         |    X
-|App3  |   X     |              |         |  
+|App3  |   X     |              |         |
 |====================
 
 Assuming the setting
@@ -1516,7 +1517,7 @@ the following reports will be created:
 
 [width="100%",options="header",cols="1,2,1"]
 |====================
-|Reporting Group | Report File | Applications contained in Report  
+|Reporting Group | Report File | Applications contained in Report
 |default | out/report1.txt | App2, App3
 |default | out/report2.txt | App2, App3
 |deliverableA |out/deliverableA/report1-deliverableA.txt | App1, App2
@@ -1660,7 +1661,7 @@ The scripts generated by _Solicitor_ to download sources and run ScanCode are in
 So either run it on a system using natively Bash (linux) or install an appropriate environment (e.g. Git Bash) if you are using a windows environment.
 
 ==== ScanCode
-Download and install ScanCode (Solicitor is assuming version 32, tested with 32.2.1) from https://github.com/nexB/scancode-toolkit/releases. 
+Download and install ScanCode (Solicitor is assuming version 32, tested with 32.2.1) from https://github.com/nexB/scancode-toolkit/releases.
 Make sure that the executable is included in the search PATH for executables.
 
 ==== Activate feature
@@ -1784,7 +1785,7 @@ artifacts:
   - name: pkg/npm/@somescope/somepackage/1.2.3                  <1>
     url: https://github.com/foo/bar                             <2>
     licenseCurations:                                           <3>
-    - operation: REMOVE 
+    - operation: REMOVE
       path: "sources/package/readme.md"
       ruleIdentifier: "proprietary-license_unknown_13.RULE"
       matchedText: ".* to be paid .*"
@@ -1813,8 +1814,8 @@ artifacts:
 <7> Further packages to follow.
 
 ===== Rules for curating licenses
-Curating licenses is done by REMOVING (i.e. ignoring) specific license findings from ScanCode, by REPLACING the detected license with another one or by ADDING license findings either to specific files or on top level (not related to specific file of the package sources). 
-In addition to the conditions/data which is specific for any of the below described operations it is always possible to define a comment which is intended to be included in any audit trail log for documentation purposes (not yet used/implemented). 
+Curating licenses is done by REMOVING (i.e. ignoring) specific license findings from ScanCode, by REPLACING the detected license with another one or by ADDING license findings either to specific files or on top level (not related to specific file of the package sources).
+In addition to the conditions/data which is specific for any of the below described operations it is always possible to define a comment which is intended to be included in any audit trail log for documentation purposes (not yet used/implemented).
 
 
 ====== Licenses: REMOVE
@@ -1834,7 +1835,7 @@ Instead of removing licenses (ignoring the finding) they might be replaced with 
 Data:
 
 * `newLicense` is the key / id of the license to use instead (replacing `files[].licenses[].spdx_license_key`)
-* `url` is the url pointing to the license text 
+* `url` is the url pointing to the license text
 
 At least one of the two parameters has to be set.
 
@@ -1868,14 +1869,14 @@ At least one of the conditions has to be defined.
 This follows the above principles. It uses the same conditions as REMOVE and uses a parameter to define the copyright to use instead:
 
 Data:
-* `newCopyright`: The copyright entry to use instead of the originally found copyright 
+* `newCopyright`: The copyright entry to use instead of the originally found copyright
 
 ====== Copyright: ADD
 Adding new copyrights is done by defining rules which add new copyright info (to the copyrights found in a source file) - or "on top level".
 
 Conditions:
 
-* `path` of the file within the sources (defined as a regular expression; if omitted the copyright will be applied on "top level"). 
+* `path` of the file within the sources (defined as a regular expression; if omitted the copyright will be applied on "top level").
 Note that it is again only possible to add copyrigts to paths which are listed in the scancode json
 
 Data:
@@ -1922,9 +1923,9 @@ artifacts:
 
 ===== Hierarchical definition of rules
 
-Different version of a package/component or even different packages/components within the same namespace often require mostly the same curations to be applied. To avoid being forced to redefine curations for every single version it is possible to define curations by just specifying a prefix part in the name attribute. 
+Different version of a package/component or even different packages/components within the same namespace often require mostly the same curations to be applied. To avoid being forced to redefine curations for every single version it is possible to define curations by just specifying a prefix part in the name attribute.
 
-Example of available levels/prefixes for `pkg:/maven/ch.qos.logback/logback-classic@1.2.3` 
+Example of available levels/prefixes for `pkg:/maven/ch.qos.logback/logback-classic@1.2.3`
 
 * `pkg`
 * `pkg/maven`
@@ -1989,9 +1990,9 @@ The Velocity template `Statistics.vm` creates a `Statistics.json` file that curr
 }
 ----
 
-The individual categories can be customized in the `statistics.sql` template. Using these fields, you can create a Build-Breaker. 
+The individual categories can be customized in the `statistics.sql` template. Using these fields, you can create a Build-Breaker.
 
-For instance, if there are artifacts in your project that have the `legal-evaluation` value `"no"`, you can break the build. 
+For instance, if there are artifacts in your project that have the `legal-evaluation` value `"no"`, you can break the build.
 
 To achieve this, you can use the JSON processor `jq` and add a script like the following:
 
@@ -2157,6 +2158,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.31.0::
 * https://github.com/devonfw/solicitor/issues/295: Add PackageUrlHandler for cran packages.
 * https://github.com/devonfw/solicitor/issues/195: PackageURLs are now consequently represented within the _Solicitor_ code via the PackageURL java class. This should not result in functional changes but any possible Java code used in (optional) Solicitor Extensions (see <<Java Extensions>>) might need to be adopted to the the new data structures.
+* https://github.com/devonfw/solicitor/issues/299: Restructuration of PackageURLHandler class structure and processing to better handle PackageURL types for which no specific SingleKindPackageURLHandler is defined. This might result in PackageURLs to be processed which were ignored until now.
 
 Changes in 1.30.0::
 * https://github.com/devonfw/solicitor/pull/292: Improved the extraction of spdxids from spdx expressions when parsing ScanCode V32 result files. Previously the result might have contained empty strings to be returned as spdxids.

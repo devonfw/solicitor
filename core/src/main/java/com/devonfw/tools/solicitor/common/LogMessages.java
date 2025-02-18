@@ -120,7 +120,10 @@ public enum LogMessages {
           + "template source '{}' will be skipped for this reporting group"), //
   REPORTING_GROUP_FILTER_EXPRESSION_SET_TO_NONDEFAULT(79,
       "The filter expression for reporting groups to be processed is set to a non default value: '{}'"), //
-  REPORTING_GROUPS_DETECTED(80, "The following reporting groups are defined in this project: {} ");
+  REPORTING_GROUPS_DETECTED(80, "The following reporting groups are defined in this project: {} "), //
+  NO_SOURCE_DOWNLOAD_URL_FOR_PACKAGEURL(81, "Could not determine source download url for PackageUrl '{}'"), //
+  NO_PACKAGE_DOWNLOAD_URL_FOR_PACKAGEURL(82, "Could not determine package download url for PackageUrl '{}'"), //
+  NO_ARCHIVE_SUFFIX_FOR_PACKAGEURL(83, "Could not determine archive suffix for PackageUrl '{}'");
 
   private final String message;
 

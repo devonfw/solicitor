@@ -12,16 +12,20 @@ public interface PackageURLHandler {
    *
    * @param packageUrl the package URL of the package
    * @return the URL to access the source archive of the package
+   * @throws SolicitorPackageURLUnavailableOperationException if the method is unavailable in the implementing
+   *         {@link PackageURLHandler} or for the given {@link PackageURL}.
    */
-  String sourceDownloadUrlFor(PackageURL packageUrl);
+  String sourceDownloadUrlFor(PackageURL packageUrl) throws SolicitorPackageURLUnavailableOperationException;
 
   /**
    * Get the URL for downloading the package referenced by the package URL.
    *
    * @param packageUrl the package URL of the package
    * @return the URL to download the package
+   * @throws SolicitorPackageURLUnavailableOperationException if the method is unavailable in the implementing
+   *         {@link PackageURLHandler} or for the given {@link PackageURL}.
    */
-  String packageDownloadUrlFor(PackageURL packageUrl);
+  String packageDownloadUrlFor(PackageURL packageUrl) throws SolicitorPackageURLUnavailableOperationException;
 
   /**
    * Return the (relative) path to be used when accessing the references package in some tree structure
@@ -36,7 +40,9 @@ public interface PackageURLHandler {
    *
    * @param packageUrl the package URL of the package
    * @return file suffix like e.g. "jar", "tgz", "tar.gz"
+   * @throws SolicitorPackageURLUnavailableOperationException if the method is unavailable in the implementing
+   *         {@link PackageURLHandler} or for the given {@link PackageURL}.
    */
-  String sourceArchiveSuffixFor(PackageURL packageUrl);
+  String sourceArchiveSuffixFor(PackageURL packageUrl) throws SolicitorPackageURLUnavailableOperationException;
 
 }

@@ -26,11 +26,11 @@ class MavenPackageURLHandlerTests {
   }
 
   @Test
-  void testCanHandle() {
+  void testCanHandle() throws SolicitorMalformedPackageURLException {
 
     MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
-    assertTrue(handler.canHandle(handler.parse("pkg:maven/a/b@1")));
-    assertFalse(handler.canHandle(handler.parse("pkg:maven1/a/b@1")));
+    assertTrue(handler.canHandle(PackageURLHelper.fromString("pkg:maven/a/b@1")));
+    assertFalse(handler.canHandle(PackageURLHelper.fromString("pkg:maven1/a/b@1")));
   }
 
   @Test

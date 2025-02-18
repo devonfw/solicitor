@@ -24,11 +24,11 @@ class PyPIPackageURLHandlerTests {
   }
 
   @Test
-  void testCanHandle() {
+  void testCanHandle() throws SolicitorMalformedPackageURLException {
 
     PyPIPackageURLHandlerImpl handler = new PyPIPackageURLHandlerImpl("http://test/");
-    assertTrue(handler.canHandle(handler.parse("pkg:pypi/somepackage@1.2.3")));
-    assertFalse(handler.canHandle(handler.parse("pkg:pypi1/somepackage@1.2.3")));
+    assertTrue(handler.canHandle(PackageURLHelper.fromString("pkg:pypi/somepackage@1.2.3")));
+    assertFalse(handler.canHandle(PackageURLHelper.fromString("pkg:pypi1/somepackage@1.2.3")));
   }
 
   @Test
