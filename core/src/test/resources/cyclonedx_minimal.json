@@ -1,0 +1,11 @@
+{
+  "components": [
+    {
+      "name": "foo"
+    },
+    {
+      "name": "bar",
+      "purl": ""
+    }
+  ]
+}

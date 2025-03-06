@@ -5,6 +5,7 @@ cfgdir
 conf
 cran
 CycloneDX
+CyclonedxReader
 deliverableA
 deliverables
 Dloader

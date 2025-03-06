@@ -188,4 +188,26 @@ public class CyclonedxReaderTests {
     }
     assertTrue(found);
   }
+
+  /**
+   * Test the
+   * {@link CyclonedxReader#readInventory(String, String, Application, UsagePattern, String, String, java.util.Map)}
+   * method. Input file is a minimal SBOM containing only two components with minimal information.
+   */
+  @Test
+  public void readMinimalFile() {
+
+    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8", "#default#");
+    this.cdxr.setModelFactory(this.modelFactory);
+    this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
+    this.cdxr.readInventory("maven", "src/test/resources/cyclonedx_minimal.json", application,
+        UsagePattern.DYNAMIC_LINKING, "cyclonedx", null, null);
+
+    assertEquals(2, application.getApplicationComponents().size());
+    assertEquals("foo", application.getApplicationComponents().get(0).getArtifactId());
+    assertEquals("bar", application.getApplicationComponents().get(1).getArtifactId());
+    assertNull(application.getApplicationComponents().get(1).getPackageUrl());
+  }
+
 }

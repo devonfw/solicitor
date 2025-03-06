@@ -67,10 +67,10 @@ public class CyclonedxReader extends AbstractReader implements Reader {
       if (componentsNode != null) {
         for (JsonNode componentNode : componentsNode) {
 
-          String groupId = componentNode.get("group").asText();
+          String groupId = componentNode.get("group") != null ? componentNode.get("group").asText() : null;
           String artifactId = componentNode.get("name").asText();
-          String version = componentNode.get("version").asText();
-          String purl = componentNode.get("purl").asText();
+          String version = componentNode.get("version") != null ? componentNode.get("version").asText() : null;
+          String purl = componentNode.get("purl") != null ? componentNode.get("purl").asText() : null;
 
           // Fill appComponents
           ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
@@ -84,14 +84,16 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           appComponent.setRepoType(repoType);
 
           // Fill purl
-          try {
-            PackageURL packageURL = PackageURLHelper.fromString(purl);
-            appComponent.setPackageUrl(packageURL);
-          } catch (SolicitorMalformedPackageURLException ex) {
-            if (LOG.isDebugEnabled()) {
-              LOG.debug("Problem with PackageURL", ex);
+          if (purl != null && !purl.isEmpty()) {
+            try {
+              PackageURL packageURL = PackageURLHelper.fromString(purl);
+              appComponent.setPackageUrl(packageURL);
+            } catch (SolicitorMalformedPackageURLException ex) {
+              if (LOG.isDebugEnabled()) {
+                LOG.debug("Problem with PackageURL", ex);
+              }
+              LOG.warn(LogMessages.READER_PURL_MALFORMED.msg(), purl);
             }
-            LOG.warn(LogMessages.READER_PURL_MALFORMED.msg(), purl);
           }
 
           // Fill license information
