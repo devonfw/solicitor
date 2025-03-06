@@ -2157,6 +2157,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.32.0::
 * https://github.com/devonfw/solicitor/issues/303: Corrected license count in YarnReader.
+* https://github.com/devonfw/solicitor/issues/305: Improved robustness of CyclonedxReader in case of missing component data fields.
 
 Changes in 1.31.0::
 * https://github.com/devonfw/solicitor/issues/295: Add PackageUrlHandler for cran packages.
