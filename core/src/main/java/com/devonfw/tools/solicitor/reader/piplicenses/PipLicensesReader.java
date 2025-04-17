@@ -46,8 +46,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
 
-    int componentCount = 0;
-    int licenseCount = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -65,8 +64,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         String license = (String) attributes.get("License-Metadata");
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-        appComponent.setApplication(application);
-        componentCount++;
+        statistics.readComponentCount++;
         appComponent.setArtifactId(name);
         appComponent.setVersion(version);
         appComponent.setUsagePattern(usagePattern);
@@ -75,9 +73,15 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(name, version));
 
+        if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+          // skip processing of licenses and proceed to next component if component is filtered out
+          continue;
+        }
+
         addRawLicense(appComponent, license, licenseUrl, sourceUrl);
+        statistics.licenseCount++;
       }
-      doLogging(sourceUrl, application, componentCount, licenseCount);
+      doLogging(configuration, sourceUrl, application, statistics);
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read pip license inventory source '" + sourceUrl + "'", e);
     }

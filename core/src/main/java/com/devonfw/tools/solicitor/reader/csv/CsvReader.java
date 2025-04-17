@@ -71,8 +71,7 @@ public class CsvReader extends AbstractReader implements Reader {
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
 
-    int components = 0;
-    int licenses = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
     try {
       is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
@@ -234,11 +233,14 @@ public class CsvReader extends AbstractReader implements Reader {
             // ApplicationComponent
           } else {
             // new ApplicationComponentImpl
-            appComponent.setApplication(application);
+            statistics.readComponentCount++;
+            if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+              // the component is filtered out, so skip processing of the license and proceed with next line
+              continue;
+            }
             lastAppComponent = appComponent;
-            components++;
           }
-          licenses++;
+          statistics.licenseCount++;
 
           addRawLicense(lastAppComponent, license, licenseURL, sourceUrl);
         }
@@ -269,16 +271,19 @@ public class CsvReader extends AbstractReader implements Reader {
             // ApplicationComponent
           } else {
             // new ApplicationComponentImpl
-            appComponent.setApplication(application);
+            statistics.readComponentCount++;
+            if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+              // the component is filtered out, so skip processing of the license and proceed with next line
+              continue;
+            }
             lastAppComponent = appComponent;
-            components++;
           }
-          licenses++;
+          statistics.licenseCount++;
           addRawLicense(lastAppComponent, record.get(3), record.get(4), sourceUrl);
         }
       }
 
-      doLogging(sourceUrl, application, components, licenses);
+      doLogging(configuration, sourceUrl, application, statistics);
     } catch (IOException e1) {
       throw new SolicitorRuntimeException("Could not read CSV inventory source '" + sourceUrl + "'", e1);
     }

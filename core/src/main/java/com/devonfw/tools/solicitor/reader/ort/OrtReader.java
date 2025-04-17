@@ -54,8 +54,7 @@ public class OrtReader extends AbstractReader implements Reader {
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
 
-    int componentCount = 0;
-    int licenseCount = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -76,8 +75,7 @@ public class OrtReader extends AbstractReader implements Reader {
         String homePage = (String) singlePackage.get("homepage_url");
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-        appComponent.setApplication(application);
-        componentCount++;
+        statistics.readComponentCount++;
 
         // resolve id into groupId/artifactId/version/repoType
         String[] resolvedId = id.split(":");
@@ -106,6 +104,11 @@ public class OrtReader extends AbstractReader implements Reader {
           LOG.warn(LogMessages.READER_PURL_MALFORMED.msg(), pURL);
         }
 
+        if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+          // skip processing of licenses and proceed to next component if component is filtered out
+          continue;
+        }
+
         // manage multiple declared licenses
         List lic = (List) singlePackage.get("declared_licenses");
         if (lic.isEmpty()) {
@@ -113,11 +116,11 @@ public class OrtReader extends AbstractReader implements Reader {
           addRawLicense(appComponent, null, null, sourceUrl);
         } else {
           for (Object cl : lic) {
-            licenseCount++;
+            statistics.licenseCount++;
             addRawLicense(appComponent, cl.toString(), null, sourceUrl);
           }
         }
-        doLogging(sourceUrl, application, componentCount, licenseCount);
+        doLogging(configuration, sourceUrl, application, statistics);
       }
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read ort license inventory source '" + sourceUrl + "'", e);

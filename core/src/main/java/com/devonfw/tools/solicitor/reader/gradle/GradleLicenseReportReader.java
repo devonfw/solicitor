@@ -46,8 +46,7 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
 
-    int components = 0;
-    int licenses = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -64,7 +63,7 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
         }
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-        appComponent.setApplication(application);
+        statistics.readComponentCount++;
         appComponent.setGroupId(dependencyParts[0]);
         appComponent.setArtifactId(dependencyParts[1]);
         appComponent.setVersion(dependency.get("moduleVersion"));
@@ -83,6 +82,11 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
         appComponent.setPackageUrl(PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1],
             dependency.get("moduleVersion")));
 
+        if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+          // skip processing of licenses and proceed to next component if component is filtered out
+          continue;
+        }
+
         // Extract and process moduleLicenses
         Object licensesObject = dependency.get("moduleLicenses");
         if (licensesObject instanceof List<?>) {
@@ -93,15 +97,13 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
               String licenseName = (String) licenseMap.get("moduleLicense");
               String licenseUrl = (String) licenseMap.get("moduleLicenseUrl");
               addRawLicense(appComponent, licenseName, licenseUrl, sourceUrl);
+              statistics.licenseCount++;
             }
           }
         }
-
-        components++;
-        licenses++;
       }
 
-      doLogging(sourceUrl, application, components, licenses);
+      doLogging(configuration, sourceUrl, application, statistics);
 
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read Gradle License Report inventory source '" + sourceUrl + "'",

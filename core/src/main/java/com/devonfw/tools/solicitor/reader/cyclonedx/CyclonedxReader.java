@@ -49,8 +49,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
 
-    int componentCount = 0;
-    int licenseCount = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
     try {
       is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
@@ -74,8 +73,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
 
           // Fill appComponents
           ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-          appComponent.setApplication(application);
-          componentCount++;
+          statistics.readComponentCount++;
 
           appComponent.setGroupId(groupId);
           appComponent.setArtifactId(artifactId);
@@ -96,6 +94,11 @@ public class CyclonedxReader extends AbstractReader implements Reader {
             }
           }
 
+          if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+            // skip processing of licenses and proceed to next component if component is filtered out
+            continue;
+          }
+
           // Fill license information
           JsonNode licensesNode = componentNode.get("licenses"); // licenses
 
@@ -112,7 +115,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
             for (JsonNode licenseNode : licensesNode) {
               // Check for expressions
               if (licenseNode.has("expression")) {
-                licenseCount++;
+                statistics.licenseCount++;
                 addRawLicense(appComponent, licenseNode.get("expression").asText(), null, sourceUrl);
               }
 
@@ -122,20 +125,20 @@ public class CyclonedxReader extends AbstractReader implements Reader {
                 // format.
                 if (licenseNode.get("license").has("id")) {
                   if (licenseNode.get("license").has("url")) {
-                    licenseCount++;
+                    statistics.licenseCount++;
                     addRawLicense(appComponent, licenseNode.get("license").get("id").asText(),
                         licenseNode.get("license").get("url").asText(), sourceUrl);
                   } else {
-                    licenseCount++;
+                    statistics.licenseCount++;
                     addRawLicense(appComponent, licenseNode.get("license").get("id").asText(), null, sourceUrl);
                   }
                 } else if (licenseNode.get("license").has("name")) {
                   if (licenseNode.get("license").has("url")) {
-                    licenseCount++;
+                    statistics.licenseCount++;
                     addRawLicense(appComponent, licenseNode.get("license").get("name").asText(),
                         licenseNode.get("license").get("url").asText(), sourceUrl);
                   } else {
-                    licenseCount++;
+                    statistics.licenseCount++;
                     addRawLicense(appComponent, licenseNode.get("license").get("name").asText(), null, sourceUrl);
                   }
                 }
@@ -144,7 +147,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           }
         }
       }
-      doLogging(sourceUrl, application, componentCount, licenseCount);
+      doLogging(configuration, sourceUrl, application, statistics);
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read CycloneDx inventory source '" + sourceUrl + "'", e);
     }

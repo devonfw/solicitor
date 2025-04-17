@@ -52,8 +52,7 @@ public class YarnReader extends AbstractReader implements Reader {
 
     String content = cutSourceJson(sourceUrl);
 
-    int componentCount = 0;
-    int licenseCount = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -82,8 +81,7 @@ public class YarnReader extends AbstractReader implements Reader {
       }
 
       ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-      appComponent.setApplication(application);
-      componentCount++;
+      statistics.readComponentCount++;
       appComponent.setArtifactId(name);
       appComponent.setVersion(version);
       appComponent.setUsagePattern(usagePattern);
@@ -93,10 +91,15 @@ public class YarnReader extends AbstractReader implements Reader {
       appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(name, version));
 
+      if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+        // the component is filtered out, so skip processing of the license and proceed with next line
+        continue;
+      }
+
       addRawLicense(appComponent, license, licenseUrl, sourceUrl);
-      licenseCount++;
+      statistics.licenseCount++;
     }
-    doLogging(sourceUrl, application, componentCount, licenseCount);
+    doLogging(configuration, sourceUrl, application, statistics);
 
   }
 

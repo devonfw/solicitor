@@ -21,7 +21,8 @@ public enum LogMessages {
   LOADING_DATAMODEL(8, "Loading Solicitor data model from '{}' (overwriting any possibly existing data)"), //
   LOADING_DIFF(9, "Loading old Solicitor data model for performing difference report from '{}'"), //
   SAVING_DATAMODEL(10, "Saving Solicitor data model to '{}'"), //
-  READING_INVENTORY(11, "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'"), //
+  READING_INVENTORY(11,
+      "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. All ApplicationComponents were added to the data model."), //
   LOAD_RULES(12, "Loading Rules of type '{}' from source '{}' with template '{}' for Rule Group '{}'"), //
   ADDING_FACTS(13, "{} Facts have been added to the Drools working memory, starting Rule Engine ..."), //
   RULE_ENGINE_FINISHED(14, "Rule Engine processing completed, {} rules have been fired"), //
@@ -123,7 +124,9 @@ public enum LogMessages {
   REPORTING_GROUPS_DETECTED(80, "The following reporting groups are defined in this project: {} "), //
   NO_SOURCE_DOWNLOAD_URL_FOR_PACKAGEURL(81, "Could not determine source download url for PackageUrl '{}'"), //
   NO_PACKAGE_DOWNLOAD_URL_FOR_PACKAGEURL(82, "Could not determine package download url for PackageUrl '{}'"), //
-  NO_ARCHIVE_SUFFIX_FOR_PACKAGEURL(83, "Could not determine archive suffix for PackageUrl '{}'");
+  NO_ARCHIVE_SUFFIX_FOR_PACKAGEURL(83, "Could not determine archive suffix for PackageUrl '{}'"), //
+  READING_INVENTORY_WITH_FILTER(84,
+      "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. {} ApplicationComponents were added to the data model, {} were filtered out and not added to the data model.");
 
   private final String message;
 
