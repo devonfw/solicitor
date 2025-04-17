@@ -166,6 +166,28 @@ public abstract class AbstractReader implements Reader {
   }
 
   /**
+   * Checks the include/exclude filter and potentially adds the appComponent to the application.
+   *
+   * @param application the application
+   * @param appComponent the appComponent
+   * @param configuration the configuration (containing the optional filters)
+   * @param statistics the statistics data structure
+   * @return <code>true</code> if the appComponent was added to the application, <code>false</code> if it was not added
+   *         due to filtering.
+   */
+  public boolean addComponentToApplicationIfNotFiltered(Application application, ApplicationComponent appComponent,
+      Map<String, String> configuration, ReaderStatistics statistics) {
+
+    if (appComponent.getPackageUrl() != null && isPackageFiltered(appComponent.getPackageUrl(), configuration)) {
+      // skip this component as it is filtered out
+      statistics.filteredComponentCount++;
+      return false;
+    }
+    appComponent.setApplication(application);
+    return true;
+  }
+
+  /**
    * This method gets the field <code>modelFactory</code>.
    *
    * @return the field modelFactory
@@ -202,28 +224,6 @@ public abstract class AbstractReader implements Reader {
   public void setModelFactory(ModelFactory modelFactory) {
 
     this.modelFactory = modelFactory;
-  }
-
-  /**
-   * Checks the include/exclude filter and potentially adds the appComponent to the application.
-   *
-   * @param application the application
-   * @param appComponent the appcomponent
-   * @param configuration the configuration (containing the optional filters)
-   * @param statistics the statistics data structure
-   * @return <code>true</code> if the appComponent was added to the application, <code>false</code> if it was not added
-   *         due to filtering.
-   */
-  public boolean addComponentToApplicationIfNotFiltered(Application application, ApplicationComponent appComponent,
-      Map<String, String> configuration, ReaderStatistics statistics) {
-
-    if (appComponent.getPackageUrl() != null && isPackageFiltered(appComponent.getPackageUrl(), configuration)) {
-      // skip this component as it is filtered out
-      statistics.filteredComponentCount++;
-      return false;
-    }
-    appComponent.setApplication(application);
-    return true;
   }
 
 }
