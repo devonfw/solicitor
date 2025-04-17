@@ -7,7 +7,9 @@ package com.devonfw.tools.solicitor.reader.gradle;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -70,6 +72,32 @@ public class GradleReader2Tests {
 
     LOG.info(this.application.toString());
     assertEquals(15, this.application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void readFileAndCheckSizeWithFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:maven/.*/commons\\-collections4@.*");
+    GradleReader2 gr = new GradleReader2();
+    gr.setDeprecationChecker(new DeprecationChecker() {
+
+      @Override
+      public void check(boolean warnOnly, String detailsString) {
+
+        // do nothing...
+      }
+    });
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("gradle2", "src/test/resources/licenseReport.json", application, UsagePattern.DYNAMIC_LINKING,
+        "maven", null, configuration);
+
+    assertEquals(14, application.getApplicationComponents().size());
   }
 
   @Test

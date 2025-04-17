@@ -7,7 +7,9 @@ package com.devonfw.tools.solicitor.reader.yarnmodern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -117,6 +119,27 @@ public class YarnModernReaderTests {
 
     LOG.info(this.application.toString());
     assertEquals(5, this.application.getApplicationComponents().size());
+  }
+
+  /**
+   * Test if the number of read components is correct when an excludeFilter exists
+   */
+  @Test
+  public void readFileAndCheckSizeWithFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Angular", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:npm/%40babel/.*");
+    YarnModernReader yr = new YarnModernReader();
+    yr.setModelFactory(modelFactory);
+    yr.setInputStreamFactory(new FileInputStreamFactory());
+    yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", application,
+        UsagePattern.STATIC_LINKING, "npm", null, configuration);
+
+    assertEquals(4, application.getApplicationComponents().size());
   }
 
 }

@@ -84,9 +84,9 @@ public abstract class AbstractReader implements Reader {
         configuration.get(EXCLUDE_FILTER_PARAMETER_NAME) != null //
     );
     if (filterIsDefined) {
-      LOG.info(LogMessages.READING_INVENTORY_WITH_FILTER.msg(), statistics.readComponentCount, statistics.licenseCount,
-          application.getName(), sourceUrl, statistics.readComponentCount - statistics.filteredComponentCount,
-          statistics.filteredComponentCount);
+      LOG.info(LogMessages.READING_INVENTORY_WITH_FILTER.msg(),
+          statistics.readComponentCount - statistics.filteredComponentCount, statistics.licenseCount,
+          application.getName(), sourceUrl, statistics.readComponentCount, statistics.filteredComponentCount);
     } else {
       LOG.info(LogMessages.READING_INVENTORY.msg(), statistics.readComponentCount, statistics.licenseCount,
           application.getName(), sourceUrl);
@@ -214,8 +214,9 @@ public abstract class AbstractReader implements Reader {
    * @return <code>true</code> if the appComponent was added to the application, <code>false</code> if it was not added
    *         due to filtering.
    */
-  public boolean addComponentToApplicationIfNotFiltered(Application application, ApplicationComponent appComponent, Map<String, String> configuration, ReaderStatistics statistics) {
-  
+  public boolean addComponentToApplicationIfNotFiltered(Application application, ApplicationComponent appComponent,
+      Map<String, String> configuration, ReaderStatistics statistics) {
+
     if (appComponent.getPackageUrl() != null && isPackageFiltered(appComponent.getPackageUrl(), configuration)) {
       // skip this component as it is filtered out
       statistics.filteredComponentCount++;

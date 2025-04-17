@@ -7,7 +7,9 @@ package com.devonfw.tools.solicitor.reader.ort;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -60,6 +62,38 @@ public class OrtReaderTests {
 
     LOG.info(this.application.toString());
     assertEquals(1, this.application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void readFileAndCheckSizeWithFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    // as we have only one package i9n the file check for matching and non matching filter to make sure
+    // the logic does not always filter out if a filter is given
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Python", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:maven/test_misspelled_GroupId/.*");
+    OrtReader pr = new OrtReader();
+    pr.setModelFactory(modelFactory);
+    pr.setInputStreamFactory(new FileInputStreamFactory());
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, "ort",
+        null, configuration);
+
+    assertEquals(1, application.getApplicationComponents().size());
+
+    application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
+    configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:maven/testGroupId/.*");
+    pr = new OrtReader();
+    pr.setModelFactory(modelFactory);
+    pr.setInputStreamFactory(new FileInputStreamFactory());
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, "ort",
+        null, configuration);
+
+    assertEquals(0, application.getApplicationComponents().size());
   }
 
   @Test

@@ -7,7 +7,9 @@ package com.devonfw.tools.solicitor.reader.npmlicensecrawler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -52,6 +54,31 @@ public class NpmLicenseCrawlerReaderTests {
 
     LOG.info(this.application.toString());
     assertEquals(68, this.application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void readFileAndCheckSizeWithFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Angular", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:npm/tmp@.*");
+    NpmLicenseCrawlerReader nr = new NpmLicenseCrawlerReader();
+    nr.setDeprecationChecker(new DeprecationChecker() {
+
+      @Override
+      public void check(boolean warnOnly, String detailsString) {
+
+        // do nothing...
+      }
+    });
+    nr.setModelFactory(modelFactory);
+    nr.setInputStreamFactory(new FileInputStreamFactory());
+    nr.readInventory("npm", "src/test/resources/npmlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "npm",
+        null, configuration);
+
+    assertEquals(65, application.getApplicationComponents().size());
   }
 
   @Test

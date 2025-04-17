@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.bind.UnmarshalException;
 
 import org.junit.jupiter.api.Test;
@@ -55,6 +58,28 @@ public class MavenReaderTests {
       }
     }
     assertTrue(found);
+
+  }
+
+  /**
+   * Tests reading a maven license file with enabled excludeFilter.
+   */
+  @Test
+  public void readFileAndCheckSizeWithFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:maven/.*/log4j\\-to\\-slf4j@.*");
+    MavenReader mr = new MavenReader();
+    mr.setModelFactory(modelFactory);
+    mr.setInputStreamFactory(new FileInputStreamFactory());
+    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
+        "maven", null, configuration);
+    LOG.info(application.toString());
+    assertEquals(94, application.getApplicationComponents().size());
 
   }
 

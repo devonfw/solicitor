@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +59,27 @@ public class CyclonedxReaderTests {
       }
     }
     assertTrue(found);
+  }
+
+  /**
+   * Test the {@link CyclonedxReader#readInventory()} method. Input file is an SBOM containing maven components. Mock
+   * the case, that a maven PurlHandler exists. Test the case that a reader filter exists.
+   */
+  @Test
+  public void readMavenFileAndCheckSizeWithFilter() {
+
+    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:maven/.*/spring-boot-starter-web@.*");
+    this.cdxr.setModelFactory(this.modelFactory);
+    this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
+    this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
+        "cyclonedx", null, configuration);
+    LOG.info(application.toString());
+
+    assertEquals(31, application.getApplicationComponents().size());
+
   }
 
   /**

@@ -3,7 +3,9 @@ package com.devonfw.tools.solicitor.reader.gradle;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,6 +57,23 @@ class GradleLicenseReportReaderTest {
     }
     assertEquals(3, lapc.size());
     assertTrue(found);
+  }
+
+  @Test
+  void testFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:maven/androidx\\.activity/.*");
+    GradleLicenseReportReader gr = new GradleLicenseReportReader();
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("gradle-license-report-json", "src/test/resources/gradleLicenseReport.json", application,
+        UsagePattern.STATIC_LINKING, null, null, configuration);
+
+    assertEquals(2, application.getApplicationComponents().size());
   }
 
   @Test

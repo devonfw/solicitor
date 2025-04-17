@@ -90,7 +90,6 @@ public class GradleReader2 extends AbstractReader implements Reader {
         dep.setLicenses(ll);
         ls.getDependencies().add(dep);
       }
-      doLogging(configuration, sourceUrl, application, statistics);
 
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read Gradle inventory source '" + sourceUrl + "'", e);
@@ -128,6 +127,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
         }
       }
     }
+    doLogging(configuration, sourceUrl, application, statistics);
   }
 
 }
