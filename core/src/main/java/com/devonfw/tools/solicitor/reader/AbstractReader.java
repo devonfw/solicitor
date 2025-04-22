@@ -127,16 +127,18 @@ public abstract class AbstractReader implements Reader {
   /**
    * Checks if the given Package URL matches the given pattern.
    *
-   * @param purl the Package URL to check
+   * @param purl the Package URL to check; <code>null</code> is allowed and will be represented as empty string when
+   *        checking against the regex.
    * @param patternString the regular expression to be checked
-   * @return
+   * @return <code>true</code> if the purl matches the given regex
    */
   private boolean isPurlMatchingPattern(PackageURL purl, String patternString) {
 
     if (patternString == null) {
       throw new NullPointerException("Filter Pattern is undefined");
     }
-    return Pattern.matches(patternString, purl.toString());
+    String purlString = purl != null ? purl.toString() : "";
+    return Pattern.matches(patternString, purlString);
   }
 
   /**
@@ -178,7 +180,7 @@ public abstract class AbstractReader implements Reader {
   public boolean addComponentToApplicationIfNotFiltered(Application application, ApplicationComponent appComponent,
       Map<String, String> configuration, ReaderStatistics statistics) {
 
-    if (appComponent.getPackageUrl() != null && isPackageFiltered(appComponent.getPackageUrl(), configuration)) {
+    if (isPackageFiltered(appComponent.getPackageUrl(), configuration)) {
       // skip this component as it is filtered out
       statistics.filteredComponentCount++;
       return false;

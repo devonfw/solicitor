@@ -25,7 +25,7 @@ import com.github.packageurl.PackageURL;
  * Tests for the AbstractReader.
  *
  */
-class AbstractReaderTest {
+public class AbstractReaderTest {
 
   private AbstractReader reader;
 
@@ -70,30 +70,45 @@ class AbstractReaderTest {
 
     // null configuration must not filter out any packages
     assertFalse(this.reader.isPackageFiltered(purl1, null));
+    assertFalse(this.reader.isPackageFiltered(null, null));
 
     configuration = new HashMap<>();
     // empty configuration must not filter out any packages
     assertFalse(this.reader.isPackageFiltered(purl1, configuration));
+    assertFalse(this.reader.isPackageFiltered(null, configuration));
 
     configuration.put("someParameter", "someValue");
     // non related configuration must not filter out any packages
     assertFalse(this.reader.isPackageFiltered(purl1, configuration));
+    assertFalse(this.reader.isPackageFiltered(null, configuration));
 
     configuration.put("includeFilter", "pkg:maven/mygroup/.*");
     // includeFilter (and non related parameter)
     assertFalse(this.reader.isPackageFiltered(purl1, configuration));
     assertTrue(this.reader.isPackageFiltered(purl2, configuration));
+    assertTrue(this.reader.isPackageFiltered(null, configuration));
 
     configuration.put("excludeFilter", "pkg:maven/mygroup/.*");
     // includeFilter and excludeFilter (and non related parameter)
     assertTrue(this.reader.isPackageFiltered(purl1, configuration));
     assertTrue(this.reader.isPackageFiltered(purl2, configuration));
+    assertTrue(this.reader.isPackageFiltered(null, configuration));
 
-    configuration.remove("includeFilter", "pkg:maven/mygroup/.*");
+    configuration.remove("includeFilter");
     // only excludeFilter (and non related parameter)
     assertTrue(this.reader.isPackageFiltered(purl1, configuration));
     assertFalse(this.reader.isPackageFiltered(purl2, configuration));
+    assertFalse(this.reader.isPackageFiltered(null, configuration));
 
+    configuration.remove("excludeFilter");
+    configuration.put("includeFilter", "");
+    // only includeFilter which matches to null/empty packageURL (and non related parameter)
+    assertFalse(this.reader.isPackageFiltered(null, configuration));
+
+    configuration.remove("includeFilter");
+    configuration.put("excludeFilter", "");
+    // only excludeFilter which matches to null/empty packageURL (and non related parameter)
+    assertTrue(this.reader.isPackageFiltered(null, configuration));
   }
 
   /**
@@ -134,6 +149,22 @@ class AbstractReaderTest {
     assertEquals(1, application.getApplicationComponents().size());
     assertNull(appComponent2.getApplication());
     assertEquals(1, statistics.filteredComponentCount);
+
+    // if PackageURL is null then this shall be handled like an empty string, so filtered out for the given regex
+    ApplicationComponent appComponent3 = modelFactory.newApplicationComponent();
+    assertFalse(
+        this.reader.addComponentToApplicationIfNotFiltered(application, appComponent3, configuration, statistics));
+    assertEquals(1, application.getApplicationComponents().size());
+    assertFalse(appComponent3.getApplication() == application);
+    assertEquals(2, statistics.filteredComponentCount);
+
+    // if PackageURL is null then this shall be handled like an empty string. An empty string Regex should match
+    configuration.put("includeFilter", "");
+    assertTrue(
+        this.reader.addComponentToApplicationIfNotFiltered(application, appComponent3, configuration, statistics));
+    assertEquals(2, application.getApplicationComponents().size());
+    assertTrue(appComponent3.getApplication() == application);
+    assertEquals(2, statistics.filteredComponentCount);
 
   }
 
