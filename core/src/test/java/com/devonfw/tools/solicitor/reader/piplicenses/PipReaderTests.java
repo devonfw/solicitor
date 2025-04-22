@@ -7,7 +7,9 @@ package com.devonfw.tools.solicitor.reader.piplicenses;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -60,6 +62,24 @@ public class PipReaderTests {
 
     LOG.info(this.application.toString());
     assertEquals(2, this.application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void readFileAndCheckSizeWithFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Python", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:pypi/test2@.*");
+    PipLicensesReader pr = new PipLicensesReader();
+    pr.setModelFactory(modelFactory);
+    pr.setInputStreamFactory(new FileInputStreamFactory());
+    pr.readInventory("pip", "src/test/resources/pipReport.json", application, UsagePattern.DYNAMIC_LINKING, "pip", null,
+        configuration);
+
+    assertEquals(1, application.getApplicationComponents().size());
   }
 
   @Test

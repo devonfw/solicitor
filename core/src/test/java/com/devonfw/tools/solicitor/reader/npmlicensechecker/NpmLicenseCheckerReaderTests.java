@@ -7,7 +7,9 @@ package com.devonfw.tools.solicitor.reader.npmlicensechecker;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -60,6 +62,25 @@ public class NpmLicenseCheckerReaderTests {
 
     LOG.info(this.application.toString());
     assertEquals(3, this.application.getApplicationComponents().size());
+
+  }
+
+  @Test
+  public void readFileAndCheckSizeWithFilter() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Angular", "#default#");
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("excludeFilter", "pkg:npm/foo\\-bar@.*");
+    NpmLicenseCheckerReader gr = new NpmLicenseCheckerReader();
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", application,
+        UsagePattern.DYNAMIC_LINKING, "npm", null, configuration);
+
+    assertEquals(2, application.getApplicationComponents().size());
 
   }
 

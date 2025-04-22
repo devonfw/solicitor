@@ -61,8 +61,7 @@ public class MavenReader extends AbstractReader implements Reader {
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
 
-    int components = 0;
-    int licenses = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
     try {
       is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
@@ -97,7 +96,7 @@ public class MavenReader extends AbstractReader implements Reader {
 
     for (Dependency dep : ls.getDependencies()) {
       ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-      appComponent.setApplication(application);
+      statistics.readComponentCount++;
       appComponent.setGroupId(dep.getGroupId());
       appComponent.setArtifactId(dep.getArtifactId());
       appComponent.setVersion(dep.getVersion());
@@ -105,18 +104,21 @@ public class MavenReader extends AbstractReader implements Reader {
       appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(
           PackageURLHelper.fromMavenCoordinates(dep.getGroupId(), dep.getArtifactId(), dep.getVersion()));
-      components++;
+      if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+        // skip processing of licenses and processd with next component if component is filtered out
+        continue;
+      }
       if (dep.getLicenses().isEmpty()) {
         // in case no license is found insert an empty entry
         addRawLicense(appComponent, null, null, sourceUrl);
       } else {
         for (License lic : dep.getLicenses()) {
-          licenses++;
+          statistics.licenseCount++;
           addRawLicense(appComponent, lic.getName(), lic.getUrl(), sourceUrl);
         }
       }
     }
-    doLogging(sourceUrl, application, components, licenses);
+    doLogging(configuration, sourceUrl, application, statistics);
   }
 
 }

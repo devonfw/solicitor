@@ -92,6 +92,51 @@ public class CsvReaderTests {
     assertEquals(5, this.application.getApplicationComponents().size());
   }
 
+  /**
+   * Tests if packageUrl for npm has been created. Reader runs without config.
+   */
+  @Test
+  public void testCheckSizeWithFilter() {
+
+    // configuration settings
+    Map<String, String> configuration = new HashMap<String, String>();
+    configuration.put("groupId", "0");
+    configuration.put("artifactId", "1");
+    configuration.put("version", "2");
+    configuration.put("license", "3");
+    configuration.put("licenseUrl", "4");
+    configuration.put("allowDuplicateHeaderNames", "false");
+    configuration.put("allowMissingColumnNames", "false");
+    configuration.put("autoFlush", "false");
+    configuration.put("commentMarker", "#");
+    configuration.put("delimiter", ";");
+    configuration.put("escape", "!");
+    configuration.put("ignoreEmptyLines", "true");
+    configuration.put("ignoreHeaderCase", "true");
+    configuration.put("ignoreSurroundingSpaces", "true");
+    configuration.put("nullString", "newNullString");
+    configuration.put("quote", "'");
+    configuration.put("recordSeparator", "\n");
+    configuration.put("skipHeaderRecord", "true");
+    configuration.put("trailingDelimiter", "true");
+    configuration.put("trim", "true");
+
+    configuration.put("excludeFilter", "pkg:maven/org\\.springframework/.*");
+
+    Application application;
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    CsvReader csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+    csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "maven",
+        "maven", configuration);
+
+    assertEquals(4, application.getApplicationComponents().size());
+
+  }
+
   @Test
   public void testFindLicense() {
 

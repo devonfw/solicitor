@@ -50,8 +50,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
 
-    int componentCount = 0;
-    int licenseCount = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -83,8 +82,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         }
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
-        appComponent.setApplication(application);
-        componentCount++;
+        statistics.readComponentCount++;
         String[] module = name.split("@");
         if (name.startsWith("@")) {
           appComponent.setArtifactId("@" + module[module.length - 2]);
@@ -98,18 +96,22 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         appComponent.setSourceRepoUrl(repo);
         appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(name));
+        if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+          // skip processing of licenses and proceed with next component if component is filtered out
+          continue;
+        }
         if (licenseList.isEmpty()) {
           // add empty raw license if no license info attached
           addRawLicense(appComponent, null, null, sourceUrl);
         } else {
           for (String cl : licenseList) {
-            licenseCount++;
+            statistics.licenseCount++;
             addRawLicense(appComponent, cl, licenseUrl, sourceUrl);
           }
         }
 
       }
-      doLogging(sourceUrl, application, componentCount, licenseCount);
+      doLogging(configuration, sourceUrl, application, statistics);
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read npm-license-checker inventory source '" + sourceUrl + "'", e);
     }

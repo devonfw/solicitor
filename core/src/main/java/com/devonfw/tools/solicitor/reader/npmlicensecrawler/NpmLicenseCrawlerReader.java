@@ -80,8 +80,7 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
               + "'. See https://github.com/devonfw/solicitor/issues/62 and "
               + "https://github.com/devonfw/solicitor/issues/263");
     }
-    int components = 0;
-    int licenses = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
     try {
       is = this.inputStreamFactory.createInputStreamFor(sourceUrl);
@@ -117,14 +116,17 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
           // ApplicationComponent
         } else {
           // new ApplicationComponentImpl
-          components++;
-          appComponent.setApplication(application);
+          statistics.readComponentCount++;
+          if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+            // the component is filtered out, so skip processing of the license and proceed with next line
+            continue;
+          }
           lastAppComponent = appComponent;
         }
-        licenses++;
+        statistics.licenseCount++;
         addRawLicense(lastAppComponent, record.get(1), record.get(3), sourceUrl);
       }
-      doLogging(sourceUrl, application, components, licenses);
+      doLogging(configuration, sourceUrl, application, statistics);
 
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read NPM inventory source '" + sourceUrl + "'", e);

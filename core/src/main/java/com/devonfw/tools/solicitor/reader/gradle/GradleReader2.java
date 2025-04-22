@@ -64,8 +64,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
         "Support for the 'Gradle License Plugin' via the 'gradle2' Reader is deprecated. Use the 'Gradle License Report' with"
             + " Reader 'gradle-license-report-json' instead. See https://github.com/devonfw/solicitor/issues/283");
 
-    int components = 0;
-    int licenses = 0;
+    ReaderStatistics statistics = new ReaderStatistics();
     LicenseSummary ls = new LicenseSummary();
     ls.setDependencies(new LinkedList<Dependency>());
 
@@ -80,7 +79,6 @@ public class GradleReader2 extends AbstractReader implements Reader {
         dep.setUrl((String) m.get("url"));
         dep.setYear((String) m.get("year"));
         dep.setDependency((String) m.get("dependency"));
-        components++;
         List<Map> lml = (List) m.get("licenses");
         List<License> ll = new LinkedList();
         for (Map<String, String> ml : lml) {
@@ -88,12 +86,10 @@ public class GradleReader2 extends AbstractReader implements Reader {
           license.setLicense(ml.get("license"));
           license.setLicense_url(ml.get("license_url"));
           ll.add(license);
-          licenses++;
         }
         dep.setLicenses(ll);
         ls.getDependencies().add(dep);
       }
-      doLogging(sourceUrl, application, components, licenses);
 
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read Gradle inventory source '" + sourceUrl + "'", e);
@@ -106,7 +102,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
         throw new SolicitorRuntimeException(
             "Could not extract groupId, artifactId and version from dependency info: '" + dep.getDependency() + "'");
       }
-      appComponent.setApplication(application);
+      statistics.readComponentCount++;
       appComponent.setGroupId(dependencyParts[0]);
       appComponent.setArtifactId(dependencyParts[1]);
       appComponent.setVersion(dependencyParts[2]);
@@ -115,16 +111,23 @@ public class GradleReader2 extends AbstractReader implements Reader {
       appComponent.setRepoType(repoType);
       appComponent.setPackageUrl(
           PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1], dependencyParts[2]));
+
+      if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
+        // skip processing of licenses and proceed to next component if component is filtered out
+        continue;
+      }
+
       if (dep.getLicenses().isEmpty()) {
         // in case no license is found insert an empty entry
         addRawLicense(appComponent, null, null, sourceUrl);
       } else {
         for (License lic : dep.getLicenses()) {
           addRawLicense(appComponent, lic.getLicense(), lic.getLicense_url(), sourceUrl);
-
+          statistics.licenseCount++;
         }
       }
     }
+    doLogging(configuration, sourceUrl, application, statistics);
   }
 
 }
