@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.spdx.library.LicenseInfoFactory;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
@@ -61,7 +62,31 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         String licenseUrl = estimateLicenseUrl(repo, path);
         String homePage = (String) attributes.get("URL");
         // String licenseText = (String) attributes.get("LicenseText");
-        String license = (String) attributes.get("License-Metadata");
+        String licenseMetadata = (String) attributes.get("License-Metadata");
+        if (licenseMetadata != null && (licenseMetadata.equals("UNKNOWN") || licenseMetadata.isEmpty())) {
+          licenseMetadata = null;
+        }
+        String licenseClassifier = (String) attributes.get("License-Classifier");
+        if (licenseClassifier != null && (licenseClassifier.equals("UNKNOWN") || licenseClassifier.isEmpty())) {
+          licenseClassifier = null;
+        }
+
+        String license;
+        if (licenseClassifier != null && licenseMetadata != null) {
+          if (LicenseInfoFactory.isSpdxListedLicenseId(licenseClassifier)) {
+            license = licenseClassifier;
+          } else if (LicenseInfoFactory.isSpdxListedLicenseId(licenseMetadata)) {
+            license = licenseMetadata;
+          } else {
+            license = licenseMetadata.length() >= licenseClassifier.length() ? licenseMetadata : licenseClassifier;
+          }
+        } else if (licenseMetadata != null) {
+          license = licenseMetadata;
+        } else if (licenseClassifier != null) {
+          license = licenseClassifier;
+        } else {
+          license = null;
+        }
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
         statistics.readComponentCount++;
