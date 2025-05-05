@@ -2194,6 +2194,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.34.0::
+* https://github.com/devonfw/solicitor/pull/311: Workaround for issue https://github.com/spdx/Spdx-Java-Library/issues/324 which resulted in the list of SPDX-IDs being loaded via the internet even if the configuration not to do so was correctly defined.
 
 Changes in 1.33.0::
 * https://github.com/devonfw/solicitor/issues/309: Implement includeFilter/excludeFilter in all Readers. See <<Filtering of components within Readers>>.
