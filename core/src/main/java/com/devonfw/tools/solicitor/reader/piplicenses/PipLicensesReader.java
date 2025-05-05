@@ -110,10 +110,10 @@ public class PipLicensesReader extends AbstractReader implements Reader {
     }
 
     if (licenseClassifier != null && licenseMetadata != null) {
-      if (LicenseInfoFactory.isSpdxListedLicenseId(licenseClassifier)) {
-        license = licenseClassifier;
-      } else if (LicenseInfoFactory.isSpdxListedLicenseId(licenseMetadata)) {
+      if (LicenseInfoFactory.isSpdxListedLicenseId(licenseMetadata)) {
         license = licenseMetadata;
+      } else if (LicenseInfoFactory.isSpdxListedLicenseId(licenseClassifier)) {
+        license = licenseClassifier;
       } else {
         license = licenseMetadata.length() >= licenseClassifier.length() ? licenseMetadata : licenseClassifier;
       }

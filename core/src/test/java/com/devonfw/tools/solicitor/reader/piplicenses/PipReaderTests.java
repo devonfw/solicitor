@@ -130,7 +130,26 @@ public class PipReaderTests {
   public void testDetermineLicenseInfo() {
 
     PipLicensesReader pr = new PipLicensesReader();
+    // check behavior if at least one argument is UNKNOWN or null
     assertNull(pr.determineLicenseInfo(null, null));
+    assertNull(pr.determineLicenseInfo("UNKNOWN", null));
+    assertNull(pr.determineLicenseInfo(null, "UNKNOWN"));
+    assertNull(pr.determineLicenseInfo("UNKNOWN", "UNKNOWN"));
+    assertEquals("foo", pr.determineLicenseInfo(null, "foo"));
+    assertEquals("foo", pr.determineLicenseInfo("foo", null));
+    assertEquals("foo", pr.determineLicenseInfo("UNKNOWN", "foo"));
+    assertEquals("foo", pr.determineLicenseInfo("foo", "UNKNOWN"));
+
+    // check behavior if at least one argument is an SPDX-ID
+    assertEquals("MIT", pr.determineLicenseInfo("MIT", "bar1"));
+    assertEquals("MIT", pr.determineLicenseInfo("bar1", "MIT"));
+    assertEquals("Apache-2.0", pr.determineLicenseInfo("Apache-2.0", "MIT"));
+    assertEquals("MIT", pr.determineLicenseInfo("MIT", "Apache-2.0"));
+
+    // check behavior if both arguments are plain straings
+    assertEquals("bar1", pr.determineLicenseInfo("foo", "bar1")); // take the longer argument
+    assertEquals("bar1", pr.determineLicenseInfo("bar1", "foo")); // take the longer argument
+    assertEquals("bar", pr.determineLicenseInfo("bar", "foo")); // take metadata if length is the same
   }
 
 }
