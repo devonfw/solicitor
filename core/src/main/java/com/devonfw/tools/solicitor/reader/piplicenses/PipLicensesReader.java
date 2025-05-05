@@ -63,30 +63,9 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         String homePage = (String) attributes.get("URL");
         // String licenseText = (String) attributes.get("LicenseText");
         String licenseMetadata = (String) attributes.get("License-Metadata");
-        if (licenseMetadata != null && (licenseMetadata.equals("UNKNOWN") || licenseMetadata.isEmpty())) {
-          licenseMetadata = null;
-        }
         String licenseClassifier = (String) attributes.get("License-Classifier");
-        if (licenseClassifier != null && (licenseClassifier.equals("UNKNOWN") || licenseClassifier.isEmpty())) {
-          licenseClassifier = null;
-        }
-
         String license;
-        if (licenseClassifier != null && licenseMetadata != null) {
-          if (LicenseInfoFactory.isSpdxListedLicenseId(licenseClassifier)) {
-            license = licenseClassifier;
-          } else if (LicenseInfoFactory.isSpdxListedLicenseId(licenseMetadata)) {
-            license = licenseMetadata;
-          } else {
-            license = licenseMetadata.length() >= licenseClassifier.length() ? licenseMetadata : licenseClassifier;
-          }
-        } else if (licenseMetadata != null) {
-          license = licenseMetadata;
-        } else if (licenseClassifier != null) {
-          license = licenseClassifier;
-        } else {
-          license = null;
-        }
+        license = determineLicenseInfo(licenseMetadata, licenseClassifier);
 
         ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
         statistics.readComponentCount++;
@@ -111,6 +90,41 @@ public class PipLicensesReader extends AbstractReader implements Reader {
       throw new SolicitorRuntimeException("Could not read pip license inventory source '" + sourceUrl + "'", e);
     }
 
+  }
+
+  /**
+   * Determine the license information from either the license metadata field or the license classifier field.
+   *
+   * @param licenseMetadata the contents of the License-Metadata field
+   * @param licenseClassifier the contents of the License-Classifier field
+   * @return the determined license info.
+   */
+  String determineLicenseInfo(String licenseMetadata, String licenseClassifier) {
+
+    String license;
+    if (licenseMetadata != null && (licenseMetadata.equals("UNKNOWN") || licenseMetadata.isEmpty())) {
+      licenseMetadata = null;
+    }
+    if (licenseClassifier != null && (licenseClassifier.equals("UNKNOWN") || licenseClassifier.isEmpty())) {
+      licenseClassifier = null;
+    }
+
+    if (licenseClassifier != null && licenseMetadata != null) {
+      if (LicenseInfoFactory.isSpdxListedLicenseId(licenseClassifier)) {
+        license = licenseClassifier;
+      } else if (LicenseInfoFactory.isSpdxListedLicenseId(licenseMetadata)) {
+        license = licenseMetadata;
+      } else {
+        license = licenseMetadata.length() >= licenseClassifier.length() ? licenseMetadata : licenseClassifier;
+      }
+    } else if (licenseMetadata != null) {
+      license = licenseMetadata;
+    } else if (licenseClassifier != null) {
+      license = licenseClassifier;
+    } else {
+      license = null;
+    }
+    return license;
   }
 
   // estimates license location in github links based on local file location
