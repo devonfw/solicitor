@@ -2,10 +2,11 @@
 --
 -- generate all NormalizedLicenses in denormalized form including all hierachical data  (allden -> "all denormalized")
 select
-    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(ac."version",'-'),NVL(l."normalizedLicense",'-')) as CORR_KEY_0,
-    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(l."normalizedLicense",'-')) as CORR_KEY_1,
-    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(ac."version",'-')) as CORR_KEY_2,
-    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-')) as CORR_KEY_3,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(ac."version",'-'),NVL(l."normalizedLicense",'-'),NVL(l."declaredLicense",'-')) as CORR_KEY_0,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(ac."version",'-'),NVL(l."normalizedLicense",'-')) as CORR_KEY_1,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(l."normalizedLicense",'-')) as CORR_KEY_2,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(ac."version",'-')) as CORR_KEY_3,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-')) as CORR_KEY_4,
 	e.*,
 	a.*,
 	ac.*,
