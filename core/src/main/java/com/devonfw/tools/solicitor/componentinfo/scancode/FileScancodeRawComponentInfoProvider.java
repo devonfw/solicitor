@@ -151,7 +151,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
   }
 
   /**
-   * Adds the data about the origin of the package which is (optionally) contained in file "origin.yaml"
+   * Adds the data about the origin of the package which is (optionally) contained in file "package.yaml"
    *
    * @param packageUrl the identifier of the package
    * @param componentScancodeInfos the componentScancodeInfos to add the origin data to
@@ -161,7 +161,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       throws ComponentInfoAdapterException {
 
     String packagePathPart = this.packageURLHandler.pathFor(packageUrl);
-    String path = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, "origin.yaml");
+    String path = IOHelper.secureFilePath(this.repoBasePath, packagePathPart, "package.yaml");
 
     File originFile = new File(path);
     if (!originFile.exists()) {
@@ -189,7 +189,7 @@ public class FileScancodeRawComponentInfoProvider implements ScancodeRawComponen
       componentScancodeInfos.packageDownloadUrl = packageDownloadUrl;
 
     } catch (IOException e) {
-      throw new ComponentInfoAdapterException("Could not read origin.yaml", e);
+      throw new ComponentInfoAdapterException("Could not read package.yaml", e);
     }
   }
 
