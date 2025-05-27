@@ -1723,7 +1723,7 @@ This will download all sources and process them via ScanCode.
 This might take several hours to complete.
 Results are stored in subdirectory `Source` of the directory `output` and is organized in a tree structure given by the https://github.com/package-url/purl-spec[PackageURL] of the ApplicationComponents.
 
-===== Origin file
+===== Origin file (package.yaml)
 The Scancode integration scripts try to download ApplicationComponent sources from default URLs derived from the PackageUrl (e.g. Maven Central). In cases where the sources are not available at these locations, the download will fail (and the subsequent source scan will be skipped). In this case it is possible to manually download the sources from some other location and store it in the directory structure. Restarting the Scancode integration script might then perform the source scan.
 
 To be able to document the (non default) origin of the ApplicationComponent sources a file `package.yaml` is created in the components directory in the file system. If the failed source download has been performed manually it is possible to edit this file and correct the data given in this file.
@@ -1734,10 +1734,12 @@ To be able to document the (non default) origin of the ApplicationComponent sour
 # This file was automatically created but might manually be edited if the contained data is not correct
 sourceDownloadUrl: https://url/pointing/to/the/source/archive.jar  <1>
 packageDownloadUrl: https://url/pointing/to/the/binary/archive.jar <2>
+packageUrl: pkg:the/packageUrl/of/the/package <3>
 # note: to add comments: write them here and remove the hash at the beginning of the line (not yet processed by Solicitor)
 ----
 <1> URL for downloading the sources - will be available as property `ApplicationComponent.sourceDownloadUrl` in the Solicitor data model.
 <2> URL for downloading the binaries - will be available as property `ApplicationComponent.packageDownloadUrl` in the Solicitor data model.
+<3> PackageUrl of the package. This is for reference as the PackageUrl of the package is not stored anywhere else by default and might be difficult to reconstruct.
 
 The content of the file `package.yaml` currently just affects the above given two properties, it does not affect the downloading of sources by the scripts.
 
@@ -2194,6 +2196,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.36.0::
+* https://github.com/devonfw/solicitor/pull/314: Scancode integration: Rename file "origin.yaml" to "package.yaml" and add PackageURL to the file.
 
 Changes in 1.35.0::
 * https://github.com/devonfw/solicitor/pull/313: Added an additional correlation key to ensure diff calculation works even for multiple identical normalizedLicenses (e.g. unknown) and different declaredLicenses
