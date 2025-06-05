@@ -1642,14 +1642,10 @@ To use license guessing in a template, an `additionalWriter` (see <<Writers and 
   } ]
 
 == Feature Deprecation
-Within the lifecycle of the _Solicitor_ development features might be discontinued due
-to various reasons. In case that such discontinuation is expected to break existing projects
-a two stage deprecation mechanism is used:
+Within the lifecycle of the _Solicitor_ development, features might be discontinued due to various reasons. In case that such discontinuation is expected to break existing projects, a two-stage deprecation mechanism is used:
 
-* Stage 1: Usage of a deprecated feature will produce a _warning only_ giving details on
-what needs to be changed.
-* Stage 2: When a deprecated feature is used _Solicitor_ by default will terminate with an error
-message giving information about the deprecation.
+* **Stage 1**: Usage of a deprecated feature will produce a _warning only_, giving details on what needs to be changed.
+* **Stage 2**: When a deprecated feature is used, _Solicitor_ by default will terminate with an error message, providing information about the deprecation.
 
 By setting the property `solicitor.deprecated-features-allowed` to `true`
 (e.g. via the command line, see <<Configuration of Technical Properties>>), even in second stage
@@ -1657,11 +1653,9 @@ the feature will still be available and only a warning will be logged. The proje
 case ASAP be changed to no longer use the feature as it might soon be removed without further
 notice.
 
-IMPORTANT: Enabling the use of deprecated feature via the above property should only be
-a temporary workaround and not a standard setting.
+IMPORTANT: Enabling the use of deprecated features via the above property should only be a temporary workaround and not a standard setting.
 
-NOTE: If usage of a feature should be discontinued immediately (e.g. because it might lead to
-wrong/misleading output) the first stage of deprecation will be skipped.
+NOTE: If usage of a feature should be discontinued immediately (e.g., because it might lead to wrong/misleading output), the first stage of deprecation will be skipped.
 
 === List of Deprecated Features
 The following features are deprecated via the above mechanism:
@@ -1671,7 +1665,7 @@ The following features are deprecated via the above mechanism:
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
 * Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
-* Running Solicitor on Java 8; Stage 1 from Version 1.22.0 on; see https://github.com/devonfw/solicitor/issues/247
+* Running Solicitor on Java 8; **Stage 2** from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/247
 * LicenseUrl guessing; Stage 1 from Version 1.23.0 on; see https://github.com/devonfw/solicitor/issues/255
 * Reader of type "gradle2" (use Gradle License Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
 
