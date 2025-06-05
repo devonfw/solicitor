@@ -2191,6 +2191,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.36.0::
 * https://github.com/devonfw/solicitor/pull/314: Scancode integration: Rename file "origin.yaml" to "package.yaml" and add PackageURL to the file.
+* https://github.com/devonfw/solicitor/issues/249: Running Solicitor on Java 8 is deprecated (Stage 2) and will be no longer possible soon.
 
 Changes in 1.35.0::
 * https://github.com/devonfw/solicitor/pull/313: Added an additional correlation key to ensure diff calculation works even for multiple identical normalizedLicenses (e.g. unknown) and different declaredLicenses
