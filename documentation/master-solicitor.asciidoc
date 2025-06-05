@@ -1666,7 +1666,6 @@ The following features are deprecated via the above mechanism:
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
 * Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
 * Running Solicitor on Java 8; **Stage 2** from Version 1.37.0 on; see https://github.com/devonfw/solicitor/issues/247
-* LicenseUrl guessing; **Stage 2** from Version 1.37.0 on; see https://github.com/devonfw/solicitor/issues/255
 * Reader of type "gradle2" (use Gradle License Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
 
 == Experimental Scancode Integration
