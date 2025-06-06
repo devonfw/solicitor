@@ -141,19 +141,23 @@ public class Solicitor {
     this.lifecycleListenerHolder.endOfMainProcessing(modelRoot);
   }
 
-  /**
-   * Checks the java version and possibly issue deprecation error or warning.
-   */
+ /**
+ * Checks the Java version and enforces Stage 2 deprecation for JRE 8.
+ */
   private void checkJavaVersion() {
 
     String javaVersion = System.getProperty("java.version");
+    boolean deprecatedFeaturesAllowed = Boolean.parseBoolean(System.getProperty("solicitor.deprecated-features-allowed", "false"));
     // we just check for the prefix "1." because from Java 9 on the version number does no longer start with "1."
-    if (javaVersion.startsWith("1.")) {
-      this.deprecationChecker.check(true,
-          "Running Solicitor on Java 8 is deprecated. Yours is '" + javaVersion + "'. Switch to Java 11!");
-    }
-
+    if (javaVersion.startsWith("1.")) { // JRE 8 detection
+      if (!deprecatedFeaturesAllowed) {
+          LOG.error("Running Solicitor on Java 8 is deprecated (Stage 2). Solicitor will terminate. Switch to Java 11 or higher!");
+          throw new SolicitorRuntimeException("Solicitor does not support Java 8 unless deprecated features are explicitly enabled.");
+      } else {
+          LOG.warn("Running Solicitor on Java 8 is deprecated (Stage 2). Deprecated features are temporarily enabled.");
+      }
   }
+}
 
   /**
    * Read the inventory of {@link ApplicationComponent}s and their declared licenses.
