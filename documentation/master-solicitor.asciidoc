@@ -1665,7 +1665,7 @@ The following features are deprecated via the above mechanism:
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
 * Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
-* Running Solicitor on Java 8; **Stage 2** from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/247
+* Running Solicitor on Java 8; **Stage 2** from Version 1.37.0 on; see https://github.com/devonfw/solicitor/issues/247
 * LicenseUrl guessing; Stage 1 from Version 1.23.0 on; see https://github.com/devonfw/solicitor/issues/255
 * Reader of type "gradle2" (use Gradle License Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
 
@@ -2191,10 +2191,10 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.37.0::
 * https://github.com/devonfw/solicitor/pull/316: Additional license name mapping rules.
+* https://github.com/devonfw/solicitor/issues/249: Running Solicitor on Java 8 is deprecated (Stage 2) and will be no longer possible soon.
 
 Changes in 1.36.0::
 * https://github.com/devonfw/solicitor/pull/314: Scancode integration: Rename file "origin.yaml" to "package.yaml" and add PackageURL to the file.
-* https://github.com/devonfw/solicitor/issues/249: Running Solicitor on Java 8 is deprecated (Stage 2) and will be no longer possible soon.
 
 Changes in 1.35.0::
 * https://github.com/devonfw/solicitor/pull/313: Added an additional correlation key to ensure diff calculation works even for multiple identical normalizedLicenses (e.g. unknown) and different declaredLicenses
