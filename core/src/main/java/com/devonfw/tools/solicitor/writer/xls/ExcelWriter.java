@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.poi.EncryptedDocumentException;
-// usermodel api for creating, reading and modifying xls files
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellType;
@@ -27,7 +26,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFSheet; // xssf is the java implementation of excel 2007 (.xlsx format)
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,10 +171,6 @@ public class ExcelWriter implements Writer {
           for (int i = 0; i < headers.length; i++) {
             String toReplace = "$" + headers[i] + "$";
             if (text.contains(toReplace)) {
-              if (toReplace.toLowerCase().contains("guessedlicense")) {
-                this.deprecationChecker.check(false,
-                    "The Excel template uses properties of the 'guessedLicenseUrl' feature which is deprecated.");
-              }
               DataTableField value = rowData.getValueByIndex(i);
               String textValue = value.toString() == null ? "" : value.toString();
               text = text.replace(toReplace, textValue);

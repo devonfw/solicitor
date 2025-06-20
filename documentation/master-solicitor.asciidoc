@@ -201,9 +201,6 @@ The internal business data model consists of 6 entities:
 | legalApproved | String | indicates whether this usage is legally approved
 | legalComments | String | comments from legal, possibly indicating additional conditions to be fulfilled
 | trace | String | detail info of history of this data record (rule executions)
-| guessedLicenseUrl | String | guessed (possibly improved) URL of the effective normalized license _(deprecated)_
-| guessedLicenseUrlAuditInfo | String | audit info which documents how the guessedLicenseUrl was guessed _(deprecated)_
-| guessedLicenseContent | String | resolved content of guessedLicenseUrl _(deprecated)_
 |===
 
 For the mechanism how _Solicitor_ resolves the content of URLs and how the result
@@ -1584,63 +1581,6 @@ When creating the resource or filename for given URLs in the above steps the fol
 ** two underscores
 ** the last 40 characters of the (too) long filename
 
-== Guessing of license URLs
-
-WARNING: This feature is deprecated and will be removed soon.
-
-Fetching the license content `NormalizedLicense.effectiveNormalizedLicenseContent` based on the URL in `NormalizedLicense.effectiveNormalizedLicenseUrl` will often result in content which is in HTML format instead of plain text and is not properly rendered when included in reports.
-Sometimes the URL even does not point to the license text itself but just the homepage of the project.
-In general it is possible to manually correct this by editing the downloaded and cached content as described in the previous section. This approach might require a lot of manual work. _Solicitor_ therefore includes a mechanism named license url guessing which tries to guess an alternative license URL which should point to a representation of the content better suited for rendering.
-
-Currently license URL guessing is based solely on the URL given in `NormalizedLicense.effectiveNormalizedLicenseUrl`. It will try the following approaches:
-
-* If the original URL is a Github-URL and matches patterns which are known to return HTML-formatted content then the URL is rewritten to point to a raw version of the content.
-* If the original URL points to a Github project page (not to a file), then the algorithm will try different typical locations (like e.g. looking for file `LICENSE`). If found it will return this URL as result.
-* If no "better" URL could be guessed it will return the original URL.
-
-The result of the license URL guessing is available via three attributes:
-
-* `NormalizedLicense.guessedLicenseUrl`: The (possibly) improved URL pointing to the license text.
-* `NormalizedLicense.guessedLicenseUrlAuditInfo`: A text which gives info how the guessed url was determined (available for auditing purposes).
-* `NormalizedLicense.guessedLicenseContent`: The content downloaded from the guessed URL
-
-NOTE: Downloading the license content (also including the checking if a certain resource is available when trying different possible filenames) is done using the same (caching) mechanisms as downloading the content for other URLs, see the previous section.
-
-=== Caching of guessed URLs
-The information about guessed URLs for given original URLs (also including the audit info on the guessing process) uses a caching mechanism which is mainly identical to the caching of downloaded content. The files containing the cached data are stored in directory `licenseurls` (instead of `licenses` for the content itself).
-
-The file content looks as follows:
-
-[listing]
-https://raw.githubusercontent.com/some/project/master/LICENSE <1>
--------------------------                                     <2>
-URL changed from https://github.com/some/project/blob/master/LICENSE to https://raw.githubusercontent.com/some/project/master/LICENSE <3>
-
-<1> the guessed URL
-<2> a line of dashes as separator
-<3> the audit info (might be multiple lines)
-
-It is possible to manually change this cached information and thus correct it - similar to manually correcting the license text as described above.
-
-=== License guessing feature usage
-WARNING: From version 1.23.0 on the license guessing logic is deprecated. No standard report will use the guessed properties.
-
-To use license guessing in a template, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
-
-[listing]
-  "additionalWriters" : [ {
-    "type" : "velo",
-    "templateSource" : "classpath:com/devonfw/tools/solicitor/templates/Solicitor_Output_Template_Sample_v2.vm",
-    "target" : "${cfgdir}/output/OSS-Report_${project}_v2.html",
-    "description" : "The HTML OSS-Report",
-    "dataTables" : {
-        "MODELROOT"  : "classpath:com/devonfw/tools/solicitor/sql/modelroot.sql",
-        "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
-        "OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents_guessedlicenses.sql",
-        "UNIQUELICENSES" : "classpath:com/devonfw/tools/solicitor/sql/uniqueguessedlicenses.sql"
-    }
-  } ]
-
 == Feature Deprecation
 Within the lifecycle of the _Solicitor_ development, features might be discontinued due to various reasons. In case that such discontinuation is expected to break existing projects, a two-stage deprecation mechanism is used:
 
@@ -2094,12 +2034,6 @@ This template creates a HTML document which has a table containing the relevant 
 === Solicitor_Output_Template_Sample.vm
 This template creates an HTML document which has an overview of OSS components used in the project. The data is displayed in a table with the columns:
 Name, GroupId, Version, Application, License, LicenseUrl.
-
-=== Solicitor_Output_Template_Sample_v2.vm
-Similar to the above but uses guessed license URLs and content, see <<Guessing of license URLs>>.
-As license URL guessing is deprecated this template is no longer included in the standard configuration.
-For activation see <<License guessing feature usage>>.
-
 
 === Quality_Report.vm
 This template creates an HTML document which contains OSS components that have been mapped to multiple licenses. The data is displayed in a table with the columns:

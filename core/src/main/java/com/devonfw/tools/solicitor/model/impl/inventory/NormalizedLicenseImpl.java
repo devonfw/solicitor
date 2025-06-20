@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.devonfw.tools.solicitor.common.LicenseTextHelper;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
-import com.devonfw.tools.solicitor.licensetexts.GuessedLicenseUrlContent;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
@@ -70,17 +69,9 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
   private String trace;
 
-  private String guessedLicenseUrl;
-
-  private String guessedLicenseContentKey;
-
-  private String guessedLicenseUrlAuditInfo;
-
   private ApplicationComponent applicationComponent;
 
   private ContentProvider<WebContent> licenseContentProvider;
-
-  private ContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser;
 
   /**
    * Creates a new instance.
@@ -141,8 +132,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     this.effectiveNormalizedLicenseType, this.effectiveNormalizedLicense, this.effectiveNormalizedLicenseUrl,
     getEffectiveNormalizedLicenseContent(), this.legalPreApproved, this.copyLeft, this.licenseCompliance,
     this.licenseRefUrl, getLicenseRefContent(), this.includeLicense, this.includeSource, this.reviewedForRelease,
-    this.comments, this.legalApproved, this.legalComments, this.trace, this.guessedLicenseUrl,
-    this.guessedLicenseUrlAuditInfo, getGuessedLicenseContent() };
+    this.comments, this.legalApproved, this.legalComments, this.trace };
   }
 
   /** {@inheritDoc} */
@@ -217,8 +207,7 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     "normalizedLicense", "normalizedLicenseUrl", "normalizedLicenseContent", "effectiveNormalizedLicenseType",
     "effectiveNormalizedLicense", "effectiveNormalizedLicenseUrl", "effectiveNormalizedLicenseContent",
     "legalPreApproved", "copyLeft", "licenseCompliance", "licenseRefUrl", "licenseRefContent", "includeLicense",
-    "includeSource", "reviewedForRelease", "comments", "legalApproved", "legalComments", "trace", "guessedLicenseUrl",
-    "guessedLicenseUrlAuditInfo", "guessedLicenseContent" };
+    "includeSource", "reviewedForRelease", "comments", "legalApproved", "legalComments", "trace" };
   }
 
   /** {@inheritDoc} */
@@ -357,45 +346,6 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
   public String getTrace() {
 
     return this.trace;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getGuessedLicenseUrl() {
-
-    return this.guessedLicenseUrl;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getGuessedLicenseUrlAuditInfo() {
-
-    return this.guessedLicenseUrlAuditInfo;
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  @JsonIgnore
-  public String getGuessedLicenseContent() {
-
-    return LicenseTextHelper.replaceLongHtmlContent(retrieveTextFromPool(this.guessedLicenseContentKey));
-  }
-
-  /**
-   * Gets the text pool key of the {@link #getGuessedLicenseContent()}.
-   *
-   * @return the key
-   */
-  public String getGuessedLicenseContentKey() {
-
-    return this.guessedLicenseContentKey;
   }
 
   /** {@inheritDoc} */
@@ -545,16 +495,6 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     this.licenseContentProvider = licenseContentProvider;
   }
 
-  /**
-   * This method sets the field <code>licenseUrlGuesser</code>.
-   *
-   * @param licenseUrlGuesser the new value of the field icenseUrlGuesser
-   */
-  public void setLicenseUrlGuesser(ContentProvider<GuessedLicenseUrlContent> licenseUrlGuesser) {
-
-    this.licenseUrlGuesser = licenseUrlGuesser;
-  }
-
   /** {@inheritDoc} */
   @Override
   public void setLicenseRefUrl(String licenseRefUrl) {
@@ -648,77 +588,14 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
 
   /** {@inheritDoc} */
   @Override
-  public void setGuessedLicenseUrl(String guessedLicenseUrl) {
-
-    this.guessedLicenseUrl = guessedLicenseUrl;
-
-  }
-
-  /**
-   * Sets the guessedLicenseContent.
-   *
-   * @param guessedLicenseContent the content to set
-   */
-  @Override
-  public void setGuessedLicenseContent(String guessedLicenseContent) {
-
-    this.guessedLicenseContentKey = storeTextInPool(guessedLicenseContent);
-  }
-
-  /**
-   * Sets the text pool key of the {@link #getGuessedLicenseContent()}.
-   *
-   * @param guessedLicenseContentKey the key
-   */
-  public void setGuessedLicenseContentKey(String guessedLicenseContentKey) {
-
-    this.guessedLicenseContentKey = guessedLicenseContentKey;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setGuessedLicenseUrlAuditInfo(String guessedLicenseUrlAuditInfo) {
-
-    this.guessedLicenseUrlAuditInfo = guessedLicenseUrlAuditInfo;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public void completeData() {
 
     // following methods try to fill some data fields if they do not yet contain data
-    possiblyGuessLicenseUrl();
-    possiblyFillGuessedLicenseContent();
     possiblyFillDeclaredLicenseContent();
     possiblyFillNormalizedLicenseContent();
     possiblyFillEffectiveNormalizedLicenseContent();
     possiblyFillLicenseRefContent();
 
-  }
-
-  /**
-   * If the {@link #guessedLicenseUrl} is not yet set it will be tried to guess it. This includes also setting the
-   * {@link #guessedLicenseUrlAuditInfo}.
-   */
-  private void possiblyGuessLicenseUrl() {
-
-    // execute license guessing based on effectziveNormalizedLicensUrl
-    if (this.guessedLicenseUrl == null) {
-      GuessedLicenseUrlContent guessed = this.licenseUrlGuesser.getContentForUri(this.effectiveNormalizedLicenseUrl);
-      this.guessedLicenseUrl = guessed.getGuessedUrl();
-      this.guessedLicenseUrlAuditInfo = guessed.getAuditInfo();
-    }
-  }
-
-  /**
-   * If the {@link #getGuessedLicenseContent()} is not yet set (i.e. the content is not yet set) it will be attempted to
-   * fetch the content via the {@link #licenseContentProvider} and store it.
-   */
-  private void possiblyFillGuessedLicenseContent() {
-
-    if (getGuessedLicenseContent() == null) {
-      setGuessedLicenseContent(this.licenseContentProvider.getContentForUri(this.guessedLicenseUrl).getContent());
-    }
   }
 
   /**

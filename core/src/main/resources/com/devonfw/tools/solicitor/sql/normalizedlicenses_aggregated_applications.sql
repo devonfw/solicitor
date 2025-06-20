@@ -29,8 +29,6 @@ select
 	"effectiveNormalizedLicenseType",
 	"effectiveNormalizedLicense",
 	"effectiveNormalizedLicenseUrl",
-	"guessedLicenseUrl",
-	"guessedLicenseUrlAuditInfo",
 	"legalPreApproved",
 	"copyLeft",
 	"licenseCompliance",
@@ -41,7 +39,6 @@ select
 	"comments",
 	"legalApproved",
 	"legalComments"
-
 from (
 	select
 		GROUP_CONCAT(DISTINCT a."applicationName" ORDER BY "applicationName" ASC SEPARATOR ', ') as "applicationName", 
@@ -64,8 +61,6 @@ from (
 		l."effectiveNormalizedLicenseType",
 		l."effectiveNormalizedLicense",
 		l."effectiveNormalizedLicenseUrl",
-		l."guessedLicenseUrl",
-		l."guessedLicenseUrlAuditInfo",
 		l."legalPreApproved",
 		l."copyLeft",
 		l."licenseCompliance",
@@ -102,8 +97,6 @@ from (
 		"effectiveNormalizedLicenseType",
 		"effectiveNormalizedLicense",
 	    "effectiveNormalizedLicenseUrl",
-	    "guessedLicenseUrl",
-		"guessedLicenseUrlAuditInfo",
 		"legalPreApproved",
 		"copyLeft",
 	    "licenseCompliance",

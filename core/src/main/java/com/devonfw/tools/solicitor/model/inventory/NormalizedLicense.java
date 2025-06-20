@@ -168,27 +168,6 @@ public interface NormalizedLicense {
   String getReviewedForRelease();
 
   /**
-   * This method gets the field <code>guessedLicenseUrl</code>.
-   *
-   * @return the field guessedLicenseUrl
-   */
-  String getGuessedLicenseUrl();
-
-  /**
-   * This method gets the field <code>guessedLicenseUrlAuditInfos</code>.
-   *
-   * @return the field guessedLicenseUrlAuditInfo
-   */
-  String getGuessedLicenseUrlAuditInfo();
-
-  /**
-   * This method gets the field <code>guessedLicenseContent</code>.
-   *
-   * @return the field guessedLicenseContent
-   */
-  String getGuessedLicenseContent();
-
-  /**
    * This method gets the field <code>trace</code>.
    *
    * @return the field trace
@@ -362,27 +341,6 @@ public interface NormalizedLicense {
    * @param trace the new value of the field trace
    */
   void setTrace(String trace);
-
-  /**
-   * This method sets the field <code>guessedLicenseUrl</code>
-   *
-   * @param guessedLicenseUrl the new value of the field guessedLicenseUrl
-   */
-  void setGuessedLicenseUrl(String guessedLicenseUrl);
-
-  /**
-   * This method sets the field <code>guessedLicenseContent</code>
-   *
-   * @param guessedLicenseContent the content to set
-   */
-  void setGuessedLicenseContent(String guessedLicenseContent);
-
-  /**
-   * This method sets the field <code>guessedLicenseUrlAuditInfo</code>
-   *
-   * @param guessedLicenseUrlAuditInfo the new value of the field guessedLicenseUrlAuditInfo
-   */
-  void setGuessedLicenseUrlAuditInfo(String guessedLicenseUrlAuditInfo);
 
   /**
    * Complete the data of this object by setting members which are derived from other members.

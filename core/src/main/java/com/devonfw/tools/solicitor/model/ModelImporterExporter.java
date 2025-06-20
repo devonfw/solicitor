@@ -305,25 +305,17 @@ public class ModelImporterExporter {
       String legalApproved = normalizedLicenseNode.get("legalApproved").asText(null);
       String legalComments = normalizedLicenseNode.get("legalComments").asText(null);
       String trace = normalizedLicenseNode.get("trace").asText(null);
-      String guessedLicenseUrl = null;
-      String guessedLicenseUrlAuditInfo = null;
-      if (readModelVersion >= LOWEST_VERSION_WITH_GUESSED_LICENSE_URL) {
-        guessedLicenseUrl = normalizedLicenseNode.get("guessedLicenseUrl").asText(null);
-        guessedLicenseUrlAuditInfo = normalizedLicenseNode.get("guessedLicenseUrlAuditInfo").asText(null);
-      }
       // Text pool keys introduced in certain model versions
       String effectiveNormalizedLicenseContentKey = null;
       String declaredLicenseContentKey = null;
       String licenseRefContentKey = null;
       String normalizedLicenseContentKey = null;
-      String guessedLicenseContentKey = null;
       if (readModelVersion >= LOWEST_VERSION_WITH_TEXT_POOL) {
         effectiveNormalizedLicenseContentKey = normalizedLicenseNode.get("effectiveNormalizedLicenseContentKey")
             .asText(null);
         declaredLicenseContentKey = normalizedLicenseNode.get("declaredLicenseContentKey").asText(null);
         licenseRefContentKey = normalizedLicenseNode.get("licenseRefContentKey").asText(null);
         normalizedLicenseContentKey = normalizedLicenseNode.get("normalizedLicenseContentKey").asText(null);
-        guessedLicenseContentKey = normalizedLicenseNode.get("guessedLicenseContentKey").asText(null);
       }
       // Creating a new NormalizedLicense object and populating its fields
       NormalizedLicenseImpl normalizedLicense = this.modelFactory.newNormalizedLicense();
@@ -347,13 +339,10 @@ public class ModelImporterExporter {
       normalizedLicense.setLegalApproved(legalApproved);
       normalizedLicense.setLegalComments(legalComments);
       normalizedLicense.setTrace(trace);
-      normalizedLicense.setGuessedLicenseUrl(guessedLicenseUrl);
-      normalizedLicense.setGuessedLicenseUrlAuditInfo(guessedLicenseUrlAuditInfo);
       normalizedLicense.setEffectiveNormalizedLicenseContentKey(effectiveNormalizedLicenseContentKey);
       normalizedLicense.setDeclaredLicenseContentKey(declaredLicenseContentKey);
       normalizedLicense.setLicenseRefContentKey(licenseRefContentKey);
       normalizedLicense.setNormalizedLicenseContentKey(normalizedLicenseContentKey);
-      normalizedLicense.setGuessedLicenseContentKey(guessedLicenseContentKey);
 
     }
   }

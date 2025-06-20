@@ -455,9 +455,6 @@
             <mxPoint x="-24" y="4" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Q7E9GpuZRZKX_aVkgj14-1" value="&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;Classpath&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;GuessedLicense&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;UrlContentProvider&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;rotation=0;" parent="1" vertex="1">
-          <mxGeometry x="606" y="870" width="140" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="Q7E9GpuZRZKX_aVkgj14-2" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="Q7E9GpuZRZKX_aVkgj14-1" vertex="1">
           <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
             <mxPoint x="-24" y="4" as="offset" />
@@ -471,16 +468,10 @@
             <mxPoint x="-24" y="4" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Q7E9GpuZRZKX_aVkgj14-5" value="&lt;div style=&quot;text-align: center&quot;&gt;&lt;b&gt;FilesystemCaching&lt;/b&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;GuessedLicenseUrl&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;ContentProvider&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;rotation=0;" parent="1" vertex="1">
-          <mxGeometry x="777" y="870" width="140" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="Q7E9GpuZRZKX_aVkgj14-6" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="Q7E9GpuZRZKX_aVkgj14-5" vertex="1">
           <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
             <mxPoint x="-24" y="4" as="offset" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="Q7E9GpuZRZKX_aVkgj14-7" value="&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;InMemoryMap&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;GuessedLicense&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: center&quot;&gt;&lt;span&gt;&lt;b&gt;UrlContentProvider&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;p style=&quot;margin: 0px ; margin-top: 6px ; text-align: center&quot;&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;rotation=0;" parent="1" vertex="1">
-          <mxGeometry x="436" y="870" width="140" height="60" as="geometry" />
         </mxCell>
         <mxCell id="Q7E9GpuZRZKX_aVkgj14-8" value="" style="shape=component;jettyWidth=8;jettyHeight=4;" parent="Q7E9GpuZRZKX_aVkgj14-7" vertex="1">
           <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">

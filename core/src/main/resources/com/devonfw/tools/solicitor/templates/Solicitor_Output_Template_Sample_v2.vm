@@ -80,7 +80,6 @@ ul, ol, li {
 				<td>$license.version</td> ## application component version
 				<td>$license.APPS</td> ## application names
 				<td>$license.effectiveNormalizedLicense</td> ## license name
-				<td>$license.guessedLicenseUrl</td> ## license url
 			</tr>
 	#end
 
@@ -94,13 +93,10 @@ ul, ol, li {
 
 #foreach($ul in $UNIQUELICENSES)
   #set($nl = $ul.effectiveNormalizedLicense)
-  #set($nlu = $ul.guessedLicenseUrl)
-  #set($nlc = $ul.guessedLicenseContent)
-  #set($unlc = $ul.unifiedGuessedLicenseContent)
 <hr/>
 <h3>$nl</h3>
 <p>
-The component(s) (Name/GroupId/Version): 
+The component(s) (Name/GroupId/Version):
 		<ul>
 		#foreach($ac in $OSSLICENSES )
 			#set( $aid  = $ac.artifactId )
@@ -108,9 +104,6 @@ The component(s) (Name/GroupId/Version):
 			#set( $ver  = $ac.version )
 			#set( $apps = $ac.APPS )
 			#set( $enl  = $ac.effectiveNormalizedLicense )
-			#set( $enlu = $ac.guessedLicenseUrl )
-			#set( $enlc = $ac.guessedLicenseContent )
-			#set( $uenlc = $ac.unifiedGuessedLicenseContent )
 			#if( $enl == $nl && $uenlc == $unlc )
 			<li>$aid/$gid/$ver ($apps)</li>
 			#end
@@ -129,7 +122,7 @@ are at least partly licensed via the following license of type $nl:
 			<i>No license text available.</i>
 		#end
 		<br/>
-URL(s) leading to the above given license text: $nlu 
+URL(s) leading to the above given license text: $nlu
 </p>
 #end
 
