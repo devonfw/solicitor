@@ -83,7 +83,7 @@ public class VelocityWriter implements Writer {
       templateString = IOHelper.readStringFromInputStream(inp);
       // guessedLicenseUrl is deprecated and on stage 1
       if (templateString.toLowerCase().contains("guessedlicense")) {
-        this.deprecationChecker.check(true,
+        this.deprecationChecker.check(false,
             "This template " + (templateSource) + " uses the 'guessedLicenseUrl' feature which is deprecated.");
       }
     } catch (IOException e) {
