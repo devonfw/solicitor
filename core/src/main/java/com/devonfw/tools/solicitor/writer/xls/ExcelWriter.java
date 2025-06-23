@@ -173,7 +173,7 @@ public class ExcelWriter implements Writer {
             String toReplace = "$" + headers[i] + "$";
             if (text.contains(toReplace)) {
               if (toReplace.toLowerCase().contains("guessedlicense")) {
-                this.deprecationChecker.check(true,
+                this.deprecationChecker.check(false,
                     "The Excel template uses properties of the 'guessedLicenseUrl' feature which is deprecated.");
               }
               DataTableField value = rowData.getValueByIndex(i);
