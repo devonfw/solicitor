@@ -164,7 +164,8 @@ public class Solicitor {
       Reader reader = this.readerFactory.readerFor(readerSetup.getType());
       try {
         reader.readInventory(readerSetup.getType(), readerSetup.getSource(), readerSetup.getApplication(),
-            readerSetup.getUsagePattern(), readerSetup.getRepoType(), readerSetup.getPackageType(), readerSetup.getConfiguration());
+            readerSetup.getUsagePattern(), readerSetup.getRepoType(), readerSetup.getPackageType(),
+            readerSetup.getConfiguration());
       } catch (SolicitorRuntimeException sre) {
         if (this.tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
           Application app = readerSetup.getApplication();
@@ -215,7 +216,10 @@ public class Solicitor {
     long startTime = System.currentTimeMillis();
     boolean doMainProcessing = true;
     SolicitorVersion sv = this.solicitorVersion;
-    LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate());
+    String javaVersion = System.getProperty("java.version");
+    String javaVendor = System.getProperty("java.vendor");
+
+    LOG.info(LogMessages.STARTING.msg(), sv.getVersion(), sv.getGithash(), sv.getBuilddate(), javaVersion, javaVendor);
     if (sv.isExtensionPresent()) {
       activateExtension(sv);
     } else {

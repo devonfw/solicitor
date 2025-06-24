@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 public enum LogMessages {
 
   CALLED(0, "Solicitor called with command line arguments: '{}'"), //
-  STARTING(1, "Solicitor starts, Version:{}, Buildnumber:{}, Builddate:{}"), //
+  STARTING(1, "Solicitor starts, Version:{}, Buildnumber:{}, Builddate:{}, Java version:{} (Vendor:{})"), //
   COMPLETED(2, "Solicitor processing completed in {} ms"), //
   ABORTED(3, "Solicitor processing aborted"), //
   COPYING_RESOURCE(4, "Copying resource '{}' to file '{}'"), //
