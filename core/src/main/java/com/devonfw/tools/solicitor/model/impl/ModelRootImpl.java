@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
 
-  private static final int DEFAULT_MODEL_VERSION = 7;
+  private static final int DEFAULT_MODEL_VERSION = 8;
 
   private String executionTime;
 

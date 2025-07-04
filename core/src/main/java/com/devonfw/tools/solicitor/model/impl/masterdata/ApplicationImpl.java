@@ -28,11 +28,11 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
 
   private String programmingEcosystem;
 
+  private String reportingGroups;
+
   private List<ApplicationComponent> applicationComponents = new ArrayList<>();
 
   private Engagement engagement;
-
-  private String reportingGroups;
 
   /**
    * Constructor.

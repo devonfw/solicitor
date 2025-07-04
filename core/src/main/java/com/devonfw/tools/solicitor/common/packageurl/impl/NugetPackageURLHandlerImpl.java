@@ -29,7 +29,6 @@ public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
   }
 
   // Nuget does not have a standardized API to fetch the source code
-  // This needs to be handled by another component (LicenseUrlGuesser?)
   @Override
   public String doSourceDownloadUrlFor(PackageURL purl) {
 
