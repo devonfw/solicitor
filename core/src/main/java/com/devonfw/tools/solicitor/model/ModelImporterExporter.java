@@ -49,8 +49,6 @@ public class ModelImporterExporter {
 
   private static final int LOWEST_SUPPORTED_MODEL_VERSION = 2;
 
-  private static final int LOWEST_VERSION_WITH_GUESSED_LICENSE_URL = 3;
-
   private static final int LOWEST_VERSION_WITH_PACKAGE_URL = 4;
 
   private static final int LOWEST_VERSION_WITH_SOURCE_REPO_URL = 5;
