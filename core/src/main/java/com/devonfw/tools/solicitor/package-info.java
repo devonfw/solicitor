@@ -4,7 +4,7 @@
  * <p>
  * The following diagram shows the main Spring Beans of Solicitor and their major interconnections:
  * <p>
- * <img src="doc-files/solicitor_beans.png" alt="Solicitor Spring Beans">
+ * <img src="doc-files/solicitor_beans.drawio.png" alt="Solicitor Spring Beans">
  * <p>
  * The interfaces / classes / spring beans of the componentinfo package and subpackages is shown in the following
  * diagram:

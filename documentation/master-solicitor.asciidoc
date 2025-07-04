@@ -206,8 +206,6 @@ The internal business data model consists of 6 entities:
 For the mechanism how _Solicitor_ resolves the content of URLs and how the result
 might be influenced see <<Resolving of License URLs>>.
 
-For a description of the URL guessing mechanism (deprecated) see <<Guessing of license URLs>>.
-
 ===== License types
 Defines the type of license
 
@@ -2131,7 +2129,6 @@ Changes in 1.37.0::
 * https://github.com/devonfw/solicitor/pull/318: License URL guessing deprecation set to stage 2. This feature will be removed soon.
 * https://github.com/devonfw/solicitor/pull/319: Log the java version and vendor at startup (part of log message SOLI-001).
 
-
 Changes in 1.36.0::
 * https://github.com/devonfw/solicitor/pull/314: Scancode integration: Rename file "origin.yaml" to "package.yaml" and add PackageURL to the file.
 
@@ -2321,7 +2318,7 @@ Allow an additional user guide to be extracted when using an extension.
 Changes in 1.3.0::
 * New report _ScancodeDownloadScript.vm_ to compile copyright information using https://github.com/nexB/scancode-toolkit[ScanCode].
 * https://github.com/devonfw/solicitor/issues/75:
-Added license URL guessing, see <<Guessing of license URLs>>.
+Added license URL guessing. (Feature removed in 1.38.0).
 * https://github.com/devonfw/solicitor/issues/86:
 In case that downloading content for a given URL fails no WARN message with stacktrace will be shown any more.
 Instead there will be an info message (SOLI-047 or SOLI-048) indicating that the content could not be downloaded.
