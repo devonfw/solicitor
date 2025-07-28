@@ -33,7 +33,7 @@
   </scm>
 
   <properties>
-    <java.version>1.8</java.version>
+    <java.version>11</java.version>
     <maven.build.timestamp.format>dd-MM-yy_HH:mm</maven.build.timestamp.format>
     <builddate>${maven.build.timestamp}</builddate>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
