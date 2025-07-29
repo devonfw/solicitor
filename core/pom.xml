@@ -114,18 +114,6 @@
       <groupId>org.apache.velocity.tools</groupId>
       <artifactId>velocity-tools-generic</artifactId>
       <version>3.1</version>
-      <exclusions>
-        <!-- omit this as functionality is not required and license is unclear -->
-        <exclusion>
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
-        </exclusion>
-        <!-- dom4j already included with different groupId -->
-        <exclusion>
-          <groupId>dom4j</groupId>
-          <artifactId>dom4j</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
