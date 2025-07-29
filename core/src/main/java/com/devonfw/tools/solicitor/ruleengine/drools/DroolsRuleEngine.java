@@ -19,7 +19,6 @@ import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +48,6 @@ import com.devonfw.tools.solicitor.ruleengine.RuleEngine;
 @Component
 @Order(InventoryProcessor.RULE_ENGINE)
 public class DroolsRuleEngine implements RuleEngine {
-
-  static {
-    // avoid parallel compiling of rules to avoid bug existing in Drools 8.17.0.Beta ... 8.31.0.Beta
-    // see https://issues.redhat.com/browse/DROOLS-7210
-    System.setProperty(ParallelRulesBuildThresholdOption.PROPERTY_NAME, "-1");
-  }
 
   private static final Logger LOG = LoggerFactory.getLogger(DroolsRuleEngine.class);
 

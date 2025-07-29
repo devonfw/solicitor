@@ -226,7 +226,7 @@ A "normalized" license id might be either a SPDX-Id, a `LicenseRef`-Id or a "pse
 
 == Usage
 === Executing Solicitor
-_Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java runtime environment (Java Version: 11 - 17). If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw/solicitor .
+_Solicitor_ is a standalone Java (Spring Boot) application. Prerequisite for running it is an existing Java runtime environment (Java Version: 11 - 21). If you do not yet have a the _Solicitor_ executable JAR (`solicitor.jar`) you need to build it as given on the project GitHub homepage https://github.com/devonfw/solicitor .
 
 _Solicitor_ is executed with the following command:
 
@@ -2121,7 +2121,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.38.0::
 * https://github.com/devonfw/solicitor/issues/320: Remove LicenseURLGuessing logic from Solicitor.
-* https://github.com/devonfw/solicitor/issues/250: Dropping support to run Solicitor on Java 8. Supported Java versions are now 11 to 17.
+* https://github.com/devonfw/solicitor/issues/250: Dropping support to run Solicitor on Java 8. Upgrade of Drools rule engine to version 8.44.2. Supported Java versions are now 11 to 21.
 
 Changes in 1.37.0::
 * https://github.com/devonfw/solicitor/pull/316: Additional license name mapping rules.

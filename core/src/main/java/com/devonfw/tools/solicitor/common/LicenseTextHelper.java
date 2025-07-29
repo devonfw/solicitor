@@ -1,6 +1,6 @@
 package com.devonfw.tools.solicitor.common;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
