@@ -2119,6 +2119,8 @@ Spring beans implementing this interface will be called at certain points in the
 
 [appendix]
 == Release Notes
+Changes in 1.39.0::
+
 Changes in 1.38.0::
 * https://github.com/devonfw/solicitor/issues/320: Remove LicenseURLGuessing logic from Solicitor.
 * https://github.com/devonfw/solicitor/issues/250: Dropping support to run Solicitor on Java 8. Upgrade of Drools rule engine to version 8.44.2. Supported Java versions are now 11 to 21.
