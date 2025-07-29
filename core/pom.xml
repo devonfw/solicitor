@@ -111,9 +111,9 @@
       <version>2.3</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.velocity</groupId>
-      <artifactId>velocity-tools</artifactId>
-      <version>2.0</version>
+      <groupId>org.apache.velocity.tools</groupId>
+      <artifactId>velocity-tools-generic</artifactId>
+      <version>3.1</version>
       <exclusions>
         <!-- omit this as functionality is not required and license is unclear -->
         <exclusion>
