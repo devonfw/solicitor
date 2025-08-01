@@ -101,8 +101,14 @@ public class ExcelWriter implements Writer {
 
   private void copyRowsDown(Row row) {
 
-    // copy the current row to the row directly beneath it
+    // copy the current row (and all rows below) to the row directly beneath it
+
     XSSFSheet worksheet = (XSSFSheet) row.getSheet();
+
+    // before actually copying it: probably shift any rows down which exist already underneath 
+    if (worksheet.getLastRowNum() > row.getRowNum()) {
+      worksheet.shiftRows(row.getRowNum() + 1, worksheet.getLastRowNum(), 1, true, false);
+    }
     worksheet.copyRows(row.getRowNum(), row.getRowNum(), row.getRowNum() + 1, new CellCopyPolicy());
   }
 
