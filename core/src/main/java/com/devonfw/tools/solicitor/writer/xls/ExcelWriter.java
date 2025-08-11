@@ -101,9 +101,23 @@ public class ExcelWriter implements Writer {
 
   private void copyRowsDown(Row row) {
 
-    // copy the current row to the row directly beneath it
+    // copy the current row (and all rows below) to the row directly beneath it
+
     XSSFSheet worksheet = (XSSFSheet) row.getSheet();
     worksheet.copyRows(row.getRowNum(), row.getRowNum(), row.getRowNum() + 1, new CellCopyPolicy());
+  }
+
+  private void possiblyMoveBelowRowsDownToCreateSpaceForNewRows(Row row, int numberOfRows) {
+
+    XSSFSheet worksheet = (XSSFSheet) row.getSheet();
+
+    // only do anything if the numberOfRows is greater than 1 and there actually exist rows below the current row
+    if ((numberOfRows > 1) && (worksheet.getLastRowNum() > row.getRowNum())) {
+      LOG.debug(
+          "Inserting space for " + (numberOfRows - 1) + " additional rows by shifting rows '" + (row.getRowNum() + 1)
+              + "' to '" + worksheet.getLastRowNum() + "' in worksheet'" + worksheet.getSheetName() + "'");
+      worksheet.shiftRows(row.getRowNum() + 1, worksheet.getLastRowNum(), numberOfRows - 1, true, false);
+    }
   }
 
   private void findCellsToIterate(Map<Cell, String> dataIterators, Workbook wb, Collection<String> tableLabels) {
@@ -145,6 +159,15 @@ public class ExcelWriter implements Writer {
 
     // get the current row in the template
     Row row = cell.getRow();
+
+    // if the data table has more than 1 row, then we might need to create place in in the sheet to insert them
+    int numberOfRows = 0;
+    Iterator<DataTableRow> it = dt.iterator();
+    while (it.hasNext()) {
+      it.next();
+      numberOfRows++;
+    }
+    possiblyMoveBelowRowsDownToCreateSpaceForNewRows(row, numberOfRows);
 
     // add additional rows if necessary and replace the placeholders
     for (Iterator<DataTableRow> rowIterator = dt.iterator(); rowIterator.hasNext();) {
