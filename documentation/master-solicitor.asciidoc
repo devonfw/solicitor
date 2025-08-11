@@ -2121,6 +2121,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.39.0::
 * https://github.com/devonfw/solicitor/issues/323: New rows created in the XLS templating are inserted now instead of just overwriting any possible existing rows.
+* https://github.com/devonfw/solicitor/pull/325: Include additional data to Statistics.json report.
 
 Changes in 1.38.0::
 * https://github.com/devonfw/solicitor/issues/320: Remove LicenseURLGuessing logic from Solicitor.
