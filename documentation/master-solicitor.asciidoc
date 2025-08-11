@@ -2119,6 +2119,8 @@ Spring beans implementing this interface will be called at certain points in the
 
 [appendix]
 == Release Notes
+Changes in 1.40.0::
+
 Changes in 1.39.0::
 * https://github.com/devonfw/solicitor/issues/323: New rows created in the XLS templating are inserted now instead of just overwriting any possible existing rows.
 * https://github.com/devonfw/solicitor/pull/325: Include additional data to Statistics.json report.
