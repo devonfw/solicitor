@@ -4,18 +4,20 @@
 -- The trace info will also be aggregated as it normally differs for different Applications
 -- due to reading from different input files.
 -- This is a replacement of "allden_normalizedlicenses.sql" for generating aggregated reports.
-select 
+select
     CONCAT(NVL("groupId",'-'),NVL("artifactId",'-'),NVL("version",'-'),NVL("normalizedLicense",'-')) as CORR_KEY_0,
     CONCAT(NVL("groupId",'-'),NVL("artifactId",'-'),NVL("normalizedLicense",'-')) as CORR_KEY_1,
     CONCAT(NVL("groupId",'-'),NVL("artifactId",'-'),NVL("version",'-')) as CORR_KEY_2,
     CONCAT(NVL("groupId",'-'),NVL("artifactId",'-')) as CORR_KEY_3,
-    "applicationName", 
-	"version" , 
-	"trace" , 
+    "applicationName",
+	"version" ,
+	"trace" ,
 	"groupId",
 	"artifactId",
 	"repoType",
 	"packageUrl",
+	"packageDownloadUrl",
+	"sourceDownloadUrl",
 	"ossHomepage",
 	"sourceRepoUrl",
 	"dataStatus",
@@ -41,13 +43,15 @@ select
 	"legalComments"
 from (
 	select
-		GROUP_CONCAT(DISTINCT a."applicationName" ORDER BY "applicationName" ASC SEPARATOR ', ') as "applicationName", 
-		GROUP_CONCAT(DISTINCT ac."version" ORDER BY "version" ASC SEPARATOR ', ') as "version" , 
-		GROUP_CONCAT(l."trace" ORDER BY "trace" ASC SEPARATOR U&'\000D\000A---------\000D\000A') as "trace" , 
+		GROUP_CONCAT(DISTINCT a."applicationName" ORDER BY "applicationName" ASC SEPARATOR ', ') as "applicationName",
+		GROUP_CONCAT(DISTINCT ac."version" ORDER BY "version" ASC SEPARATOR ', ') as "version" ,
+		GROUP_CONCAT(l."trace" ORDER BY "trace" ASC SEPARATOR U&'\000D\000A---------\000D\000A') as "trace" ,
 		ac."groupId",
 		ac."artifactId",
 		ac."repoType",
 		ac."packageUrl",
+		ac."packageDownloadUrl",
+		ac."sourceDownloadUrl",
 		ac."ossHomepage",
 		ac."sourceRepoUrl",
 		ac."dataStatus",
@@ -71,19 +75,21 @@ from (
 		l."comments",
 		l."legalApproved",
 		l."legalComments"
-	from 
-		APPLICATION a, 
-		APPLICATIONCOMPONENT ac, 
-		NORMALIZEDLICENSE l 
+	from
+		APPLICATION a,
+		APPLICATIONCOMPONENT ac,
+		NORMALIZEDLICENSE l
 	where
-		a."reportingGroups" LIKE '%#reportingGroup#%' AND 
+		a."reportingGroups" LIKE '%#reportingGroup#%' AND
 		a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT AND
-		ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE  
-	group by 
+		ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE
+	group by
 		"groupId",
 		"artifactId",
 		"repoType",
 		"packageUrl",
+		"packageDownloadUrl",
+		"sourceDownloadUrl",
 		"ossHomepage",
 		"sourceRepoUrl",
 		"dataStatus",
@@ -92,27 +98,26 @@ from (
 		"declaredLicense",
 		"licenseUrl",
 		"normalizedLicenseType",
-	    "normalizedLicense",
+	  "normalizedLicense",
 		"normalizedLicenseUrl",
 		"effectiveNormalizedLicenseType",
 		"effectiveNormalizedLicense",
-	    "effectiveNormalizedLicenseUrl",
+	  "effectiveNormalizedLicenseUrl",
 		"legalPreApproved",
 		"copyLeft",
-	    "licenseCompliance",
+	  "licenseCompliance",
 		"licenseRefUrl",
 		"includeLicense",
 		"includeSource",
-	    "reviewedForRelease",
+	  "reviewedForRelease",
 		"comments",
 		"legalApproved",
 		"legalComments"
 )
 order by
-	UPPER("groupId"), 
-	UPPER("artifactId"), 
-	UPPER("version"), 
+	UPPER("groupId"),
+	UPPER("artifactId"),
+	UPPER("version"),
 	UPPER("effectiveNormalizedLicense"),
 	UPPER("normalizedLicense"),
 	UPPER("applicationName")
-	
