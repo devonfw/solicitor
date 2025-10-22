@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor;
 
 import java.io.FileNotFoundException;
+import java.lang.Runtime.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,6 +116,7 @@ public class Solicitor {
    */
   private void mainProcessing(CommandLineOptions clo) {
 
+    checkForDeprecatedJavaVersion();
     ModelRoot modelRoot = this.configFactory.createConfig(clo.configUrl);
     this.lifecycleListenerHolder.modelRootInitialized(modelRoot);
     if (clo.load) {
@@ -138,6 +140,20 @@ public class Solicitor {
     }
     this.writerFacade.writeResult(modelRoot, oldModelRoot);
     this.lifecycleListenerHolder.endOfMainProcessing(modelRoot);
+  }
+
+  /**
+   * Checks the java version and possibly issue deprecation error or warning.
+   */
+  private void checkForDeprecatedJavaVersion() {
+
+    Version javaVersion = Runtime.version();
+
+    if (javaVersion.feature() < 17) {
+      this.deprecationChecker.check(true, "Running Solicitor on Java versions prior to 17 is deprecated. Yours is '"
+          + javaVersion + "'. Switch to at least Java 17");
+    }
+
   }
 
   /**
