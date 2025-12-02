@@ -1604,7 +1604,7 @@ The following features are deprecated via the above mechanism:
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
 * Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
 * Reader of type "gradle2" (use Gradle License Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
-* Running Solicitor on Java versions prior to Java 17; Stage 1 from Version 1.41.0 on; see https://github.com/devonfw/solicitor/issues/328
+* Running Solicitor on Java versions prior to Java 17; Stage 2 from Version 1.42.0 on; see https://github.com/devonfw/solicitor/issues/328
 
 == Experimental Scancode Integration
 
@@ -2122,6 +2122,8 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.42.0::
 * https://github.com/devonfw/solicitor/pull/330: Add column PackageUrl to OSS-Inventory template sample.
+* https://github.com/devonfw/solicitor/issues/328: Deprecate support to run Solicitor on Java 11 (stage 2).
+Supported Java versions are now 17 to 25.
 
 Changes in 1.41.0::
 * https://github.com/devonfw/solicitor/issues/328: Deprecate support to run Solicitor on Java 11 (stage 1).

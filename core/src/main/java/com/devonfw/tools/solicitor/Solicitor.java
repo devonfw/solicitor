@@ -150,7 +150,7 @@ public class Solicitor {
     Version javaVersion = Runtime.version();
 
     if (javaVersion.feature() < 17) {
-      this.deprecationChecker.check(true, "Running Solicitor on Java versions prior to 17 is deprecated. Yours is '"
+      this.deprecationChecker.check(false, "Running Solicitor on Java versions prior to 17 is deprecated. Yours is '"
           + javaVersion + "'. Switch to at least Java 17");
     }
 
