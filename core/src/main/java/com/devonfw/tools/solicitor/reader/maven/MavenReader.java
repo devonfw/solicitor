@@ -11,9 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
@@ -35,6 +32,10 @@ import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.maven.model.Dependency;
 import com.devonfw.tools.solicitor.reader.maven.model.License;
 import com.devonfw.tools.solicitor.reader.maven.model.LicenseSummary;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 /**
  * A {@link Reader} which reads data produced by the <a href="https://www.mojohaus.org/license-maven-plugin/">Maven

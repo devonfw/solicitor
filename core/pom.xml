@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.6.3</version>
+    <version>3.5.6</version>
     <relativePath/>
     <!-- lookup parent from repository -->
   </parent>
@@ -33,7 +33,7 @@
   </scm>
 
   <properties>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <maven.build.timestamp.format>dd-MM-yy_HH:mm</maven.build.timestamp.format>
     <builddate>${maven.build.timestamp}</builddate>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
