@@ -33,19 +33,30 @@
   </scm>
 
   <properties>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <maven.build.timestamp.format>dd-MM-yy_HH:mm</maven.build.timestamp.format>
     <builddate>${maven.build.timestamp}</builddate>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <!-- Solicitor BOM -->
+      <dependency>
+        <groupId>com.devonfw.tools</groupId>
+        <artifactId>solicitor-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>solicitor-core</artifactId>
-      <version>${project.version}</version>
     </dependency>
-
   </dependencies>
 
   <build>
