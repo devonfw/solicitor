@@ -43,7 +43,7 @@
     <dependencies>
       <!-- Solicitor BOM -->
       <dependency>
-        <groupId>com.devonfw.tools</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>solicitor-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
