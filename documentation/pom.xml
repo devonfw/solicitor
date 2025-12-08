@@ -164,7 +164,6 @@
             <configuration>
               <outputFile>solicitor_userguide.pdf</outputFile>
               <backend>pdf</backend>
-              <sourceHighlighter>coderay</sourceHighlighter>
               <doctype>book</doctype>
               <attributes>
                 <pdf-themesdir>${project.basedir}/theme</pdf-themesdir>
@@ -174,6 +173,7 @@
                 <toc/>
                 <idprefix/>
                 <idseparator>-</idseparator>
+                <source-highlighter>coderay</source-highlighter>
               </attributes>
             </configuration>
           </execution>
@@ -197,9 +197,6 @@
                   <type>pdf</type>
                 </artifact>
               </artifacts>
-              <archive>
-                <addMavenDescriptor>true</addMavenDescriptor>
-              </archive>
             </configuration>
           </execution>
         </executions>
