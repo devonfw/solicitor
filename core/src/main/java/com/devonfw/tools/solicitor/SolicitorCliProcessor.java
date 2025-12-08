@@ -3,12 +3,15 @@
  */
 package com.devonfw.tools.solicitor;
 
+import java.io.IOException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.help.HelpFormatter;
+import org.apache.commons.cli.help.TextHelpAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +68,7 @@ public class SolicitorCliProcessor {
     builder.longOpt("help");
     String description = "print this help (no main processing)";
     builder.desc(description);
-    Option help = builder.build();
+    Option help = builder.get();
     options.addOption(help);
 
     // option "eug" (extract user guide)
@@ -73,7 +76,7 @@ public class SolicitorCliProcessor {
     builder.longOpt("extractUserGuide");
     description = "stores a copy of the user guide and the license info file in the current directory (no main processing)";
     builder.desc(description);
-    Option extractUserGuide = builder.build();
+    Option extractUserGuide = builder.get();
     options.addOption(extractUserGuide);
 
     // option "wiz" (wizard)
@@ -83,7 +86,7 @@ public class SolicitorCliProcessor {
     builder.argName("targetDir");
     description = "creates configuration for a new Solicitor project in the given directory (no main processing)";
     builder.desc(description);
-    Option wizardConfig = builder.build();
+    Option wizardConfig = builder.get();
     options.addOption(wizardConfig);
 
     // option "ec" (extract config)
@@ -93,7 +96,7 @@ public class SolicitorCliProcessor {
     builder.argName("targetDir");
     description = "stores a copy of the base config file and all referenced configuration in the given directory (no main processing)";
     builder.desc(description);
-    Option extractConfig = builder.build();
+    Option extractConfig = builder.get();
     options.addOption(extractConfig);
 
     // option "c" (config)
@@ -103,7 +106,7 @@ public class SolicitorCliProcessor {
     builder.argName("URL");
     description = "do main processing using the config referenced by the given URL";
     builder.desc(description);
-    Option config = builder.build();
+    Option config = builder.get();
     options.addOption(config);
 
     // option "s" (save)
@@ -115,7 +118,7 @@ public class SolicitorCliProcessor {
     description = "after rule evaluation save the internal data model to a file; "
         + "if no filename is given a filename will be automatically created";
     builder.desc(description);
-    Option save = builder.build();
+    Option save = builder.get();
     options.addOption(save);
 
     // option "l" (load)
@@ -126,7 +129,7 @@ public class SolicitorCliProcessor {
     description = "instead of reading raw license data and processing rules load the already "
         + "processed model from a previously saved file";
     builder.desc(description);
-    Option load = builder.build();
+    Option load = builder.get();
     options.addOption(load);
 
     // option "d" (diff)
@@ -136,7 +139,7 @@ public class SolicitorCliProcessor {
     builder.argName("filename");
     description = "create a diff report to the already processed model given by this filename";
     builder.desc(description);
-    Option diff = builder.build();
+    Option diff = builder.get();
     options.addOption(diff);
 
     // evaluating the arguments
@@ -207,11 +210,16 @@ public class SolicitorCliProcessor {
    */
   private void printHelp(Options options) {
 
-    HelpFormatter formatter = new HelpFormatter();
-
-    formatter.printHelp(120, "java -jar solicitor.jar", "", options,
-        "DevonFW Solicitor - visit https://github.com/devonfw/solicitor - use '-eug' to get user guide and licensing info",
-        true);
+    TextHelpAppendable helpAppendable = new TextHelpAppendable(System.out);
+    helpAppendable.setMaxWidth(120);
+    HelpFormatter formatter = HelpFormatter.builder().setHelpAppendable(helpAppendable).setShowSince(false).get();
+    try {
+      formatter.printHelp("java -jar solicitor.jar", "", options,
+          "DevonFW Solicitor - visit https://github.com/devonfw/solicitor - use '-eug' to get user guide and licensing info",
+          true);
+    } catch (IOException e) {
+      LOG.error(LogMessages.CLI_HELP_DISPLAY_EXCEPTION.msg(), e.getMessage());
+    }
   }
 
 }
