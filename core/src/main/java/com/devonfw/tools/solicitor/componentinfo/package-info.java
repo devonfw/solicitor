@@ -9,6 +9,5 @@
  * <p>
  * <img src="doc-files/componentinfo_classes.drawio.svg" alt="Interfaces / classes and Spring Beans of the componentinfo
  * packages">
- * <p>
  */
 package com.devonfw.tools.solicitor.componentinfo;

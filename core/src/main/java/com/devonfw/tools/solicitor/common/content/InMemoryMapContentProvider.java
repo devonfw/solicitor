@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * A {@link ContentProvider} which tries to lookup {@link Content} in a local in memory cache.
+ * A {@link ContentProvider} which tries to lookup {@link Content} in a local in memory cache. +
+ *
+ * @param <C> type of {@link Content} handled by this provider
  */
 public class InMemoryMapContentProvider<C extends Content> extends AbstractContentProvider<C> {
 

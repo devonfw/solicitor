@@ -49,7 +49,6 @@ public abstract class AbstractHierarchicalCurationProvider extends AbstractCurat
    * ComponentInfoCuration object. Fetching from a hierarchy and merging the different curation fragments is supported.
    * In case that data is requested for a non default curationDataSelector which does not exist will result in an
    * exception to be thrown.
-   * <p>
    *
    * @param packageUrl The package URL for which curation data is to be fetched.
    * @param curationDataHandle This has to be a {@link SelectorCurationDataHandle} and specifies the (alternative)

@@ -244,7 +244,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <!-- <version>3.1.1</version> -->
+        <version>3.12.0</version>
         <executions>
           <execution>
             <goals>
@@ -256,8 +256,7 @@
         </executions>
         <configuration>
           <show>private</show>
-          <force>true</force>
-          <fixTags>param,return,throws,link</fixTags>
+          <doclint>all,-missing</doclint>
         </configuration>
       </plugin>
       <plugin>

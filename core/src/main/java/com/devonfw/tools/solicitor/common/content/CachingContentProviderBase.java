@@ -23,6 +23,8 @@ import com.devonfw.tools.solicitor.common.UrlInputStreamFactory;
  * are not able to load the content from the cache they will delegate to some other {@link ContentProvider} for further
  * handling.
  *
+ * @param <C> type of {@link Content} handled by this provider
+ *
  */
 public abstract class CachingContentProviderBase<C extends Content> extends AbstractContentProvider<C> {
 

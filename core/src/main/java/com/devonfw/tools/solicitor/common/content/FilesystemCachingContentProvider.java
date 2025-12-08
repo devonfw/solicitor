@@ -20,6 +20,8 @@ import com.devonfw.tools.solicitor.common.content.web.DirectUrlWebContentProvide
 /**
  * A {@link CachingContentProviderBase} which tries to load web content from the file system.
  *
+ * @param <C> type of {@link Content} handled by this provider
+ *
  */
 public class FilesystemCachingContentProvider<C extends Content> extends CachingContentProviderBase<C> {
 
