@@ -25,6 +25,7 @@ import com.devonfw.tools.solicitor.reader.Reader;
 import com.devonfw.tools.solicitor.reader.gradle.model.Dependency;
 import com.devonfw.tools.solicitor.reader.gradle.model.License;
 import com.devonfw.tools.solicitor.reader.gradle.model.LicenseSummary;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -66,12 +67,14 @@ public class GradleReader2 extends AbstractReader implements Reader {
 
     ReaderStatistics statistics = new ReaderStatistics();
     LicenseSummary ls = new LicenseSummary();
-    ls.setDependencies(new LinkedList<Dependency>());
+    ls.setDependencies(new LinkedList<>());
 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     try {
-      List<Map> l = mapper.readValue(this.inputStreamFactory.createInputStreamFor(sourceUrl), List.class);
+      List<Map<String, Object>> l = mapper.readValue(this.inputStreamFactory.createInputStreamFor(sourceUrl),
+          new TypeReference<List<Map<String, Object>>>() {
+          });
       for (Map<String, Object> m : l) {
         Dependency dep = new Dependency();
         dep.setProject((String) m.get("project"));
@@ -79,8 +82,9 @@ public class GradleReader2 extends AbstractReader implements Reader {
         dep.setUrl((String) m.get("url"));
         dep.setYear((String) m.get("year"));
         dep.setDependency((String) m.get("dependency"));
-        List<Map> lml = (List) m.get("licenses");
-        List<License> ll = new LinkedList();
+        @SuppressWarnings("unchecked")
+        List<Map<String, String>> lml = (List<Map<String, String>>) m.get("licenses");
+        List<License> ll = new LinkedList<>();
         for (Map<String, String> ml : lml) {
           License license = new License();
           license.setLicense(ml.get("license"));
@@ -91,7 +95,7 @@ public class GradleReader2 extends AbstractReader implements Reader {
         ls.getDependencies().add(dep);
       }
 
-    } catch (IOException e) {
+    } catch (IOException | ClassCastException e) {
       throw new SolicitorRuntimeException("Could not read Gradle inventory source '" + sourceUrl + "'", e);
     }
 

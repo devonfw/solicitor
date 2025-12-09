@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.DuplicateHeaderMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -101,9 +102,9 @@ public class CsvReader extends AbstractReader implements Reader {
 
         if (configuration.get("allowDuplicateHeaderNames") != null) {
           if (configuration.get("allowDuplicateHeaderNames").equals("true")) {
-            csvBuilder.setAllowDuplicateHeaderNames(true);
+            csvBuilder.setDuplicateHeaderMode(DuplicateHeaderMode.ALLOW_ALL);
           } else {
-            csvBuilder.setAllowDuplicateHeaderNames(false);
+            csvBuilder.setDuplicateHeaderMode(DuplicateHeaderMode.ALLOW_EMPTY);
           }
         }
 
@@ -195,7 +196,7 @@ public class CsvReader extends AbstractReader implements Reader {
           }
         }
 
-        csvFormat = csvBuilder.build();
+        csvFormat = csvBuilder.get();
 
         for (CSVRecord record : csvFormat.parse(reader)) {
           ApplicationComponent appComponent = getModelFactory().newApplicationComponent();
