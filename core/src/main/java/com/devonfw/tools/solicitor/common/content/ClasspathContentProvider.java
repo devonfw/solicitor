@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A {@link CachingContentProviderBase} which tries to load web content from a (possible static) cache in the classpath.
+ *
+ * @param <C> type of {@link Content} handled by this provider
  */
 public class ClasspathContentProvider<C extends Content> extends CachingContentProviderBase<C> {
 

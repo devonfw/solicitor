@@ -92,7 +92,7 @@ public class RegexListPredicate implements Predicate<String> {
    */
   public String getRegexesAsString() {
 
-    List<String> patternStrings = new ArrayList();
+    List<String> patternStrings = new ArrayList<>();
     for (Pattern p : this.patterns) {
       patternStrings.add(p.toString());
     }

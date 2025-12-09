@@ -44,6 +44,7 @@ public class DroolsDecisionTableReader implements DroolsRulesReader {
   }
 
   /** {@inheritDoc} */
+  @SuppressWarnings("deprecation") // use of deprecated feature, see https://github.com/devonfw/solicitor/issues/245
   @Override
   public void readRules(String ruleSource, String templateSource, String decription, KieBaseModel baseModel,
       Collection<Resource> resources) {

@@ -26,6 +26,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -52,7 +53,6 @@ public class YarnModernReader extends AbstractReader implements Reader {
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
@@ -62,14 +62,15 @@ public class YarnModernReader extends AbstractReader implements Reader {
     ReaderStatistics statistics = new ReaderStatistics();
 
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    List body;
+    List<Map<String, String>> body;
     try {
-      body = mapper.readValue(content, List.class);
+      body = mapper.readValue(content, new TypeReference<List<Map<String, String>>>() {
+      });
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read yarn modern inventory source '" + sourceUrl + "'", e);
     }
     for (int i = 0; i < body.size(); i++) {
-      Map<String, String> licenseBlock = (Map<String, String>) body.get(i);
+      Map<String, String> licenseBlock = body.get(i);
 
       String license = licenseBlock.get("value");
       List<String> locators = new ArrayList<>();

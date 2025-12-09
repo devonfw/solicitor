@@ -88,7 +88,7 @@ public class NpmLicenseCrawlerReader extends AbstractReader implements Reader {
       java.io.Reader reader = new InputStreamReader(is);
 
       ApplicationComponent lastAppComponent = null;
-      for (CSVRecord record : CSVFormat.newFormat(',').withQuote('\"').parse(reader)) {
+      for (CSVRecord record : CSVFormat.newFormat(',').builder().setQuote('\"').get().parse(reader)) {
         if (record.get(0).contains("module name")) {
           continue;
         }

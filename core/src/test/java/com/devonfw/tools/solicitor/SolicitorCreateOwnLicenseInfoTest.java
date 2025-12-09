@@ -26,8 +26,12 @@ public class SolicitorCreateOwnLicenseInfoTest {
     String[] args = new String[] { "solicitor", "-c", "classpath:ownlicenseinfo/solicitor_own.cfg" };
     SolicitorCliProcessor scp = new SolicitorCliProcessor();
     CommandLineOptions clo = scp.parse(args);
-
-    solicitor.run(clo, String.join(" ", args));
+    try {
+      this.solicitor.run(clo, String.join(" ", args));
+    } catch (Throwable e) {
+      e.printStackTrace();
+      throw new RuntimeException();
+    }
   }
 
 }

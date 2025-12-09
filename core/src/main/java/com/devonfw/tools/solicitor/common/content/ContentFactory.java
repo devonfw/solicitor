@@ -5,6 +5,8 @@ package com.devonfw.tools.solicitor.common.content;
 
 /**
  * Abstract factory for {@link Content} of type C
+ *
+ * @param <C> type of {@link Content} created by this factory
  */
 public interface ContentFactory<C extends Content> {
 

@@ -19,6 +19,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -51,12 +52,15 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     try {
-      Map<String, List> report = mapper.readValue(this.inputStreamFactory.createInputStreamFor(sourceUrl), Map.class);
-      List<Map<String, String>> dependencies = report.get("dependencies");
+      Map<String, List<Map<String, Object>>> report = mapper.readValue(
+          this.inputStreamFactory.createInputStreamFor(sourceUrl),
+          new TypeReference<Map<String, List<Map<String, Object>>>>() {
+          });
+      List<Map<String, Object>> dependencies = report.get("dependencies");
 
       // Extract groupId and artifactId
-      for (Map<String, String> dependency : dependencies) {
-        String[] dependencyParts = dependency.get("moduleName").split(":");
+      for (Map<String, Object> dependency : dependencies) {
+        String[] dependencyParts = ((String) dependency.get("moduleName")).split(":");
         if (dependencyParts.length != 2) {
           throw new SolicitorRuntimeException(
               "Could not extract groupId, artifactId from moduleName: '" + dependency.get("moduleName") + "'");
@@ -66,7 +70,7 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
         statistics.readComponentCount++;
         appComponent.setGroupId(dependencyParts[0]);
         appComponent.setArtifactId(dependencyParts[1]);
-        appComponent.setVersion(dependency.get("moduleVersion"));
+        appComponent.setVersion((String) dependency.get("moduleVersion"));
 
         // Extract the first element from moduleUrls if available
         Object urlsObject = dependency.get("moduleUrls");
@@ -80,7 +84,7 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
         appComponent.setUsagePattern(usagePattern);
         appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1],
-            dependency.get("moduleVersion")));
+            (String) dependency.get("moduleVersion")));
 
         if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
           // skip processing of licenses and proceed to next component if component is filtered out

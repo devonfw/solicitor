@@ -19,6 +19,7 @@
   </licenses>
 
   <modules>
+    <module>bom</module>
     <module>documentation</module>
     <module>core</module>
     <module>app</module>

@@ -22,6 +22,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.devonfw.tools.solicitor.reader.AbstractReader;
 import com.devonfw.tools.solicitor.reader.Reader;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -45,7 +46,6 @@ public class YarnReader extends AbstractReader implements Reader {
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
       String repoType, String packageType, Map<String, String> configuration) {
@@ -56,14 +56,15 @@ public class YarnReader extends AbstractReader implements Reader {
 
     // According to tutorial https://github.com/FasterXML/jackson-databind/
     ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    List body;
+    List<List<String>> body;
     try {
-      body = mapper.readValue(content, List.class);
+      body = mapper.readValue(content, new TypeReference<List<List<String>>>() {
+      });
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read yarn inventory source '" + sourceUrl + "'", e);
     }
     for (int i = 0; i < body.size(); i++) {
-      List<String> attributes = (List) body.get(i);
+      List<String> attributes = body.get(i);
       // Array contents:
       // ["Name","Version","License","URL","VendorUrl","VendorName"]
       String name = attributes.get(0);
