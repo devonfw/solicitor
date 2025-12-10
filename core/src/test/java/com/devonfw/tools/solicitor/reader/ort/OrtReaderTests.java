@@ -37,7 +37,7 @@ public class OrtReaderTests {
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
     pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.DYNAMIC_LINKING,
-        "ort", null, null);
+        null, null);
 
   }
 
@@ -78,8 +78,8 @@ public class OrtReaderTests {
     OrtReader pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, "ort",
-        null, configuration);
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, null,
+        configuration);
 
     assertEquals(1, application.getApplicationComponents().size());
 
@@ -90,8 +90,8 @@ public class OrtReaderTests {
     pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, "ort",
-        null, configuration);
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, null,
+        configuration);
 
     assertEquals(0, application.getApplicationComponents().size());
   }

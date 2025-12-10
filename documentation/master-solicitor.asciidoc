@@ -339,11 +339,10 @@ Within this section the different applications (=deliverables) of the engagement
     ],
     "readers" : [ { <6>
       "type" : "maven", <7>
-      "source" : "classpath:samples/licenses_devon4j.xml", <8> <11>
+      "source" : "classpath:samples/licenses_devon4j.xml", <8> <10>
       "usagePattern" : "DYNAMIC_LINKING", <9>
-      "repoType" : "maven", <10>
-      "packageType" : "maven", <12>
-      "configuration" : { <13>
+      "packageType" : "maven", <11>
+      "configuration" : { <12>
         .
         .
         .
@@ -360,10 +359,9 @@ Within this section the different applications (=deliverables) of the engagement
 <7> the type of reader; for possible values see <<Reading License Information with Readers>>
 <8> location of the source file to read (ResourceLoader-URL)
 <9> usage pattern; possible values: `DYNAMIC_LINKING`, `STATIC_LINKING`, `STANDALONE_PRODUCT`; see description below
-<10> repoType: `repoType` to be set in the `ApplicationComponent` . *This parameter is deprecated and should no longer be used*, see <<List of Deprecated Features>>. The value of `repoType` in `ApplicationComponent` will otherwise be determined from the type info in the PackageURL of the component.
-<11> _placeholder patterns might be used here_
-<12> packageType: type of the packages in the input data. Must be a valid packageUrl type (see https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst). Relevant when using the CSV reader.
-<13> configuration: optional configuration parameters for the Reader, given as name/value pairs.
+<10> _placeholder patterns might be used here_
+<11> packageType: type of the packages in the input data. Must be a valid packageUrl type (see https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst). Relevant when using the CSV reader.
+<12> configuration: optional configuration parameters for the Reader, given as name/value pairs.
 
 ===== Usage Patterns
 The usage pattern describes how the ``ApplicationComponent``s (libraries, packages) which are read in via the Reader are linked (in)to the ``Application``s executable. The kind of linking might affect the legal evaluation of the license compliance.
@@ -391,7 +389,6 @@ a Reader input file within _Solicitor_. To achieve this it is possible to define
   "type" : "maven",
   "source" : "classpath:samples/licenses_devon4j.xml",
   "usagePattern" : "DYNAMIC_LINKING",
-  "repoType" : "maven",
   "packageType" : "maven",
   "configuration" : {
     "includeFilter": "pkg:maven/mygroup/.*", <1>
@@ -1454,7 +1451,6 @@ NOTE: If usage of a feature should be discontinued immediately (e.g., because it
 The following features are deprecated via the above mechanism:
 
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
-* Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
 
 == Experimental Scancode Integration
 
@@ -1974,6 +1970,7 @@ Changes in 1.43.0::
 * Removed deprecated Reader for NPM License Crawler data.
 * Removed deprecated 'gradle2' Reader. 
 * Removed deprecated REGEX prefix notation in decision tables.
+* Removed deprecated repoType configuration attribute in Readers.
 * https://github.com/devonfw/solicitor/pull/333: Finally dropping support for running on Java versions prior to Java 17. Updating Spring Boot to version 3. Updating several other dependencies. Undo of no longer needed workaround introduced with
 https://github.com/devonfw/solicitor/pull/31. Supported Java versions are 17 to 25.
 

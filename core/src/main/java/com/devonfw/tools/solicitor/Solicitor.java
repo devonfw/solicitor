@@ -145,8 +145,7 @@ public class Solicitor {
       Reader reader = this.readerFactory.readerFor(readerSetup.getType());
       try {
         reader.readInventory(readerSetup.getType(), readerSetup.getSource(), readerSetup.getApplication(),
-            readerSetup.getUsagePattern(), readerSetup.getRepoType(), readerSetup.getPackageType(),
-            readerSetup.getConfiguration());
+            readerSetup.getUsagePattern(), readerSetup.getPackageType(), readerSetup.getConfiguration());
       } catch (SolicitorRuntimeException sre) {
         if (this.tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
           Application app = readerSetup.getApplication();

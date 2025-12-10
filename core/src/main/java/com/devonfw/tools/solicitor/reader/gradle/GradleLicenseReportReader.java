@@ -45,7 +45,7 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, String packageType, Map<String, String> configuration) {
+      String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
 
@@ -82,7 +82,6 @@ public class GradleLicenseReportReader extends AbstractReader implements Reader 
         }
 
         appComponent.setUsagePattern(usagePattern);
-        appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromMavenCoordinates(dependencyParts[0], dependencyParts[1],
             (String) dependency.get("moduleVersion")));
 

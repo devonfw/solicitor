@@ -37,8 +37,8 @@ public class PipReaderTests {
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, "pip",
-        null, null);
+    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, null,
+        null);
 
   }
 
@@ -77,7 +77,7 @@ public class PipReaderTests {
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("pip", "src/test/resources/pipReport.json", application, UsagePattern.DYNAMIC_LINKING, "pip", null,
+    pr.readInventory("pip", "src/test/resources/pipReport.json", application, UsagePattern.DYNAMIC_LINKING, null,
         configuration);
 
     assertEquals(1, application.getApplicationComponents().size());

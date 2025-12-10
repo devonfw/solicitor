@@ -55,7 +55,7 @@ public class YarnModernReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, String packageType, Map<String, String> configuration) {
+      String packageType, Map<String, String> configuration) {
 
     String content = readAndPreprocessJson(sourceUrl);
 
@@ -101,7 +101,6 @@ public class YarnModernReader extends AbstractReader implements Reader {
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
         appComponent.setSourceRepoUrl(repo);
-        appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameAndVersion(name, version));
 
         if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {

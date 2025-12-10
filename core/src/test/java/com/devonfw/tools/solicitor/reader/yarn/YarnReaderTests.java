@@ -36,8 +36,8 @@ public class YarnReaderTests {
     YarnReader yr = new YarnReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
-    yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
-        "yarn", null, null);
+    yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.DYNAMIC_LINKING, null,
+        null);
 
   }
 
@@ -76,8 +76,8 @@ public class YarnReaderTests {
     YarnReader yr = new YarnReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
-    yr.readInventory("yarn", "src/test/resources/yarnReport.json", application, UsagePattern.DYNAMIC_LINKING, "yarn",
-        null, configuration);
+    yr.readInventory("yarn", "src/test/resources/yarnReport.json", application, UsagePattern.DYNAMIC_LINKING, null,
+        configuration);
 
     assertEquals(1, application.getApplicationComponents().size());
   }

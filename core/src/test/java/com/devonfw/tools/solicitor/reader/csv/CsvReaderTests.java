@@ -65,7 +65,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
-        "maven", "maven", configuration);
+        "maven", configuration);
 
   }
 
@@ -131,7 +131,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "maven",
-        "maven", configuration);
+        configuration);
 
     assertEquals(4, application.getApplicationComponents().size());
 
@@ -185,7 +185,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses_npm.csv", application, UsagePattern.DYNAMIC_LINKING,
-        "npm", "npm", null);
+        "npm", null);
 
     List<ApplicationComponent> lapc = application.getApplicationComponents();
     boolean found = false;
@@ -221,7 +221,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
-        "pypi", "pypi", configuration);
+        "pypi", configuration);
 
     List<ApplicationComponent> lapc = application.getApplicationComponents();
     boolean found = false;
@@ -257,7 +257,7 @@ public class CsvReaderTests {
 
     try {
       csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
-          null, null, null);
+          null, null);
     } catch (Exception e) {
       // Capture the log messages
       ArgumentCaptor<String> logEntry1 = ArgumentCaptor.forClass(String.class);
