@@ -843,12 +843,7 @@ WARNING: The ORT reader currently does not yet fill the attribute `licenseUrl`. 
 
 === Gradle
 
-For Gradle two alternative plugins exist to create input data for Solicitor:
-
-* Gradle License Report
-* Gradle License Plugin (usage of this plugin with Solicitor is discouraged and deprecated)
-
-==== Gradle License Report
+For Gradle the https://github.com/jk1/Gradle-License-Report[Gradle License Report plugin] can be used to create input data for Solicitor:
 
 Pick the correct version of the https://github.com/jk1/Gradle-License-Report[Gradle License Report plugin] depending on your Gradle version. Add the plugin to the list of plugins in your `build.gradle` file:
 
@@ -892,106 +887,6 @@ In Solicitor the Data is read with the following part of the config
       "readers" : [ {
         "type" : ""type" : "gradle-license-report-json",",
         "source" : "file:$/input/dependencies.json",
-        "usagePattern" : "DYNAMIC_LINKING"
-      } ]
-----
-
-==== Gradle License Plugin (Windows)
-
-WARNING: The Gradle License Plugin does not include dependencies into the result if they have no license info declared. This might result in incomplete data in the Solicitor output. The usage
-of this plugin is therefore discouraged and the 'gradle2' reader is deprecated (stage 2). Use the <<Gradle License Report>> instead.
-
-For the export of the licenses from a Gradle based project the Gradle License Plugin might be used.
-
-To install the plugin some changes need to be done in `build.gradle`, like following example
-----
-buildscript {
-  repositories {
-    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local/' }
-  }
-
-  dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5-SNAPSHOT'
-  }
-}
-
-apply plugin: 'java-library'
-apply plugin: 'com.jaredsburrows.license'
-----
-
-Afterwards execute the following command in the console:
-
-For Windows (Java Application)
-----
-gradlew licenseReport
-----
-
-The Export should look like this:
-
-----
-include::files/licenses.json[]
-----
-
-
-Source: https://github.com/jaredsburrows/gradle-license-plugin
-
-In _Solicitor_ the data is read with the following part of the config
-
-----
-"readers" : [ {
-  "type" : "gradle2",
-  "source" : "file:path/to/licenses.json",
-  "usagePattern" : "DYNAMIC_LINKING"
-} ]
-----
-
-==== Gradle License Plugin (Android)
-
-WARNING: The Gradle License Plugin does not include dependencies into the result if they have no license info declared. This might result in incomplete data in the Solicitor output. The usage
-of this plugin is therefore discouraged and the 'gradle2' reader is deprecated (stage 2). Use the <<Gradle License Report>> instead.
-
-For the export of the the Licenses from a Gradle based Android Projects the Gradle License Plugin might be used.
-
-To install the Plugin some changes need to be done in the build.gradle of the Project, like following example
-----
-buildscript {
-  repositories {
-    jcenter()
-  }
-
-  dependencies {
-    classpath 'com.jaredsburrows:gradle-license-plugin:0.8.5'
-  }
-}
-----
-
-Also there is a change in the build.gradle of the App. Add the line in the second line
-----
-apply plugin: 'com.android.application'
-----
-
-Afterwards execute the following command in the Terminal of Android studio:
-For Windows(Android Application)
-----
-gradlew licenseDebugReport
-----
-The Export is in the following folder
-----
-$Projectfolder\app\build\reports\licenses
-----
-It should look like this:
-
-----
-include::files/licenseDebugReport.json[]
-----
-Source: https://github.com/jaredsburrows/gradle-license-plugin
-
-In Solicitor the Data is read with the following part of the config
-
-----
-      "readers" : [ {
-        "type" : "gradle2",
-        "source" : "file:$/input/licenses.json",
         "usagePattern" : "DYNAMIC_LINKING"
       } ]
 ----
@@ -1563,7 +1458,6 @@ The following features are deprecated via the above mechanism:
 * "REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263
 * Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
 * Use of `repoType` in the configuration of readers, see <<Applications>>; Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/190 and https://github.com/devonfw/solicitor/issues/263
-* Reader of type "gradle2" (use Gradle License Report and Reader of type "gradle-license-report-json" instead); Stage 2 from Version 1.27.0 on; see https://github.com/devonfw/solicitor/issues/283
 
 == Experimental Scancode Integration
 
@@ -2081,6 +1975,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.43.0::
 * Removed deprecated Reader for NPM License Crawler data.
+* Removed deprecated 'gradle2' Reader. 
 * https://github.com/devonfw/solicitor/pull/333: Finally dropping support for running on Java versions prior to Java 17. Updating Spring Boot to version 3. Updating several other dependencies. Undo of no longer needed workaround introduced with
 https://github.com/devonfw/solicitor/pull/31. Supported Java versions are 17 to 25.
 
