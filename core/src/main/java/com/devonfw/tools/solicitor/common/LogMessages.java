@@ -127,7 +127,9 @@ public enum LogMessages {
   NO_ARCHIVE_SUFFIX_FOR_PACKAGEURL(83, "Could not determine archive suffix for PackageUrl '{}'"), //
   READING_INVENTORY_WITH_FILTER(84,
       "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. ({} ApplicationComponents were found in input file, {} were filtered out and not added to the data model.)"), //
-  CLI_HELP_DISPLAY_EXCEPTION(85, "Exception when trying to display CLI help: {}");
+  CLI_HELP_DISPLAY_EXCEPTION(85, "Exception when trying to display CLI help: {}"), //
+  REGEX_PREFIX_UNSUPPORTED(86,
+      "Use of 'REGEX:' prefix notation in '{}' is no longer supported, use '(REGEX)' suffix instead. See https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263");
 
   private final String message;
 

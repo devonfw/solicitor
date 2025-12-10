@@ -8,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.devonfw.tools.solicitor.common.DeprecationChecker;
-
 /**
  * Test methods of {@link ModelHelper}.
  */
@@ -23,25 +21,12 @@ public class ModelHelperTest {
   public void testMatch() {
 
     // need to initialize on instance level but test is done on static methods
-    ModelHelper instance = new ModelHelper();
-    instance.setDeprecationChecker(new DeprecationChecker() {
-
-      @Override
-      public void check(boolean warnOnly, String detailsString) {
-
-        // do nothing...
-      }
-    });
     assertTrue(ModelHelper.match(null, null));
     assertFalse(ModelHelper.match(null, ""));
     assertFalse(ModelHelper.match("", null));
     assertTrue(ModelHelper.match("", ""));
     assertTrue(ModelHelper.match("abc", "abc"));
     assertFalse(ModelHelper.match("abc", "a.c"));
-    assertTrue(ModelHelper.match("abc", "REGEX:abc"));
-    assertTrue(ModelHelper.match("abc", "REGEX:a.c"));
-    assertFalse(ModelHelper.match("abc", "REGEX:a."));
-    assertTrue(ModelHelper.match("abc", "REGEX:a.*"));
     assertTrue(ModelHelper.match("abc", "abc(REGEX)"));
     assertTrue(ModelHelper.match("abc", "a.c (REGEX)"));
     assertFalse(ModelHelper.match("abc", "a. (REGEX)"));
@@ -56,8 +41,6 @@ public class ModelHelperTest {
     assertTrue(ModelHelper.match(null, "NOT:"));
     assertFalse(ModelHelper.match("", "NOT:"));
     assertFalse(ModelHelper.match("abc", "NOT:abc"));
-    assertFalse(ModelHelper.match("abc", "NOT:REGEX:abc"));
-    assertTrue(ModelHelper.match("abc", "NOT:REGEX:a."));
     assertFalse(ModelHelper.match("abc", "NOT:abc(REGEX)"));
     assertTrue(ModelHelper.match("abc", "NOT:a. (REGEX)"));
 

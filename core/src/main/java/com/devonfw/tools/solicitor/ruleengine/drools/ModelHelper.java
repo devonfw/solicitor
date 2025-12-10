@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.common.DeprecationChecker;
+import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.MavenVersionHelper;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -48,22 +48,9 @@ public class ModelHelper {
 
   private static final Logger LOG = LoggerFactory.getLogger(ModelHelper.class);
 
-  private static DeprecationChecker deprecationChecker;
-
   private static ModelFactory modelFactory;
 
   private static String currentRuleGroup;
-
-  /**
-   * Saves a reference to the {@link DeprecationChecker} in a static variable.
-   *
-   * @param deprecationChecker a {@link DeprecationChecker} object.
-   */
-  @Autowired
-  public void setDeprecationChecker(DeprecationChecker deprecationChecker) {
-
-    ModelHelper.deprecationChecker = deprecationChecker;
-  }
 
   /**
    * Saves a reference to the ModelFactory in a static variable to allow access to factory methods via static methods.
@@ -201,10 +188,8 @@ public class ModelHelper {
     }
     if (input != null && condition != null) {
       if (condition.startsWith(REGEX_PREFIX)) {
-        deprecationChecker.check(false, "Use of 'REGEX:' prefix notation is deprecated, use '(REGEX)' suffix instead. "
-            + "See https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263");
-        String pattern = condition.substring(REGEX_PREFIX.length());
-        return input.matches(pattern);
+        LOG.error(LogMessages.REGEX_PREFIX_UNSUPPORTED.msg(), condition);
+        throw new IllegalArgumentException("Unsupprted REGEX prefix notation in '" + condition + "'");
       }
       if (condition.endsWith(REGEX_SUFFIX)) {
         String pattern = condition.substring(0, condition.length() - REGEX_SUFFIX.length()).trim();
