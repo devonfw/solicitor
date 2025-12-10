@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
@@ -55,9 +54,6 @@ public class ExcelWriter implements Writer {
 
   @Autowired
   private InputStreamFactory inputStreamFactory;
-
-  @Autowired
-  private DeprecationChecker deprecationChecker;
 
   /**
    * {@inheritDoc}

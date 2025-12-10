@@ -19,7 +19,6 @@ import org.apache.velocity.app.Velocity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
@@ -38,9 +37,6 @@ public class VelocityWriter implements Writer {
 
   @Autowired
   private AllKindsPackageURLHandler packageURLHandler;
-
-  @Autowired
-  private DeprecationChecker deprecationChecker;
 
   /**
    * {@inheritDoc}
