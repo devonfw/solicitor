@@ -1002,12 +1002,6 @@ icon:magic[]: On these fields the <<Extended comparison syntax>> might be used
 
 All RawLicenses which are in scope of fired rules will be marked so that they do not get reprocessed by the following decision table.
 
-NOTE: With the "V2" version of rules the additional field/condition `origin` was introduced.
-This can be used to fire rules only if the raw license data was obtained from a specific data source.
-Its primary intention is to distinguish between data obtained via normal readers or from Scancode data.
-Decision table data for the new data structure is named `LicenseAssignmentV2*.xls/csv`.
-The old decision table structure `LicenseAssignment*.xls/csv` is deprecated but for compatibility reasons still supported.
-
 ==== Decision Table: Detecting Licenses from Imported Data
 With this decision table the license info from the RawLicense is mapped to the NormalizedLicense. This is based on the name and/or URL of the license as imported via the readers.
 
@@ -1450,7 +1444,7 @@ NOTE: If usage of a feature should be discontinued immediately (e.g., because it
 === List of Deprecated Features
 The following features are deprecated via the above mechanism:
 
-* Use of `LicenseAssignmentProject.xls` decision table (use `LicenseAssignmentV2Project.xls` instead); Stage 2 from Version 1.24.0 on; see https://github.com/devonfw/solicitor/issues/263
+_No features are currently deprecated via this mechanism._
 
 == Experimental Scancode Integration
 
@@ -1971,6 +1965,7 @@ Changes in 1.43.0::
 * Removed deprecated 'gradle2' Reader. 
 * Removed deprecated REGEX prefix notation in decision tables.
 * Removed deprecated repoType configuration attribute in Readers.
+* Removed processing of deprecated LicenseAssignmentProject.xls decision table.
 * https://github.com/devonfw/solicitor/pull/333: Finally dropping support for running on Java versions prior to Java 17. Updating Spring Boot to version 3. Updating several other dependencies. Undo of no longer needed workaround introduced with
 https://github.com/devonfw/solicitor/pull/31. Supported Java versions are 17 to 25.
 
