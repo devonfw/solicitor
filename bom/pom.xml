@@ -25,7 +25,7 @@
   </scm>
 
   <properties>
-    <spring.boot.version>3.5.6</spring.boot.version>
+    <spring.boot.version>3.5.8</spring.boot.version>
     <drools.version>10.1.0</drools.version>
     <poi.version>5.5.1</poi.version>
     <commons.csv.version>1.14.1</commons.csv.version>
@@ -96,7 +96,7 @@
         <artifactId>drools-xml-support</artifactId>
         <version>${drools.version}</version>
       </dependency>
-      
+
       <!-- Apache POI -->
       <dependency>
         <groupId>org.apache.poi</groupId>
@@ -108,7 +108,7 @@
         <artifactId>poi</artifactId>
         <version>${poi.version}</version>
       </dependency>
-      
+
       <!-- Apache Commons Libraries -->
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -125,7 +125,7 @@
         <artifactId>commons-cli</artifactId>
         <version>${commons.cli.version}</version>
       </dependency>
-      
+
       <!-- Velocity -->
       <dependency>
         <groupId>org.apache.velocity</groupId>
@@ -137,7 +137,7 @@
         <artifactId>velocity-tools-generic</artifactId>
         <version>${velocity.tools.version}</version>
       </dependency>
-      
+
       <!-- miscellaneous other components -->
       <dependency>
         <groupId>org.apache.maven</groupId>
