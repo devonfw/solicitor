@@ -1961,15 +1961,18 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.43.0::
-This is a maintenance release which focusses on the reducing technical debt by removing deprecated features
-and updating used frameworks and libraries to up-to-date versions. Supported Java versions are 17 to 25.
-* Removed deprecated `npm` and `npm-license-crawler-csv` Reader.
-* Removed deprecated `gradle2` Reader. 
-* Removed logic for deprecated REGEX prefix notation in decision tables.
-* Removed deprecated `repoType` configuration attribute in Readers.
-* Removed processing of deprecated 'LicenseAssignmentProject.xls' decision table.
-* https://github.com/devonfw/solicitor/pull/333: Finally dropping support for running on Java versions prior to Java 17. Updating Spring Boot to version 3. Updating several other dependencies.
-* Undo of no longer needed workaround introduced with https://github.com/devonfw/solicitor/pull/31.
+This is a maintenance release which focusses on reducing technical debt by updating used frameworks/libraries to up-to-date versions and removing deprecated features. Supported Java versions are 17 to 25.
+* https://github.com/devonfw/solicitor/pull/333:
+** Drop possibility to run on Java versions 11 to 16.
+** Updating Spring Boot to version 3.
+** Updating several other dependencies.
+** Undo of no longer needed workaround introduced with https://github.com/devonfw/solicitor/pull/311.
+* https://github.com/devonfw/solicitor/pull/335: 
+** Removed deprecated `npm` and `npm-license-crawler-csv` Reader.
+** Removed deprecated `gradle2` Reader. 
+** Removed logic for deprecated REGEX prefix notation in decision tables.
+** Removed deprecated `repoType` configuration attribute in Readers.
+** Removed processing of deprecated 'LicenseAssignmentProject.xls' decision table.
 
 Changes in 1.42.0::
 * https://github.com/devonfw/solicitor/pull/330: Add column PackageUrl to OSS-Inventory template sample.
