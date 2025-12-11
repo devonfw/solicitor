@@ -43,7 +43,7 @@ public class YarnModernReaderTests {
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
     yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", this.application,
-        UsagePattern.STATIC_LINKING, "npm", null, null);
+        UsagePattern.STATIC_LINKING, null, null);
 
   }
 
@@ -102,7 +102,6 @@ public class YarnModernReaderTests {
         assertEquals(ossHomepage, ap.getOssHomepage());
         assertEquals(sourceRepoUrl, ap.getSourceRepoUrl());
         assertEquals(licenseUrl, ap.getRawLicenses().get(0).getLicenseUrl());
-        assertEquals("npm", ap.getRepoType());
         assertEquals(UsagePattern.STATIC_LINKING, ap.getUsagePattern());
 
         break;
@@ -137,7 +136,7 @@ public class YarnModernReaderTests {
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
     yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", application,
-        UsagePattern.STATIC_LINKING, "npm", null, configuration);
+        UsagePattern.STATIC_LINKING, null, configuration);
 
     assertEquals(4, application.getApplicationComponents().size());
   }

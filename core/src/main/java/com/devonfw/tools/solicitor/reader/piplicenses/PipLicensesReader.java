@@ -45,7 +45,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, String packageType, Map<String, String> configuration) {
+      String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
 
@@ -74,7 +74,6 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         appComponent.setUsagePattern(usagePattern);
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
-        appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(name, version));
 
         if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {

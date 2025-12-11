@@ -52,7 +52,7 @@ public class OrtReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, String packageType, Map<String, String> configuration) {
+      String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
 
@@ -90,7 +90,6 @@ public class OrtReader extends AbstractReader implements Reader {
         appComponent.setUsagePattern(usagePattern);
         appComponent.setOssHomepage(homePage);
         appComponent.setSourceRepoUrl(repo);
-        appComponent.setRepoType(trueRepoType);
 
         try {
           if (pURL != null && !pURL.isEmpty()) {

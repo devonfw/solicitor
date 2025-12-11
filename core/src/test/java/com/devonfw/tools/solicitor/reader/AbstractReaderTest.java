@@ -39,7 +39,7 @@ public class AbstractReaderTest {
 
       @Override
       public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-          String repoType, String packageType, Map<String, String> configuration) {
+          String packageType, Map<String, String> configuration) {
 
         // dummy, do nothing
       }

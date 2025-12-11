@@ -5,7 +5,6 @@
 package com.devonfw.tools.solicitor;
 
 import java.io.FileNotFoundException;
-import java.lang.Runtime.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorCliProcessor.CommandLineOptions;
 import com.devonfw.tools.solicitor.SolicitorSetup.ReaderSetup;
-import com.devonfw.tools.solicitor.common.DeprecationChecker;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.MavenVersionHelper;
 import com.devonfw.tools.solicitor.common.ResourceToFileCopier;
@@ -68,9 +66,6 @@ public class Solicitor {
   @Autowired
   private LifecycleListenerHolder lifecycleListenerHolder;
 
-  @Autowired
-  private DeprecationChecker deprecationChecker;
-
   private boolean tolerateMissingInput = false;
 
   @Value("${solicitor.tolerate-missing-input}")
@@ -116,7 +111,6 @@ public class Solicitor {
    */
   private void mainProcessing(CommandLineOptions clo) {
 
-    checkForDeprecatedJavaVersion();
     ModelRoot modelRoot = this.configFactory.createConfig(clo.configUrl);
     this.lifecycleListenerHolder.modelRootInitialized(modelRoot);
     if (clo.load) {
@@ -143,20 +137,6 @@ public class Solicitor {
   }
 
   /**
-   * Checks the java version and possibly issue deprecation error or warning.
-   */
-  private void checkForDeprecatedJavaVersion() {
-
-    Version javaVersion = Runtime.version();
-
-    if (javaVersion.feature() < 17) {
-      this.deprecationChecker.check(false, "Running Solicitor on Java versions prior to 17 is deprecated. Yours is '"
-          + javaVersion + "'. Switch to at least Java 17");
-    }
-
-  }
-
-  /**
    * Read the inventory of {@link ApplicationComponent}s and their declared licenses.
    */
   private void readInventory() {
@@ -165,8 +145,7 @@ public class Solicitor {
       Reader reader = this.readerFactory.readerFor(readerSetup.getType());
       try {
         reader.readInventory(readerSetup.getType(), readerSetup.getSource(), readerSetup.getApplication(),
-            readerSetup.getUsagePattern(), readerSetup.getRepoType(), readerSetup.getPackageType(),
-            readerSetup.getConfiguration());
+            readerSetup.getUsagePattern(), readerSetup.getPackageType(), readerSetup.getConfiguration());
       } catch (SolicitorRuntimeException sre) {
         if (this.tolerateMissingInput && sre.getCause() instanceof FileNotFoundException) {
           Application app = readerSetup.getApplication();

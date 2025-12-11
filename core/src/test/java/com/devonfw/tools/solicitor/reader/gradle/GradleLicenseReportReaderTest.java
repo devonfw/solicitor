@@ -29,7 +29,7 @@ class GradleLicenseReportReaderTest {
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("gradle-license-report-json", "src/test/resources/gradleLicenseReport.json", this.application,
-        UsagePattern.STATIC_LINKING, null, null, null);
+        UsagePattern.STATIC_LINKING, null, null);
   }
 
   @Test
@@ -71,7 +71,7 @@ class GradleLicenseReportReaderTest {
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("gradle-license-report-json", "src/test/resources/gradleLicenseReport.json", application,
-        UsagePattern.STATIC_LINKING, null, null, configuration);
+        UsagePattern.STATIC_LINKING, null, configuration);
 
     assertEquals(2, application.getApplicationComponents().size());
   }

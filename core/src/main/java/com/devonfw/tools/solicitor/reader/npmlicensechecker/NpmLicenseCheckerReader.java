@@ -48,7 +48,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, String packageType, Map<String, String> configuration) {
+      String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
 
@@ -94,7 +94,6 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
         appComponent.setSourceRepoUrl(repo);
-        appComponent.setRepoType(repoType);
         appComponent.setPackageUrl(PackageURLHelper.fromNpmPackageNameWithVersion(name));
         if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
           // skip processing of licenses and proceed with next component if component is filtered out

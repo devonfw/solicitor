@@ -70,7 +70,7 @@ public class CsvReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String repoType, String packageType, Map<String, String> configuration) {
+      String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
@@ -220,7 +220,6 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setArtifactId(artifactId);
           appComponent.setVersion(version);
           appComponent.setUsagePattern(usagePattern);
-          appComponent.setRepoType(repoType);
           appComponent.setPackageUrl(getPackageURL(packageType, groupId, artifactId, version));
 
           // merge ApplicationComponentImpl with same key if they appear
@@ -258,7 +257,6 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setArtifactId(record.get(1));
           appComponent.setVersion(record.get(2));
           appComponent.setUsagePattern(usagePattern);
-          appComponent.setRepoType(repoType);
           appComponent.setPackageUrl(getPackageURL(packageType, record.get(0), record.get(1), record.get(2)));
 
           // merge ApplicationComponentImpl with same key if they appear
