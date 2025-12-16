@@ -50,6 +50,23 @@ class SolicitorCliProcessorTest {
   }
 
   @Test
+  void testCliParsingEsbOption() {
+
+    SolicitorCliProcessor scp = new SolicitorCliProcessor();
+    String[] testCli = new String[] { "-h" };
+    CommandLineOptions clo = scp.parse(testCli);
+    assertFalse(clo.extractSbom);
+
+    testCli = new String[] { "-esb" };
+    clo = scp.parse(testCli);
+    assertTrue(clo.extractSbom);
+
+    testCli = new String[] { "--extractSBOM" };
+    clo = scp.parse(testCli);
+    assertTrue(clo.extractSbom);
+  }
+
+  @Test
   void testCliParsingWizOption() {
 
     SolicitorCliProcessor scp = new SolicitorCliProcessor();

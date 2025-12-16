@@ -83,6 +83,14 @@ public class Solicitor {
   }
 
   /**
+   * Copy the SBOM of Solicitor to the current working directory.
+   */
+  private void extractSbom() {
+
+    this.resourceToFileCopier.copyReourcesToFile(ResourceGroup.SBOM, ".");
+  }
+
+  /**
    * Create a new basic project configuration.
    *
    * @param targetDir the directory where the userguide should be stored
@@ -208,6 +216,10 @@ public class Solicitor {
 
     if (clo.extractUserGuide) {
       extractUserguide();
+      doMainProcessing = false;
+    }
+    if (clo.extractSbom) {
+      extractSbom();
       doMainProcessing = false;
     }
     if (clo.extractConfig) {

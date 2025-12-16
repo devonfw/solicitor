@@ -174,6 +174,11 @@ public class ResourceToFileCopier {
     USERGUIDE,
 
     /**
+     * The SBOM.
+     */
+    SBOM,
+
+    /**
      * (Full) Configuration structure for new projects.
      */
     PROJECT_FILES,
@@ -213,6 +218,12 @@ public class ResourceToFileCopier {
         optionallyAddExtensionUserguide(csb1);
         csb1.replaceInTarget("target", targetDir).execute();
         returnString = "solicitor_userguide.pdf";
+        break;
+      case SBOM:
+        new CopySequenceBuilder()
+            .withCopyOperation("classpath:META-INF/sbom/application.cdx.json", "target/solicitor.cdx.json")
+            .replaceInTarget("target", targetDir).execute();
+        returnString = "solicitor.cdx.json";
         break;
       case PROJECT_FILES:
         new CopySequenceBuilder().withCopyOperation("classpath:starters/solicitor.cfg", "new_project/solicitor.cfg")
