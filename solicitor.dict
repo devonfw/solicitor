@@ -1,5 +1,6 @@
 auth
 Capsulate
+cdx
 CDXGEN
 cfgdir
 conf
@@ -15,6 +16,7 @@ De
 dt
 drt
 ec
+esb
 eug
 fas
 gradle
