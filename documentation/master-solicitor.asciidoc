@@ -1968,6 +1968,8 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.44.0::
 * https://github.com/devonfw/solicitor/issues/336: Provide a CycloneDX SBOM file describing the Solicitor Executable JAR. Using the new command line option `-esb` will extract this SBOM into the current working directory with name `solicitor.cdx.json`.
 Note that the license information given in the SBOM `solicitor.cdx.json` is currently purely based on the package metadata of the included libraries and might differ from the information given in `solicitor_licenseinfo.html`. See also <<Licensing of Solicitor>>.
+* https://github.com/devonfw/solicitor/pull/338: Renamed maven artifact "solicitor-app" to "solicitor" to avoid
+confusing naming in SBOM. This has no functional impact for users.
 
 Changes in 1.43.0::
 This is a maintenance release which focuses on reducing technical debt by updating used frameworks/libraries to up-to-date versions and removing deprecated features. Supported Java versions are 17 to 25.
