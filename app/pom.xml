@@ -26,7 +26,11 @@
       <comments/>
     </license>
   </licenses>
-  <developers/>
+  <developers>
+    <developer>
+      <name>devonfw</name>
+    </developer>
+  </developers>
   <organization>
     <name>devonfw</name>
     <url>https://github.com/devonfw/solicitor/graphs/contributors</url>
