@@ -52,7 +52,12 @@ The _Solicitor_ code and accompanying resources (including this userguide) as st
 IMPORTANT: Specifically observe the "Disclaimer of Warranty" and "Limitation of Liability" which are part of the license.
 
 IMPORTANT: The executable JAR file which is created by the Maven based build process includes numerous other Open Source components which are subject to different Open Source licenses. Any distribution of the _Solicitor_ executable JAR file needs to comply with the license conditions of all those components.
+
 If you are running _Solicitor_ from the executable JAR you might use the `-eug` option to store detailed license information as file `solicitor_licenseinfo.html` in your current working directory (together with a copy of this user guide).
+
+When started with the command line option `-esb` _Solicitor_ will store a CycloneDX JSOM SBOM which describes the Executable JAR as `solicitor.cdx.json` in the current directory.
+
+IMPORTANT: As of now, the license information given in the SBOM `solicitor.cdx.json` is purely based on the package metadata of the included libraries. It does not take into account any (Solicitor based) corrections which are possibly applied to produce `solicitor_licenseinfo.html`. For licensing information take `solicitor_licenseinfo.html` as reference.
 
 == Architecture
 The following picture show a business oriented view of _Solicitor_.
@@ -1961,6 +1966,8 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.44.0::
+* https://github.com/devonfw/solicitor/issues/336: Provide a CycloneDX SBOM file describing the Solicitor Executable JAR. Using the new command line option `-esb` will extract this SBOM into the current working directory with name `solicitor.cdx.json`.
+Note that the license information given in the SBOM `solicitor.cdx.json` is currently purely based on the package metadata of the included libraries and might differ from the information given in `solicitor_licenseinfo.html`. See also <<Licensing of Solicitor>>.
 
 Changes in 1.43.0::
 This is a maintenance release which focuses on reducing technical debt by updating used frameworks/libraries to up-to-date versions and removing deprecated features. Supported Java versions are 17 to 25.
