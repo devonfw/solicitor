@@ -9,20 +9,33 @@
   <packaging>pom</packaging>
   <name>Solicitor Dependencies</name>
   <description>Definition of dependency versions for Solicitor.</description>
+  <url>https://github.com/devonfw/solicitor</url>
   <licenses>
     <license>
       <name>Apache Software License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://raw.githubusercontent.com/devonfw/solicitor/refs/heads/master/LICENSE</url>
       <distribution>repo</distribution>
       <comments/>
     </license>
   </licenses>
-
+  <developers>
+    <developer>
+      <name>devonfw</name>
+    </developer>
+  </developers>
+  <organization>
+    <name>devonfw</name>
+    <url>https://github.com/devonfw/solicitor/graphs/contributors</url>
+  </organization>
   <scm>
     <connection>scm:git:file://.</connection>
     <developerConnection>scm:git:file://.</developerConnection>
     <url>scm:git:file://.</url>
   </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/devonfw/solicitor/issues</url>
+  </issueManagement>
 
   <properties>
     <spring.boot.version>3.5.8</spring.boot.version>

@@ -30,6 +30,8 @@ public class SolicitorCliProcessor {
 
     public boolean extractUserGuide;
 
+    public boolean extractSbom;
+
     public boolean wizard;
 
     public boolean extractConfig;
@@ -78,6 +80,14 @@ public class SolicitorCliProcessor {
     builder.desc(description);
     Option extractUserGuide = builder.get();
     options.addOption(extractUserGuide);
+
+    // option "esb" (extract SBOM)
+    builder = Option.builder("esb");
+    builder.longOpt("extractSBOM");
+    description = "stores a copy of the CycloneDX SBOM of the Solicitor Executable JAR in the current directory (no main processing)";
+    builder.desc(description);
+    Option extractSbom = builder.get();
+    options.addOption(extractSbom);
 
     // option "wiz" (wizard)
     builder = Option.builder("wiz");
@@ -160,6 +170,10 @@ public class SolicitorCliProcessor {
 
       if (line.hasOption("eug")) {
         solClo.extractUserGuide = true;
+      }
+
+      if (line.hasOption("esb")) {
+        solClo.extractSbom = true;
       }
 
       if (line.hasOption("wiz")) {
