@@ -22,7 +22,7 @@ public enum LogMessages {
   LOADING_DIFF(9, "Loading old Solicitor data model for performing difference report from '{}'"), //
   SAVING_DATAMODEL(10, "Saving Solicitor data model to '{}'"), //
   READING_INVENTORY(11,
-      "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. All ApplicationComponents were added to the data model."), //
+      "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. All ApplicationComponents were added to the data model. UsagePattern set to {}, ossModified set to {}."), //
   LOAD_RULES(12, "Loading Rules of type '{}' from source '{}' with template '{}' for Rule Group '{}'"), //
   ADDING_FACTS(13, "{} Facts have been added to the Drools working memory, starting Rule Engine ..."), //
   RULE_ENGINE_FINISHED(14, "Rule Engine processing completed, {} rules have been fired"), //
@@ -126,7 +126,7 @@ public enum LogMessages {
   NO_PACKAGE_DOWNLOAD_URL_FOR_PACKAGEURL(82, "Could not determine package download url for PackageUrl '{}'"), //
   NO_ARCHIVE_SUFFIX_FOR_PACKAGEURL(83, "Could not determine archive suffix for PackageUrl '{}'"), //
   READING_INVENTORY_WITH_FILTER(84,
-      "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. ({} ApplicationComponents were found in input file, {} were filtered out and not added to the data model.)"), //
+      "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. ({} ApplicationComponents were found in input file, {} were filtered out and not added to the data model.) UsagePattern set to {}, ossModified set to {}."), //
   CLI_HELP_DISPLAY_EXCEPTION(85, "Exception when trying to display CLI help: {}"), //
   REGEX_PREFIX_UNSUPPORTED(86,
       "Use of 'REGEX:' prefix notation in '{}' is no longer supported, use '(REGEX)' suffix instead. See https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263");

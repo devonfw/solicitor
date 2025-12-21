@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.npmlicensechecker;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class NpmLicenseCheckerReaderTests {
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", this.application,
-        UsagePattern.DYNAMIC_LINKING, null, null);
+        UsagePattern.DYNAMIC_LINKING, false, null, null);
 
   }
 
@@ -78,10 +79,36 @@ public class NpmLicenseCheckerReaderTests {
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", application,
-        UsagePattern.DYNAMIC_LINKING, null, configuration);
+        UsagePattern.DYNAMIC_LINKING, false, null, configuration);
 
     assertEquals(2, application.getApplicationComponents().size());
 
+  }
+
+  @Test
+  public void testUsagePatternAndOssModified() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
+    NpmLicenseCheckerReader gr = new NpmLicenseCheckerReader();
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", this.application,
+        UsagePattern.DYNAMIC_LINKING, false, null, null);
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
+    gr = new NpmLicenseCheckerReader();
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("npm-license-checker", "src/test/resources/npmLicenseCheckerReport.json", this.application,
+        UsagePattern.STATIC_LINKING, true, null, null);
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
   }
 
   @Test

@@ -17,6 +17,7 @@ import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
+import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -74,10 +75,12 @@ public abstract class AbstractReader implements Reader {
    * @param configuration the map with reader configuration parameters, might be <code>null</code>.
    * @param sourceUrl the URL from where the inventory data was read
    * @param application the application
+   * @param usagePattern the UsagePattern which was applied to the read ApplicationComponents
+   * @param ossModified the ossModified flag which was applied to all read ApplicationComponents
    * @param statistics object with statistical information on the read data
    */
   protected void doLogging(Map<String, String> configuration, String sourceUrl, Application application,
-      ReaderStatistics statistics) {
+      UsagePattern usagePattern, boolean ossModified, ReaderStatistics statistics) {
 
     boolean filterIsDefined = (configuration != null) && ( //
     configuration.get(INCLUDE_FILTER_PARAMETER_NAME) != null || //
@@ -86,10 +89,11 @@ public abstract class AbstractReader implements Reader {
     if (filterIsDefined) {
       LOG.info(LogMessages.READING_INVENTORY_WITH_FILTER.msg(),
           statistics.readComponentCount - statistics.filteredComponentCount, statistics.licenseCount,
-          application.getName(), sourceUrl, statistics.readComponentCount, statistics.filteredComponentCount);
+          application.getName(), sourceUrl, statistics.readComponentCount, statistics.filteredComponentCount,
+          usagePattern, ossModified);
     } else {
       LOG.info(LogMessages.READING_INVENTORY.msg(), statistics.readComponentCount, statistics.licenseCount,
-          application.getName(), sourceUrl);
+          application.getName(), sourceUrl, usagePattern, ossModified);
     }
   }
 

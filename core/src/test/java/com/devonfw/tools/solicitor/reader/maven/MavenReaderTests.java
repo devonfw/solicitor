@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.maven;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -41,8 +42,8 @@ public class MavenReaderTests {
     MavenReader mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
-    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING, null,
-        null);
+    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
+        false, null, null);
     LOG.info(application.toString());
     assertEquals(95, application.getApplicationComponents().size());
 
@@ -62,6 +63,36 @@ public class MavenReaderTests {
   }
 
   /**
+   * Tests if usagePattern and ossModified is handled correctly.
+   */
+  @Test
+  public void testUsagePatternAndOssModified() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8", "#default#");
+    MavenReader mr = new MavenReader();
+    mr.setModelFactory(modelFactory);
+    mr.setInputStreamFactory(new FileInputStreamFactory());
+    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
+        false, null, null);
+    assertEquals(UsagePattern.DYNAMIC_LINKING, application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(application.getApplicationComponents().get(0).isOssModified());
+
+    application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    mr = new MavenReader();
+    mr.setModelFactory(modelFactory);
+    mr.setInputStreamFactory(new FileInputStreamFactory());
+    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.STATIC_LINKING, true,
+        null, null);
+    assertEquals(UsagePattern.STATIC_LINKING, application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(application.getApplicationComponents().get(0).isOssModified());
+
+  }
+
+  /**
    * Tests reading a maven license file with enabled excludeFilter.
    */
   @Test
@@ -76,8 +107,8 @@ public class MavenReaderTests {
     MavenReader mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
-    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING, null,
-        configuration);
+    mr.readInventory("maven", "src/test/resources/licenses_sample.xml", application, UsagePattern.DYNAMIC_LINKING,
+        false, null, configuration);
     LOG.info(application.toString());
     assertEquals(94, application.getApplicationComponents().size());
 
@@ -99,7 +130,7 @@ public class MavenReaderTests {
 
     try {
       mr.readInventory("maven", "src/test/resources/licenses_sample_with_doctype.xml", application,
-          UsagePattern.DYNAMIC_LINKING, null, null);
+          UsagePattern.DYNAMIC_LINKING, false, null, null);
       fail("Expected exception was not thrown");
     } catch (SolicitorRuntimeException e) {
       // we check detailed message to make sure the exception is not thrown due to other reasons

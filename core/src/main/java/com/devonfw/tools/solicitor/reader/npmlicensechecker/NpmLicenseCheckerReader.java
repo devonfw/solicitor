@@ -48,7 +48,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration) {
+      boolean modified, String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
 
@@ -91,6 +91,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         }
         appComponent.setVersion(module[module.length - 1]);
         appComponent.setUsagePattern(usagePattern);
+        appComponent.setOssModified(modified);
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
         appComponent.setSourceRepoUrl(repo);
@@ -110,7 +111,7 @@ public class NpmLicenseCheckerReader extends AbstractReader implements Reader {
         }
 
       }
-      doLogging(configuration, sourceUrl, application, statistics);
+      doLogging(configuration, sourceUrl, application, usagePattern, modified, statistics);
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read npm-license-checker inventory source '" + sourceUrl + "'", e);
     }

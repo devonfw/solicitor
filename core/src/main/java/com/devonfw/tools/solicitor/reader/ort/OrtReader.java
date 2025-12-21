@@ -52,7 +52,7 @@ public class OrtReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration) {
+      boolean modified, String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
 
@@ -88,6 +88,7 @@ public class OrtReader extends AbstractReader implements Reader {
         appComponent.setArtifactId(artifactId);
         appComponent.setVersion(version);
         appComponent.setUsagePattern(usagePattern);
+        appComponent.setOssModified(modified);
         appComponent.setOssHomepage(homePage);
         appComponent.setSourceRepoUrl(repo);
 
@@ -119,7 +120,7 @@ public class OrtReader extends AbstractReader implements Reader {
             addRawLicense(appComponent, cl.toString(), null, sourceUrl);
           }
         }
-        doLogging(configuration, sourceUrl, application, statistics);
+        doLogging(configuration, sourceUrl, application, usagePattern, modified, statistics);
       }
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read ort license inventory source '" + sourceUrl + "'", e);

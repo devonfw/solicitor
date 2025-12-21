@@ -1,6 +1,7 @@
 package com.devonfw.tools.solicitor.reader.gradle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ class GradleLicenseReportReaderTest {
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("gradle-license-report-json", "src/test/resources/gradleLicenseReport.json", this.application,
-        UsagePattern.STATIC_LINKING, null, null);
+        UsagePattern.STATIC_LINKING, false, null, null);
   }
 
   @Test
@@ -71,9 +72,36 @@ class GradleLicenseReportReaderTest {
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
     gr.readInventory("gradle-license-report-json", "src/test/resources/gradleLicenseReport.json", application,
-        UsagePattern.STATIC_LINKING, null, configuration);
+        UsagePattern.STATIC_LINKING, false, null, configuration);
 
     assertEquals(2, application.getApplicationComponents().size());
+  }
+
+  @Test
+  void testUsagePatternAndOssModified() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    GradleLicenseReportReader gr = new GradleLicenseReportReader();
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("gradle-license-report-json", "src/test/resources/gradleLicenseReport.json", this.application,
+        UsagePattern.DYNAMIC_LINKING, false, null, null);
+
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    gr = new GradleLicenseReportReader();
+    gr.setModelFactory(modelFactory);
+    gr.setInputStreamFactory(new FileInputStreamFactory());
+    gr.readInventory("gradle-license-report-json", "src/test/resources/gradleLicenseReport.json", this.application,
+        UsagePattern.STATIC_LINKING, true, null, null);
+
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
   }
 
   @Test

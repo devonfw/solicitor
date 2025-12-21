@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.ort;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class OrtReaderTests {
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
     pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.DYNAMIC_LINKING,
-        null, null);
+        false, null, null);
 
   }
 
@@ -78,8 +79,8 @@ public class OrtReaderTests {
     OrtReader pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, null,
-        configuration);
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, false,
+        null, configuration);
 
     assertEquals(1, application.getApplicationComponents().size());
 
@@ -90,10 +91,36 @@ public class OrtReaderTests {
     pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, null,
-        configuration);
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", application, UsagePattern.DYNAMIC_LINKING, false,
+        null, configuration);
 
     assertEquals(0, application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void testUsagePatternAndOssModified() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
+    OrtReader pr = new OrtReader();
+    pr.setModelFactory(modelFactory);
+    pr.setInputStreamFactory(new FileInputStreamFactory());
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.DYNAMIC_LINKING,
+        false, null, null);
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
+    pr = new OrtReader();
+    pr.setModelFactory(modelFactory);
+    pr.setInputStreamFactory(new FileInputStreamFactory());
+    pr.readInventory("ort", "src/test/resources/analyzer-result.json", this.application, UsagePattern.STATIC_LINKING,
+        true, null, null);
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
   }
 
   @Test

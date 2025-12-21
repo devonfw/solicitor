@@ -70,7 +70,7 @@ public class CsvReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration) {
+      boolean modified, String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
@@ -220,6 +220,7 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setArtifactId(artifactId);
           appComponent.setVersion(version);
           appComponent.setUsagePattern(usagePattern);
+          appComponent.setOssModified(modified);
           appComponent.setPackageUrl(getPackageURL(packageType, groupId, artifactId, version));
 
           // merge ApplicationComponentImpl with same key if they appear
@@ -257,6 +258,7 @@ public class CsvReader extends AbstractReader implements Reader {
           appComponent.setArtifactId(record.get(1));
           appComponent.setVersion(record.get(2));
           appComponent.setUsagePattern(usagePattern);
+          appComponent.setOssModified(modified);
           appComponent.setPackageUrl(getPackageURL(packageType, record.get(0), record.get(1), record.get(2)));
 
           // merge ApplicationComponentImpl with same key if they appear
@@ -282,7 +284,7 @@ public class CsvReader extends AbstractReader implements Reader {
         }
       }
 
-      doLogging(configuration, sourceUrl, application, statistics);
+      doLogging(configuration, sourceUrl, application, usagePattern, modified, statistics);
     } catch (IOException e1) {
       throw new SolicitorRuntimeException("Could not read CSV inventory source '" + sourceUrl + "'", e1);
     }

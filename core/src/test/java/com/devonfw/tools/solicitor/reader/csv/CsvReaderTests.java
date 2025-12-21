@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.csv;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -65,7 +66,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
-        "maven", configuration);
+        false, "maven", configuration);
 
   }
 
@@ -90,6 +91,7 @@ public class CsvReaderTests {
 
     LOG.info(this.application.toString());
     assertEquals(5, this.application.getApplicationComponents().size());
+
   }
 
   /**
@@ -130,10 +132,95 @@ public class CsvReaderTests {
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
-    csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, "maven",
-        configuration);
+    csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", application, UsagePattern.DYNAMIC_LINKING, false,
+        "maven", configuration);
 
     assertEquals(4, application.getApplicationComponents().size());
+
+  }
+
+  /**
+   * Tests setUsagePattern and setOssModified with configuration.
+   */
+  @Test
+  public void testUsagePatternAndOssModifiedWithConfiguration() {
+
+    // configuration settings
+    Map<String, String> configuration = new HashMap<String, String>();
+    configuration.put("groupId", "0");
+    configuration.put("artifactId", "1");
+    configuration.put("version", "2");
+    configuration.put("license", "3");
+    configuration.put("licenseUrl", "4");
+    configuration.put("allowDuplicateHeaderNames", "false");
+    configuration.put("allowMissingColumnNames", "false");
+    configuration.put("autoFlush", "false");
+    configuration.put("commentMarker", "#");
+    configuration.put("delimiter", ";");
+    configuration.put("escape", "!");
+    configuration.put("ignoreEmptyLines", "true");
+    configuration.put("ignoreHeaderCase", "true");
+    configuration.put("ignoreSurroundingSpaces", "true");
+    configuration.put("nullString", "newNullString");
+    configuration.put("quote", "'");
+    configuration.put("recordSeparator", "\n");
+    configuration.put("skipHeaderRecord", "true");
+    configuration.put("trailingDelimiter", "true");
+    configuration.put("trim", "true");
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    CsvReader csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+    csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", this.application, UsagePattern.DYNAMIC_LINKING,
+        false, "maven", configuration);
+
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+    csvr.readInventory("csv", "src/test/resources/csvlicenses.csv", this.application, UsagePattern.STATIC_LINKING, true,
+        "maven", configuration);
+
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
+
+  }
+
+  /**
+   * Tests setUsagePattern and setOssModified without configuration.
+   */
+  @Test
+  public void testUsagePatternAndOssModifiedWithOutConfiguration() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    CsvReader csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+    csvr.readInventory("csv", "src/test/resources/csvlicenses_npm.csv", this.application, UsagePattern.DYNAMIC_LINKING,
+        false, "npm", null);
+
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    csvr = new CsvReader();
+    csvr.setModelFactory(modelFactory);
+    csvr.setInputStreamFactory(new FileInputStreamFactory());
+    csvr.readInventory("csv", "src/test/resources/csvlicenses_npm.csv", this.application, UsagePattern.STATIC_LINKING,
+        true, "npm", null);
+
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
 
   }
 
@@ -185,7 +272,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses_npm.csv", application, UsagePattern.DYNAMIC_LINKING,
-        "npm", null);
+        false, "npm", null);
 
     List<ApplicationComponent> lapc = application.getApplicationComponents();
     boolean found = false;
@@ -221,7 +308,7 @@ public class CsvReaderTests {
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
     csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
-        "pypi", configuration);
+        false, "pypi", configuration);
 
     List<ApplicationComponent> lapc = application.getApplicationComponents();
     boolean found = false;
@@ -257,7 +344,7 @@ public class CsvReaderTests {
 
     try {
       csvr.readInventory("csv", "src/test/resources/csvlicenses_pypi.csv", application, UsagePattern.DYNAMIC_LINKING,
-          null, null);
+          false, null, null);
     } catch (Exception e) {
       // Capture the log messages
       ArgumentCaptor<String> logEntry1 = ArgumentCaptor.forClass(String.class);

@@ -45,7 +45,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
   @SuppressWarnings("rawtypes")
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration) {
+      boolean modified, String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
 
@@ -72,6 +72,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         appComponent.setArtifactId(name);
         appComponent.setVersion(version);
         appComponent.setUsagePattern(usagePattern);
+        appComponent.setOssModified(modified);
         appComponent.setGroupId("");
         appComponent.setOssHomepage(homePage);
         appComponent.setPackageUrl(PackageURLHelper.fromPyPICoordinates(name, version));
@@ -84,7 +85,7 @@ public class PipLicensesReader extends AbstractReader implements Reader {
         addRawLicense(appComponent, license, licenseUrl, sourceUrl);
         statistics.licenseCount++;
       }
-      doLogging(configuration, sourceUrl, application, statistics);
+      doLogging(configuration, sourceUrl, application, usagePattern, modified, statistics);
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read pip license inventory source '" + sourceUrl + "'", e);
     }

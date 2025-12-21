@@ -133,6 +133,7 @@ public class ConfigFactory {
         rs.setType(rc.getType());
         rs.setSource(rc.getSource());
         rs.setUsagePattern(rc.getUsagePattern());
+        rs.setModified(rc.isModified());
         rs.setPackageType(rc.getPackageType());
         rs.setConfiguration(rc.getConfiguration());
         rs = resolvePlaceholdersInReader(rs, placeHolderMap);

@@ -2,6 +2,7 @@
 package com.devonfw.tools.solicitor.reader.cyclonedx;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,7 +43,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        null, null);
+        false, null, null);
     LOG.info(application.toString());
 
     assertEquals(32, application.getApplicationComponents().size());
@@ -62,6 +63,35 @@ public class CyclonedxReaderTests {
   }
 
   /**
+   * Test the handling of usagePattern and ossModified in {@link CyclonedxReader#readInventory()} method.
+   */
+  @Test
+  public void readMavenFileAndCheckUsagePatternAndOssModified() {
+
+    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
+        "Java8", "#default#");
+    this.cdxr.setModelFactory(this.modelFactory);
+    this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
+    this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
+        false, null, null);
+
+    assertEquals(UsagePattern.DYNAMIC_LINKING, application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(application.getApplicationComponents().get(0).isOssModified());
+
+    application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
+        "#default#");
+    this.cdxr.setModelFactory(this.modelFactory);
+    this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
+    this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.STATIC_LINKING,
+        true, null, null);
+    LOG.info(application.toString());
+
+    assertEquals(UsagePattern.STATIC_LINKING, application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(application.getApplicationComponents().get(0).isOssModified());
+
+  }
+
+  /**
    * Test the {@link CyclonedxReader#readInventory()} method. Input file is an SBOM containing maven components. Mock
    * the case, that a maven PurlHandler exists. Test the case that a reader filter exists.
    */
@@ -75,7 +105,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        null, configuration);
+        false, null, configuration);
     LOG.info(application.toString());
 
     assertEquals(31, application.getApplicationComponents().size());
@@ -94,7 +124,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        null, null);
+        false, null, null);
     LOG.info(application.toString());
 
     assertEquals(32, application.getApplicationComponents().size());
@@ -113,7 +143,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        null, null);
+        false, null, null);
     LOG.info(application.toString());
 
     assertEquals(32, application.getApplicationComponents().size());
@@ -169,8 +199,8 @@ public class CyclonedxReaderTests {
         "Angular", "#default#");
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
-    this.cdxr.readInventory("npm", "src/test/resources/npmsbom.json", application, UsagePattern.DYNAMIC_LINKING, null,
-        null);
+    this.cdxr.readInventory("npm", "src/test/resources/npmsbom.json", application, UsagePattern.DYNAMIC_LINKING, false,
+        null, null);
     LOG.info(application.toString());
 
     assertEquals(74, application.getApplicationComponents().size());
@@ -197,7 +227,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("npm", "src/test/resources/expressionsbom.json", application, UsagePattern.DYNAMIC_LINKING,
-        null, null);
+        false, null, null);
     LOG.info(application.toString());
 
     boolean found = false;
@@ -225,7 +255,7 @@ public class CyclonedxReaderTests {
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/cyclonedx_minimal.json", application,
-        UsagePattern.DYNAMIC_LINKING, null, null);
+        UsagePattern.DYNAMIC_LINKING, false, null, null);
 
     assertEquals(2, application.getApplicationComponents().size());
     assertEquals("foo", application.getApplicationComponents().get(0).getArtifactId());

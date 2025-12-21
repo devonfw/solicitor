@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.yarnmodern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class YarnModernReaderTests {
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
     yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", this.application,
-        UsagePattern.STATIC_LINKING, null, null);
+        UsagePattern.STATIC_LINKING, false, null, null);
 
   }
 
@@ -136,9 +137,37 @@ public class YarnModernReaderTests {
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
     yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", application,
-        UsagePattern.STATIC_LINKING, null, configuration);
+        UsagePattern.STATIC_LINKING, false, null, configuration);
 
     assertEquals(4, application.getApplicationComponents().size());
   }
 
+  /**
+   * Test if usagePattern and ossModified is set correctly
+   */
+  @Test
+  public void testUsagePatternAndOssModified() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
+    YarnModernReader yr = new YarnModernReader();
+    yr.setModelFactory(modelFactory);
+    yr.setInputStreamFactory(new FileInputStreamFactory());
+    yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", this.application,
+        UsagePattern.DYNAMIC_LINKING, false, null, null);
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
+    yr = new YarnModernReader();
+    yr.setModelFactory(modelFactory);
+    yr.setInputStreamFactory(new FileInputStreamFactory());
+    yr.readInventory("yarn-modern", "src/test/resources/yarnModernReport.json", this.application,
+        UsagePattern.STATIC_LINKING, true, null, null);
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
+  }
 }

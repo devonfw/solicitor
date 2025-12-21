@@ -35,10 +35,11 @@ public interface Reader {
    * @param sourceUrl a URL of the resource to read the data from
    * @param application all read {@link ApplicationComponent} need to be linked with this {@link Application}
    * @param usagePattern the {@link UsagePattern} which applies for all read {@link ApplicationComponent}s
+   * @param modified the value of the the field ossModified which applies for all read {@link ApplicationComponent}s
    * @param packageType the packageType to create the packageUrl
    * @param configuration optional configuration settings for readers
    */
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration);
+      boolean modified, String packageType, Map<String, String> configuration);
 
 }
