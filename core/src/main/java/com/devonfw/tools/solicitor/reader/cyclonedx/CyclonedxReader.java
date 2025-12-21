@@ -47,7 +47,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration) {
+      boolean modified, String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
@@ -79,6 +79,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           appComponent.setArtifactId(artifactId);
           appComponent.setVersion(version);
           appComponent.setUsagePattern(usagePattern);
+          appComponent.setOssModified(modified);
 
           // Fill purl
           if (purl != null && !purl.isEmpty()) {
@@ -146,7 +147,7 @@ public class CyclonedxReader extends AbstractReader implements Reader {
           }
         }
       }
-      doLogging(configuration, sourceUrl, application, statistics);
+      doLogging(configuration, sourceUrl, application, usagePattern, modified, statistics);
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not read CycloneDx inventory source '" + sourceUrl + "'", e);
     }

@@ -25,6 +25,9 @@ public class ReaderConfig {
   private UsagePattern usagePattern;
 
   @JsonProperty
+  private boolean modified;
+
+  @JsonProperty
   private String packageType;
 
   @JsonProperty
@@ -88,6 +91,16 @@ public class ReaderConfig {
   }
 
   /**
+   * This method gets the field <code>modified</code>.
+   *
+   * @return modified
+   */
+  public boolean isModified() {
+
+    return this.modified;
+  }
+
+  /**
    * This method sets the field <code>packageType</code>.
    *
    * @param packageType the new value of the field packageType
@@ -135,5 +148,15 @@ public class ReaderConfig {
   public void setUsagePattern(UsagePattern usagePattern) {
 
     this.usagePattern = usagePattern;
+  }
+
+  /**
+   * This method sets the field <code>modified</code>.
+   *
+   * @param modified the new value of field modified.
+   */
+  public void setModified(boolean modified) {
+
+    this.modified = modified;
   }
 }

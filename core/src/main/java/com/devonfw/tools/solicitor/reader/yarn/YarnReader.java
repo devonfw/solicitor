@@ -48,7 +48,7 @@ public class YarnReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration) {
+      boolean modified, String packageType, Map<String, String> configuration) {
 
     String content = cutSourceJson(sourceUrl);
 
@@ -86,6 +86,7 @@ public class YarnReader extends AbstractReader implements Reader {
       appComponent.setArtifactId(name);
       appComponent.setVersion(version);
       appComponent.setUsagePattern(usagePattern);
+      appComponent.setOssModified(modified);
       appComponent.setGroupId("");
       appComponent.setOssHomepage(homePage);
       appComponent.setSourceRepoUrl(repo);
@@ -99,7 +100,7 @@ public class YarnReader extends AbstractReader implements Reader {
       addRawLicense(appComponent, license, licenseUrl, sourceUrl);
       statistics.licenseCount++;
     }
-    doLogging(configuration, sourceUrl, application, statistics);
+    doLogging(configuration, sourceUrl, application, usagePattern, modified, statistics);
 
   }
 

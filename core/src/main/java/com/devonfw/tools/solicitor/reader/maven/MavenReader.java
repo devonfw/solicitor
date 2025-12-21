@@ -60,7 +60,7 @@ public class MavenReader extends AbstractReader implements Reader {
   /** {@inheritDoc} */
   @Override
   public void readInventory(String type, String sourceUrl, Application application, UsagePattern usagePattern,
-      String packageType, Map<String, String> configuration) {
+      boolean modified, String packageType, Map<String, String> configuration) {
 
     ReaderStatistics statistics = new ReaderStatistics();
     InputStream is;
@@ -102,6 +102,7 @@ public class MavenReader extends AbstractReader implements Reader {
       appComponent.setArtifactId(dep.getArtifactId());
       appComponent.setVersion(dep.getVersion());
       appComponent.setUsagePattern(usagePattern);
+      appComponent.setOssModified(modified);
       appComponent.setPackageUrl(
           PackageURLHelper.fromMavenCoordinates(dep.getGroupId(), dep.getArtifactId(), dep.getVersion()));
       if (!addComponentToApplicationIfNotFiltered(application, appComponent, configuration, statistics)) {
@@ -118,7 +119,7 @@ public class MavenReader extends AbstractReader implements Reader {
         }
       }
     }
-    doLogging(configuration, sourceUrl, application, statistics);
+    doLogging(configuration, sourceUrl, application, usagePattern, modified, statistics);
   }
 
 }

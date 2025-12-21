@@ -34,6 +34,8 @@ public class SolicitorSetup {
 
     private UsagePattern usagePattern;
 
+    private boolean modified;
+
     private String packageType;
 
     private Map<String, String> configuration;
@@ -76,6 +78,16 @@ public class SolicitorSetup {
     public UsagePattern getUsagePattern() {
 
       return this.usagePattern;
+    }
+
+    /**
+     * This method gets the field <code>modified</code>.
+     *
+     * @return modified
+     */
+    public boolean isModified() {
+
+      return this.modified;
     }
 
     /**
@@ -146,6 +158,16 @@ public class SolicitorSetup {
     public void setUsagePattern(UsagePattern usagePattern) {
 
       this.usagePattern = usagePattern;
+    }
+
+    /**
+     * This method sets the field <code>modified</code>.
+     *
+     * @param modified the new value of the field modified.
+     */
+    public void setModified(boolean modified) {
+
+      this.modified = modified;
     }
 
     /**

@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.yarn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -36,8 +37,8 @@ public class YarnReaderTests {
     YarnReader yr = new YarnReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
-    yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.DYNAMIC_LINKING, null,
-        null);
+    yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
+        false, null, null);
 
   }
 
@@ -76,10 +77,36 @@ public class YarnReaderTests {
     YarnReader yr = new YarnReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
-    yr.readInventory("yarn", "src/test/resources/yarnReport.json", application, UsagePattern.DYNAMIC_LINKING, null,
-        configuration);
+    yr.readInventory("yarn", "src/test/resources/yarnReport.json", application, UsagePattern.DYNAMIC_LINKING, false,
+        null, configuration);
 
     assertEquals(1, application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void testUsagePatternAndOssModified() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
+    YarnReader yr = new YarnReader();
+    yr.setModelFactory(modelFactory);
+    yr.setInputStreamFactory(new FileInputStreamFactory());
+    yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.DYNAMIC_LINKING,
+        false, null, null);
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
+        "#default#");
+    yr = new YarnReader();
+    yr.setModelFactory(modelFactory);
+    yr.setInputStreamFactory(new FileInputStreamFactory());
+    yr.readInventory("yarn", "src/test/resources/yarnReport.json", this.application, UsagePattern.STATIC_LINKING, true,
+        null, null);
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
   }
 
   @Test

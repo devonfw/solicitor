@@ -5,6 +5,7 @@
 package com.devonfw.tools.solicitor.reader.piplicenses;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,8 +38,8 @@ public class PipReaderTests {
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, null,
-        null);
+    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, false,
+        null, null);
 
   }
 
@@ -77,10 +78,36 @@ public class PipReaderTests {
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
-    pr.readInventory("pip", "src/test/resources/pipReport.json", application, UsagePattern.DYNAMIC_LINKING, null,
+    pr.readInventory("pip", "src/test/resources/pipReport.json", application, UsagePattern.DYNAMIC_LINKING, false, null,
         configuration);
 
     assertEquals(1, application.getApplicationComponents().size());
+  }
+
+  @Test
+  public void testUsagePatternAndOssModified() {
+
+    ModelFactory modelFactory = new ModelFactoryImpl();
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
+    PipLicensesReader pr = new PipLicensesReader();
+    pr.setModelFactory(modelFactory);
+    pr.setInputStreamFactory(new FileInputStreamFactory());
+    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.DYNAMIC_LINKING, false,
+        null, null);
+    assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
+
+    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
+        "#default#");
+    pr = new PipLicensesReader();
+    pr.setModelFactory(modelFactory);
+    pr.setInputStreamFactory(new FileInputStreamFactory());
+    pr.readInventory("pip", "src/test/resources/pipReport.json", this.application, UsagePattern.STATIC_LINKING, true,
+        null, null);
+    assertEquals(UsagePattern.STATIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
+    assertTrue(this.application.getApplicationComponents().get(0).isOssModified());
   }
 
   @Test
