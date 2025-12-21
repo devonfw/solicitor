@@ -344,8 +344,9 @@ Within this section the different applications (=deliverables) of the engagement
     ],
     "readers" : [ { <6>
       "type" : "maven", <7>
-      "source" : "classpath:samples/licenses_devon4j.xml", <8> <10>
+      "source" : "classpath:samples/licenses_devon4j.xml", <8> <13>
       "usagePattern" : "DYNAMIC_LINKING", <9>
+      "modified" : false, <10>
       "packageType" : "maven", <11>
       "configuration" : { <12>
         .
@@ -363,10 +364,11 @@ Within this section the different applications (=deliverables) of the engagement
 <6> multiple readers might be defined per application
 <7> the type of reader; for possible values see <<Reading License Information with Readers>>
 <8> location of the source file to read (ResourceLoader-URL)
-<9> usage pattern; possible values: `DYNAMIC_LINKING`, `STATIC_LINKING`, `STANDALONE_PRODUCT`; see description below
-<10> _placeholder patterns might be used here_
+<9> usage pattern; possible values: `DYNAMIC_LINKING`, `STATIC_LINKING`, `STANDALONE_PRODUCT`; see description below in <<Usage Patterns>>
+<10> indicates if the code of ``ApplicationComponent``s read by this reader was modified; see hints on usage below in <<Handling of Modified OSS Components>>; the parameter is optional and will default to `false`
 <11> packageType: type of the packages in the input data. Must be a valid packageUrl type (see https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst). Relevant when using the CSV reader.
 <12> configuration: optional configuration parameters for the Reader, given as name/value pairs.
+<13> _placeholder patterns might be used here_
 
 ===== Usage Patterns
 The usage pattern describes how the ``ApplicationComponent``s (libraries, packages) which are read in via the Reader are linked (in)to the ``Application``s executable. The kind of linking might affect the legal evaluation of the license compliance.
@@ -412,6 +414,39 @@ _Solicitor_ if the includeFilter regex is matched and the excludeFilter regex is
 
 If the PackageURL of the component is not defined it will be represented as an empty string when doing the regular expression
 matching. (An empty/zero length regex string will match in this case.)
+
+===== Handling of Modified OSS Components
+
+If Open Source Components were modified this might require to comply with additional obligations when distributing. (Like distributing the modified source code or documenting the code changes.) The fact whether an `ApplicationComponent` was modified or not is represented in the _Solicitor_ data model by the boolean property `ossModified`. This flag by default is set to `false` when importing the data of `ApplicationComponents` using Readers. By setting the optional Reader configuration parameter `modified` to `true` the flag `ossModified` will be set to `true` for all `ApplicationComponents` imported by this Reader.
+
+Using the above explained <<Filtering of components within Readers>> allows to set `ossModified` to different values for `ApplicationComponents` read from the same input file.
+
+[listing]
+.
+.
+.
+"readers" : [ {
+  "type" : "maven",
+  "source" : "file:${cfgdir}/input/licenses.xml",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "modified" : false,
+  "configuration" : {
+    "excludeFilter": "pkg:maven/.*/.*@.*-MODIFIED"
+  }
+},{
+  "type" : "maven",
+  "source" : "file:${cfgdir}/input/licenses.xml",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "modified" : true,
+  "configuration" : {
+    "includeFilter": "pkg:maven/.*/.*@.*-MODIFIED"
+  }
+} ]
+.
+.
+.
+
+This will set `ossModified` to `true` for all imported `ApplicationComponents` where the version ends in the suffix "-MODIFIED".
 
 NOTE: The different readers are described in chapter <<Reading License Information with Readers>>.
 
@@ -1970,6 +2005,7 @@ Changes in 1.44.0::
 Note that the license information given in the SBOM `solicitor.cdx.json` is currently purely based on the package metadata of the included libraries and might differ from the information given in `solicitor_licenseinfo.html`. See also <<Licensing of Solicitor>>.
 * https://github.com/devonfw/solicitor/pull/338: Renamed maven artifact "solicitor-app" to "solicitor" to avoid
 confusing naming in SBOM. This has no functional impact for users.
+* https://github.com/devonfw/solicitor/issues/339: Introduce new optional configuration parameter `modified` for Readers. This allows to control the value of property `ossModified` of the `ApplicationsComponents` when importing them. See also <<Handling of Modified OSS Components>>.
 
 Changes in 1.43.0::
 This is a maintenance release which focuses on reducing technical debt by updating used frameworks/libraries to up-to-date versions and removing deprecated features. Supported Java versions are 17 to 25.
