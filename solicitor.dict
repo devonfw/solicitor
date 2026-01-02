@@ -4,6 +4,7 @@ cdx
 CDXGEN
 cfgdir
 conf
+CPE
 cran
 CycloneDX
 CyclonedxReader
@@ -19,6 +20,7 @@ ec
 esb
 eug
 fas
+GPLv
 gradle
 http
 https
