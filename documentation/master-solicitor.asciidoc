@@ -2002,6 +2002,7 @@ Spring beans implementing this interface will be called at certain points in the
 == Release Notes
 Changes in 1.45.0::
 * https://github.com/devonfw/solicitor/pull/341: Added additional name mapping rule for GPLv2 w/CPE.
+* https://github.com/devonfw/solicitor/issues/342: Avoid possible crash if `declaredLicense` contains long text.
 
 Changes in 1.44.0::
 * https://github.com/devonfw/solicitor/issues/336: Provide a CycloneDX SBOM file describing the Solicitor Executable JAR. Using the new command line option `-esb` will extract this SBOM into the current working directory with name `solicitor.cdx.json`.
