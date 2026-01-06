@@ -654,10 +654,10 @@ Additionally, an optional configuration can be set in order to customize the giv
   "source" : "file:path/to/the/file.csv",
   "usagePattern" : "DYNAMIC_LINKING",
   "configuration" : {
-    "charset" = "UTF-8",
+    "charset" : "UTF-8",
     "artifactId" : "0",
     "version" : "1",
-    "format" : "EXCEL",
+    "format" : "Excel",
     "skipHeaderRecord" : "true",
     "delimiter" : ";"
   }
@@ -698,11 +698,11 @@ Furthermore, one can configure a range of other csv structure options based on t
 * trailingDelimiter (boolean)
 * trim (boolean)
 
-These configurations may also be used to overwrite options of a https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html[predefined format], which can be set with:
+These configurations may also be used to overwrite options of a https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html#enum-constant-summary[predefined format], which can be set with:
 
-* format (string, predefined format e.g. EXCEL)
+* format (string, predefined format e.g. `Excel`)
 
-Important: In case that a component has multiple licenses attached, there needs to be a separate
+IMPORTANT: In case that a component has multiple licenses attached, there needs to be a separate
 line in the csv file for each license.
 
 
@@ -2003,6 +2003,7 @@ Spring beans implementing this interface will be called at certain points in the
 Changes in 1.45.0::
 * https://github.com/devonfw/solicitor/pull/341: Added additional name mapping rule for GPLv2 w/CPE.
 * https://github.com/devonfw/solicitor/issues/342: Avoid possible crash if `declaredLicense` contains long text.
+* https://github.com/devonfw/solicitor/issues/298: Fix documentation of configuration of <<CSV,Reader for CSV files>>.
 
 Changes in 1.44.0::
 * https://github.com/devonfw/solicitor/issues/336: Provide a CycloneDX SBOM file describing the Solicitor Executable JAR. Using the new command line option `-esb` will extract this SBOM into the current working directory with name `solicitor.cdx.json`.
