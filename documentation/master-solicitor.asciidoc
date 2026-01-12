@@ -2005,6 +2005,7 @@ Changes in 1.45.0::
 * https://github.com/devonfw/solicitor/issues/342: Avoid possible crash if `declaredLicense` contains long text.
 * https://github.com/devonfw/solicitor/issues/298: Fix documentation of configuration of <<CSV,Reader for CSV files>>.
 * https://github.com/devonfw/solicitor/pull/345: Changed mapping of one license from OSS-OTHER/IUE-1.2 to OSS-SPDX/xpp.
+* https://github.com/devonfw/solicitor/pull/346: Added some more license name mappings.
 
 Changes in 1.44.0::
 * https://github.com/devonfw/solicitor/issues/336: Provide a CycloneDX SBOM file describing the Solicitor Executable JAR. Using the new command line option `-esb` will extract this SBOM into the current working directory with name `solicitor.cdx.json`.
