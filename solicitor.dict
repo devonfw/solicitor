@@ -24,6 +24,7 @@ GPLv
 gradle
 http
 https
+IUE
 jq
 jwt
 licenseRefUrl
@@ -50,6 +51,7 @@ velo
 venv
 vm
 WTFPL
+xpp
 XXE
 zA
 Zlib
