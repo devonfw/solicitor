@@ -178,6 +178,10 @@ public class ExcelWriter implements Writer {
         Cell firstCellInRow = row.getCell(row.getFirstCellNum());
         addCommentToCell(firstCellInRow, "NEWLY INSERTED LINE");
       }
+      if (rowData.getRowDiffStatus() == RowDiffStatus.UNKNOWN) {
+        Cell firstCellInRow = row.getCell(row.getFirstCellNum());
+        addCommentToCell(firstCellInRow, "DELTA INFORMATION FOR ROW NOT AVAILABLE");
+      }
       // replace the placeholders
       for (Cell oneCell : row) {
         if (oneCell.getCellType() == CellType.STRING) {

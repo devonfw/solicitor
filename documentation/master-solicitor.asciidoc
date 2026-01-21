@@ -508,11 +508,12 @@ The writer configuration defines how the processed data will be exported and/or 
 [listing]
   "writers" : [ {
     "type" : "xls", <1>
-    "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <7>
-    "target" : "OSS-Inventory-devonfw${-reportingGroup}.xlsx", <3> <7> <8>
+    "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <8>
+    "target" : "OSS-Inventory-devonfw${-reportingGroup}.xlsx", <3> <8> <9>
     "description" : "The XLS OSS-Inventory document", <4>
     "enableReportingGroups" : true, <5>
-    "dataTables" : { <6>
+    "includeDeletedRowsInDelta" : true, <6>
+    "dataTables" : { <7>
       "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
       "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql"
     }
@@ -523,9 +524,10 @@ The writer configuration defines how the processed data will be exported and/or 
 <3> location of the output file
 <4> some textual description
 <5> flag which enables use of reporting groups for this writer (optional, see <<Reporting Groups>>)
-<6> reference to SQL statements used to transform the internal data model to data tables used for reporting
-<7> _placeholder patterns might be used here_
-<8> for the `target` value special additional placeholders are available to handle reporting group information. See <<Using Reporting Group Information in Report Filename>>.
+<6> optional flag which enables the inclusion of deleted rows/records in the report if used in delta/diff mode; defaults to `false`; this should only be set to `true` if the Writer and/or used template supports appropriate rendering of such rows (e.g. using strikethrough to clearly mark them as being no longer present); also see <<Writers>>  
+<7> reference to SQL statements used to transform the internal data model to data tables used for reporting
+<8> _placeholder patterns might be used here_
+<9> for the `target` value special additional placeholders are available to handle reporting group information. See <<Using Reporting Group Information in Report Filename>>.
 
 If a `writers` section is defined in the project configuration then it will replace the writer configuration given in the
 builtin default configuration.
@@ -1262,6 +1264,8 @@ For further information see the
 * The _Solicitor_ JavaDoc (which also includes details on how to access the diff information for rows and fields of reporting data tables)
 * The samples included in _Solicitor_
 
+NOTE: The writer configuration parameter `includeDeletedRowsInDelta` (see <<Writers and Reporting>>) must only be set to `true` if the velocity template appropriately handles the rendering of deleted data rows. 
+
 ==== Excel Writer
 
 ===== Using Placeholders in Excel Spreadsheets
@@ -1285,6 +1289,8 @@ as follows when using the XLS templating:
 
 * For rows that are "new" (so no corresponding old row available) an Excel note indicating that this row is new will be attached to the field that contained the `\#...#` placeholder.
 * Fields in non-new rows that have changed their value will be marked with an Excel note indicating the old value.
+* If the writer configuration sets parameter `includeDeletedRowsInDelta` to `true` (see <<Writers and Reporting>>) then any rows which exist in the old data set but not in the new data set will also be included in the output and will be printed as _strikethrough_ text. Additionally a note will be included in the field that contained the `\#...#` placeholder which indicates that this row was deleted.
+* If it is not possible to correlate/match old and new rows due to undefined correlation keys (see <<Determining difference to previously stored model>> ) then all affected rows will be marked with a note indicating this attached to the field that contained the `\#...#` placeholder.
 
 ==== Generic Excel Writer
 The Generic Excel Writer exists purely for debugging purposes. This writer writes the contents of the `dataTables` defined in the writer configuration to an Excel file. Each `dataTable` will be available in a separate Excel sheet.  To use this writer, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
@@ -1304,6 +1310,8 @@ The Generic Excel Writer exists purely for debugging purposes. This writer write
   } ]
 
 <1> This is unused and can be left empty.
+
+NOTE: The writer configuration parameter `includeDeletedRowsInDelta` must never be set to `true` for this type of Writer as the rendering logic does not support it.
 
 === Reporting Groups
 Reporting Groups is an advanced reporting feature which might be used to create reports for defined subsets of the `Applications`  defined in the project configuration. This might be useful if e.g. separate and dedicated attribution documents need to be created for some of the applications which might then be included into each of those applications.
@@ -2001,6 +2009,7 @@ Spring beans implementing this interface will be called at certain points in the
 [appendix]
 == Release Notes
 Changes in 1.46.0::
+* https://github.com/devonfw/solicitor/issues/268: When creating reports in "delta mode" (i.e. with including information in changed data compared to a previous run) any data rows that were deleted might now also be included in the report. See <<Determining difference to previously stored model>> and <<Writers>>.
 
 Changes in 1.45.0::
 * https://github.com/devonfw/solicitor/pull/341: Added additional name mapping rule for GPLv2 w/CPE.

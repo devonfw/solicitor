@@ -26,13 +26,13 @@ public class DataTableImpl implements DataTable {
     private RowDiffStatus rowDiffStatus;
 
     /**
-     * Creates a {@link DataTableRow}. The field {@link #rowDiffStatus} is set to {@link RowDiffStatus#UNAVAILABLE}.
+     * Creates a {@link DataTableRow}. The field {@link #rowDiffStatus} is set to {@link RowDiffStatus#NOT_APPLICABLE}.
      *
      * @param data the row data
      */
     DataTableRowImpl(DataTableField[] data) {
 
-      this(data, RowDiffStatus.UNAVAILABLE);
+      this(data, RowDiffStatus.NOT_APPLICABLE);
     }
 
     /**
@@ -179,6 +179,13 @@ public class DataTableImpl implements DataTable {
   public boolean isEmpty() {
 
     return this.data.isEmpty();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int size() {
+
+    return this.data.size();
   }
 
 }

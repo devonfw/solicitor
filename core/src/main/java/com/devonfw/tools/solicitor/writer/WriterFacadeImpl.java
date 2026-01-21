@@ -86,7 +86,7 @@ public class WriterFacadeImpl implements WriterFacade {
         LOG.info(LogMessages.EXECUTE_SQL.msg(), table.getKey() + " (old)", table.getValue(), reportingGroup);
         DataTable oldTable = this.resultDatabaseFactory.getDataTable(table.getValue(), reportingGroup);
         LOG.info(LogMessages.CREATING_DIFF.msg(), table.getKey());
-        DataTable diffTable = this.dataTableDiffer.diff(newTable, oldTable);
+        DataTable diffTable = this.dataTableDiffer.diff(newTable, oldTable, writerConfig.isIncludeDeletesRowsInDelta());
         result.put(table.getKey(), diffTable);
       }
       oldModelRoot.setReportingGroup(null);

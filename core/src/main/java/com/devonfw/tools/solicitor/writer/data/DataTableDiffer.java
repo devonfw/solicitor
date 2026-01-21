@@ -13,8 +13,9 @@ public interface DataTableDiffer {
    *
    * @param newTable the new table
    * @param oldTable the old table
+   * @param includeDeletedRows
    * @return the difference
    */
-  DataTable diff(DataTable newTable, DataTable oldTable);
+  DataTable diff(DataTable newTable, DataTable oldTable, boolean includeDeletedRows);
 
 }
