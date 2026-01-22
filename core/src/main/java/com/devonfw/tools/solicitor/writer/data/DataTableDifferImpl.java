@@ -41,7 +41,7 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * </p>
  * <ul>
  * <li>there are no unmatched rows in newTable OR</li>
- * <li>there are no unmatched rows on oldTable OR</li>
+ * <li>there are no unmatched rows in oldTable OR</li>
  * <li>all existing correlations keys have been processed</li>
  * </ul>
  *
