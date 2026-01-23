@@ -5,7 +5,7 @@
 
   <groupId>com.devonfw.tools</groupId>
   <artifactId>solicitor-bom</artifactId>
-  <version>1.46.0-SNAPSHOT</version>
+  <version>1.46.0</version>
   <packaging>pom</packaging>
   <name>Solicitor Dependencies</name>
   <description>Definition of dependency versions for Solicitor.</description>
