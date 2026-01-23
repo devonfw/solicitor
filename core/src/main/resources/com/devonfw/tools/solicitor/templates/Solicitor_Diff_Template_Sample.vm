@@ -51,6 +51,11 @@ tr.new-row  {
 	background-color: yellow;
 }
 
+tr.deleted-row  {
+  background-color: red;
+  text-decoration: line-through;
+}
+
 td.changed  {
 	background-color: cyan;
 }
@@ -105,6 +110,8 @@ ul, ol, li {
 	#foreach ($license in $LICENSE)
 #if ($license.rowDiffStatus=="NEW")
 			<tr class="new-row">
+#elseif ($license.rowDiffStatus=="DELETED")
+			<tr class="deleted-row">
 #else
 			<tr>
 #end

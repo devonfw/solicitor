@@ -31,6 +31,9 @@ public class WriterConfig {
   private boolean enableReportingGroups;
 
   @JsonProperty
+  private boolean includeDeletedRowsInDelta;
+
+  @JsonProperty
   private Map<String, String> dataTables;
 
   /**
@@ -112,6 +115,16 @@ public class WriterConfig {
   }
 
   /**
+   * This method gets the field <code>includeDeletedRowsInDelta</code>.
+   *
+   * @return includeDeletedRowsInDelta
+   */
+  public boolean isIncludeDeletesRowsInDelta() {
+
+    return this.includeDeletedRowsInDelta;
+  }
+
+  /**
    * This method sets the field <code>dataTables</code>.
    *
    * @param dataTables the new value of the field dataTables
@@ -169,6 +182,16 @@ public class WriterConfig {
   public void setEnableReportingGroups(boolean enableReportingGroups) {
 
     this.enableReportingGroups = enableReportingGroups;
+  }
+
+  /**
+   * This method sets the field <code>includeDeletedRowsInDelta</code>.
+   *
+   * @param includeDeletedRowsInDelta new value of {@link #includeDeletedRowsInDelta}.
+   */
+  public void setIncludeDeletedRowsInDelta(boolean includeDeletedRowsInDelta) {
+
+    this.includeDeletedRowsInDelta = includeDeletedRowsInDelta;
   }
 
 }

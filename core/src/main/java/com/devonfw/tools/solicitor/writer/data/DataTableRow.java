@@ -13,9 +13,15 @@ public interface DataTableRow extends Cloneable {
    */
   public static enum RowDiffStatus {
     /**
-     * no diff has been done or no old row known
+     * no diff has been done, so this status is not applicable
      */
-    UNAVAILABLE,
+    NOT_APPLICABLE,
+
+    /**
+     * the diff status could not be determined, typically because the correlation of old and new rows could not be done
+     * due to undefined correlation keys
+     */
+    UNKNOWN,
 
     /**
      * row has changed (at least one of the relevant fields has changed
@@ -30,7 +36,12 @@ public interface DataTableRow extends Cloneable {
     /**
      * row is new
      */
-    NEW
+    NEW,
+
+    /**
+     * row is deleted (so data represented here is only existing in old table)
+     */
+    DELETED
   }
 
   /**

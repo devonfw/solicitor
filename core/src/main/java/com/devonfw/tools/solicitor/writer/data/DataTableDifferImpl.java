@@ -6,8 +6,8 @@ package com.devonfw.tools.solicitor.writer.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,11 +20,12 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.writer.data.DataTableField.FieldDiffStatus;
+import com.devonfw.tools.solicitor.writer.data.DataTableImpl.DataTableRowImpl;
 import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
 
 /**
  * Default implementation of the {@link DataTableDiffer} interface.
- * 
+ *
  * <p>
  * The calculation of the diff is done as follows:
  * </p>
@@ -40,10 +41,10 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * </p>
  * <ul>
  * <li>there are no unmatched rows in newTable OR</li>
- * <li>there are no unmatched rows on oldTable OR</li>
+ * <li>there are no unmatched rows in oldTable OR</li>
  * <li>all existing correlations keys have been processed</li>
  * </ul>
- * 
+ *
  * <p>
  * <b>Merging the corresponding data of newTable and oldTable</b>
  * </p>
@@ -75,7 +76,7 @@ import com.devonfw.tools.solicitor.writer.data.DataTableRow.RowDiffStatus;
  * </ul>
  * If any of the remaining fields is of status {@link FieldDiffStatus#CHANGED} the {@link RowDiffStatus} will be
  * {@link RowDiffStatus#CHANGED}, otherwise it will be {@link RowDiffStatus#UNCHANGED}.
- * 
+ *
  */
 @Component
 public class DataTableDifferImpl implements DataTableDiffer {
@@ -90,23 +91,126 @@ public class DataTableDifferImpl implements DataTableDiffer {
   }
 
   /**
-   * For a given correlation key name try to map not yet mapped old rows to not yet mapped new rows.
-   * 
+   * {@inheritDoc}
+   */
+  @Override
+  public DataTable diff(DataTable newTable, DataTable oldTable, boolean includeDeletedRows) {
+
+    if (oldTable == null) {
+      return newTable;
+    }
+    if (newTable.isEmpty() && oldTable.isEmpty()) {
+      return newTable;
+    }
+
+    DataTable correlatedTable = correlateTable(newTable, oldTable, includeDeletedRows);
+    evaluateRowDiff(correlatedTable);
+    return correlatedTable;
+  }
+
+  /**
+   * Correlate both tables and merge corresponding rows of the old table to the new table.
+   *
    * @param newTable the new table
-   * @param newTableIndexToOldTableRowMap a map which hold for each index of rows in the new table the corresponding
+   * @param oldTable the old table
+   * @param includeDeletedRows indicate if deleted row should be included in the result
+   * @return the correlated table
+   */
+  private DataTable correlateTable(DataTable newTable, DataTable oldTable, boolean includeDeletedRows) {
+
+    // handling case that newTable does not contain any data - which even makes the headrow to be empty
+    String[] resultHeadRow = newTable.getHeadRow().length > 0 ? newTable.getHeadRow() : oldTable.getHeadRow();
+    DataTableImpl correlatedTable = new DataTableImpl(resultHeadRow);
+    // map to hold for each index of newTable the corresponding index of oldTable
+    Map<Integer, Integer> newTableIndexToOldTableIndexMap = new HashMap<>();
+    //
+    Set<Integer> oldTableUnmatchedIndexSet = new LinkedHashSet<>();
+    // initialize a Map with the index of the newTable as a key and the
+    // assigned DataTableRow of the old table as value
+    for (int i = 0; i < newTable.size(); i++) {
+      newTableIndexToOldTableIndexMap.put(i, null);
+    }
+    // initialize a Set with not yet assigned rows of the old table
+    for (int i = 0; i < oldTable.size(); i++) {
+      oldTableUnmatchedIndexSet.add(i);
+    }
+
+    // correlate rows based on correlation keys
+    Set<String> keySet = new TreeSet<>(Arrays.asList(resultHeadRow));
+    boolean correlationKeyExisting = false;
+    for (int i = 0; i < 10; i++) {
+      String corrKeyName = "CORR_KEY_" + i;
+      if (keySet.contains(corrKeyName)) {
+        correlationKeyExisting = true;
+        boolean completed = assignCorrelatedRows(newTable, oldTable, newTableIndexToOldTableIndexMap,
+            oldTableUnmatchedIndexSet, corrKeyName);
+        if (completed) {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+
+    // if no correlation key exists then we could not correlate any rows, will skip delta processing
+    // and just return the new table as is
+    if (!correlationKeyExisting) {
+      for (DataTableRow newTableRow : newTable) {
+        newTableRow.setRowDiffStatus(RowDiffStatus.UNKNOWN);
+      }
+      return newTable;
+    }
+
+    if (oldTableUnmatchedIndexSet.size() > 0) {
+      for (Integer oldRowIndex : oldTableUnmatchedIndexSet) {
+        DataTableRow oldRow = oldTable.getDataRow(oldRowIndex);
+        // ((DataTableImpl) newTable).addRow((DataTableRowImpl) oldRow);
+        oldRow.setRowDiffStatus(RowDiffStatus.DELETED);
+      }
+    }
+
+    // first add any trailing deleted rows from the old table to the correlated table
+    // (they will otherwise not be added at all)
+    appendDeletedRows(includeDeletedRows, oldTable, correlatedTable, 0);
+
+    for (int i = 0; i < newTable.size(); i++) {
+      DataTableRow newTableRow = newTable.getDataRow(i);
+      correlatedTable.addRow((DataTableRowImpl) newTableRow);
+      Integer correspondingOldRowIndex = newTableIndexToOldTableIndexMap.get(i);
+      if (correspondingOldRowIndex != null) {
+        DataTableRow correspondingOldRow = oldTable.getDataRow(correspondingOldRowIndex);
+        mergeRow(newTableRow, correspondingOldRow);
+        // possibly append any unmatched (deleted) rows from old table
+        appendDeletedRows(includeDeletedRows, oldTable, correlatedTable, correspondingOldRowIndex + 1);
+
+      } else {
+        newTableRow.setRowDiffStatus(RowDiffStatus.NEW);
+      }
+    }
+
+    return correlatedTable;
+  }
+
+  /**
+   * For a given correlation key name try to map not yet mapped old rows to not yet mapped new rows.
+   *
+   * @param newTable the new table
+   * @param newTableIndexToOldTableIndexMap a map which hold for each index of rows in the new table the corresponding
    *        found old row
-   * @param oldTableRowSet the set of not yet mapped old rows
+   * @param oldTableUnmatchedIndexSet the set of not yet mapped old rows
    * @param corrKeyColumn the name of the correlation key
    * @return <code>true</code> if all rows in the new table are mapped, <code>false</code> otherwise
    */
-  private boolean assignCorrelatedRows(DataTable newTable, Map<Integer, DataTableRow> newTableIndexToOldTableRowMap,
-      Set<DataTableRow> oldTableRowSet, String corrKeyColumn) {
+  private boolean assignCorrelatedRows(DataTable newTable, DataTable oldTable,
+      Map<Integer, Integer> newTableIndexToOldTableIndexMap, Set<Integer> oldTableUnmatchedIndexSet,
+      String corrKeyColumn) {
 
     int unmatchedEntries = 0;
-    for (Entry<Integer, DataTableRow> entry : newTableIndexToOldTableRowMap.entrySet()) {
+    for (Entry<Integer, Integer> entry : newTableIndexToOldTableIndexMap.entrySet()) {
       if (entry.getValue() == null) {
         DataTableRow newTableRow = newTable.getDataRow(entry.getKey());
-        DataTableRow matchingOldRow = searchAndRemoveFromOldTableRowSet(newTableRow, oldTableRowSet, corrKeyColumn);
+        Integer matchingOldRow = searchAndRemoveFromOldTableRowSet(newTableRow, oldTable, oldTableUnmatchedIndexSet,
+            corrKeyColumn);
         if (matchingOldRow != null) {
           entry.setValue(matchingOldRow);
         } else {
@@ -119,69 +223,34 @@ public class DataTableDifferImpl implements DataTableDiffer {
   }
 
   /**
-   * Correlate both tables and merge corresponding rows of the old table to the new table.
-   * 
-   * @param newTable the new table
+   * Append any subsequent deleted rows from old table to the correlated table.
+   *
+   * @param isActive flag to indicate whether this feature is active
    * @param oldTable the old table
+   * @param correlatedTable the table fo correlated rows
+   * @param oldIndexToCheck the index in the old table to start checking for deleted rows
    */
-  private void correlateTable(DataTable newTable, DataTable oldTable) {
+  private void appendDeletedRows(boolean isActive, DataTable oldTable, DataTableImpl correlatedTable,
+      int oldIndexToCheck) {
 
-    Map<Integer, DataTableRow> newTableIndexToOldTableRowMap = new HashMap<>();
-    Set<DataTableRow> oldTableRowSet = new HashSet<>();
-    // initialize a Map with the index of the newTable as a key and the
-    // assigned DataTableRow of the old table as value
-    int i = 0;
-    for (DataTableRow newRow : newTable) {
-      newTableIndexToOldTableRowMap.put(i, null);
-      i++;
+    if (!isActive) {
+      return;
     }
-    // initialize a Set with not yet assigned rows of the old table
-    for (DataTableRow oldRow : oldTable) {
-      oldTableRowSet.add(oldRow);
-    }
-    Set<String> keySet = new TreeSet<>(Arrays.asList(newTable.getHeadRow()));
-    for (i = 0; i < 10; i++) {
-      String corrKeyName = "CORR_KEY_" + i;
-      if (keySet.contains(corrKeyName)) {
-        boolean completed = assignCorrelatedRows(newTable, newTableIndexToOldTableRowMap, oldTableRowSet, corrKeyName);
-        if (completed) {
-          break;
-        }
-      } else {
+    int i = oldIndexToCheck;
+    while (i < oldTable.size()) {
+      DataTableRow oldRow = oldTable.getDataRow(i);
+      if (oldRow.getRowDiffStatus() != RowDiffStatus.DELETED) {
         break;
-      }
-    }
-
-    i = 0;
-    for (DataTableRow newTableRow : newTable) {
-      DataTableRow correspondingOldRow = newTableIndexToOldTableRowMap.get(i);
-      if (correspondingOldRow != null) {
-        mergeRow(newTableRow, correspondingOldRow);
       } else {
-        newTableRow.setRowDiffStatus(RowDiffStatus.NEW);
+        correlatedTable.addRow((DataTableRowImpl) oldRow);
       }
       i++;
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public DataTable diff(DataTable newTable, DataTable oldTable) {
-
-    if (oldTable == null) {
-      return newTable;
-    }
-
-    correlateTable(newTable, oldTable);
-    evaluateRowDiff(newTable);
-    return newTable;
   }
 
   /**
    * Calculate the {@link RowDiffStatus} for each row.
-   * 
+   *
    * @param newTable the table where the row diff status should be recalculated.
    */
   private void evaluateRowDiff(DataTable newTable) {
@@ -196,7 +265,13 @@ public class DataTableDifferImpl implements DataTableDiffer {
     }
     for (DataTableRow oneRow : newTable) {
       boolean changed = false;
+      if (oneRow.getRowDiffStatus() == RowDiffStatus.UNKNOWN) {
+        continue;
+      }
       if (oneRow.getRowDiffStatus() == RowDiffStatus.NEW) {
+        continue;
+      }
+      if (oneRow.getRowDiffStatus() == RowDiffStatus.DELETED) {
         continue;
       }
       for (String fieldToCheck : fieldsRelevantForDiff) {
@@ -214,7 +289,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Get the value of the correlation key with the given name from the row.
-   * 
+   *
    * @param tableRow the row
    * @param corrKeyColumn the name of the correlation key column
    * @return the value of the correlation key
@@ -231,7 +306,7 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Merge a single row.
-   * 
+   *
    * @param newTableRow the row to merge to
    * @param correspondingOldRow the row to merge from
    */
@@ -244,23 +319,24 @@ public class DataTableDifferImpl implements DataTableDiffer {
 
   /**
    * Search a corresponding row in the Set of not yet matched old rows. If a row is found remove it from the Set.
-   * 
+   *
    * @param newTableRow the row of the new table to which the corresponding old row is searched
-   * @param oldTableRowSet the set of not yet matched old rows
+   * @param oldTableUnmatchedIndexSet the set of not yet matched old rows
    * @param corrKeyColumn the name of the correlation key column to check
    * @return the matching old row; <code>null</code> if no match was found
    */
-  private DataTableRow searchAndRemoveFromOldTableRowSet(DataTableRow newTableRow, Set<DataTableRow> oldTableRowSet,
-      String corrKeyColumn) {
+  private Integer searchAndRemoveFromOldTableRowSet(DataTableRow newTableRow, DataTable oldTable,
+      Set<Integer> oldTableUnmatchedIndexSet, String corrKeyColumn) {
 
     String newTableRowCorrKey = extractKey(newTableRow, corrKeyColumn);
-    for (Iterator<DataTableRow> iterator = oldTableRowSet.iterator(); iterator.hasNext();) {
-      DataTableRow oldTableRow = iterator.next();
+    for (Iterator<Integer> iterator = oldTableUnmatchedIndexSet.iterator(); iterator.hasNext();) {
+      int oldIndex = iterator.next();
+      DataTableRow oldTableRow = oldTable.getDataRow(oldIndex);
       String oldTableRowCorrKey = extractKey(oldTableRow, corrKeyColumn);
       if (newTableRowCorrKey.equals(oldTableRowCorrKey)) {
         // corresponding row found!
         iterator.remove();
-        return oldTableRow;
+        return oldIndex;
       }
     }
     return null;

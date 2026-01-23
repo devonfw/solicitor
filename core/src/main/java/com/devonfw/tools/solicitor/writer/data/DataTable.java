@@ -27,8 +27,15 @@ public interface DataTable extends Iterable<DataTableRow> {
   /**
    * Tests if the DataTable contains data. If it does not contain data then even {@link #getHeadRow()} might not provide
    * any information.
-   * 
+   *
    * @return <code>true</code> if there is no data in the table
    */
   boolean isEmpty();
+
+  /**
+   * Get the number of rows in this DataTable
+   *
+   * @return the number of rows in the DataTable
+   */
+  int size();
 }

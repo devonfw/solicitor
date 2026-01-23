@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
@@ -146,8 +147,9 @@ public class ExcelWriter implements Writer {
    * @param cell the cell to start from
    * @param dataTable the table which contains the data
    * @param label the label value representing the name of the data table
+   * @param styleCache cache of styles to avoid creating unecessary duplicates of styles (strikethrough)
    */
-  private void iterateFromCell(Workbook wb, Cell cell, DataTable dataTable, String label) {
+  private void iterateFromCell(Workbook wb, Cell cell, DataTable dataTable, String label, StyleCache styleCache) {
 
     // get the information gathered by solicitor
     DataTable dt = dataTable;
@@ -175,6 +177,10 @@ public class ExcelWriter implements Writer {
       if (rowData.getRowDiffStatus() == RowDiffStatus.NEW) {
         Cell firstCellInRow = row.getCell(row.getFirstCellNum());
         addCommentToCell(firstCellInRow, "NEWLY INSERTED LINE");
+      }
+      if (rowData.getRowDiffStatus() == RowDiffStatus.UNKNOWN) {
+        Cell firstCellInRow = row.getCell(row.getFirstCellNum());
+        addCommentToCell(firstCellInRow, "DELTA INFORMATION FOR ROW NOT AVAILABLE");
       }
       // replace the placeholders
       for (Cell oneCell : row) {
@@ -208,6 +214,18 @@ public class ExcelWriter implements Writer {
 
           }
         }
+      }
+      if (rowData.getRowDiffStatus() == RowDiffStatus.DELETED) {
+        Cell firstCellInRow = row.getCell(row.getFirstCellNum());
+        addCommentToCell(firstCellInRow, "DELETED LINE");
+
+        // apply strikethrough style to all cells in the row
+        for (Cell cellInRow : row) {
+          CellStyle baseStyle = cellInRow.getCellStyle();
+          CellStyle strikeThroughStyle = styleCache.getStrikeThroughStyle(baseStyle);
+          cellInRow.setCellStyle(strikeThroughStyle);
+        }
+
       }
       if (rowIterator.hasNext()) { // update row for next iteration
         row = row.getSheet().getRow(row.getRowNum() + 1);
@@ -243,6 +261,8 @@ public class ExcelWriter implements Writer {
         throw new IllegalArgumentException("XLS template must be in XSLX format");
       }
 
+      StyleCache styleCache = new StyleCache((XSSFWorkbook) wb);
+
       // find all cells of the template which have something like
       // #Level.value# as content and add them to dataIterators
       findCellsToIterate(dataIterators, wb, dataTables.keySet()); // key:
@@ -254,7 +274,7 @@ public class ExcelWriter implements Writer {
 
         String label = dataIterators.get(cell);
         DataTable dataTable = dataTables.get(label);
-        iterateFromCell(wb, cell, dataTable, label);
+        iterateFromCell(wb, cell, dataTable, label, styleCache);
       }
 
       // force reevaluation of all formulas
