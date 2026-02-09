@@ -6,6 +6,7 @@ package com.devonfw.tools.solicitor.writer;
 
 import java.util.Map;
 
+import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
 
 /**
@@ -24,10 +25,10 @@ public interface Writer {
   /**
    * Creates the report.
    *
-   * @param templateSource the URL of the template to use
+   * @param config the configuration for this writer
    * @param target the name of the output file
    * @param dataTables a map of data table which contain the data to be used for the report
    */
-  void writeReport(String templateSource, String target, Map<String, DataTable> dataTables);
+  void writeReport(WriterConfig config, String target, Map<String, DataTable> dataTables);
 
 }

@@ -508,12 +508,13 @@ The writer configuration defines how the processed data will be exported and/or 
 [listing]
   "writers" : [ {
     "type" : "xls", <1>
-    "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <8>
-    "target" : "OSS-Inventory-devonfw${-reportingGroup}.xlsx", <3> <8> <9>
+    "templateSource" : "classpath:samples/Solicitor_Output_Template_Sample.xlsx", <2> <9>
+    "target" : "OSS-Inventory-devonfw${-reportingGroup}.xlsx", <3> <9> <10>
     "description" : "The XLS OSS-Inventory document", <4>
     "enableReportingGroups" : true, <5>
     "includeDeletedRowsInDelta" : true, <6>
-    "dataTables" : { <7>
+    "protectionPassword" : "soMePaSsWord", <7>
+    "dataTables" : { <8>
       "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
       "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql"
     }
@@ -524,10 +525,11 @@ The writer configuration defines how the processed data will be exported and/or 
 <3> location of the output file
 <4> some textual description
 <5> flag which enables use of reporting groups for this writer (optional, see <<Reporting Groups>>)
-<6> optional flag which enables the inclusion of deleted rows/records in the report if used in delta/diff mode; defaults to `false`; this should only be set to `true` if the Writer and/or used template supports appropriate rendering of such rows (e.g. using strikethrough to clearly mark them as being no longer present); also see <<Writers>>  
-<7> reference to SQL statements used to transform the internal data model to data tables used for reporting
-<8> _placeholder patterns might be used here_
-<9> for the `target` value special additional placeholders are available to handle reporting group information. See <<Using Reporting Group Information in Report Filename>>.
+<6> optional flag which enables the inclusion of deleted rows/records in the report if used in delta/diff mode; defaults to `false`; this should only be set to `true` if the Writer and/or used template supports appropriate rendering of such rows (e.g. using strikethrough to clearly mark them as being no longer present); also see <<Writers>> 
+<7> optional password which controls protection of the generated report against changes; only supported for <<Excel Writer>>; see <<Excel sheet protection against unwanted manual changes>> for details
+<8> reference to SQL statements used to transform the internal data model to data tables used for reporting
+<9> _placeholder patterns might be used here_
+<10> for the `target` value special additional placeholders are available to handle reporting group information. See <<Using Reporting Group Information in Report Filename>>.
 
 If a `writers` section is defined in the project configuration then it will replace the writer configuration given in the
 builtin default configuration.
@@ -1291,6 +1293,17 @@ as follows when using the XLS templating:
 * Fields in non-new rows that have changed their value will be marked with an Excel note indicating the old value.
 * If the writer configuration sets parameter `includeDeletedRowsInDelta` to `true` (see <<Writers and Reporting>>) then any rows which exist in the old data set but not in the new data set will also be included in the output and will be printed as _strikethrough_ text. Additionally a note will be included in the field that contained the `\#...#` placeholder which indicates that this row was deleted.
 * If it is not possible to correlate/match old and new rows due to undefined correlation keys (see <<Determining difference to previously stored model>> ) then all affected rows will be marked with a note indicating this attached to the field that contained the `\#...#` placeholder.
+
+===== Excel sheet protection against unwanted manual changes
+The Excel Writer supports the activation of Excel built in worksheet protection to prevent unintended manual changes of the
+generated report. Protection is activated by setting the optional parameter `protectionPassword` in the writer configuration (<<Writers and Reporting>>):
+
+* `protectionPassword` undefined / null: Sheet protection disabled.
+* `protectionPassword` set to value `NONE`: Sheets are protected without a password.
+* `protectionPassword` set to value `RANDOM`: Sheets are protected with random password. This password is logged to the application log.
+* `protectionPassword` set to any other non empty / non null value: Sheets are protected using the given value as password.
+
+Cells (or ranges of cells) might be excluded from the locking enforced via protection by removing the "locked" tick mark in the cell format dialogue. (This needs to be done in the XLS template used for reporting.)   
 
 ==== Generic Excel Writer
 The Generic Excel Writer exists purely for debugging purposes. This writer writes the contents of the `dataTables` defined in the writer configuration to an Excel file. Each `dataTable` will be available in a separate Excel sheet.  To use this writer, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:

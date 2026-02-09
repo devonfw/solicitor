@@ -113,7 +113,7 @@ public class WriterFacadeImpl implements WriterFacade {
           LOG.info(LogMessages.PREPARING_FOR_WRITER.msg(), writerConfig.getType(), writerConfig.getTemplateSource(),
               targetFilename);
           Writer writer = this.writerFactory.writerFor(writerConfig.getType());
-          writer.writeReport(writerConfig.getTemplateSource(), targetFilename,
+          writer.writeReport(writerConfig, targetFilename,
               getDataTables(modelRoot, oldModelRoot, writerConfig, reportingGroup));
           LOG.info(LogMessages.FINISHED_WRITER.msg(), writerConfig.getType(), writerConfig.getTemplateSource(),
               targetFilename);

@@ -6,6 +6,8 @@ package com.devonfw.tools.solicitor.config;
 
 import java.util.Map;
 
+import com.devonfw.tools.solicitor.writer.Writer;
+import com.devonfw.tools.solicitor.writer.xls.ExcelWriter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,6 +16,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents the configuration of a {@link com.devonfw.tools.solicitor.writer.Writer} in JSON format.
  */
 public class WriterConfig {
+
+  /**
+   * Marker string for indication that a random password should be generated for the protection of the generated report.
+   */
+  public static final String RANDOM_PASSWORD_MARKER = "RANDOM";
+
+  /**
+   * Marker string for indication that the generated report should be protected but without a password.
+   */
+  public static final String NO_PASSWORD_MARKER = "NONE";
 
   @JsonProperty
   private String type;
@@ -32,6 +44,9 @@ public class WriterConfig {
 
   @JsonProperty
   private boolean includeDeletedRowsInDelta;
+
+  @JsonProperty
+  private String protectionPassword;
 
   @JsonProperty
   private Map<String, String> dataTables;
@@ -192,6 +207,33 @@ public class WriterConfig {
   public void setIncludeDeletedRowsInDelta(boolean includeDeletedRowsInDelta) {
 
     this.includeDeletedRowsInDelta = includeDeletedRowsInDelta;
+  }
+
+  /**
+   * Return the configured protection password for the generated report.
+   *
+   * @return protectionPassword
+   * @see #setProtectionPassword(String)
+   * @see #NO_PASSWORD_MARKER
+   * @see #RANDOM_PASSWORD_MARKER
+   */
+  public String getProtectionPassword() {
+
+    return this.protectionPassword;
+  }
+
+  /**
+   * Enables protection for the generated report and sets the password to use. Only applicable for {@link Writer}s which
+   * support this (e.g. {@link ExcelWriter}).
+   *
+   * @param protectionPassword the password to use for protecting the sheets. If the value is "RANDOM", a random
+   *        password will be generated and logged. If the value is "NONE", the sheets will be protected without defining
+   *        a password. If the value is empty or null, no password will be set and the sheets will not be protected.
+   *
+   */
+  public void setProtectionPassword(String protectionPassword) {
+
+    this.protectionPassword = protectionPassword;
   }
 
 }

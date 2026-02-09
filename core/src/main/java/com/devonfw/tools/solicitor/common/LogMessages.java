@@ -129,7 +129,13 @@ public enum LogMessages {
       "Reading {} ApplicationComponents / {} Licenses for Application '{}' from '{}'. ({} ApplicationComponents were found in input file, {} were filtered out and not added to the data model.) UsagePattern set to {}, ossModified set to {}."), //
   CLI_HELP_DISPLAY_EXCEPTION(85, "Exception when trying to display CLI help: {}"), //
   REGEX_PREFIX_UNSUPPORTED(86,
-      "Use of 'REGEX:' prefix notation in '{}' is no longer supported, use '(REGEX)' suffix instead. See https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263");
+      "Use of 'REGEX:' prefix notation in '{}' is no longer supported, use '(REGEX)' suffix instead. See https://github.com/devonfw/solicitor/issues/78 and https://github.com/devonfw/solicitor/issues/263"), //
+  XLS_PROTECTION_ACTIVE_RANDOM_PASSWORD(87,
+      "XLS sheet protection is active for this report. The password '{}' was randomly generated and will be used to protect all sheets in XLS report '{}'"), //
+  XLS_PROTECTION_ACTIVE_PASSWORD(88,
+      "XLS sheet protection is active for this report. The password provided in configuration will be used to protect all sheets in XLS report '{}'"), //
+  XLS_PROTECTION_ACTIVE_NO_PASSWORD(89,
+      "XLS sheet protection without password is active for this report. All sheets in XLS report '{}' will be protected without password");
 
   private final String message;
 
