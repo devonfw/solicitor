@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
 import com.devonfw.tools.solicitor.writer.data.DataTableField;
@@ -60,7 +61,7 @@ public class GenericExcelWriter implements Writer {
    * This function will generate a generic report.
    */
   @Override
-  public void writeReport(String templateSource, String target, Map<String, DataTable> dataTables) {
+  public void writeReport(WriterConfig config, String target, Map<String, DataTable> dataTables) {
 
     try {
 

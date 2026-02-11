@@ -23,6 +23,7 @@ import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
 
@@ -56,7 +57,7 @@ public class VelocityWriter implements Writer {
    * This function will generate a report based on the given velocity template.
    */
   @Override
-  public void writeReport(String templateSource, String target, Map<String, DataTable> dataTables) {
+  public void writeReport(WriterConfig config, String target, Map<String, DataTable> dataTables) {
 
     // (re)initialize velocity runtime engine
     Velocity.reset();
@@ -75,7 +76,7 @@ public class VelocityWriter implements Writer {
     // springboot)
 
     String templateString;
-    try (InputStream inp = this.inputStreamFactory.createInputStreamFor(templateSource)) {
+    try (InputStream inp = this.inputStreamFactory.createInputStreamFor(config.getTemplateSource())) {
       templateString = IOHelper.readStringFromInputStream(inp);
 
     } catch (IOException e) {

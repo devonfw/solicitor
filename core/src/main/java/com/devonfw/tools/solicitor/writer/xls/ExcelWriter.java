@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -38,6 +39,7 @@ import com.devonfw.tools.solicitor.common.IOHelper;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
+import com.devonfw.tools.solicitor.config.WriterConfig;
 import com.devonfw.tools.solicitor.writer.Writer;
 import com.devonfw.tools.solicitor.writer.data.DataTable;
 import com.devonfw.tools.solicitor.writer.data.DataTableField;
@@ -239,7 +241,7 @@ public class ExcelWriter implements Writer {
    * This function will generate a report based on the given excel template.
    */
   @Override
-  public void writeReport(String templateSource, String target, Map<String, DataTable> dataTables) {
+  public void writeReport(WriterConfig config, String target, Map<String, DataTable> dataTables) {
 
     Map<Cell, String> dataIterators = new HashMap<>(); // this map will
                                                        // store
@@ -250,7 +252,7 @@ public class ExcelWriter implements Writer {
                                                        // #Level.value# as
                                                        // content
 
-    try (InputStream inp = this.inputStreamFactory.createInputStreamFor(templateSource)) { // read
+    try (InputStream inp = this.inputStreamFactory.createInputStreamFor(config.getTemplateSource())) { // read
       // the
       // template
 
@@ -280,6 +282,9 @@ public class ExcelWriter implements Writer {
       // force reevaluation of all formulas
       wb.setForceFormulaRecalculation(true);
 
+      // protect all workbook sheets if password is set
+      protectWorkbookSheets(config, target, wb);
+
       // Write the output to a file
       IOHelper.checkAndCreateLocation(target);
       try (OutputStream fileOut = new FileOutputStream(target)) {
@@ -289,6 +294,57 @@ public class ExcelWriter implements Writer {
       throw new SolicitorRuntimeException("Processing of XLS report failed", e);
     }
 
+  }
+
+  /**
+   * Protects/locks all sheets in the workbook if the value given by {@link WriterConfig#getProtectionPassword()} is not
+   * <code>null</code> or empty. If the configured value is literal "RANDOM", a random password will be generated and
+   * logged. If the configured value is "NONE" the sheets will be protected without defining a password. If the
+   * configured password is empty or null, no password will be set and the sheets will not be protected. For all other
+   * values the configured value will be used as password.
+   *
+   * @param config the writer configuration
+   * @param target filename of the report (used for logging only)
+   * @param wb the workbook to protect
+   */
+  private void protectWorkbookSheets(WriterConfig config, String target, Workbook wb) {
+
+    // protect sheets if password is set
+    String protectionPasswordConfigValue = config.getProtectionPassword();
+    String effectivePassword = null;
+    if (protectionPasswordConfigValue != null && !protectionPasswordConfigValue.isEmpty()) {
+      if (WriterConfig.RANDOM_PASSWORD_MARKER.equals(protectionPasswordConfigValue)) {
+        effectivePassword = Long.toHexString(new Random().nextLong());
+        LOG.info(LogMessages.XLS_PROTECTION_ACTIVE_RANDOM_PASSWORD.msg(), effectivePassword, target);
+      } else if (WriterConfig.NO_PASSWORD_MARKER.equals(protectionPasswordConfigValue)) {
+        effectivePassword = "";
+        LOG.info(LogMessages.XLS_PROTECTION_ACTIVE_NO_PASSWORD.msg(), target);
+      } else {
+        effectivePassword = protectionPasswordConfigValue;
+        LOG.info(LogMessages.XLS_PROTECTION_ACTIVE_PASSWORD.msg(), target);
+      }
+    }
+
+    if (effectivePassword != null) {
+      for (Sheet sheet : wb) {
+        ((XSSFSheet) sheet).lockAutoFilter(false);
+        ((XSSFSheet) sheet).lockDeleteColumns(true);
+        ((XSSFSheet) sheet).lockDeleteRows(true);
+        ((XSSFSheet) sheet).lockFormatCells(true);
+        ((XSSFSheet) sheet).lockFormatColumns(true);
+        ((XSSFSheet) sheet).lockFormatRows(true);
+        ((XSSFSheet) sheet).lockInsertColumns(true);
+        ((XSSFSheet) sheet).lockInsertHyperlinks(true);
+        ((XSSFSheet) sheet).lockInsertRows(true);
+        ((XSSFSheet) sheet).lockObjects(true);
+        ((XSSFSheet) sheet).lockPivotTables(true);
+        ((XSSFSheet) sheet).lockScenarios(true);
+        ((XSSFSheet) sheet).lockSelectLockedCells(false);
+        ((XSSFSheet) sheet).lockSelectUnlockedCells(false);
+        ((XSSFSheet) sheet).lockSort(true);
+        ((XSSFSheet) sheet).protectSheet(effectivePassword);
+      }
+    }
   }
 
 }
