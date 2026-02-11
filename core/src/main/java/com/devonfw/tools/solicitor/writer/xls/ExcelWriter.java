@@ -8,9 +8,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -21,15 +24,24 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTDataValidations;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorksheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,10 +112,114 @@ public class ExcelWriter implements Writer {
 
   private void copyRowsDown(Row row) {
 
-    // copy the current row (and all rows below) to the row directly beneath it
+    // copy the current row to the row directly beneath it
 
     XSSFSheet worksheet = (XSSFSheet) row.getSheet();
-    worksheet.copyRows(row.getRowNum(), row.getRowNum(), row.getRowNum() + 1, new CellCopyPolicy());
+
+    int rowNumToCopy = row.getRowNum();
+    worksheet.copyRows(rowNumToCopy, rowNumToCopy, rowNumToCopy + 1, new CellCopyPolicy());
+    updateConditionalFormattingRegionsIncrementLastRow(worksheet, rowNumToCopy);
+    updateValidationRegionsIncrementLastRow(worksheet, rowNumToCopy);
+
+  }
+
+  /**
+   * Updates all conditional formatting regions in the given worksheet by incrementing the last row of any region that
+   * ends at the given srcLastRowNum. This is necessary to keep conditional formatting working correctly after inserting
+   * a new row after srcLastRowNum.
+   *
+   * @param worksheet
+   * @param srcLastRowNum
+   */
+  private static void updateConditionalFormattingRegionsIncrementLastRow(XSSFSheet worksheet, int srcLastRowNum) {
+
+    SheetConditionalFormatting scf = worksheet.getSheetConditionalFormatting();
+    for (int i = 0; i < scf.getNumConditionalFormattings(); i++) {
+      ConditionalFormatting cf = scf.getConditionalFormattingAt(i);
+      CellRangeAddress[] cras = cf.getFormattingRanges();
+      for (CellRangeAddress cra : cras) {
+        if (cra.getLastRow() == srcLastRowNum) {
+          cra.setLastRow(srcLastRowNum + 1);
+        }
+      }
+      cf.setFormattingRanges(cras);
+    }
+  }
+
+  /**
+   * Updates all data validation regions in the given sheet by incrementing the last row of any region that ends at the
+   * given srcLastRowNum. This is necessary to keep data validations working correctly after inserting a new row after
+   * srcLastRowNum.
+   *
+   * @param sheet the sheet to update
+   * @param srcLastRowNum the row index which is the last row of any region that should be incremented
+   */
+  private static void updateValidationRegionsIncrementLastRow(XSSFSheet sheet, int srcLastRowNum) {
+
+    // 1. Extract all existing validations safely
+    List<XSSFDataValidation> existing = sheet.getDataValidations();
+
+    record SavedDV(DataValidationConstraint constraint, boolean showError, boolean showPrompt, boolean suppressArrow,
+        List<CellRangeAddress> regions) {
+    }
+
+    List<SavedDV> saved = new ArrayList<>();
+
+    for (XSSFDataValidation dv : existing) {
+
+      // Extract everything BEFORE touching CT structures
+      DataValidationConstraint constraint = dv.getValidationConstraint();
+      boolean showError = dv.getShowErrorBox();
+      boolean showPrompt = dv.getShowPromptBox();
+      boolean suppressArrow = dv.getSuppressDropDownArrow();
+
+      // Copy regions; do NOT keep references
+      List<CellRangeAddress> regions = Arrays.stream(dv.getRegions().getCellRangeAddresses())
+          .map(r -> new CellRangeAddress(r.getFirstRow(), r.getLastRow(), r.getFirstColumn(), r.getLastColumn()))
+          .toList();
+
+      saved.add(new SavedDV(constraint, showError, showPrompt, suppressArrow, regions));
+    }
+
+    // 2. Clear all CTDataValidation entries
+    CTWorksheet ct = sheet.getCTWorksheet();
+    CTDataValidations ctValidations = ct.getDataValidations();
+
+    if (ctValidations != null) {
+      ctValidations.getDataValidationList().clear();
+      ctValidations.setCount(0);
+    }
+
+    XSSFDataValidationHelper helper = new XSSFDataValidationHelper(sheet);
+
+    // 3. Recreate all validations with updated regions
+    for (SavedDV data : saved) {
+
+      CellRangeAddressList newList = new CellRangeAddressList();
+
+      for (CellRangeAddress r : data.regions()) {
+        int first = r.getFirstRow();
+        int last = r.getLastRow();
+        int fc = r.getFirstColumn();
+        int lc = r.getLastColumn();
+
+        // Conditionally increment last row if it is equal to the target last row (the row where a new row was just
+        // inserted)
+        if (last == srcLastRowNum) {
+          last = last + 1;
+        }
+
+        newList.addCellRangeAddress(new CellRangeAddress(first, last, fc, lc));
+      }
+
+      XSSFDataValidation newDv = (XSSFDataValidation) helper.createValidation(data.constraint(), newList);
+
+      newDv.setShowErrorBox(data.showError());
+      newDv.setShowPromptBox(data.showPrompt());
+      newDv.setSuppressDropDownArrow(data.suppressArrow());
+
+      sheet.addValidationData(newDv);
+    }
   }
 
   private void possiblyMoveBelowRowsDownToCreateSpaceForNewRows(Row row, int numberOfRows) {
