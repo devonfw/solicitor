@@ -237,20 +237,25 @@ public class ExcelWriter implements Writer {
 
   private void findCellsToIterate(Map<Cell, String> dataIterators, Workbook wb, Collection<String> tableLabels) {
 
-    // add all cells that contain one of the levels ENGAGEMENT, APPLICATION,
+    // add all string and formula cells that contain one of the levels ENGAGEMENT, APPLICATION,
     // APPLICATIONCOMPONENT, LICENSE surrounded by # to dataIterators
     // with the cell as key and the level as value
 
     for (Sheet sheet : wb) {
       for (Row row : sheet) {
         for (Cell cell : row) {
+          String cellText;
           if (cell.getCellType() == CellType.STRING) {
-            String cellText = cell.getStringCellValue();
-            for (String tableLabel : tableLabels) {
-              if (cellText != null && cellText.contains("#" + tableLabel + "#")) {
-                LOG.debug("Found " + cell.getStringCellValue());
-                dataIterators.put(cell, tableLabel);
-              }
+            cellText = cell.getStringCellValue();
+          } else if (cell.getCellType() == CellType.FORMULA) {
+            cellText = cell.getCellFormula();
+          } else {
+            continue;
+          }
+          for (String tableLabel : tableLabels) {
+            if (cellText != null && cellText.contains("#" + tableLabel + "#")) {
+              LOG.debug("Found " + cellText);
+              dataIterators.put(cell, tableLabel);
             }
           }
         }
@@ -302,34 +307,48 @@ public class ExcelWriter implements Writer {
       }
       // replace the placeholders
       for (Cell oneCell : row) {
-        if (oneCell.getCellType() == CellType.STRING) {
-          String text = oneCell.getStringCellValue();
-          String oldModelText = text;
-          boolean hasChanged = false;
-          // remove # placeholders
-          text = text.replace("#" + label + "#", "");
-          oldModelText = oldModelText.replace("#" + label + "#", "");
-          // replace $ placeholders with the corresponding part of the
-          // gathered information
-          for (int i = 0; i < headers.length; i++) {
-            String toReplace = "$" + headers[i] + "$";
-            if (text.contains(toReplace)) {
-              DataTableField value = rowData.getValueByIndex(i);
-              String textValue = value.toString() == null ? "" : value.toString();
-              text = text.replace(toReplace, textValue);
-              if (value.getDiffStatus() == FieldDiffStatus.CHANGED) {
-                hasChanged = true;
-                String oldTextValue = value.getOldValue() == null ? "" : value.getOldValue().toString();
-                oldModelText = oldModelText.replace(toReplace, oldTextValue);
-              } else {
-                oldModelText = oldModelText.replace(toReplace, textValue);
-              }
+        String text;
+        CellType cellType = oneCell.getCellType();
+        if (cellType == CellType.STRING) {
+          text = oneCell.getStringCellValue();
+        } else if (cellType == CellType.FORMULA) {
+          text = oneCell.getCellFormula();
+        } else {
+          continue; // only process string and formula cells
+        }
+        String oldModelText = text;
+        boolean hasChanged = false;
+        // remove # placeholders
+        text = text.replace("#" + label + "#", "");
+        oldModelText = oldModelText.replace("#" + label + "#", "");
+        // replace $ placeholders with the corresponding part of the
+        // gathered information
+        for (int i = 0; i < headers.length; i++) {
+          String toReplace = "$" + headers[i] + "$";
+          if (text.contains(toReplace)) {
+            DataTableField value = rowData.getValueByIndex(i);
+            String textValue = value.toString() == null ? "" : value.toString();
+            text = text.replace(toReplace, textValue);
+            if (value.getDiffStatus() == FieldDiffStatus.CHANGED) {
+              hasChanged = true;
+              String oldTextValue = value.getOldValue() == null ? "" : value.getOldValue().toString();
+              oldModelText = oldModelText.replace(toReplace, oldTextValue);
+            } else {
+              oldModelText = oldModelText.replace(toReplace, textValue);
             }
           }
+        }
+        if (cellType == CellType.STRING) {
           oneCell.setCellValue(trimToMaxCellLength(text.replace("\r", "")));
           if (hasChanged) {
             addCommentToCell(oneCell, trimToMaxCellLength("Previous value: '" + oldModelText.replace("\r", "") + "'"));
-
+          }
+        } else if (cellType == CellType.FORMULA) {
+          // for formula cells we do not handle the case that after replacing the placeholders the formula exceeds the
+          // maximum size
+          oneCell.setCellFormula(text.replace("\r", ""));
+          if (hasChanged) {
+            addCommentToCell(oneCell, "Previous value (formula): '" + oldModelText.replace("\r", "") + "'");
           }
         }
       }
@@ -447,8 +466,8 @@ public class ExcelWriter implements Writer {
         ((XSSFSheet) sheet).lockDeleteColumns(true);
         ((XSSFSheet) sheet).lockDeleteRows(true);
         ((XSSFSheet) sheet).lockFormatCells(true);
-        ((XSSFSheet) sheet).lockFormatColumns(true);
-        ((XSSFSheet) sheet).lockFormatRows(true);
+        ((XSSFSheet) sheet).lockFormatColumns(false);
+        ((XSSFSheet) sheet).lockFormatRows(false);
         ((XSSFSheet) sheet).lockInsertColumns(true);
         ((XSSFSheet) sheet).lockInsertHyperlinks(true);
         ((XSSFSheet) sheet).lockInsertRows(true);
