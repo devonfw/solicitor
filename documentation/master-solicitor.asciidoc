@@ -1271,19 +1271,23 @@ NOTE: The writer configuration parameter `includeDeletedRowsInDelta` (see <<Writ
 ==== Excel Writer
 
 ===== Using Placeholders in Excel Spreadsheets
-Within Excel spreadsheet templates there are two kinds of placeholders / markers possible, which control the processing:
+Within Excel spreadsheet templates there are two kinds of placeholders / markers possible, which control the processing.
 
-===== Iterator Control
-The templating logic searches within the XLSX workbook for fields containing the names of the
+====== Iterator Control
+The templating logic searches within the XLSX workbook for string or formula cells containing the names of the
 reporting data tables as defined in the Writer configuration like e.g.:
 
 * `\#ENGAGEMENT#`
 * `\#LICENSE#`
 
-Whenever such a string is found in a cell this indicates that this row is a template row. For each entry in the respective resporting data table a copy of this row is created and the attribute replacement will be done with the data from that reporting table. (The pattern `\#...#` will be removed when copying.)
+Whenever such a string is found in a string or formula cell this indicates that this row is a template row. For each entry in the respective resporting data table a copy of this row is created and the attribute replacement will be done with the data from that reporting table. (The pattern `\#...#` will be removed when copying.)
 
-===== Attribute replacement
-Within each row which was copied in the previous step the templating logic searches for the string pattern `$someAttributeName$` where `someAttributeName` corresponds to the column names of the reporting table. Any such occurrence is replaced with the corresponding data value.
+====== Attribute replacement
+Within each row which was copied in the previous step the templating logic searches for the string pattern `$someAttributeName$` where `someAttributeName` corresponds to the column names of the reporting table. Any such occurrence in string or formula cells is replaced with the corresponding data value.
+
+NOTE: Performance hint: Using Hyperlinks in "template rows" might result in degraded performance when Solicitor processes the XLS template. This is
+due to the fact that copying cells that are marked to be hyperlinks might be slow if the XLS file contains a lot of hyperlinks. This performance issue might be avoided if hyperlinks are represented as formulas like `=HYPERLINK("https://www.google.com")` or `=HYPERLINK("$someUrlPlaceholder$")` instead of defining a hyperlink via the "Link" context menu entry of Excel.
+
 
 ===== Representation of Diff Information
 In case that a difference processing (new vs. old model data) was done this will be represented
@@ -1303,7 +1307,7 @@ generated report. Protection is activated by setting the optional parameter `pro
 * `protectionPassword` set to value `RANDOM`: Sheets are protected with random password. This password is logged to the application log.
 * `protectionPassword` set to any other non empty / non null value: Sheets are protected using the given value as password.
 
-Cells (or ranges of cells) might be excluded from the locking enforced via protection by removing the "locked" tick mark in the cell format dialogue. (This needs to be done in the XLS template used for reporting.)   
+Cells (or ranges of cells) might be excluded from the locking enforced via protection by removing the "locked" tick mark in the cell format dialogue. (This needs to be done in the XLS template used for reporting.) 
 
 ==== Generic Excel Writer
 The Generic Excel Writer exists purely for debugging purposes. This writer writes the contents of the `dataTables` defined in the writer configuration to an Excel file. Each `dataTable` will be available in a separate Excel sheet.  To use this writer, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
