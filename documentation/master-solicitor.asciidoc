@@ -2032,6 +2032,7 @@ Changes in 1.47.0::
 * https://github.com/devonfw/solicitor/pull/352: Enable use of templating placeholders in the `ExcelWriter` also in formula cells. This also facilitates to avoid a performance issue which might arise from using hyperlink cells in the template rows in XLS templates. See <<Using Placeholders in Excel Spreadsheets>>.
 * https://github.com/devonfw/solicitor/pull/354: Change sorting of results in SQL to first sort by normalizedLicense and then by
 effectiveNormalizedLicense. This should make reports more stable in case that LicenseSelection- or MultiLicenseSelection-rules are changed.
+* https://github.com/devonfw/solicitor/issues/353: Use `IGNORE/Unchosen` (LicenseType/License) instead of `IGNORE/Ignore` for alternative licenses that are not chosen in a dual-/multilicensing scenario (with SPDX-Expression "OR").
 
 Changes in 1.46.0::
 * https://github.com/devonfw/solicitor/issues/268: When creating reports in "delta mode" (i.e. with including information in changed data compared to a previous run) any data rows that were deleted might now also be included in the report. See <<Determining difference to previously stored model>> and <<Writers>>.
