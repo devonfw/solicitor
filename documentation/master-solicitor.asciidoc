@@ -224,10 +224,11 @@ Defines the type of license
 ===== Pseudo License Ids
 A "normalized" license id might be either a SPDX-Id, a `LicenseRef`-Id or a "pseudo license id" which is used to indicate a specific situation. The following pseudo license ids are used:
 
-* `OSS specific` - a nonstandard OSS license which could not be mapped to a SPDX-Id
-* `PublicDomain` - any form of public domain which is not represented by an explicit SPDX-Id
-* `Ignored` - license will be ignored (see above)
-* `NonOSS` - commercial license, not OSS
+* `OSS specific` (for license type `OSS-OTHER`) - a nonstandard OSS license which could not be mapped to a SPDX-Id
+* `PublicDomain` (for license type `OSS-OTHER`) - any form of public domain which is not represented by an explicit SPDX-Id
+* `Unchosen` (for license type `IGNORE`) - this is an unchosen alternative license in a multilicensing scenario.  
+* `Ignored` (for license type `IGNORE`) - license will be ignored due to other reasons
+* `NonOSS` (for license type `COMMERCIAL`) - commercial license, not OSS
 
 == Usage
 === Executing Solicitor
@@ -2031,6 +2032,7 @@ Changes in 1.47.0::
 * https://github.com/devonfw/solicitor/pull/352: Enable use of templating placeholders in the `ExcelWriter` also in formula cells. This also facilitates to avoid a performance issue which might arise from using hyperlink cells in the template rows in XLS templates. See <<Using Placeholders in Excel Spreadsheets>>.
 * https://github.com/devonfw/solicitor/pull/354: Change sorting of results in SQL to first sort by normalizedLicense and then by
 effectiveNormalizedLicense. This should make reports more stable in case that LicenseSelection- or MultiLicenseSelection-rules are changed.
+* https://github.com/devonfw/solicitor/issues/353: Use `IGNORE/Unchosen` (LicenseType/License) instead of `IGNORE/Ignore` for alternative licenses that are not chosen in a dual-/multilicensing scenario (with SPDX-Expression "OR").
 
 Changes in 1.46.0::
 * https://github.com/devonfw/solicitor/issues/268: When creating reports in "delta mode" (i.e. with including information in changed data compared to a previous run) any data rows that were deleted might now also be included in the report. See <<Determining difference to previously stored model>> and <<Writers>>.
