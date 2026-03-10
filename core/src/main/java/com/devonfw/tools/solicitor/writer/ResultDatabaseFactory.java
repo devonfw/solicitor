@@ -82,6 +82,15 @@ public class ResultDatabaseFactory {
     String sql = sb.toString();
     this.jdbcTemplate.execute(sql);
 
+    // add index on foreign key column if parent exists to speed up queries
+    if (modelObject.getParent() != null) {
+      sb = new StringBuilder();
+      sb.append("CREATE INDEX IDX_").append(name).append("_PARENT ON ").append(name).append(" (PARENT_").append(name)
+          .append(");");
+      sql = sb.toString();
+      this.jdbcTemplate.execute(sql);
+    }
+
   }
 
   /**
