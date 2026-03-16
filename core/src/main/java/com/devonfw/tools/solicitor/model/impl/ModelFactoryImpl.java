@@ -11,7 +11,6 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.SolicitorVersion;
 import com.devonfw.tools.solicitor.common.content.InMemoryMapContentProvider;
@@ -32,15 +31,34 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
  * Implementation of the {@link ModelFactory} interface. All model object created by this factory will be extensions of
  * {@link AbstractModelObject}.
  */
-@Component
 public class ModelFactoryImpl extends ModelFactory {
   private static final Logger LOG = LoggerFactory.getLogger(ModelFactoryImpl.class);
 
-  @Autowired
   private InMemoryMapContentProvider<WebContent> licenseContentProvider;
 
-  @Autowired
   private SolicitorVersion solicitorVersion;
+
+  @Autowired
+  public void setLicenseContentProvider(InMemoryMapContentProvider<WebContent> licenseContentProvider) {
+
+    this.licenseContentProvider = licenseContentProvider;
+  }
+
+  public InMemoryMapContentProvider<WebContent> getLicenseContentProvider() {
+
+    return this.licenseContentProvider;
+  }
+
+  @Autowired
+  public void setSolicitorVersion(SolicitorVersion solicitorVersion) {
+
+    this.solicitorVersion = solicitorVersion;
+  }
+
+  public SolicitorVersion getSolicitorVersion() {
+
+    return this.solicitorVersion;
+  }
 
   /** {@inheritDoc} */
   @Override
