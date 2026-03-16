@@ -43,6 +43,9 @@ public class ModelHelperTest {
     assertFalse(ModelHelper.match("abc", "NOT:abc"));
     assertFalse(ModelHelper.match("abc", "NOT:abc(REGEX)"));
     assertTrue(ModelHelper.match("abc", "NOT:a. (REGEX)"));
+    assertFalse(ModelHelper.match("1.2.3-lts", "NOT:.*-lts(REGEX)"));
+    assertTrue(ModelHelper.match("1.2.3-ls", "NOT:.*-lts(REGEX)"));
+    assertTrue(ModelHelper.match("1.2.3", "NOT:.*-lts(REGEX)"));
 
     assertFalse(ModelHelper.match("1.0", "NOT:RANGE:1.0"));
     assertTrue(ModelHelper.match("1.0.1", "NOT:RANGE:[1.0]"));
