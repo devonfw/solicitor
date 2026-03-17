@@ -108,8 +108,7 @@ public class WriterFacadeImpl implements WriterFacade {
       String rawFilename = writerConfig.getTarget();
       for (String reportingGroup : writerReportingGroups) {
         if (this.reportingGroupHandler.matchesReportingGroupFilter(reportingGroup)) {
-          String targetFilename = this.reportingGroupHandler.expandReportingGroupInFileName(rawFilename,
-              reportingGroup);
+          String targetFilename = ReportingGroupHandler.expandReportingGroupInFileName(rawFilename, reportingGroup);
           LOG.info(LogMessages.PREPARING_FOR_WRITER.msg(), writerConfig.getType(), writerConfig.getTemplateSource(),
               targetFilename);
           Writer writer = this.writerFactory.writerFor(writerConfig.getType());

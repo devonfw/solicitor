@@ -181,23 +181,24 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   }
 
   /**
-   * @param rawLicenseNode
-   * @param readModelVersion
+   * Read the data of a RawLicense from a JsonNode.
+   *
+   * @param rawLicenseNode the JsonNode containing the data of the RawLicensee
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
+   *        structure between versions
    */
   public void readRawLicenseFromJsonNode(JsonNode rawLicenseNode, int readModelVersion) {
-  
-    String declaredLicense = rawLicenseNode.get("declaredLicense").asText(null);
-    String licenseUrl = rawLicenseNode.get("licenseUrl").asText(null);
-    String trace = rawLicenseNode.get("trace").asText(null);
+
+    setDeclaredLicense(rawLicenseNode.get("declaredLicense").asText(null));
+
+    setLicenseUrl(rawLicenseNode.get("licenseUrl").asText(null));
+
+    setTrace(rawLicenseNode.get("trace").asText(null));
+
     JsonNode originNode = rawLicenseNode.get("origin");
-    String origin = originNode != null ? originNode.asText(null) : null;
-    boolean specialHandling = rawLicenseNode.get("specialHandling").asBoolean();
-  
-    setDeclaredLicense(declaredLicense);
-    setLicenseUrl(licenseUrl);
-    setTrace(trace);
-    setOrigin(origin);
-    setSpecialHandling(specialHandling);
+    setOrigin(originNode != null ? originNode.asText(null) : null);
+
+    setSpecialHandling(rawLicenseNode.get("specialHandling").asBoolean());
   }
 
 }

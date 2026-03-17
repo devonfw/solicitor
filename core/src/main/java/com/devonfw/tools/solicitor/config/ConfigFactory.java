@@ -122,7 +122,7 @@ public class ConfigFactory {
     Set<String> allReportingGroups = new TreeSet<>();
     for (ApplicationConfig ac : sc.getApplications()) {
       List<String> reportingGroups = ac.getReportingGroups();
-      Set<String> normalizedReportingGroups = this.reportingGroupHandler.normalizeReportingGroups(reportingGroups);
+      Set<String> normalizedReportingGroups = ReportingGroupHandler.normalizeReportingGroups(reportingGroups);
       allReportingGroups.addAll(normalizedReportingGroups);
 
       LOG.info(LogMessages.CREATING_APPLICATION.msg(), ac.getName());
@@ -132,7 +132,7 @@ public class ConfigFactory {
       app.setReleaseDate("-UNDEFINED-");
       app.setSourceRepo(ac.getSourceRepo());
       app.setProgrammingEcosystem(ac.getProgrammingEcosystem());
-      app.setReportingGroups(this.reportingGroupHandler.stringifyReportingGroups(normalizedReportingGroups));
+      app.setReportingGroups(ReportingGroupHandler.stringifyReportingGroups(normalizedReportingGroups));
       app.setEngagement(engagement);
       for (ReaderConfig rc : ac.getReaders()) {
         SolicitorSetup.ReaderSetup rs = new SolicitorSetup.ReaderSetup();

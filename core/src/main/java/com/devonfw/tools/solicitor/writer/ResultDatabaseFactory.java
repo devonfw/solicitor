@@ -136,7 +136,7 @@ public class ResultDatabaseFactory {
       throw new SolicitorRuntimeException("Could not read SQL statement", e);
     }
 
-    sql = this.reportingGroupHandler.replacePlaceholderInSql(sql, reportingGroup);
+    sql = ReportingGroupHandler.replacePlaceholderInSql(sql, reportingGroup);
 
     List<Map<String, Object>> rawResult = this.jdbcTemplate.queryForList(sql);
 

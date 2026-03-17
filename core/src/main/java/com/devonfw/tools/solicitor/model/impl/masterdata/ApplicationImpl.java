@@ -197,38 +197,40 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
   }
 
   /**
-   * @param applicationNode
-   * @param modelFactory
-   * @param readModelVersion
-   * @param reportingGroupHandler TODO
+   * Read the data of an Application from a JsonNode.
+   *
+   * @param applicationNode the JsonNode to read from
+   * @param modelFactory the ModelFactoryImpl to use for creating model objects
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
    */
-  public void readApplicationFromJsonNode(JsonNode applicationNode, ModelFactoryImpl modelFactory, int readModelVersion, ReportingGroupHandler reportingGroupHandler) {
-  
-    String name = applicationNode.get("name").asText(null);
-    String releaseId = applicationNode.get("releaseId").asText(null);
-    String releaseDate = applicationNode.get("releaseDate").asText(null);
-    String sourceRepo = applicationNode.get("sourceRepo").asText(null);
-    String programmingEcosystem = applicationNode.get("programmingEcosystem").asText(null);
+  public void readApplicationFromJsonNode(JsonNode applicationNode, ModelFactoryImpl modelFactory,
+      int readModelVersion) {
+
+    setName(applicationNode.get("name").asText(null));
+
+    setReleaseId(applicationNode.get("releaseId").asText(null));
+
+    setReleaseDate(applicationNode.get("releaseDate").asText(null));
+
+    setSourceRepo(applicationNode.get("sourceRepo").asText(null));
+
+    setProgrammingEcosystem(applicationNode.get("programmingEcosystem").asText(null));
+
     String reportingGroups = ReportingGroupHandler.DEFAULT_REPORTING_GROUP_LIST;
     JsonNode reportingGroupsNode = applicationNode.get("reportingGroups");
     if (reportingGroupsNode != null) {
       reportingGroups = reportingGroupsNode.asText();
-      reportingGroupHandler.validateReportingGroupList(reportingGroups);
+      ReportingGroupHandler.validateReportingGroupList(reportingGroups);
     }
-    setName(name);
-    setReleaseId(releaseId);
-    setReleaseDate(releaseDate);
-    setSourceRepo(sourceRepo);
-    setProgrammingEcosystem(programmingEcosystem);
     setReportingGroups(reportingGroups);
+
     JsonNode applicationComponentsNode = applicationNode.get("applicationComponents");
     for (JsonNode applicationComponentNode : applicationComponentsNode) {
       ApplicationComponentImpl applicationComponent = modelFactory.newApplicationComponent();
       applicationComponent.setApplication(this);
-  
       applicationComponent.readApplicationComponentFromJsonNode(applicationComponentNode, modelFactory,
           readModelVersion);
-  
+
     }
   }
 

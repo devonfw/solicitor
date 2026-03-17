@@ -452,23 +452,34 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   }
 
   /**
-   * @param applicationComponentNode
-   * @param modelFactory TODO
-   * @param readModelVersion
+   * Read the data of an ApplicationComponent from a JsonNode.
+   *
+   * @param applicationComponentNode the JsonNode to read the data from
+   * @param modelFactory the ModelFactoryImpl to use for creating model objects when reading the data
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
+   *        structure between versions
    */
-  public void readApplicationComponentFromJsonNode(JsonNode applicationComponentNode, ModelFactoryImpl modelFactory, int readModelVersion) {
-  
-    String usagePattern = applicationComponentNode.get("usagePattern").asText(null);
-    boolean ossModified = applicationComponentNode.get("ossModified").asBoolean();
-    String ossHomepage = applicationComponentNode.get("ossHomepage").asText(null);
+  public void readApplicationComponentFromJsonNode(JsonNode applicationComponentNode, ModelFactoryImpl modelFactory,
+      int readModelVersion) {
+
+    setUsagePattern(UsagePattern.valueOf(applicationComponentNode.get("usagePattern").asText(null)));
+
+    setOssModified(applicationComponentNode.get("ossModified").asBoolean());
+
+    setOssHomepage(applicationComponentNode.get("ossHomepage").asText(null));
+
     String sourceRepoUrl = null;
     if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_SOURCE_REPO_URL) {
       sourceRepoUrl = applicationComponentNode.get("sourceRepoUrl").asText(null);
     }
-    String groupId = applicationComponentNode.get("groupId").asText(null);
-    String artifactId = applicationComponentNode.get("artifactId").asText(null);
-    String version = applicationComponentNode.get("version").asText(null);
-    String repoType = applicationComponentNode.get("repoType").asText(null);
+    setSourceRepoUrl(sourceRepoUrl);
+
+    setGroupId(applicationComponentNode.get("groupId").asText(null));
+
+    setArtifactId(applicationComponentNode.get("artifactId").asText(null));
+
+    setVersion(applicationComponentNode.get("version").asText(null));
+
     PackageURL packageUrl = null;
     if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_PACKAGE_URL) {
       String packageUrlAsString = applicationComponentNode.get("packageUrl").asText(null);
@@ -480,60 +491,59 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
         }
       }
     }
-    JsonNode copyrightNode = applicationComponentNode.get("copyrights");
-    String copyrights = copyrightNode != null ? copyrightNode.asText(null) : null;
-    JsonNode noticeFileUrlNode = applicationComponentNode.get("noticeFileUrl");
-    String noticeFileUrl = noticeFileUrlNode != null ? noticeFileUrlNode.asText(null) : null;
-    JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
-    JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
-    String dataStatus = applicationComponentNode.has("dataStatus")
-        ? applicationComponentNode.get("dataStatus").asText(null)
-        : null;
-    String traceabilityNotes = applicationComponentNode.has("traceabilityNotes")
-        ? applicationComponentNode.get("traceabilityNotes").asText(null)
-        : null;
-    String sourceDownloadUrl = applicationComponentNode.has("sourceDownloadUrl")
-        ? applicationComponentNode.get("sourceDownloadUrl").asText(null)
-        : null;
-    String packageDownloadUrl = applicationComponentNode.has("packageDownloadUrl")
-        ? applicationComponentNode.get("packageDownloadUrl").asText(null)
-        : null;
-    String noticeFileContentKey = applicationComponentNode.has("noticeFileContentKey")
-        ? applicationComponentNode.get("noticeFileContentKey").asText(null)
-        : null;
-  
-    setUsagePattern(UsagePattern.valueOf(usagePattern));
-    setOssModified(ossModified);
-    setOssHomepage(ossHomepage);
-    setSourceRepoUrl(sourceRepoUrl);
-    setGroupId(groupId);
-    setArtifactId(artifactId);
-    setVersion(version);
     setPackageUrl(packageUrl);
+
     // when reading from file we set repoType after packageUrl to make sure the effective value is what is given by
     // the file. (ApplicationComponent.setPackageUrl() will set repoType as well if it is not already set to something
     // different from null)
-    setRepoType(repoType);
+    setRepoType(applicationComponentNode.get("repoType").asText(null));
+
+    JsonNode copyrightNode = applicationComponentNode.get("copyrights");
+    String copyrights = copyrightNode != null ? copyrightNode.asText(null) : null;
     setCopyrights(copyrights);
+
+    JsonNode noticeFileUrlNode = applicationComponentNode.get("noticeFileUrl");
+    String noticeFileUrl = noticeFileUrlNode != null ? noticeFileUrlNode.asText(null) : null;
     setNoticeFileUrl(noticeFileUrl);
+
+    String dataStatus = applicationComponentNode.has("dataStatus")
+        ? applicationComponentNode.get("dataStatus").asText(null)
+        : null;
     setDataStatus(dataStatus);
+
+    String traceabilityNotes = applicationComponentNode.has("traceabilityNotes")
+        ? applicationComponentNode.get("traceabilityNotes").asText(null)
+        : null;
     setTraceabilityNotes(traceabilityNotes);
+
+    String sourceDownloadUrl = applicationComponentNode.has("sourceDownloadUrl")
+        ? applicationComponentNode.get("sourceDownloadUrl").asText(null)
+        : null;
     setSourceDownloadUrl(sourceDownloadUrl);
+
+    String packageDownloadUrl = applicationComponentNode.has("packageDownloadUrl")
+        ? applicationComponentNode.get("packageDownloadUrl").asText(null)
+        : null;
     setPackageDownloadUrl(packageDownloadUrl);
+
+    String noticeFileContentKey = applicationComponentNode.has("noticeFileContentKey")
+        ? applicationComponentNode.get("noticeFileContentKey").asText(null)
+        : null;
     setNoticeFileContentKey(noticeFileContentKey);
-  
+
+    JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
     for (JsonNode normalizedLicenseNode : normalizedLicensesNode) {
       // Creating a new NormalizedLicense object and populating its fields
       NormalizedLicenseImpl normalizedLicense = modelFactory.newNormalizedLicense();
       normalizedLicense.setApplicationComponent(this);
-  
       normalizedLicense.readNormalizedLicenseFromJsonNode(normalizedLicenseNode, readModelVersion);
-  
+
     }
+
+    JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
     for (JsonNode rawLicenseNode : rawLicensesNode) {
       RawLicenseImpl rawLicense = modelFactory.newRawLicense();
       rawLicense.setApplicationComponent(this);
-  
       rawLicense.readRawLicenseFromJsonNode(rawLicenseNode, readModelVersion);
     }
   }

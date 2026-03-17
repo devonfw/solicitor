@@ -81,7 +81,7 @@ public class ReportingGroupHandler {
    * @param reportingGroup the reporting group which should be validated
    * @throws SolicitorRuntimeException if the validation fails
    */
-  public void validateReportingGroup(String reportingGroup) {
+  public static void validateReportingGroup(String reportingGroup) {
 
     if (!VALID_REPORTING_GROUP_PATTERN.matcher(reportingGroup).matches()) {
       LOG.error(LogMessages.ILLEGAL_CHARACTER_IN_REPORTING_GROUP.msg(), reportingGroup);
@@ -97,7 +97,7 @@ public class ReportingGroupHandler {
    * @return the list of reporting groups as strings
    * @throws SolicitorRuntimeException if the given argument is not a valid stringified list of reporting groups
    */
-  public List<String> splitReportingGroupList(String reportingGroups) {
+  public static List<String> splitReportingGroupList(String reportingGroups) {
 
     if (!reportingGroups.startsWith("#")) {
       throw new SolicitorRuntimeException("Stringified reporting group list must start with #");
@@ -119,7 +119,7 @@ public class ReportingGroupHandler {
    * @param reportingGroups the stringified reporting group list which should be validated
    * @throws SolicitorRuntimeException if the given argument is not a valid stringified list of reporting groups
    */
-  public void validateReportingGroupList(String reportingGroups) {
+  public static void validateReportingGroupList(String reportingGroups) {
 
     // just delegate
     splitReportingGroupList(reportingGroups);
@@ -133,7 +133,7 @@ public class ReportingGroupHandler {
    * @param reportingGroups the list of reporting groups to be normalized
    * @return the normalized set of reporting groups
    */
-  public Set<String> normalizeReportingGroups(List<String> reportingGroups) {
+  public static Set<String> normalizeReportingGroups(List<String> reportingGroups) {
 
     Set<String> normalizedReportingGroups = new TreeSet<>();
     if (reportingGroups == null) {
@@ -154,7 +154,7 @@ public class ReportingGroupHandler {
    * @param normalizedReportingGroups set of reporting groups
    * @return single string with all reporting groups
    */
-  public String stringifyReportingGroups(Set<String> normalizedReportingGroups) {
+  public static String stringifyReportingGroups(Set<String> normalizedReportingGroups) {
 
     StringBuilder sb = new StringBuilder(REPORTING_GROUP_STRINGIFIED_LIST_DELIMITER);
     for (String oneGroup : normalizedReportingGroups) {
@@ -178,7 +178,7 @@ public class ReportingGroupHandler {
    * @param reportingGroup the value of the current reporting group
    * @return the sql statement with replaced placeholder(s)
    */
-  public String replacePlaceholderInSql(String sql, String reportingGroup) {
+  public static String replacePlaceholderInSql(String sql, String reportingGroup) {
 
     return sql.replace("#reportingGroup#",
         REPORTING_GROUP_STRINGIFIED_LIST_DELIMITER + reportingGroup + REPORTING_GROUP_STRINGIFIED_LIST_DELIMITER);
@@ -198,7 +198,7 @@ public class ReportingGroupHandler {
    * @param reportingGroup the current reporting group
    * @return the filename with replaced placeholder(s)
    */
-  public String expandReportingGroupInFileName(String rawFilename, String reportingGroup) {
+  public static String expandReportingGroupInFileName(String rawFilename, String reportingGroup) {
 
     String targetFilename;
     if (DEFAULT_REPORTING_GROUP_NAME.equals(reportingGroup)) {

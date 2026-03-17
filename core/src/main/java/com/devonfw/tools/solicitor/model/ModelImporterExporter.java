@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.devonfw.tools.solicitor.common.IOHelper;
-import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.impl.ModelRootImpl;
@@ -41,9 +40,6 @@ public class ModelImporterExporter {
   @Autowired
   private ModelFactoryImpl modelFactory;
 
-  @Autowired
-  private ReportingGroupHandler reportingGroupHandler;
-
   /**
    * Loads the data model from a JSON file. The loaded data model is represented by a root object of type
    * {@code ModelRootImpl}.
@@ -60,7 +56,7 @@ public class ModelImporterExporter {
       ModelRootImpl modelRoot = this.modelFactory.newModelRoot();
       int readModelVersion = root.get("modelVersion").asInt();
       checkModelVersion(readModelVersion, modelRoot);
-      modelRoot.readModelRootFromJson(root, this.modelFactory, readModelVersion, this.reportingGroupHandler);
+      modelRoot.readModelRootFromJson(root, this.modelFactory, readModelVersion);
       return modelRoot;
     } catch (IOException e) {
       throw new SolicitorRuntimeException("Could not load internal data model from file '" + filename + "'", e);

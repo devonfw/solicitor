@@ -5,7 +5,6 @@ package com.devonfw.tools.solicitor.model.impl;
 
 import java.util.Date;
 
-import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.impl.masterdata.EngagementImpl;
@@ -252,42 +251,41 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   }
 
   /**
-   * @param root
-   * @param modelFactory
-   * @param readModelVersion
-   * @param reportingGroupHandler
+   * Read the data of the ModelRoot from a JsonNode.
+   *
+   * @param root the JsonNode containing the data of the ModelRoot
+   * @param modelFactory the ModelFactoryImpl to create the EngagementImpl object for the engagement of the ModelRoot
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
    */
-  public void readModelRootFromJson(JsonNode root, ModelFactoryImpl modelFactory, int readModelVersion, ReportingGroupHandler reportingGroupHandler) {
-  
-    String executionTime = root.get("executionTime").asText();
-    String solicitorVersion = root.get("solicitorVersion").asText();
-    String solicitorGitHash = root.get("solicitorGitHash").asText();
-    String solicitorBuilddate = root.get("solicitorBuilddate").asText();
-    String extensionArtifactId = root.get("extensionArtifactId").asText();
-    String extensionVersion = root.get("extensionVersion").asText();
-    String extensionGitHash = root.get("extensionGitHash").asText();
-    String extensionBuilddate = root.get("extensionBuilddate").asText();
+  public void readModelRootFromJson(JsonNode root, ModelFactoryImpl modelFactory, int readModelVersion) {
+
+    setExecutionTime(root.get("executionTime").asText());
+
+    setSolicitorVersion(root.get("solicitorVersion").asText());
+
+    setSolicitorGitHash(root.get("solicitorGitHash").asText());
+
+    setSolicitorBuilddate(root.get("solicitorBuilddate").asText());
+
+    setExtensionArtifactId(root.get("extensionArtifactId").asText());
+
+    setExtensionVersion(root.get("extensionVersion").asText());
+
+    setExtensionGitHash(root.get("extensionGitHash").asText());
+
+    setExtensionBuilddate(root.get("extensionBuilddate").asText());
+
     JsonNode engagementNode = root.get("engagement");
+    EngagementImpl engagement = modelFactory.newEngagement();
+    engagement.setModelRoot(this);
+    engagement.readEngagementFromJsonNode(engagementNode, modelFactory, readModelVersion);
+
     JsonNode textPoolNode = null;
     if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_TEXT_POOL) {
       textPoolNode = root.get("textPool");
-    }
-    setExecutionTime(executionTime);
-    setSolicitorVersion(solicitorVersion);
-    setSolicitorGitHash(solicitorGitHash);
-    setSolicitorBuilddate(solicitorBuilddate);
-    setExtensionArtifactId(extensionArtifactId);
-    setExtensionVersion(extensionVersion);
-    setExtensionGitHash(extensionGitHash);
-    setExtensionBuilddate(extensionBuilddate);
-    EngagementImpl engagement = modelFactory.newEngagement();
-    engagement.setModelRoot(this);
-  
-    engagement.readEngagementFromJsonNode(engagementNode, modelFactory, readModelVersion, reportingGroupHandler);
-    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_TEXT_POOL) {
-      TextPool textPool = getTextPool();
       JsonNode dataMapNode = textPoolNode.get("dataMap");
-  
+
+      TextPool textPool = getTextPool();
       for (JsonNode singleEntryValue : dataMapNode) {
         // only store values; keys will be reconstructed based on values
         textPool.store(singleEntryValue.asText());
