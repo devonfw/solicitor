@@ -100,8 +100,7 @@ public class ModelHelper {
   }
 
   /**
-   * Creates a new {@link Application} by calling
-   * {@link ModelFactory#newApplication(String, String, String, String, String, String)}.
+   * Creates a new {@link Application} by calling {@link ModelFactory#newApplication()} and the corresponding setters.
    *
    * @param name the application name
    * @param releaseId the release id.
@@ -114,7 +113,15 @@ public class ModelHelper {
   public static Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
       String programmingEcosystem, String reportingGroups) {
 
-    return modelFactory.newApplication(name, releaseId, releaseDate, sourceRepo, programmingEcosystem, reportingGroups);
+    Application app = modelFactory.newApplication();
+    app.setName(name);
+    app.setReleaseId(releaseId);
+    app.setReleaseDate(releaseDate);
+    app.setSourceRepo(sourceRepo);
+    app.setProgrammingEcosystem(programmingEcosystem);
+    app.setReportingGroups(reportingGroups);
+    return app;
+
   }
 
   /**
@@ -128,8 +135,7 @@ public class ModelHelper {
   }
 
   /**
-   * Creates a new {@link Engagement} by calling
-   * {@link ModelFactory#newEngagement(String, EngagementType, String, GoToMarketModel)} .
+   * Creates a new {@link Engagement} by calling {@link ModelFactory#newEngagement()} and the respective setters.
    *
    * @param engagementName the name of the engagement
    * @param engagementType the type of engagement
@@ -140,7 +146,12 @@ public class ModelHelper {
   public static Engagement newEngagement(String engagementName, EngagementType engagementType, String clientName,
       GoToMarketModel goToMarketModel) {
 
-    return modelFactory.newEngagement(engagementName, engagementType, clientName, goToMarketModel);
+    Engagement eng = modelFactory.newEngagement();
+    eng.setEngagementName(engagementName);
+    eng.setEngagementType(engagementType);
+    eng.setClientName(clientName);
+    eng.setGoToMarketModel(goToMarketModel);
+    return eng;
   }
 
   /**

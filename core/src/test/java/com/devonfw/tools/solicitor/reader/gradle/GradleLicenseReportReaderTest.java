@@ -24,8 +24,7 @@ class GradleLicenseReportReaderTest {
   public GradleLicenseReportReaderTest() {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     GradleLicenseReportReader gr = new GradleLicenseReportReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
@@ -64,8 +63,7 @@ class GradleLicenseReportReaderTest {
   void testFilter() {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = modelFactory.newApplication();
     Map<String, String> configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:maven/androidx\\.activity/.*");
     GradleLicenseReportReader gr = new GradleLicenseReportReader();
@@ -81,8 +79,7 @@ class GradleLicenseReportReaderTest {
   void testUsagePatternAndOssModified() {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     GradleLicenseReportReader gr = new GradleLicenseReportReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
@@ -92,8 +89,7 @@ class GradleLicenseReportReaderTest {
     assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     gr = new GradleLicenseReportReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());

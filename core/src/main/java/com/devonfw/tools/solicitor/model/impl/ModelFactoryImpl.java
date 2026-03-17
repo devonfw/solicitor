@@ -27,8 +27,6 @@ import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
-import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
-import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 
 /**
  * Implementation of the {@link ModelFactory} interface. All model object created by this factory will be extensions of
@@ -75,10 +73,9 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public ApplicationImpl newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem, String reportingGroups) {
+  public ApplicationImpl newApplication() {
 
-    return new ApplicationImpl(name, releaseId, releaseDate, sourceRepo, programmingEcosystem, reportingGroups);
+    return new ApplicationImpl();
   }
 
   /** {@inheritDoc} */
@@ -93,10 +90,9 @@ public class ModelFactoryImpl extends ModelFactory {
 
   /** {@inheritDoc} */
   @Override
-  public EngagementImpl newEngagement(String engagementName, EngagementType engagementType, String clientName,
-      GoToMarketModel goToMarketModel) {
+  public EngagementImpl newEngagement() {
 
-    return new EngagementImpl(engagementName, engagementType, clientName, goToMarketModel);
+    return new EngagementImpl();
   }
 
   /** {@inheritDoc} */

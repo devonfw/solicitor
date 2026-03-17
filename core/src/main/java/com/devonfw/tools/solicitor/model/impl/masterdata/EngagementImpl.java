@@ -10,11 +10,13 @@ import java.util.List;
 
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
+import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation of the {@link Engagement} model object interface.
@@ -42,19 +44,10 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
   /**
    * Constructor.
    *
-   * @param engagementName the name of the engagement
-   * @param engagementType the type of engagement
-   * @param clientName name of the client
-   * @param goToMarketModel the model how this goes to market
    */
-  public EngagementImpl(String engagementName, EngagementType engagementType, String clientName,
-      GoToMarketModel goToMarketModel) {
+  public EngagementImpl() {
 
     super();
-    this.engagementName = engagementName;
-    this.engagementType = engagementType;
-    this.clientName = clientName;
-    this.goToMarketModel = goToMarketModel;
   }
 
   /** {@inheritDoc} */
@@ -226,6 +219,39 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
 
     for (Application application : this.applications) {
       application.completeData();
+    }
+  }
+
+  /**
+   * Read the data of the Engagement from a JsonNode.
+   *
+   * @param engagementNode the JsonNode containing the data of the Engagement
+   * @param modelFactory the ModelFactoryImpl to create the ApplicationImpl objects for the applications of the
+   *        Engagement
+   * @param readModelVersion the version of the model to read, which can be used to handle different versions of the
+   *        model in case of breaking changes
+   */
+  public void readEngagementFromJsonNode(JsonNode engagementNode, ModelFactoryImpl modelFactory, int readModelVersion) {
+
+    setEngagementName(engagementNode.get("engagementName").asText(null));
+
+    setEngagementType(EngagementType.valueOf(engagementNode.get("engagementType").asText(null)));
+
+    setClientName(engagementNode.get("clientName").asText(null));
+
+    setGoToMarketModel(GoToMarketModel.valueOf(engagementNode.get("goToMarketModel").asText(null)));
+
+    setContractAllowsOss(engagementNode.get("contractAllowsOss").asBoolean());
+
+    setOssPolicyFollowed(engagementNode.get("ossPolicyFollowed").asBoolean());
+
+    setCustomerProvidesOss(engagementNode.get("customerProvidesOss").asBoolean());
+
+    JsonNode applicationsNode = engagementNode.get("applications");
+    for (JsonNode applicationNode : applicationsNode) {
+      ApplicationImpl application = modelFactory.newApplication();
+      application.setEngagement(this);
+      application.readApplicationFromJsonNode(applicationNode, modelFactory, readModelVersion);
     }
   }
 

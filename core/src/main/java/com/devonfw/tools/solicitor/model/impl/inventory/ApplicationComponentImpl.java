@@ -9,16 +9,22 @@ import java.util.Collections;
 import java.util.List;
 
 import com.devonfw.tools.solicitor.common.LicenseTextHelper;
+import com.devonfw.tools.solicitor.common.PackageURLHelper;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
 import com.devonfw.tools.solicitor.common.packageurl.PackageURLSerializer;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
+import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
+import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.UsagePattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.PackageURL;
 
@@ -443,6 +449,103 @@ public class ApplicationComponentImpl extends AbstractModelObject implements App
   public void setLicenseContentProvider(ContentProvider<WebContent> licenseContentProvider) {
 
     this.licenseContentProvider = licenseContentProvider;
+  }
+
+  /**
+   * Read the data of an ApplicationComponent from a JsonNode.
+   *
+   * @param applicationComponentNode the JsonNode to read the data from
+   * @param modelFactory the ModelFactoryImpl to use for creating model objects when reading the data
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
+   *        structure between versions
+   */
+  public void readApplicationComponentFromJsonNode(JsonNode applicationComponentNode, ModelFactoryImpl modelFactory,
+      int readModelVersion) {
+
+    setUsagePattern(UsagePattern.valueOf(applicationComponentNode.get("usagePattern").asText(null)));
+
+    setOssModified(applicationComponentNode.get("ossModified").asBoolean());
+
+    setOssHomepage(applicationComponentNode.get("ossHomepage").asText(null));
+
+    String sourceRepoUrl = null;
+    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_SOURCE_REPO_URL) {
+      sourceRepoUrl = applicationComponentNode.get("sourceRepoUrl").asText(null);
+    }
+    setSourceRepoUrl(sourceRepoUrl);
+
+    setGroupId(applicationComponentNode.get("groupId").asText(null));
+
+    setArtifactId(applicationComponentNode.get("artifactId").asText(null));
+
+    setVersion(applicationComponentNode.get("version").asText(null));
+
+    PackageURL packageUrl = null;
+    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_PACKAGE_URL) {
+      String packageUrlAsString = applicationComponentNode.get("packageUrl").asText(null);
+      if (packageUrlAsString != null) {
+        try {
+          packageUrl = PackageURLHelper.fromString(packageUrlAsString);
+        } catch (SolicitorMalformedPackageURLException e) {
+          throw new SolicitorRuntimeException("PackageURL read from model file is malformed", e);
+        }
+      }
+    }
+    setPackageUrl(packageUrl);
+
+    // when reading from file we set repoType after packageUrl to make sure the effective value is what is given by
+    // the file. (ApplicationComponent.setPackageUrl() will set repoType as well if it is not already set to something
+    // different from null)
+    setRepoType(applicationComponentNode.get("repoType").asText(null));
+
+    JsonNode copyrightNode = applicationComponentNode.get("copyrights");
+    String copyrights = copyrightNode != null ? copyrightNode.asText(null) : null;
+    setCopyrights(copyrights);
+
+    JsonNode noticeFileUrlNode = applicationComponentNode.get("noticeFileUrl");
+    String noticeFileUrl = noticeFileUrlNode != null ? noticeFileUrlNode.asText(null) : null;
+    setNoticeFileUrl(noticeFileUrl);
+
+    String dataStatus = applicationComponentNode.has("dataStatus")
+        ? applicationComponentNode.get("dataStatus").asText(null)
+        : null;
+    setDataStatus(dataStatus);
+
+    String traceabilityNotes = applicationComponentNode.has("traceabilityNotes")
+        ? applicationComponentNode.get("traceabilityNotes").asText(null)
+        : null;
+    setTraceabilityNotes(traceabilityNotes);
+
+    String sourceDownloadUrl = applicationComponentNode.has("sourceDownloadUrl")
+        ? applicationComponentNode.get("sourceDownloadUrl").asText(null)
+        : null;
+    setSourceDownloadUrl(sourceDownloadUrl);
+
+    String packageDownloadUrl = applicationComponentNode.has("packageDownloadUrl")
+        ? applicationComponentNode.get("packageDownloadUrl").asText(null)
+        : null;
+    setPackageDownloadUrl(packageDownloadUrl);
+
+    String noticeFileContentKey = applicationComponentNode.has("noticeFileContentKey")
+        ? applicationComponentNode.get("noticeFileContentKey").asText(null)
+        : null;
+    setNoticeFileContentKey(noticeFileContentKey);
+
+    JsonNode normalizedLicensesNode = applicationComponentNode.get("normalizedLicenses");
+    for (JsonNode normalizedLicenseNode : normalizedLicensesNode) {
+      // Creating a new NormalizedLicense object and populating its fields
+      NormalizedLicenseImpl normalizedLicense = modelFactory.newNormalizedLicense();
+      normalizedLicense.setApplicationComponent(this);
+      normalizedLicense.readNormalizedLicenseFromJsonNode(normalizedLicenseNode, readModelVersion);
+
+    }
+
+    JsonNode rawLicensesNode = applicationComponentNode.get("rawLicenses");
+    for (JsonNode rawLicenseNode : rawLicensesNode) {
+      RawLicenseImpl rawLicense = modelFactory.newRawLicense();
+      rawLicense.setApplicationComponent(this);
+      rawLicense.readRawLicenseFromJsonNode(rawLicenseNode, readModelVersion);
+    }
   }
 
 }

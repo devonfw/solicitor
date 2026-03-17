@@ -49,15 +49,15 @@ class ReportingGroupHandlerTest {
   @Test
   void testValidateReportingGroup() {
 
-    this.handlerUnderTest.validateReportingGroup("abcexyzABYZ_-09 ");
+    ReportingGroupHandler.validateReportingGroup("abcexyzABYZ_-09 ");
     // empty value
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroup(""));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroup(""));
     // disallowed characters
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroup("a#"));
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroup("aä"));
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroup("a("));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroup("a#"));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroup("aä"));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroup("a("));
     // not starting alphanumeric
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroup("_a"));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroup("_a"));
 
   }
 
@@ -68,10 +68,10 @@ class ReportingGroupHandlerTest {
   @Test
   void testValidateReportingGroupList() {
 
-    this.handlerUnderTest.validateReportingGroupList("#a b#c#");
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroupList("#a/b#c#"));
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroupList("a b#c#"));
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroupList("#a b#c"));
+    ReportingGroupHandler.validateReportingGroupList("#a b#c#");
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroupList("#a/b#c#"));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroupList("a b#c#"));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroupList("#a b#c"));
   }
 
   /**
@@ -81,12 +81,12 @@ class ReportingGroupHandlerTest {
   @Test
   void testSplitReportingGroupList() {
 
-    List<String> result = this.handlerUnderTest.splitReportingGroupList("#a b#c#");
+    List<String> result = ReportingGroupHandler.splitReportingGroupList("#a b#c#");
     assertEquals(2, result.size());
     assertEquals("a b", result.get(0));
     assertEquals("c", result.get(1));
 
-    assertThrows(SolicitorRuntimeException.class, () -> this.handlerUnderTest.validateReportingGroupList("#a/b#c#"));
+    assertThrows(SolicitorRuntimeException.class, () -> ReportingGroupHandler.validateReportingGroupList("#a/b#c#"));
 
   }
 
@@ -99,16 +99,16 @@ class ReportingGroupHandlerTest {
 
     Set<String> result;
 
-    result = this.handlerUnderTest.normalizeReportingGroups(null);
+    result = ReportingGroupHandler.normalizeReportingGroups(null);
     assertEquals(1, result.size());
     assertTrue(result.contains("default"));
 
-    result = this.handlerUnderTest.normalizeReportingGroups(Arrays.asList(new String[] { "a", "b", "c", "b" }));
+    result = ReportingGroupHandler.normalizeReportingGroups(Arrays.asList(new String[] { "a", "b", "c", "b" }));
     assertEquals(3, result.size());
     assertTrue(result.containsAll(Arrays.asList(new String[] { "a", "b", "c" })));
 
     assertThrows(SolicitorRuntimeException.class,
-        () -> this.handlerUnderTest.normalizeReportingGroups(Arrays.asList(new String[] { "/" })));
+        () -> ReportingGroupHandler.normalizeReportingGroups(Arrays.asList(new String[] { "/" })));
   }
 
   /**
@@ -118,7 +118,7 @@ class ReportingGroupHandlerTest {
   @Test
   void testStringifyReportingGroups() {
 
-    String result = this.handlerUnderTest
+    String result = ReportingGroupHandler
         .stringifyReportingGroups(new TreeSet<>(Arrays.asList(new String[] { "a", "b" })));
 
     assertTrue(result.equals("#a#b#") || result.equals("#b#a#"));
@@ -132,9 +132,9 @@ class ReportingGroupHandlerTest {
   void testReplacePlaceholderInSql() {
 
     String result;
-    result = this.handlerUnderTest.replacePlaceholderInSql("some sql #reportingGroup#with placeholder", "test");
+    result = ReportingGroupHandler.replacePlaceholderInSql("some sql #reportingGroup#with placeholder", "test");
     assertEquals("some sql #test#with placeholder", result);
-    result = this.handlerUnderTest.replacePlaceholderInSql("some sql reportingGroup without placeholder", "test");
+    result = ReportingGroupHandler.replacePlaceholderInSql("some sql reportingGroup without placeholder", "test");
     assertEquals("some sql reportingGroup without placeholder", result);
   }
 
@@ -146,11 +146,11 @@ class ReportingGroupHandlerTest {
   void testExpandReportingGroupInFileName() {
 
     String result;
-    result = this.handlerUnderTest.expandReportingGroupInFileName(
+    result = ReportingGroupHandler.expandReportingGroupInFileName(
         "some${/reportingGroup}/test${_reportingGroup}/file${_reportingGroup}${-reportingGroup}.txt", "foo");
     assertEquals("some/foo/test_foo/file_foo-foo.txt", result);
 
-    result = this.handlerUnderTest.expandReportingGroupInFileName(
+    result = ReportingGroupHandler.expandReportingGroupInFileName(
         "some${/reportingGroup}/test${_reportingGroup}/file${_reportingGroup}${-reportingGroup}.txt", "default");
     assertEquals("some/test/file.txt", result);
   }

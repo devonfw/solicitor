@@ -32,8 +32,7 @@ public class YarnReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
-        "#default#");
+    this.application = modelFactory.newApplication();
     YarnReader yr = new YarnReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
@@ -70,8 +69,7 @@ public class YarnReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Angular", "#default#");
+    Application application = modelFactory.newApplication();
     Map<String, String> configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:npm/%40test/.*");
     YarnReader yr = new YarnReader();
@@ -88,8 +86,7 @@ public class YarnReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
-        "#default#");
+    this.application = modelFactory.newApplication();
     YarnReader yr = new YarnReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());
@@ -98,8 +95,7 @@ public class YarnReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
-        "#default#");
+    this.application = modelFactory.newApplication();
     yr = new YarnReader();
     yr.setModelFactory(modelFactory);
     yr.setInputStreamFactory(new FileInputStreamFactory());

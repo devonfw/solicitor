@@ -5,9 +5,12 @@ package com.devonfw.tools.solicitor.model.impl;
 
 import java.util.Date;
 
+import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.ModelRoot;
+import com.devonfw.tools.solicitor.model.impl.masterdata.EngagementImpl;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation class of the root of the Solicitor data model.
@@ -245,6 +248,52 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   public void completeData() {
 
     this.engagement.completeData();
+  }
+
+  /**
+   * Read the data of the ModelRoot from a JsonNode.
+   *
+   * @param root the JsonNode containing the data of the ModelRoot
+   * @param modelFactory the ModelFactoryImpl to create the EngagementImpl object for the engagement of the ModelRoot
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
+   */
+  public void readModelRootFromJson(JsonNode root, ModelFactoryImpl modelFactory, int readModelVersion) {
+
+    setExecutionTime(root.get("executionTime").asText());
+
+    setSolicitorVersion(root.get("solicitorVersion").asText());
+
+    setSolicitorGitHash(root.get("solicitorGitHash").asText());
+
+    setSolicitorBuilddate(root.get("solicitorBuilddate").asText());
+
+    setExtensionArtifactId(root.get("extensionArtifactId").asText());
+
+    setExtensionVersion(root.get("extensionVersion").asText());
+
+    setExtensionGitHash(root.get("extensionGitHash").asText());
+
+    setExtensionBuilddate(root.get("extensionBuilddate").asText());
+
+    JsonNode engagementNode = root.get("engagement");
+    EngagementImpl engagement = modelFactory.newEngagement();
+    engagement.setModelRoot(this);
+    engagement.readEngagementFromJsonNode(engagementNode, modelFactory, readModelVersion);
+
+    JsonNode textPoolNode = null;
+    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_TEXT_POOL) {
+      textPoolNode = root.get("textPool");
+      JsonNode dataMapNode = textPoolNode.get("dataMap");
+
+      TextPool textPool = getTextPool();
+      for (JsonNode singleEntryValue : dataMapNode) {
+        // only store values; keys will be reconstructed based on values
+        textPool.store(singleEntryValue.asText());
+      }
+    } else {
+      // previous versions do not contain license texts, so complete the data now
+      completeData();
+    }
   }
 
 }

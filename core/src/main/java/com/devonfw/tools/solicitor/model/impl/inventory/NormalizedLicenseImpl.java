@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import com.devonfw.tools.solicitor.common.LicenseTextHelper;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
+import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation of the {@link NormalizedLicense} model object interface.
@@ -661,6 +663,70 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     if (getLicenseRefContent() == null) {
       setLicenseRefContent(this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent());
     }
+  }
+
+  /**
+   * Read the data of a NormalizedLicense from a JsonNode.
+   *
+   * @param normalizedLicenseNode the JsonNode containing the data of a NormalizedLicense
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
+   *        structure between versions
+   */
+  public void readNormalizedLicenseFromJsonNode(JsonNode normalizedLicenseNode, int readModelVersion) {
+
+    setDeclaredLicense(normalizedLicenseNode.get("declaredLicense").asText(null));
+
+    setLicenseUrl(normalizedLicenseNode.get("licenseUrl").asText(null));
+
+    setNormalizedLicenseType(normalizedLicenseNode.get("normalizedLicenseType").asText(null));
+
+    setNormalizedLicense(normalizedLicenseNode.get("normalizedLicense").asText(null));
+
+    setNormalizedLicenseUrl(normalizedLicenseNode.get("normalizedLicenseUrl").asText(null));
+
+    setEffectiveNormalizedLicenseType(normalizedLicenseNode.get("effectiveNormalizedLicenseType").asText(null));
+
+    setEffectiveNormalizedLicense(normalizedLicenseNode.get("effectiveNormalizedLicense").asText(null));
+
+    setEffectiveNormalizedLicenseUrl(normalizedLicenseNode.get("effectiveNormalizedLicenseUrl").asText(null));
+
+    setLegalPreApproved(normalizedLicenseNode.get("legalPreApproved").asText(null));
+
+    setCopyLeft(normalizedLicenseNode.get("copyLeft").asText(null));
+
+    setLicenseCompliance(normalizedLicenseNode.get("licenseCompliance").asText(null));
+
+    setLicenseRefUrl(normalizedLicenseNode.get("licenseRefUrl").asText(null));
+
+    setIncludeLicense(normalizedLicenseNode.get("includeLicense").asText(null));
+
+    setIncludeSource(normalizedLicenseNode.get("includeSource").asText(null));
+
+    setReviewedForRelease(normalizedLicenseNode.get("reviewedForRelease").asText(null));
+
+    setComments(normalizedLicenseNode.get("comments").asText(null));
+
+    setLegalApproved(normalizedLicenseNode.get("legalApproved").asText(null));
+
+    setLegalComments(normalizedLicenseNode.get("legalComments").asText(null));
+
+    setTrace(normalizedLicenseNode.get("trace").asText(null));
+
+    // Extracting information from the JSON node
+    // Text pool keys introduced in certain model versions
+    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_TEXT_POOL) {
+      setEffectiveNormalizedLicenseContentKey(
+          normalizedLicenseNode.get("effectiveNormalizedLicenseContentKey").asText(null));
+      setDeclaredLicenseContentKey(normalizedLicenseNode.get("declaredLicenseContentKey").asText(null));
+      setLicenseRefContentKey(normalizedLicenseNode.get("licenseRefContentKey").asText(null));
+      setNormalizedLicenseContentKey(normalizedLicenseNode.get("normalizedLicenseContentKey").asText(null));
+    } else {
+      setEffectiveNormalizedLicenseContentKey(null);
+      setDeclaredLicenseContentKey(null);
+      setLicenseRefContentKey(null);
+      setNormalizedLicenseContentKey(null);
+    }
+
   }
 
 }

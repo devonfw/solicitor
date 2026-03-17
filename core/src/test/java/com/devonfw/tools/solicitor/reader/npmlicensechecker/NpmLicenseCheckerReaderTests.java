@@ -32,8 +32,7 @@ public class NpmLicenseCheckerReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
-        "#default#");
+    this.application = modelFactory.newApplication();
     NpmLicenseCheckerReader gr = new NpmLicenseCheckerReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
@@ -71,8 +70,7 @@ public class NpmLicenseCheckerReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Angular", "#default#");
+    Application application = modelFactory.newApplication();
     Map<String, String> configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:npm/foo\\-bar@.*");
     NpmLicenseCheckerReader gr = new NpmLicenseCheckerReader();
@@ -90,8 +88,7 @@ public class NpmLicenseCheckerReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
-        "#default#");
+    this.application = modelFactory.newApplication();
     NpmLicenseCheckerReader gr = new NpmLicenseCheckerReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());
@@ -100,8 +97,7 @@ public class NpmLicenseCheckerReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Angular",
-        "#default#");
+    this.application = modelFactory.newApplication();
     gr = new NpmLicenseCheckerReader();
     gr.setModelFactory(modelFactory);
     gr.setInputStreamFactory(new FileInputStreamFactory());

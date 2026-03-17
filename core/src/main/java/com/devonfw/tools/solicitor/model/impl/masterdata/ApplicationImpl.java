@@ -8,11 +8,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
+import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
+import com.devonfw.tools.solicitor.model.impl.inventory.ApplicationComponentImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation of the {@link Application} model object interface.
@@ -37,22 +41,10 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
   /**
    * Constructor.
    *
-   * @param name the application name
-   * @param releaseId the release id.
-   * @param releaseDate the date of the release.
-   * @param sourceRepo pointer to the source repo
-   * @param programmingEcosystem name of the programming ecosystem
    */
-  public ApplicationImpl(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem, String reportingGroups) {
+  public ApplicationImpl() {
 
     super();
-    this.name = name;
-    this.releaseId = releaseId;
-    this.releaseDate = releaseDate;
-    this.sourceRepo = sourceRepo;
-    this.programmingEcosystem = programmingEcosystem;
-    this.reportingGroups = reportingGroups;
   }
 
   /** {@inheritDoc} */
@@ -201,6 +193,44 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
 
     for (ApplicationComponent applicationComponent : this.applicationComponents) {
       applicationComponent.completeData();
+    }
+  }
+
+  /**
+   * Read the data of an Application from a JsonNode.
+   *
+   * @param applicationNode the JsonNode to read from
+   * @param modelFactory the ModelFactoryImpl to use for creating model objects
+   * @param readModelVersion the version of the model to read, which can be used to handle differences in the model
+   */
+  public void readApplicationFromJsonNode(JsonNode applicationNode, ModelFactoryImpl modelFactory,
+      int readModelVersion) {
+
+    setName(applicationNode.get("name").asText(null));
+
+    setReleaseId(applicationNode.get("releaseId").asText(null));
+
+    setReleaseDate(applicationNode.get("releaseDate").asText(null));
+
+    setSourceRepo(applicationNode.get("sourceRepo").asText(null));
+
+    setProgrammingEcosystem(applicationNode.get("programmingEcosystem").asText(null));
+
+    String reportingGroups = ReportingGroupHandler.DEFAULT_REPORTING_GROUP_LIST;
+    JsonNode reportingGroupsNode = applicationNode.get("reportingGroups");
+    if (reportingGroupsNode != null) {
+      reportingGroups = reportingGroupsNode.asText();
+      ReportingGroupHandler.validateReportingGroupList(reportingGroups);
+    }
+    setReportingGroups(reportingGroups);
+
+    JsonNode applicationComponentsNode = applicationNode.get("applicationComponents");
+    for (JsonNode applicationComponentNode : applicationComponentsNode) {
+      ApplicationComponentImpl applicationComponent = modelFactory.newApplicationComponent();
+      applicationComponent.setApplication(this);
+      applicationComponent.readApplicationComponentFromJsonNode(applicationComponentNode, modelFactory,
+          readModelVersion);
+
     }
   }
 
