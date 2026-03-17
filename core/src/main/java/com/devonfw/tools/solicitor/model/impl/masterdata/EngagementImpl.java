@@ -8,13 +8,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.model.ModelRoot;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
+import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
 import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation of the {@link Engagement} model object interface.
@@ -42,19 +45,10 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
   /**
    * Constructor.
    *
-   * @param engagementName the name of the engagement
-   * @param engagementType the type of engagement
-   * @param clientName name of the client
-   * @param goToMarketModel the model how this goes to market
    */
-  public EngagementImpl(String engagementName, EngagementType engagementType, String clientName,
-      GoToMarketModel goToMarketModel) {
+  public EngagementImpl() {
 
     super();
-    this.engagementName = engagementName;
-    this.engagementType = engagementType;
-    this.clientName = clientName;
-    this.goToMarketModel = goToMarketModel;
   }
 
   /** {@inheritDoc} */
@@ -226,6 +220,39 @@ public class EngagementImpl extends AbstractModelObject implements Engagement {
 
     for (Application application : this.applications) {
       application.completeData();
+    }
+  }
+
+  /**
+   * @param engagementNode
+   * @param modelFactory
+   * @param readModelVersion
+   * @param reportingGroupHandler
+   */
+  public void readEngagementFromJsonNode(JsonNode engagementNode, ModelFactoryImpl modelFactory, int readModelVersion, ReportingGroupHandler reportingGroupHandler) {
+  
+    String engagementName = engagementNode.get("engagementName").asText(null);
+    String engagementType = engagementNode.get("engagementType").asText(null);
+    String clientName = engagementNode.get("clientName").asText(null);
+    String goToMarketModel = engagementNode.get("goToMarketModel").asText(null);
+    boolean contractAllowsOss = engagementNode.get("contractAllowsOss").asBoolean();
+    boolean ossPolicyFollowed = engagementNode.get("ossPolicyFollowed").asBoolean();
+    boolean customerProvidesOss = engagementNode.get("customerProvidesOss").asBoolean();
+    JsonNode applicationsNode = engagementNode.get("applications");
+  
+    setEngagementName(engagementName);
+    setEngagementType(EngagementType.valueOf(engagementType));
+    setClientName(clientName);
+    setGoToMarketModel(GoToMarketModel.valueOf(goToMarketModel));
+    setContractAllowsOss(contractAllowsOss);
+    setOssPolicyFollowed(ossPolicyFollowed);
+    setCustomerProvidesOss(customerProvidesOss);
+    for (JsonNode applicationNode : applicationsNode) {
+      ApplicationImpl application = modelFactory.newApplication();
+      application.setEngagement(this);
+  
+      application.readApplicationFromJsonNode(applicationNode, modelFactory, readModelVersion, reportingGroupHandler);
+  
     }
   }
 

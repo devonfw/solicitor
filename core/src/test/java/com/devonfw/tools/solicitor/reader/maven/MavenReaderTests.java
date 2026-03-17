@@ -37,8 +37,7 @@ public class MavenReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = modelFactory.newApplication();
     MavenReader mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
@@ -70,8 +69,7 @@ public class MavenReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = modelFactory.newApplication();
     MavenReader mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
@@ -80,8 +78,7 @@ public class MavenReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(application.getApplicationComponents().get(0).isOssModified());
 
-    application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    application = modelFactory.newApplication();
     mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());
@@ -100,8 +97,7 @@ public class MavenReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = modelFactory.newApplication();
     Map<String, String> configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:maven/.*/log4j\\-to\\-slf4j@.*");
     MavenReader mr = new MavenReader();
@@ -122,8 +118,7 @@ public class MavenReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = modelFactory.newApplication();
     MavenReader mr = new MavenReader();
     mr.setModelFactory(modelFactory);
     mr.setInputStreamFactory(new FileInputStreamFactory());

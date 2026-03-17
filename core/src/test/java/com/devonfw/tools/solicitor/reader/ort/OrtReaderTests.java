@@ -32,8 +32,7 @@ public class OrtReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    this.application = modelFactory.newApplication();
     OrtReader pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
@@ -72,8 +71,7 @@ public class OrtReaderTests {
 
     // as we have only one package i9n the file check for matching and non matching filter to make sure
     // the logic does not always filter out if a filter is given
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Python", "#default#");
+    Application application = modelFactory.newApplication();
     Map<String, String> configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:maven/test_misspelled_GroupId/.*");
     OrtReader pr = new OrtReader();
@@ -84,8 +82,7 @@ public class OrtReaderTests {
 
     assertEquals(1, application.getApplicationComponents().size());
 
-    application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    application = modelFactory.newApplication();
     configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:maven/testGroupId/.*");
     pr = new OrtReader();
@@ -102,8 +99,7 @@ public class OrtReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    this.application = modelFactory.newApplication();
     OrtReader pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
@@ -112,8 +108,7 @@ public class OrtReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    this.application = modelFactory.newApplication();
     pr = new OrtReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());

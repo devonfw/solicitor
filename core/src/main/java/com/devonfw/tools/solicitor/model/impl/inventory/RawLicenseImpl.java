@@ -8,6 +8,7 @@ import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation of the {@link RawLicense} model object interface.
@@ -177,6 +178,26 @@ public class RawLicenseImpl extends AbstractModelObject implements RawLicense {
   @Override
   public void completeData() {
 
+  }
+
+  /**
+   * @param rawLicenseNode
+   * @param readModelVersion
+   */
+  public void readRawLicenseFromJsonNode(JsonNode rawLicenseNode, int readModelVersion) {
+  
+    String declaredLicense = rawLicenseNode.get("declaredLicense").asText(null);
+    String licenseUrl = rawLicenseNode.get("licenseUrl").asText(null);
+    String trace = rawLicenseNode.get("trace").asText(null);
+    JsonNode originNode = rawLicenseNode.get("origin");
+    String origin = originNode != null ? originNode.asText(null) : null;
+    boolean specialHandling = rawLicenseNode.get("specialHandling").asBoolean();
+  
+    setDeclaredLicense(declaredLicense);
+    setLicenseUrl(licenseUrl);
+    setTrace(trace);
+    setOrigin(origin);
+    setSpecialHandling(specialHandling);
   }
 
 }

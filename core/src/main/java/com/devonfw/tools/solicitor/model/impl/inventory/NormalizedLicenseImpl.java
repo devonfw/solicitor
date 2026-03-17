@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import com.devonfw.tools.solicitor.common.LicenseTextHelper;
 import com.devonfw.tools.solicitor.common.content.ContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
+import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation of the {@link NormalizedLicense} model object interface.
@@ -661,6 +663,69 @@ public class NormalizedLicenseImpl extends AbstractModelObject implements Normal
     if (getLicenseRefContent() == null) {
       setLicenseRefContent(this.licenseContentProvider.getContentForUri(this.licenseRefUrl).getContent());
     }
+  }
+
+  /**
+   * @param normalizedLicenseNode
+   * @param readModelVersion
+   */
+  public void readNormalizedLicenseFromJsonNode(JsonNode normalizedLicenseNode, int readModelVersion) {
+  
+    // Extracting information from the JSON node
+    String declaredLicense = normalizedLicenseNode.get("declaredLicense").asText(null);
+    String licenseUrl = normalizedLicenseNode.get("licenseUrl").asText(null);
+    String normalizedLicenseType = normalizedLicenseNode.get("normalizedLicenseType").asText(null);
+    String normalizedLicenseS = normalizedLicenseNode.get("normalizedLicense").asText(null);
+    String normalizedLicenseUrl = normalizedLicenseNode.get("normalizedLicenseUrl").asText(null);
+    String effectiveNormalizedLicenseType = normalizedLicenseNode.get("effectiveNormalizedLicenseType").asText(null);
+    String effectiveNormalizedLicense = normalizedLicenseNode.get("effectiveNormalizedLicense").asText(null);
+    String effectiveNormalizedLicenseUrl = normalizedLicenseNode.get("effectiveNormalizedLicenseUrl").asText(null);
+    String legalPreApproved = normalizedLicenseNode.get("legalPreApproved").asText(null);
+    String copyLeft = normalizedLicenseNode.get("copyLeft").asText(null);
+    String licenseCompliance = normalizedLicenseNode.get("licenseCompliance").asText(null);
+    String licenseRefUrl = normalizedLicenseNode.get("licenseRefUrl").asText(null);
+    String includeLicense = normalizedLicenseNode.get("includeLicense").asText(null);
+    String includeSource = normalizedLicenseNode.get("includeSource").asText(null);
+    String reviewedForRelease = normalizedLicenseNode.get("reviewedForRelease").asText(null);
+    String comments = normalizedLicenseNode.get("comments").asText(null);
+    String legalApproved = normalizedLicenseNode.get("legalApproved").asText(null);
+    String legalComments = normalizedLicenseNode.get("legalComments").asText(null);
+    String trace = normalizedLicenseNode.get("trace").asText(null);
+    // Text pool keys introduced in certain model versions
+    String effectiveNormalizedLicenseContentKey = null;
+    String declaredLicenseContentKey = null;
+    String licenseRefContentKey = null;
+    String normalizedLicenseContentKey = null;
+    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_TEXT_POOL) {
+      effectiveNormalizedLicenseContentKey = normalizedLicenseNode.get("effectiveNormalizedLicenseContentKey")
+          .asText(null);
+      declaredLicenseContentKey = normalizedLicenseNode.get("declaredLicenseContentKey").asText(null);
+      licenseRefContentKey = normalizedLicenseNode.get("licenseRefContentKey").asText(null);
+      normalizedLicenseContentKey = normalizedLicenseNode.get("normalizedLicenseContentKey").asText(null);
+    }
+    setDeclaredLicense(declaredLicense);
+    setLicenseUrl(licenseUrl);
+    setNormalizedLicenseType(normalizedLicenseType);
+    setNormalizedLicense(normalizedLicenseS);
+    setNormalizedLicenseUrl(normalizedLicenseUrl);
+    setEffectiveNormalizedLicenseType(effectiveNormalizedLicenseType);
+    setEffectiveNormalizedLicense(effectiveNormalizedLicense);
+    setEffectiveNormalizedLicenseUrl(effectiveNormalizedLicenseUrl);
+    setLegalPreApproved(legalPreApproved);
+    setCopyLeft(copyLeft);
+    setLicenseCompliance(licenseCompliance);
+    setLicenseRefUrl(licenseRefUrl);
+    setIncludeLicense(includeLicense);
+    setIncludeSource(includeSource);
+    setReviewedForRelease(reviewedForRelease);
+    setComments(comments);
+    setLegalApproved(legalApproved);
+    setLegalComments(legalComments);
+    setTrace(trace);
+    setEffectiveNormalizedLicenseContentKey(effectiveNormalizedLicenseContentKey);
+    setDeclaredLicenseContentKey(declaredLicenseContentKey);
+    setLicenseRefContentKey(licenseRefContentKey);
+    setNormalizedLicenseContentKey(normalizedLicenseContentKey);
   }
 
 }

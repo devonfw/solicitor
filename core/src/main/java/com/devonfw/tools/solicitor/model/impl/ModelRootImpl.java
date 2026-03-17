@@ -5,9 +5,13 @@ package com.devonfw.tools.solicitor.model.impl;
 
 import java.util.Date;
 
+import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
+import com.devonfw.tools.solicitor.model.ModelImporterExporter;
 import com.devonfw.tools.solicitor.model.ModelRoot;
+import com.devonfw.tools.solicitor.model.impl.masterdata.EngagementImpl;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation class of the root of the Solicitor data model.
@@ -245,6 +249,53 @@ public class ModelRootImpl extends AbstractModelObject implements ModelRoot {
   public void completeData() {
 
     this.engagement.completeData();
+  }
+
+  /**
+   * @param root
+   * @param modelFactory
+   * @param readModelVersion
+   * @param reportingGroupHandler
+   */
+  public void readModelRootFromJson(JsonNode root, ModelFactoryImpl modelFactory, int readModelVersion, ReportingGroupHandler reportingGroupHandler) {
+  
+    String executionTime = root.get("executionTime").asText();
+    String solicitorVersion = root.get("solicitorVersion").asText();
+    String solicitorGitHash = root.get("solicitorGitHash").asText();
+    String solicitorBuilddate = root.get("solicitorBuilddate").asText();
+    String extensionArtifactId = root.get("extensionArtifactId").asText();
+    String extensionVersion = root.get("extensionVersion").asText();
+    String extensionGitHash = root.get("extensionGitHash").asText();
+    String extensionBuilddate = root.get("extensionBuilddate").asText();
+    JsonNode engagementNode = root.get("engagement");
+    JsonNode textPoolNode = null;
+    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_TEXT_POOL) {
+      textPoolNode = root.get("textPool");
+    }
+    setExecutionTime(executionTime);
+    setSolicitorVersion(solicitorVersion);
+    setSolicitorGitHash(solicitorGitHash);
+    setSolicitorBuilddate(solicitorBuilddate);
+    setExtensionArtifactId(extensionArtifactId);
+    setExtensionVersion(extensionVersion);
+    setExtensionGitHash(extensionGitHash);
+    setExtensionBuilddate(extensionBuilddate);
+    EngagementImpl engagement = modelFactory.newEngagement();
+    engagement.setModelRoot(this);
+  
+    engagement.readEngagementFromJsonNode(engagementNode, modelFactory, readModelVersion, reportingGroupHandler);
+    if (readModelVersion >= ModelImporterExporter.LOWEST_VERSION_WITH_TEXT_POOL) {
+      TextPool textPool = getTextPool();
+      JsonNode dataMapNode = textPoolNode.get("dataMap");
+  
+      for (JsonNode singleEntryValue : dataMapNode) {
+        // only store values; keys will be reconstructed based on values
+        textPool.store(singleEntryValue.asText());
+      }
+    } else {
+      // previous versions do not contain license texts, so complete the data now
+      completeData();
+    }
   }
 
 }

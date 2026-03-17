@@ -110,9 +110,12 @@ public class ConfigFactory {
 
     LOG.info(LogMessages.CREATING_ENGAGEMENT.msg(), sc.getEngagementName());
     this.solicitorSetup.setEngagementName(sc.getEngagementName());
-    Engagement engagement = this.modelFactory.newEngagement(sc.getEngagementName(), sc.getEngagementType(),
-        sc.getClientName(), sc.getGoToMarketModel());
+    Engagement engagement = this.modelFactory.newEngagement();
     engagement.setModelRoot(modelRoot);
+    engagement.setEngagementName(sc.getEngagementName());
+    engagement.setEngagementType(sc.getEngagementType());
+    engagement.setClientName(sc.getClientName());
+    engagement.setGoToMarketModel(sc.getGoToMarketModel());
     engagement.setContractAllowsOss(sc.isContractAllowsOss());
     engagement.setOssPolicyFollowed(sc.isOssPolicyFollowed());
     engagement.setCustomerProvidesOss(sc.isCustomerProvidesOss());
@@ -123,9 +126,13 @@ public class ConfigFactory {
       allReportingGroups.addAll(normalizedReportingGroups);
 
       LOG.info(LogMessages.CREATING_APPLICATION.msg(), ac.getName());
-      Application app = this.modelFactory.newApplication(ac.getName(), ac.getReleaseId(), "-UNDEFINED-",
-          ac.getSourceRepo(), ac.getProgrammingEcosystem(),
-          this.reportingGroupHandler.stringifyReportingGroups(normalizedReportingGroups));
+      Application app = this.modelFactory.newApplication();
+      app.setName(ac.getName());
+      app.setReleaseId(ac.getReleaseId());
+      app.setReleaseDate("-UNDEFINED-");
+      app.setSourceRepo(ac.getSourceRepo());
+      app.setProgrammingEcosystem(ac.getProgrammingEcosystem());
+      app.setReportingGroups(this.reportingGroupHandler.stringifyReportingGroups(normalizedReportingGroups));
       app.setEngagement(engagement);
       for (ReaderConfig rc : ac.getReaders()) {
         SolicitorSetup.ReaderSetup rs = new SolicitorSetup.ReaderSetup();

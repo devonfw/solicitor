@@ -60,8 +60,7 @@ public class CsvReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -127,8 +126,7 @@ public class CsvReaderTests {
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
-    application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    application = modelFactory.newApplication();
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -169,8 +167,7 @@ public class CsvReaderTests {
     configuration.put("trim", "true");
 
     ModelFactory modelFactory = new ModelFactoryImpl();
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -180,8 +177,7 @@ public class CsvReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -200,8 +196,7 @@ public class CsvReaderTests {
   public void testUsagePatternAndOssModifiedWithOutConfiguration() {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -211,8 +206,7 @@ public class CsvReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    this.application = modelFactory.newApplication();
     csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -266,8 +260,7 @@ public class CsvReaderTests {
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
-    application = modelFactory.newApplication("testAppNpm", "0.0.0.TEST", "1.1.2111", "http://bla.com", "NPM",
-        "#default#");
+    application = modelFactory.newApplication();
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());
@@ -295,8 +288,7 @@ public class CsvReaderTests {
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
-    application = modelFactory.newApplication("testAppPypi", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    application = modelFactory.newApplication();
 
     // configuration settings
     Map<String, String> configuration = new HashMap<String, String>();
@@ -333,8 +325,7 @@ public class CsvReaderTests {
 
     Application application;
     ModelFactory modelFactory = new ModelFactoryImpl();
-    application = modelFactory.newApplication("testAppNull", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    application = modelFactory.newApplication();
     CsvReader csvr = new CsvReader();
     csvr.setModelFactory(modelFactory);
     csvr.setInputStreamFactory(new FileInputStreamFactory());

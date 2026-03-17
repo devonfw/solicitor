@@ -127,8 +127,7 @@ public class AbstractReaderTest {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = modelFactory.newApplication();
 
     ReaderStatistics statistics = new ReaderStatistics();
 

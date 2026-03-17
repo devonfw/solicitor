@@ -7,8 +7,6 @@ import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
-import com.devonfw.tools.solicitor.model.masterdata.EngagementType;
-import com.devonfw.tools.solicitor.model.masterdata.GoToMarketModel;
 
 /**
  * An abstract factory for creating objects of the Solicitor data model.
@@ -28,16 +26,9 @@ public abstract class ModelFactory {
   /**
    * Creates a new {@link Application}
    *
-   * @param name the application name
-   * @param releaseId the release id.
-   * @param releaseDate the date of the release
-   * @param sourceRepo pointer to the source repo
-   * @param programmingEcosystem name of the programming ecosystem
-   * @param reportingGroups the reporting groups this application belongs to in concatenated form
    * @return the new instance
    */
-  public abstract Application newApplication(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem, String reportingGroups);
+  public abstract Application newApplication();
 
   /**
    * Creates a new {@link ApplicationComponent}
@@ -49,14 +40,9 @@ public abstract class ModelFactory {
   /**
    * Creates a new {@link Engagement}
    *
-   * @param engagementName the name of the engagement
-   * @param engagementType the type of engagement
-   * @param clientName name of the client
-   * @param goToMarketModel the model how this goes to market
    * @return the new instance
    */
-  public abstract Engagement newEngagement(String engagementName, EngagementType engagementType, String clientName,
-      GoToMarketModel goToMarketModel);
+  public abstract Engagement newEngagement();
 
   /**
    * Creates a {@link ModelRoot}.

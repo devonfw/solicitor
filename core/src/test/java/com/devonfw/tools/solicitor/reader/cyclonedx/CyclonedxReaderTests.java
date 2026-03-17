@@ -38,8 +38,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckSize() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
@@ -68,8 +67,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckUsagePatternAndOssModified() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
@@ -78,8 +76,7 @@ public class CyclonedxReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(application.getApplicationComponents().get(0).isOssModified());
 
-    application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Java8",
-        "#default#");
+    application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.STATIC_LINKING,
@@ -98,8 +95,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckSizeWithFilter() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = this.modelFactory.newApplication();
     Map<String, String> configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:maven/.*/spring-boot-starter-web@.*");
     this.cdxr.setModelFactory(this.modelFactory);
@@ -119,8 +115,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckSizeNegative() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
@@ -138,8 +133,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readMavenFileAndCheckSingleContentSize() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
@@ -195,8 +189,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readNpmFileAndCheckSize() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Angular", "#default#");
+    Application application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("npm", "src/test/resources/npmsbom.json", application, UsagePattern.DYNAMIC_LINKING, false,
@@ -222,8 +215,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readExpression() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Angular", "#default#");
+    Application application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("npm", "src/test/resources/expressionsbom.json", application, UsagePattern.DYNAMIC_LINKING,
@@ -250,8 +242,7 @@ public class CyclonedxReaderTests {
   @Test
   public void readMinimalFile() {
 
-    Application application = this.modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Java8", "#default#");
+    Application application = this.modelFactory.newApplication();
     this.cdxr.setModelFactory(this.modelFactory);
     this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
     this.cdxr.readInventory("maven", "src/test/resources/cyclonedx_minimal.json", application,

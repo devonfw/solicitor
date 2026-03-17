@@ -8,11 +8,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.devonfw.tools.solicitor.common.ReportingGroupHandler;
 import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
+import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
+import com.devonfw.tools.solicitor.model.impl.inventory.ApplicationComponentImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.masterdata.Application;
 import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Implementation of the {@link Application} model object interface.
@@ -37,22 +41,10 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
   /**
    * Constructor.
    *
-   * @param name the application name
-   * @param releaseId the release id.
-   * @param releaseDate the date of the release.
-   * @param sourceRepo pointer to the source repo
-   * @param programmingEcosystem name of the programming ecosystem
    */
-  public ApplicationImpl(String name, String releaseId, String releaseDate, String sourceRepo,
-      String programmingEcosystem, String reportingGroups) {
+  public ApplicationImpl() {
 
     super();
-    this.name = name;
-    this.releaseId = releaseId;
-    this.releaseDate = releaseDate;
-    this.sourceRepo = sourceRepo;
-    this.programmingEcosystem = programmingEcosystem;
-    this.reportingGroups = reportingGroups;
   }
 
   /** {@inheritDoc} */
@@ -201,6 +193,42 @@ public class ApplicationImpl extends AbstractModelObject implements Application 
 
     for (ApplicationComponent applicationComponent : this.applicationComponents) {
       applicationComponent.completeData();
+    }
+  }
+
+  /**
+   * @param applicationNode
+   * @param modelFactory
+   * @param readModelVersion
+   * @param reportingGroupHandler TODO
+   */
+  public void readApplicationFromJsonNode(JsonNode applicationNode, ModelFactoryImpl modelFactory, int readModelVersion, ReportingGroupHandler reportingGroupHandler) {
+  
+    String name = applicationNode.get("name").asText(null);
+    String releaseId = applicationNode.get("releaseId").asText(null);
+    String releaseDate = applicationNode.get("releaseDate").asText(null);
+    String sourceRepo = applicationNode.get("sourceRepo").asText(null);
+    String programmingEcosystem = applicationNode.get("programmingEcosystem").asText(null);
+    String reportingGroups = ReportingGroupHandler.DEFAULT_REPORTING_GROUP_LIST;
+    JsonNode reportingGroupsNode = applicationNode.get("reportingGroups");
+    if (reportingGroupsNode != null) {
+      reportingGroups = reportingGroupsNode.asText();
+      reportingGroupHandler.validateReportingGroupList(reportingGroups);
+    }
+    setName(name);
+    setReleaseId(releaseId);
+    setReleaseDate(releaseDate);
+    setSourceRepo(sourceRepo);
+    setProgrammingEcosystem(programmingEcosystem);
+    setReportingGroups(reportingGroups);
+    JsonNode applicationComponentsNode = applicationNode.get("applicationComponents");
+    for (JsonNode applicationComponentNode : applicationComponentsNode) {
+      ApplicationComponentImpl applicationComponent = modelFactory.newApplicationComponent();
+      applicationComponent.setApplication(this);
+  
+      applicationComponent.readApplicationComponentFromJsonNode(applicationComponentNode, modelFactory,
+          readModelVersion);
+  
     }
   }
 

@@ -33,8 +33,7 @@ public class PipReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    this.application = modelFactory.newApplication();
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
@@ -71,8 +70,7 @@ public class PipReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    Application application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com",
-        "Python", "#default#");
+    Application application = modelFactory.newApplication();
     Map<String, String> configuration = new HashMap<>();
     configuration.put("excludeFilter", "pkg:pypi/test2@.*");
     PipLicensesReader pr = new PipLicensesReader();
@@ -89,8 +87,7 @@ public class PipReaderTests {
 
     ModelFactory modelFactory = new ModelFactoryImpl();
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    this.application = modelFactory.newApplication();
     PipLicensesReader pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
@@ -99,8 +96,7 @@ public class PipReaderTests {
     assertEquals(UsagePattern.DYNAMIC_LINKING, this.application.getApplicationComponents().get(0).getUsagePattern());
     assertFalse(this.application.getApplicationComponents().get(0).isOssModified());
 
-    this.application = modelFactory.newApplication("testApp", "0.0.0.TEST", "1.1.2111", "http://bla.com", "Python",
-        "#default#");
+    this.application = modelFactory.newApplication();
     pr = new PipLicensesReader();
     pr.setModelFactory(modelFactory);
     pr.setInputStreamFactory(new FileInputStreamFactory());
