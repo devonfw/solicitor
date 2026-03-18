@@ -5,6 +5,7 @@ package com.devonfw.tools.solicitor.model.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.devonfw.tools.solicitor.SolicitorVersion;
+import com.devonfw.tools.solicitor.common.SolicitorRuntimeException;
 import com.devonfw.tools.solicitor.common.content.InMemoryMapContentProvider;
 import com.devonfw.tools.solicitor.common.content.web.WebContent;
 import com.devonfw.tools.solicitor.model.ModelFactory;
@@ -31,12 +33,41 @@ import com.devonfw.tools.solicitor.model.masterdata.Application;
  * Implementation of the {@link ModelFactory} interface. All model object created by this factory will be extensions of
  * {@link AbstractModelObject}.
  */
-public class ModelFactoryImpl extends ModelFactory {
+public class ModelFactoryImpl implements ModelFactory {
   private static final Logger LOG = LoggerFactory.getLogger(ModelFactoryImpl.class);
 
   private InMemoryMapContentProvider<WebContent> licenseContentProvider;
 
   private SolicitorVersion solicitorVersion;
+
+  /** Map for looking up the table name for each model object class. */
+  private Map<Class<? extends AbstractModelObject>, String> tableNameMap = new HashMap<>();
+
+  /**
+   * The constructor.
+   */
+  public ModelFactoryImpl() {
+
+    super();
+    registerModelClass(ModelRootImpl.class, "MODELROOT");
+    registerModelClass(EngagementImpl.class, "ENGAGEMENT");
+    registerModelClass(ApplicationImpl.class, "APPLICATION");
+    registerModelClass(ApplicationComponentImpl.class, "APPLICATIONCOMPONENT");
+    registerModelClass(RawLicenseImpl.class, "RAWLICENSE");
+    registerModelClass(NormalizedLicenseImpl.class, "NORMALIZEDLICENSE");
+  }
+
+  /**
+   * This method registers the given model class with the given table name. This allows to use custom model classes
+   * (e.g. extensions of the default model classes) with custom (or preexisting) table names.
+   *
+   * @param modelClass the model class to register
+   * @param tableName the table name to register for this model class
+   */
+  public void registerModelClass(Class<? extends AbstractModelObject> modelClass, String tableName) {
+
+    this.tableNameMap.put(modelClass, tableName);
+  }
 
   @Autowired
   public void setLicenseContentProvider(InMemoryMapContentProvider<WebContent> licenseContentProvider) {
@@ -87,6 +118,18 @@ public class ModelFactoryImpl extends ModelFactory {
       }
     }
     return Collections.unmodifiableCollection(resultMap.values());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String determineTableName(Class<? extends AbstractModelObject> modelClass) {
+
+    String tableName = this.tableNameMap.get(modelClass);
+    if (tableName == null) {
+      throw new SolicitorRuntimeException(
+          "No table name defined in ModelFactory for model class '" + modelClass.getName() + "'");
+    }
+    return tableName;
   }
 
   /** {@inheritDoc} */
