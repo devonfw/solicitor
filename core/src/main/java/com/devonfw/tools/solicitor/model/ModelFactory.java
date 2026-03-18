@@ -2,6 +2,7 @@ package com.devonfw.tools.solicitor.model;
 
 import java.util.Collection;
 
+import com.devonfw.tools.solicitor.model.impl.AbstractModelObject;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.NormalizedLicense;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
@@ -11,7 +12,7 @@ import com.devonfw.tools.solicitor.model.masterdata.Engagement;
 /**
  * An abstract factory for creating objects of the Solicitor data model.
  */
-public abstract class ModelFactory {
+public interface ModelFactory {
 
   /**
    * Returns the collection of all objects of the model tree starting from the given
@@ -21,42 +22,50 @@ public abstract class ModelFactory {
    * @return a collection of {@link Object}s representing all objects of the model
    * @param modelRoot a {@link ModelRoot} object.
    */
-  public abstract Collection<Object> getAllModelObjects(ModelRoot modelRoot);
+  Collection<Object> getAllModelObjects(ModelRoot modelRoot);
+
+  /**
+   * Determine the table name for the given {@link AbstractModelObject} subtype.
+   *
+   * @param modelClass a class name of the {@link AbstractModelObject} subtype
+   * @return the table name for storing this to the reporting database
+   */
+  String determineTableName(Class<? extends AbstractModelObject> modelClass);
 
   /**
    * Creates a new {@link Application}
    *
    * @return the new instance
    */
-  public abstract Application newApplication();
+  Application newApplication();
 
   /**
    * Creates a new {@link ApplicationComponent}
    *
    * @return the new instance
    */
-  public abstract ApplicationComponent newApplicationComponent();
+  ApplicationComponent newApplicationComponent();
 
   /**
    * Creates a new {@link Engagement}
    *
    * @return the new instance
    */
-  public abstract Engagement newEngagement();
+  Engagement newEngagement();
 
   /**
    * Creates a {@link ModelRoot}.
    *
    * @return the new instance
    */
-  public abstract ModelRoot newModelRoot();
+  ModelRoot newModelRoot();
 
   /**
    * Creates a {@link NormalizedLicense}.
    *
    * @return the new instance
    */
-  public abstract NormalizedLicense newNormalizedLicense();
+  NormalizedLicense newNormalizedLicense();
 
   /**
    * Creates a {@link NormalizedLicense}.
@@ -64,13 +73,13 @@ public abstract class ModelFactory {
    * @param rawLicense a {@link RawLicense} object.
    * @return the new instance
    */
-  public abstract NormalizedLicense newNormalizedLicense(RawLicense rawLicense);
+  NormalizedLicense newNormalizedLicense(RawLicense rawLicense);
 
   /**
    * Creates a new {@link RawLicense}
    *
    * @return the new instance
    */
-  public abstract RawLicense newRawLicense();
+  RawLicense newRawLicense();
 
 }

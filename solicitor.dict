@@ -24,6 +24,7 @@ GPLv
 gradle
 http
 https
+impl
 IUE
 jq
 jwt
@@ -31,9 +32,11 @@ licenseRefUrl
 licenseToIgnoreN
 licenseurls
 linux
+ModelFactoryImpl
 natively
 nd
 NL
+NormalizedLicenseImpl
 ort
 oss
 RHS

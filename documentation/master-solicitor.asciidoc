@@ -2024,10 +2024,59 @@ from a corporate server or even a public service available on the internet.
 ===== `com.devonfw.tools.solicitor.lifecycle.SolicitorLifecycleListener`
 Spring beans implementing this interface will be called at certain points in the _Solicitor_ processing lifecycle. See the Javadoc for details. Implementations should preferably use `com.devonfw.tools.solicitor.lifecycle.AbstractSolicitorLifecycleListener` as base class which contains NOOP functionality for all methods which might be overridden as required.
 
+==== Extending the Solicitor data model
+
+WARNING: Extending the Solicitor data model requires access to _Solicitor_ internal interfaces/classes. These shall be regarded as experimental / unstable and might change without prior notice. The hints given on how to extend the data model serve only as rough guidance. 
+
+===== Adding additional properties to the data model
+
+It is possible to extend the _Solicitor_ builtin <<Data Model>> by adding additional properties to the existing entities. This requires at least 4 steps:
+
+* Extending the interface of the appropriate model entity, e.g. `com.devonfw.tools.model.inventory.NormalizedLicense`
+* Extending the implementation class of the appropriate model entity, e.g. `com.devonfw.tools.model.impl.inventory.NormalizedLicenseImpl`
+* Extending the `ModelFactory` implementation class `com.devonfw.tools.model.impl.ModelFactoryImpl` to instantiate the newly created model entity implementation class.
+* Activating the new `ModelFactory` by setting property `solicitor.modelfactory-classname` to its fully qualified class name.
+
+The following shows as an example the extension of the entity `NormalizedLicense` with new property `rating`:
+
+.Extension of Interface `NormalizedLicense`  
+[source]
+----
+include::files\extension_code\AcmeExtendedNormalizedLicense.java[]
+----
+
+.Extension of class `NormalizedLicenseImpl`  
+[source]
+----
+include::files\extension_code\AcmeExtendedNormalizedLicenseImpl.java[]
+----
+
+.Extension of class `ModelFactoryImpl`  
+[source]
+----
+include::files\extension_code\AcmeExtendedModelFactoryImpl.java[]
+----
+
+The ModelFactory will be activated by setting
+[source]
+----
+solicitor.modelfactory-classname=com.acme.compliance.AcmeExtendedModelFactoryImpl
+----
+
+===== Making use of the additional properties
+
+There are different ways to access the newly added properties:
+
+* Manipulate the new properties within a `SolicitorLifecycleListener` (see <<Extension Interfaces>>): This allows full programmatic access to the properties for setting and reading them.
+* Define additional rule sets as referenced in <<Working with Decision Tables>>. These rule sets might make use of the new properties as LHS (conditions) as well as RHS (result). Defining a new rule set consists of 
+creating a rule template file, defining the decision table as XLS or CSV file and referencing these resources within the "rules" section of the Solicitor configuration file (see <<Business Rules>>).
+* Include the new properties within reports. This might require to extend the SQL statements used for creating the reporting tables (if selects do not use wildcards "*" anyway). The new properties might be used in report templates in the same way as the standard properties of the Solicitor data model.
+
 [appendix]
 == Release Notes
 Changes in 1.48.0::
 * https://github.com/devonfw/solicitor/pull/357: Refactor model import logic.
+* https://github.com/devonfw/solicitor/issues/358: Enable custom Solicitor data model extension (additional properties) within Solicitor Extension. See <<Adding additional properties to the data model>>.
 
 Changes in 1.47.1::
 * https://github.com/devonfw/solicitor/pull/356: Fixed performance issue by adding indexes for SQL database tables used for reporting.

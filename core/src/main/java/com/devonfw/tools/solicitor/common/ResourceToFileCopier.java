@@ -36,6 +36,12 @@ public class ResourceToFileCopier {
   @Value("${solicitor.extension-userguide-target}")
   String extensionUserguideTarget;
 
+  @Value("${solicitor.extension-additionalprojectfiles-sources}")
+  String[] extensionAdditionalProjectFilesSources;
+
+  @Value("${solicitor.extension-additionalprojectfiles-targets}")
+  String[] extensionAdditionalProjectFilesTargets;
+
   /**
    * Represents a single copy operation to be performed
    */
@@ -226,7 +232,8 @@ public class ResourceToFileCopier {
         returnString = "solicitor.cdx.json";
         break;
       case PROJECT_FILES:
-        new CopySequenceBuilder().withCopyOperation("classpath:starters/solicitor.cfg", "new_project/solicitor.cfg")
+        CopySequenceBuilder csb2 = new CopySequenceBuilder()
+            .withCopyOperation("classpath:starters/solicitor.cfg", "new_project/solicitor.cfg")
             .withCopyOperation("classpath:starters/input/licenses_starter.xml",
                 "new_project/input/licenses_starter.xml")
             .withCopyOperation("classpath:starters/rules/LegalEvaluationProject.xls",
@@ -241,8 +248,9 @@ public class ResourceToFileCopier {
                 "new_project/rules/LicenseSelectionProject.xls")
             .withCopyOperation("classpath:starters/rules/MultiLicenseSelectionProject.xls",
                 "new_project/rules/MultiLicenseSelectionProject.xls")
-            .withCopyOperation("classpath:starters/readme.txt", "new_project/readme.txt")
-            .replaceInTarget("new_project", targetDir).execute();
+            .withCopyOperation("classpath:starters/readme.txt", "new_project/readme.txt");
+        optionallyAddExtensionFiles(csb2);
+        csb2.replaceInTarget("new_project", targetDir).execute();
         returnString = targetDir + "/readme.txt";
         break;
       case FULL_BASE_CONFIG:
@@ -279,6 +287,31 @@ public class ResourceToFileCopier {
     }
     if (sourceDefined && targetDefined) {
       csb.withCopyOperation(this.extensionUserguideSource, this.extensionUserguideTarget);
+    }
+  }
+
+  /**
+   * Optionally add specific files from an existing Extension.
+   *
+   * @param csb builder to add the files to
+   */
+  private void optionallyAddExtensionFiles(CopySequenceBuilder csb) {
+
+    int sourcesCount = this.extensionAdditionalProjectFilesSources != null
+        ? this.extensionAdditionalProjectFilesSources.length
+        : 0;
+    int targetsCount = this.extensionAdditionalProjectFilesTargets != null
+        ? this.extensionAdditionalProjectFilesTargets.length
+        : 0;
+
+    if (sourcesCount != targetsCount) {
+      throw new SolicitorRuntimeException(
+          "Properties solicitor.extension-additionalprojectfiles-sources and solicitor.extension-additionalprojectfiles-targets "
+              + "need to contain the same number of comma separated values");
+    }
+    for (int i = 0; i < sourcesCount; i++) {
+      csb.withCopyOperation(this.extensionAdditionalProjectFilesSources[i],
+          this.extensionAdditionalProjectFilesTargets[i]);
     }
   }
 

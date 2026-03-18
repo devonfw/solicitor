@@ -67,7 +67,7 @@ public class ResultDatabaseFactory {
   private void createTable(AbstractModelObject modelObject) {
 
     StringBuilder sb = new StringBuilder();
-    String name = determineTableName(modelObject.getClass());
+    String name = modelFactory.determineTableName(modelObject.getClass());
     sb.append("create table ").append(name).append(" ( ");
     for (String fields : modelObject.getHeadElements()) {
       sb.append("\"").append(fields).append("\" ").append("LONGVARCHAR, ");
@@ -94,17 +94,6 @@ public class ResultDatabaseFactory {
   }
 
   /**
-   * Determine the table name for the given {@link AbstractModelObject} subtype.
-   *
-   * @param tableClass a class name of the {@link AbstractModelObject} subtype
-   * @return the table name for storing this to the reporting database
-   */
-  public String determineTableName(Class<? extends AbstractModelObject> tableClass) {
-
-    return tableClass.getSimpleName().toUpperCase().replace("IMPL", "");
-  }
-
-  /**
    * Drop the database table which corresponds to the given {@link AbstractModelObject}.
    *
    * @param oneTable the model class for which the corresponding database table should be dropped
@@ -112,7 +101,7 @@ public class ResultDatabaseFactory {
   private void dropExistingTable(Class<? extends AbstractModelObject> oneTable) {
 
     StringBuilder sb = new StringBuilder();
-    String name = determineTableName(oneTable);
+    String name = modelFactory.determineTableName(oneTable);
     sb.append("drop table ").append(name).append(";");
     LOG.debug("Dropping Reporting table '{}'", name);
     String sql = sb.toString();
@@ -270,7 +259,7 @@ public class ResultDatabaseFactory {
       createTable(modelObject);
     }
     StringBuilder sb = new StringBuilder();
-    String name = determineTableName(modelObject.getClass());
+    String name = modelFactory.determineTableName(modelObject.getClass());
     sb.append("insert into ").append(name).append(" values ( ");
     for (String fields : modelObject.getDataElements()) {
       sb.append("?").append(", ");
