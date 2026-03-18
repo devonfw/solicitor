@@ -2076,6 +2076,7 @@ creating a rule template file, defining the decision table as XLS or CSV file an
 == Release Notes
 Changes in 1.48.0::
 * https://github.com/devonfw/solicitor/pull/357: Refactor model import logic.
+* https://github.com/devonfw/solicitor/issues/358: Enable custom Solicitor data model extension (additional properties) within Solicitor Extension. See <<Adding additional properties to the data model>>.
 
 Changes in 1.47.1::
 * https://github.com/devonfw/solicitor/pull/356: Fixed performance issue by adding indexes for SQL database tables used for reporting.
