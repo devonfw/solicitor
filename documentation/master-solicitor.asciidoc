@@ -419,7 +419,7 @@ matching. (An empty/zero length regex string will match in this case.)
 ===== Deriving groupId, ArtifactId and Version from the PackageURL
 
 If the data of components which is read via a Reader contains the coordinates groupId, artifactId and version as well as a PackageURL it might be possible that the mapping between the "coordinates" (which historically were initially defined for maven packages) and the PackageURL is not consistent to the standard mapping as used by Solicitor. By setting reader configuration property `deriveCoordinatesFromPurl` to `true` it is possible
-to instruct the Reader to derive the three coordinates from the PackageURL instead of directly taking them from the input file (this only works if the PackageURL is defined for the component and is one of the types which is explicitely handled within Solicitor).
+to instruct the Reader to derive the three coordinates from the PackageURL instead of directly taking them from the input file (this only works if the PackageURL is defined for the component and is one of the types which is explicitly handled within Solicitor).
 
 [listing]
 .
