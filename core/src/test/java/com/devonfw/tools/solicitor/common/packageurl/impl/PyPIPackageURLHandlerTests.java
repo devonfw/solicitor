@@ -2,10 +2,12 @@ package com.devonfw.tools.solicitor.common.packageurl.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 
@@ -45,4 +47,16 @@ class PyPIPackageURLHandlerTests {
     assertEquals("pkg/pypi/somepackage/1.2.3",
         handler.pathFor(PackageURLHelper.fromString("pkg:pypi/somepackage@1.2.3")));
   }
+
+  @Test
+  void testCoordinatesFor() throws SolicitorMalformedPackageURLException {
+
+    PyPIPackageURLHandlerImpl handler = new PyPIPackageURLHandlerImpl("http://test/");
+    ApplicationComponentCoordinates result = handler
+        .coordinatesFor(PackageURLHelper.fromString("pkg:pypi/somepackage@1.2.3"));
+    assertNull(result.getGroupId());
+    assertEquals("somepackage", result.getArtifactId());
+    assertEquals("1.2.3", result.getVersion());
+  }
+
 }

@@ -2,10 +2,12 @@ package com.devonfw.tools.solicitor.common.packageurl.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 
@@ -53,5 +55,16 @@ class CranPackageURLHandlerTests {
 
     CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
     assertEquals("pkg/cran/someprod/4.5.35", handler.pathFor(PackageURLHelper.fromString("pkg:cran/someprod@4.5.35")));
+  }
+
+  @Test
+  void testCoordinatesFor() throws SolicitorMalformedPackageURLException {
+
+    CranPackageURLHandlerImpl handler = new CranPackageURLHandlerImpl("http://test/");
+    ApplicationComponentCoordinates result = handler
+        .coordinatesFor(PackageURLHelper.fromString("pkg:cran/someprod@4.5.35"));
+    assertNull(result.getGroupId());
+    assertEquals("someprod", result.getArtifactId());
+    assertEquals("4.5.35", result.getVersion());
   }
 }

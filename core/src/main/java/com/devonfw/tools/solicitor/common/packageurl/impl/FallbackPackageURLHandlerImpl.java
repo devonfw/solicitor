@@ -2,6 +2,7 @@ package com.devonfw.tools.solicitor.common.packageurl.impl;
 
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLUnavailableOperationException;
 import com.github.packageurl.PackageURL;
 
@@ -40,6 +41,14 @@ public class FallbackPackageURLHandlerImpl extends AbstractSpecializedPackageURL
 
     throw new SolicitorPackageURLUnavailableOperationException(
         "No package suffix can be determined for PackageUrl '" + packageUrl + "'");
+  }
+
+  @Override
+  public ApplicationComponentCoordinates coordinatesFor(PackageURL packageUrl)
+      throws SolicitorPackageURLUnavailableOperationException {
+
+    throw new SolicitorPackageURLUnavailableOperationException(
+        "No coordinates can be determined for PackageUrl '" + packageUrl + "'");
   }
 
 }

@@ -2,10 +2,12 @@ package com.devonfw.tools.solicitor.common.packageurl.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 
@@ -46,4 +48,21 @@ class NpmPackageURLHandlerTests {
     assertEquals("pkg/npm/@somenamespace/package/4.5.35",
         handler.pathFor(PackageURLHelper.fromString("pkg:npm/%40somenamespace/package@4.5.35")));
   }
+
+  @Test
+  void testCoordinatesFor() throws SolicitorMalformedPackageURLException {
+
+    NpmPackageURLHandlerImpl handler = new NpmPackageURLHandlerImpl("http://test/");
+    ApplicationComponentCoordinates result = handler
+        .coordinatesFor(PackageURLHelper.fromString("pkg:npm/%40somenamespace/package@4.5.35"));
+    assertNull(result.getGroupId());
+    assertEquals("@somenamespace/package", result.getArtifactId());
+    assertEquals("4.5.35", result.getVersion());
+
+    result = handler.coordinatesFor(PackageURLHelper.fromString("pkg:npm/package@4.5.35"));
+    assertNull(result.getGroupId());
+    assertEquals("package", result.getArtifactId());
+    assertEquals("4.5.35", result.getVersion());
+  }
+
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -62,6 +63,16 @@ public class MavenPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
   public String doSourceArchiveSuffixFor(PackageURL purl) {
 
     return "jar";
+  }
+
+  @Override
+  public ApplicationComponentCoordinates coordinatesFor(PackageURL packageUrl) {
+
+    if (packageUrl.getNamespace() == null) {
+      throw new IllegalArgumentException("A maven package URL must have a namespace (groupId) : " + packageUrl);
+    }
+    return new ApplicationComponentCoordinates(packageUrl.getNamespace(), packageUrl.getName(),
+        packageUrl.getVersion());
   }
 
 }

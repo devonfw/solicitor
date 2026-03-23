@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.PackageURLHelper;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorMalformedPackageURLException;
 
@@ -57,4 +58,16 @@ class MavenPackageURLHandlerTests {
       handler.pathFor(PackageURLHelper.fromString("pkg:maven/com.someorg/some..prod@4.5.35"));
     });
   }
+
+  @Test
+  void testCoordinatesFor() throws SolicitorMalformedPackageURLException {
+
+    MavenPackageURLHandlerImpl handler = new MavenPackageURLHandlerImpl("http://test/");
+    ApplicationComponentCoordinates result = handler
+        .coordinatesFor(PackageURLHelper.fromString("pkg:maven/com.someorg/someprod@4.5.35"));
+    assertEquals("com.someorg", result.getGroupId());
+    assertEquals("someprod", result.getArtifactId());
+    assertEquals("4.5.35", result.getVersion());
+  }
+
 }

@@ -7,6 +7,7 @@ package com.devonfw.tools.solicitor.common.packageurl.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
 import com.devonfw.tools.solicitor.common.packageurl.PackageURLHandler;
 import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLUnavailableOperationException;
@@ -60,4 +61,10 @@ public class DelegatingPackageURLHandlerImpl implements AllKindsPackageURLHandle
     return findApplicableDelegateHandler(packageUrl).sourceArchiveSuffixFor(packageUrl);
   }
 
+  @Override
+  public ApplicationComponentCoordinates coordinatesFor(PackageURL packageUrl)
+      throws SolicitorPackageURLUnavailableOperationException {
+
+    return findApplicableDelegateHandler(packageUrl).coordinatesFor(packageUrl);
+  }
 }
