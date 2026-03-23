@@ -11,8 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.InputStreamFactory;
 import com.devonfw.tools.solicitor.common.LogMessages;
+import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLUnavailableOperationException;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
 import com.devonfw.tools.solicitor.model.inventory.RawLicense;
@@ -58,6 +61,8 @@ public abstract class AbstractReader implements Reader {
   private static final String EXCLUDE_FILTER_PARAMETER_NAME = "excludeFilter";
 
   private ModelFactory modelFactory;
+
+  private AllKindsPackageURLHandler packageURLHandler;
 
   @Autowired
   protected InputStreamFactory inputStreamFactory;
@@ -189,8 +194,39 @@ public abstract class AbstractReader implements Reader {
       statistics.filteredComponentCount++;
       return false;
     }
+    possiblyCorrectCoordinatesViaPurlData(appComponent, configuration);
     appComponent.setApplication(application);
     return true;
+  }
+
+  /**
+   * Checks if the configuration contains the parameter "deriveCoordinatesFromPurl" set to "true" and if so tries to
+   * obtain coordinates for the appComponent from the purl data and overwrite the previously set coordinates with the
+   * ones obtained from the purl as they map better to the naming convention used by Solicitor.
+   *
+   * @param appComponent the appComponent for which the coordinates should potentially be corrected based on purl data
+   * @param configuration the configuration which might contain the parameter "deriveCoordinatesFromPurl" set to
+   *        "true"
+   */
+  private void possiblyCorrectCoordinatesViaPurlData(ApplicationComponent appComponent,
+      Map<String, String> configuration) {
+
+    if (configuration != null && "true".equals(configuration.get("deriveCoordinatesFromPurl"))) {
+      if (appComponent.getPackageUrl() != null) {
+        try {
+          ApplicationComponentCoordinates coordinates = this.packageURLHandler
+              .coordinatesFor(appComponent.getPackageUrl());
+          // if we can map the purl to coordinates then we overwrite the previously set coordinates with the
+          // ones
+          // obtained from the purl as they map better to the naming convention used by Solicitor
+          appComponent.setGroupId(coordinates.getGroupId());
+          appComponent.setArtifactId(coordinates.getArtifactId());
+          appComponent.setVersion(coordinates.getVersion());
+        } catch (SolicitorPackageURLUnavailableOperationException e) {
+          // if we do not know how to map to coordinates then we silently skip this
+        }
+      }
+    }
   }
 
   /**
@@ -230,6 +266,17 @@ public abstract class AbstractReader implements Reader {
   public void setModelFactory(ModelFactory modelFactory) {
 
     this.modelFactory = modelFactory;
+  }
+
+  /**
+   * This method gets the field <code>packageURLHandler</code>.
+   *
+   * @param packageURLHandler the packageURLHandler to set
+   */
+  @Autowired
+  public void setPackageURLHandler(AllKindsPackageURLHandler packageURLHandler) {
+
+    this.packageURLHandler = packageURLHandler;
   }
 
 }

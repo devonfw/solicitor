@@ -9,11 +9,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.devonfw.tools.solicitor.common.FileInputStreamFactory;
+import com.devonfw.tools.solicitor.common.packageurl.AllKindsPackageURLHandler;
+import com.devonfw.tools.solicitor.common.packageurl.SolicitorPackageURLUnavailableOperationException;
 import com.devonfw.tools.solicitor.model.ModelFactory;
 import com.devonfw.tools.solicitor.model.impl.ModelFactoryImpl;
 import com.devonfw.tools.solicitor.model.inventory.ApplicationComponent;
@@ -30,6 +35,22 @@ public class CyclonedxReaderTests {
   CyclonedxReader cdxr = new CyclonedxReader();
 
   ModelFactory modelFactory = new ModelFactoryImpl();
+
+  AllKindsPackageURLHandler packageUrlHandler;
+
+  /**
+   * @throws java.lang.Exception
+   */
+  @BeforeEach
+  void setUp() throws Exception {
+
+    this.packageUrlHandler = Mockito.mock(AllKindsPackageURLHandler.class);
+    ApplicationComponentCoordinates appComponentCoordinates = new ApplicationComponentCoordinates("otherGroupId",
+        "otherArtifactId", "otherVersion");
+    Mockito.when(this.packageUrlHandler.coordinatesFor(Mockito.any())).thenReturn(appComponentCoordinates);
+    this.cdxr.setPackageURLHandler(this.packageUrlHandler);
+
+  }
 
   /**
    * Test the {@link CyclonedxReader#readInventory()} method. Input file is an SBOM containing maven components. Mock
@@ -252,6 +273,45 @@ public class CyclonedxReaderTests {
     assertEquals("foo", application.getApplicationComponents().get(0).getArtifactId());
     assertEquals("bar", application.getApplicationComponents().get(1).getArtifactId());
     assertNull(application.getApplicationComponents().get(1).getPackageUrl());
+  }
+
+  /**
+   * Test the {@link CyclonedxReader#readInventory()} method. Input file is an SBOM containing maven components. Check
+   * that the "deriveCoordinatesFromPurl" configuration flag works correctly.
+   *
+   * @throws SolicitorPackageURLUnavailableOperationException
+   */
+  @Test
+  public void coordinatesOverwritingByPurlDataTest() throws SolicitorPackageURLUnavailableOperationException {
+
+    Application application = this.modelFactory.newApplication();
+    this.cdxr.setModelFactory(this.modelFactory);
+    this.cdxr.setInputStreamFactory(new FileInputStreamFactory());
+
+    Map<String, String> configuration = new HashMap<>();
+    configuration.put("includeFilter", "pkg:maven/org.slf4j/slf4j-api@1.7.30.*"); // just read one component
+
+    this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
+        false, null, configuration);
+    LOG.info(application.toString());
+
+    assertEquals(1, application.getApplicationComponents().size());
+
+    // deactivated correction (default)
+    assertEquals("org.slf4j", application.getApplicationComponents().get(0).getGroupId());
+    assertEquals("slf4j-api", application.getApplicationComponents().get(0).getArtifactId());
+    assertEquals("1.7.30", application.getApplicationComponents().get(0).getVersion());
+
+    application = this.modelFactory.newApplication();
+
+    // activated correction
+    configuration.put("deriveCoordinatesFromPurl", "true");
+    this.cdxr.readInventory("maven", "src/test/resources/mavensbom.json", application, UsagePattern.DYNAMIC_LINKING,
+        false, null, configuration);
+    LOG.info(application.toString());
+    assertEquals("otherGroupId", application.getApplicationComponents().get(0).getGroupId());
+    assertEquals("otherArtifactId", application.getApplicationComponents().get(0).getArtifactId());
+    assertEquals("otherVersion", application.getApplicationComponents().get(0).getVersion());
   }
 
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -63,6 +64,12 @@ public class PyPIPackageURLHandlerImpl extends AbstractSingleKindPackageURLHandl
   public String doSourceArchiveSuffixFor(PackageURL purl) {
 
     return "tar.gz";
+  }
+
+  @Override
+  public ApplicationComponentCoordinates coordinatesFor(PackageURL packageUrl) {
+
+    return new ApplicationComponentCoordinates(null, packageUrl.getName(), packageUrl.getVersion());
   }
 
 }

@@ -416,6 +416,28 @@ _Solicitor_ if the includeFilter regex is matched and the excludeFilter regex is
 If the PackageURL of the component is not defined it will be represented as an empty string when doing the regular expression
 matching. (An empty/zero length regex string will match in this case.)
 
+===== Deriving groupId, ArtifactId and Version from the PackageURL
+
+If the data of components which is read via a Reader contains the coordinates groupId, artifactId and version as well as a PackageURL it might be possible that the mapping between the "coordinates" (which historically were initially defined for maven packages) and the PackageURL is not consistent to the standard mapping as used by Solicitor. By setting reader configuration property `deriveCoordinatesFromPurl` to `true` it is possible
+to instruct the Reader to derive the three coordinates from the PackageURL instead of directly taking them from the input file (this only works if the PackageURL is defined for the component and is one of the types which is explicitely handled within Solicitor).
+
+[listing]
+.
+.
+.
+{
+  "type" : "cyclonedx",
+  "source" : "classpath:samples/some_cyclonedx_sbom.xml",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "configuration" : {
+    "deriveCoordinatesFromPurl": "true"
+  }
+}
+.
+.
+.
+
+
 ===== Handling of Modified OSS Components
 
 If Open Source Components were modified this might require to comply with additional obligations when distributing. (Like distributing the modified source code or documenting the code changes.) The fact whether an `ApplicationComponent` was modified or not is represented in the _Solicitor_ data model by the boolean property `ossModified`. This flag by default is set to `false` when importing the data of `ApplicationComponents` using Readers. By setting the optional Reader configuration parameter `modified` to `true` the flag `ossModified` will be set to `true` for all `ApplicationComponents` imported by this Reader.
@@ -2075,6 +2097,7 @@ creating a rule template file, defining the decision table as XLS or CSV file an
 [appendix]
 == Release Notes
 Changes in 1.49.0::
+* https://github.com/devonfw/solicitor/issues/360: Allow alignment of groupId, artifactId and version to PackageURL when reading component lists with Readers. See <<Deriving groupId, ArtifactId and Version from the PackageURL>>.
 
 Changes in 1.48.0::
 * https://github.com/devonfw/solicitor/pull/357: Refactor model import logic.

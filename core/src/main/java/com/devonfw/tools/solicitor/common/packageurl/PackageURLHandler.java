@@ -1,5 +1,6 @@
 package com.devonfw.tools.solicitor.common.packageurl;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.github.packageurl.PackageURL;
 
 /**
@@ -44,5 +45,16 @@ public interface PackageURLHandler {
    *         {@link PackageURLHandler} or for the given {@link PackageURL}.
    */
   String sourceArchiveSuffixFor(PackageURL packageUrl) throws SolicitorPackageURLUnavailableOperationException;
+
+  /**
+   * Returns the coordinates of the application component represented by the given package URL.
+   *
+   * @param packageUrl the package URL of the package
+   * @return the coordinates of the application component represented by the given package URL
+   * @throws SolicitorPackageURLUnavailableOperationException if the method is unavailable in the implementing
+   *         {@link PackageURLHandler} or for the given {@link PackageURL}.
+   */
+  ApplicationComponentCoordinates coordinatesFor(PackageURL packageUrl)
+      throws SolicitorPackageURLUnavailableOperationException;
 
 }

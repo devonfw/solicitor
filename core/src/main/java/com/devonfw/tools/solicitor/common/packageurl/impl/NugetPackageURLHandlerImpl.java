@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.devonfw.tools.solicitor.common.ApplicationComponentCoordinates;
 import com.github.packageurl.PackageURL;
 
 @Component
@@ -51,6 +52,12 @@ public class NugetPackageURLHandlerImpl extends AbstractSingleKindPackageURLHand
   public String doSourceArchiveSuffixFor(PackageURL packageURL) {
 
     return "nupkg";
+  }
+
+  @Override
+  public ApplicationComponentCoordinates coordinatesFor(PackageURL packageUrl) {
+
+    return new ApplicationComponentCoordinates(null, packageUrl.getName(), packageUrl.getVersion());
   }
 
 }
