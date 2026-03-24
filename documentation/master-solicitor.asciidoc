@@ -2099,6 +2099,7 @@ creating a rule template file, defining the decision table as XLS or CSV file an
 == Release Notes
 Changes in 1.49.0::
 * https://github.com/devonfw/solicitor/issues/360: Allow alignment of groupId, artifactId and version to PackageURL when reading component lists with Readers. See <<FromPackageURL>>.
+* https://github.com/devonfw/solicitor/pull/362: Set cell in ExcelWriter to blank if the contents is empty after replacing placeholders. 
 
 Changes in 1.48.0::
 * https://github.com/devonfw/solicitor/pull/357: Refactor model import logic.
