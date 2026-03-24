@@ -416,6 +416,7 @@ _Solicitor_ if the includeFilter regex is matched and the excludeFilter regex is
 If the PackageURL of the component is not defined it will be represented as an empty string when doing the regular expression
 matching. (An empty/zero length regex string will match in this case.)
 
+[[FromPackageURL,Deriving groupId, ArtifactId and Version from the PackageURL]]
 ===== Deriving groupId, ArtifactId and Version from the PackageURL
 
 If the data of components which is read via a Reader contains the coordinates groupId, artifactId and version as well as a PackageURL it might be possible that the mapping between the "coordinates" (which historically were initially defined for maven packages) and the PackageURL is not consistent to the standard mapping as used by Solicitor. By setting reader configuration property `deriveCoordinatesFromPurl` to `true` it is possible
@@ -2097,7 +2098,8 @@ creating a rule template file, defining the decision table as XLS or CSV file an
 [appendix]
 == Release Notes
 Changes in 1.49.0::
-* https://github.com/devonfw/solicitor/issues/360: Allow alignment of groupId, artifactId and version to PackageURL when reading component lists with Readers. See <<Deriving groupId, ArtifactId and Version from the PackageURL>>.
+* https://github.com/devonfw/solicitor/issues/360: Allow alignment of groupId, artifactId and version to PackageURL when reading component lists with Readers. See <<FromPackageURL>>.
+* https://github.com/devonfw/solicitor/pull/362: Set cell in ExcelWriter to blank if the contents is empty after replacing placeholders. 
 
 Changes in 1.48.0::
 * https://github.com/devonfw/solicitor/pull/357: Refactor model import logic.
