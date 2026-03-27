@@ -339,11 +339,7 @@ public class ExcelWriter implements Writer {
           }
         }
         if (cellType == CellType.STRING) {
-          if (text.isBlank()) {
-            oneCell.setBlank();
-          } else {
-            oneCell.setCellValue(trimToMaxCellLength(text.replace("\r", "")));
-          }
+          oneCell.setCellValue(trimToMaxCellLength(text.replace("\r", "")));
           if (hasChanged) {
             addCommentToCell(oneCell, trimToMaxCellLength("Previous value: '" + oldModelText.replace("\r", "") + "'"));
           }
