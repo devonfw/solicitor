@@ -414,6 +414,8 @@ public class ExcelWriter implements Writer {
         iterateFromCell(wb, cell, dataTable, label, styleCache);
       }
 
+      findAndRemoveRowsToBeDeleted(wb);
+
       // force reevaluation of all formulas
       wb.setForceFormulaRecalculation(true);
 
@@ -429,6 +431,81 @@ public class ExcelWriter implements Writer {
       throw new SolicitorRuntimeException("Processing of XLS report failed", e);
     }
 
+  }
+
+  /**
+   * Find any rows with cells that contain "_row_to_be_deleted_" and remove them from the workbook. This can be used to
+   * insert rows into sheets which might act as anchors to range evaluations and delete them at the end of template
+   * expansion.
+   *
+   * @param wb the workbook to process
+   */
+  private void findAndRemoveRowsToBeDeleted(Workbook wb) {
+
+    outer: while (true) {
+      for (Sheet sheet : wb) {
+        for (Row row : sheet) {
+          for (Cell cell : row) {
+            if (cell.getCellType() == CellType.STRING && "_row_to_be_deleted_".equals(cell.getStringCellValue())) {
+              LOG.debug("Removing row " + row.getRowNum() + " in sheet '" + sheet.getSheetName()
+                  + "' which was marked for deletion.");
+              removeRowOfCell(cell);
+              continue outer;
+            }
+          }
+        }
+      }
+      break;
+    }
+  }
+
+  /**
+   * Removes the row of the given cell from the workbook.
+   *
+   * @param cell the cell whose row should be removed
+   */
+  private static void removeRowOfCell(Cell cell) {
+
+    Sheet sheet = cell.getSheet();
+    int lastRowNum = cell.getSheet().getLastRowNum();
+    Row row = cell.getRow();
+    int rowIndex = row.getRowNum();
+
+    // 1) Remove merged regions that intersect the row
+    removeMergedRegionsInRow(sheet, rowIndex);
+
+    // 2) Remove row cells (optional but safer to avoid leftovers)
+    if (row != null) {
+      for (int cn = row.getFirstCellNum(); cn < row.getLastCellNum(); cn++) {
+        Cell cellToBeRemoved = row.getCell(cn);
+        if (cellToBeRemoved != null)
+          row.removeCell(cellToBeRemoved);
+      }
+    }
+    if (row != null)
+      sheet.removeRow(row);
+
+    // 3) Shift rows up if not deleting the last row
+    if (rowIndex < lastRowNum) {
+      sheet.shiftRows(rowIndex + 1, lastRowNum, -1, true, false);
+    }
+  }
+
+  /**
+   * Removes all merged regions in the given sheet that intersect the given row index. This is necessary to avoid
+   * exceptions when shifting rows up after removing a row that is part of a merged region.
+   *
+   * @param sheet the sheet to process
+   * @param rowIndex the index of the row for which intersecting merged regions should be removed
+   */
+  private static void removeMergedRegionsInRow(Sheet sheet, int rowIndex) {
+
+    for (int i = sheet.getNumMergedRegions() - 1; i >= 0; i--) {
+      CellRangeAddress region = sheet.getMergedRegion(i);
+      if (region.getFirstRow() <= rowIndex && region.getLastRow() >= rowIndex) {
+        sheet.removeMergedRegion(i);
+      }
+    }
   }
 
   /**
