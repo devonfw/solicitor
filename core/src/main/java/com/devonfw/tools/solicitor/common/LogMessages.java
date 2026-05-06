@@ -75,7 +75,7 @@ public enum LogMessages {
   SHORTENING_XLS_CELL_CONTENT(49, "Shortening text content for XLS"), //
   REPLACING_EXCESSIVE_HTML_CONTENT(50,
       "At least one license text contained a large amount of raw HTML and was substituted by placeholder text '{}'"), //
-  MULTIPLE_DECISIONTABLES(51, "Multiple decision tables in both .xls and .csv format. Prioritizing '{}.xls'."), //
+  MULTIPLE_DECISIONTABLES(51, "Multiple decision tables in .xlsx, .xls and/or .csv format. Prioritizing '{}'."), //
   ADDING_ADDITIONALWRITER_CONFIG(52, "Merging config: Adding additional writers to base config from {}"), //
   NOT_A_VALID_NPM_PACKAGE_IDENTIFIER(53, "{} is not a valid identifier for an NPM package"), //
   SCANCODE_PROCESSOR_STARTING(54,

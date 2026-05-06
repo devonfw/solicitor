@@ -236,18 +236,18 @@ public class ResourceToFileCopier {
             .withCopyOperation("classpath:starters/solicitor.cfg", "new_project/solicitor.cfg")
             .withCopyOperation("classpath:starters/input/licenses_starter.xml",
                 "new_project/input/licenses_starter.xml")
-            .withCopyOperation("classpath:starters/rules/LegalEvaluationProject.xls",
-                "new_project/rules/LegalEvaluationProject.xls")
-            .withCopyOperation("classpath:starters/rules/LegalPreEvaluationProject.xls",
-                "new_project/rules/LegalPreEvaluationProject.xls")
-            .withCopyOperation("classpath:starters/rules/LicenseAssignmentV2Project.xls",
-                "new_project/rules/LicenseAssignmentV2Project.xls")
-            .withCopyOperation("classpath:starters/rules/LicenseNameMappingProject.xls",
-                "new_project/rules/LicenseNameMappingProject.xls")
-            .withCopyOperation("classpath:starters/rules/LicenseSelectionProject.xls",
-                "new_project/rules/LicenseSelectionProject.xls")
-            .withCopyOperation("classpath:starters/rules/MultiLicenseSelectionProject.xls",
-                "new_project/rules/MultiLicenseSelectionProject.xls")
+            .withCopyOperation("classpath:starters/rules/LegalEvaluationProject.xlsx",
+                "new_project/rules/LegalEvaluationProject.xlsx")
+            .withCopyOperation("classpath:starters/rules/LegalPreEvaluationProject.xlsx",
+                "new_project/rules/LegalPreEvaluationProject.xlsx")
+            .withCopyOperation("classpath:starters/rules/LicenseAssignmentV2Project.xlsx",
+                "new_project/rules/LicenseAssignmentV2Project.xlsx")
+            .withCopyOperation("classpath:starters/rules/LicenseNameMappingProject.xlsx",
+                "new_project/rules/LicenseNameMappingProject.xlsx")
+            .withCopyOperation("classpath:starters/rules/LicenseSelectionProject.xlsx",
+                "new_project/rules/LicenseSelectionProject.xlsx")
+            .withCopyOperation("classpath:starters/rules/MultiLicenseSelectionProject.xlsx",
+                "new_project/rules/MultiLicenseSelectionProject.xlsx")
             .withCopyOperation("classpath:starters/readme.txt", "new_project/readme.txt");
         optionallyAddExtensionFiles(csb2);
         csb2.replaceInTarget("new_project", targetDir).execute();

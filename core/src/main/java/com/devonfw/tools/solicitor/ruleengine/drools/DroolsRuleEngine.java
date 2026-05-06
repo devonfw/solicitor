@@ -121,20 +121,39 @@ public class DroolsRuleEngine implements RuleEngine {
 
   /**
    * Determine the final rule source name. If the resource given by {@link RuleConfig#getRuleSource()} exists then take
-   * this. Otherwise check for alternatives by appending xls or csv suffix (with xls taking priority over csv).
+   * this. Otherwise check for alternatives by appending xlsx, xls or csv suffix (with decreasing priority: xlsx, xls,
+   * csv).
    *
    * @param rc the configuration of the rule
    */
   private void determineFinalRuleSourceName(RuleConfig rc) {
 
     if (!this.inputStreamFactory.isExisting(rc.getRuleSource())) {
+      boolean xlsxExists = false;
+      boolean xlsExists = false;
+      boolean csvExists = false;
+      int countExisting = 0;
+      if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".xlsx")) {
+        xlsxExists = true;
+        countExisting++;
+      }
       if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".xls")) {
-        if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".csv")) {
-          LOG.warn(LogMessages.MULTIPLE_DECISIONTABLES.msg(), rc.getRuleSource());
-        }
+        xlsExists = true;
+        countExisting++;
+      }
+      if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".csv")) {
+        csvExists = true;
+        countExisting++;
+      }
+      if (xlsxExists) {
+        rc.setRuleSource(rc.getRuleSource() + ".xlsx");
+      } else if (xlsExists) {
         rc.setRuleSource(rc.getRuleSource() + ".xls");
-      } else if (this.inputStreamFactory.isExisting(rc.getRuleSource() + ".csv")) {
+      } else if (csvExists) {
         rc.setRuleSource(rc.getRuleSource() + ".csv");
+      }
+      if (countExisting > 1) {
+        LOG.warn(LogMessages.MULTIPLE_DECISIONTABLES.msg(), rc.getRuleSource());
       }
     }
   }
