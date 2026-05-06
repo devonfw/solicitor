@@ -476,7 +476,7 @@ NOTE: The different readers are described in chapter <<Reading License Informati
 ==== Business Rules
 
 Business rules are executed within a https://www.drools.org/[Drools] rule engine.
-They are defined as a sequence of rule templates and corresponding XLS (or CSV) files which together represent decision tables.
+They are defined as a sequence of rule templates and corresponding XLS(X) (or CSV) files which together represent decision tables.
 
 [listing]
   "rules" : [ {
@@ -502,12 +502,12 @@ They are defined as a sequence of rule templates and corresponding XLS (or CSV) 
   } ],
 
 <1> type of the rule; only possible value: `dt` which stands for "decision table"
-<2> if set to `true` the processing of this group of rules will be skipped if the XLS/CSV with table
-data (given by `ruleSource`) does not exist; if set to `false` a missing XLS/CSV table will result
+<2> if set to `true` the processing of this group of rules will be skipped if the XLSX/XLS/CSV with table
+data (given by `ruleSource`) does not exist; if set to `false` a missing XLSX/XLS/CSV table will result
 in program termination
-<3> location of the tabular decision table data. This might either point directly to the XLS or CSV file
+<3> location of the tabular decision table data. This might either point directly to the XLSX, XLS or CSV file
 or only give the resource name without suffix. In this case _Solicitor_ will dynamically test for existing
-resources by appending suffixes _xls_ and _csv_.
+resources by appending suffixes _xlsx_, _xls_ and _csv_.
 <4> location of the drools rule template to be used to define the rules together with the decision table data
 <5> id of the group of rules; used to reference it e.g. when doing logging
 <6> some textual description of the rule group
@@ -520,7 +520,7 @@ When running, _Solicitor_ will execute the rules of each rule group separately a
 given by the configuration. Only if there are no more rules to fire in a group _Solicitor_ will
 move to the next rule group and start firing those rules.
 
-Normally a project will only customize (part of) the data of the decision tables and thus will only change the `ruleSource` and the data in the XLS/CSV.
+Normally a project will only customize (part of) the data of the decision tables and thus will only change the `ruleSource` and the data in the XLSX/XLS/CSV.
 All other configuration (the different templates and processing order) is part of the _Solicitor_ application itself and should not be changed by end users.
 
 See <<Working with Decision Tables>> and <<Standard Business Rules>> for further information on the business rules.
@@ -578,7 +578,7 @@ To simplify setting up a new project _Solicitor_ provides an option to create a 
 [listing]
 java -jar solicitor.jar -wiz some/directory/path
 
-Besides the necessary configuration file this includes also empty XLS or CSV files for defining project
+Besides the necessary configuration file this includes also empty XLSX for defining project
 specific rules which amend the builtin rules. Furthermore, a sample `license.xml` file is provided to
 directly enable execution of solicitor and check functionality.
 
@@ -996,7 +996,7 @@ Solicitor uses the Drools rule engine to execute business rules. Business rules 
 defined as "extended" decision tables. Each such decision table consists of two artifacts:
 
 * A rule template file in specific drools template format
-* An Excel 97 (XLS) table or CSV table which defines the decision table data.
+* An XLSX or XLS (Excel 97) workbook or CSV file which defines the decision table data.
 
 When processing, _Solicitor_ will internally use the rule template to create one or multiple rules for every record found in the Excel (or CSV) sheet.
 The following points are important here:
@@ -1004,7 +1004,7 @@ The following points are important here:
 * Rule templates:
 ** Rule templates should be regarded as part of the _Solicitor_ implementation and should not be changed on an engagement level.
 * Excel decision table data
-** The file needs to be in Excel 97 format. File suffix needs to be _xls_.
+** File suffix needs to be _xlsx_ or _xls_.
 ** The Excel tables might be extended or changed on a per project level.
 ** The rules defined by the tabular data will have decreasing "salience" (priority) from top to bottom
 ** In general multiple rules defined within a table might fire for the same data to be processed; the definition of the rules within the rule template will normally ensure that once a rule from the decision table was processed no other rule from that table will be processed for the same data
@@ -1023,11 +1023,11 @@ be finished when there are no more rules to fire in that group. Processing of th
 
 === Extended comparison syntax
 By default any conditions given in the fields of decision tables are simple textual comparisons: The condition
-is true if the property of the model is identical to the given value in the XLS (or CSV) sheet.
+is true if the property of the model is identical to the given value in the Excel (or CSV) sheet.
 
 Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:
 
-* If the given value of the XLS (or CSV) field starts with the prefix `NOT:` then the outcome of the remaining condition is logically negated, i.e. this field condition is  `true` if the rest of the condition is NOT fulfilled.
+* If the given value of the Excel (or CSV) field starts with the prefix `NOT:` then the outcome of the remaining condition is logically negated, i.e. this field condition is  `true` if the rest of the condition is NOT fulfilled.
 * A suffix of `(REGEX)` indicates that the remainder of the field defines a https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html[Java Regular Expression]. For the condition to become true the whole property needs to match the given regular expression.
 * The prefix `RANGE:` indicates that the remainder of the field defines
 a https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/maven/artifact/versioning/VersionRange.html#createFromVersionSpec(java.lang.String)[Maven Version Range]. Using this makes only sense on the artifact version property.
@@ -1046,7 +1046,7 @@ The phase itself consists of two decision tables / rule groups:
 ==== Decision Table: Explicitly setting Licenses
 With this decision table is is possible to explicitly assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next rule group.
 
-Decision table data: `LicenseAssignmentV2*.xls/csv`
+Decision table data: `LicenseAssignmentV2*.xlsx/xls/csv`
 
 * LHS conditions:
 ** `Engagement.clientName`
@@ -1072,7 +1072,7 @@ All RawLicenses which are in scope of fired rules will be marked so that they do
 ==== Decision Table: Detecting Licenses from Imported Data
 With this decision table the license info from the RawLicense is mapped to the NormalizedLicense. This is based on the name and/or URL of the license as imported via the readers.
 
-Decision table data: `LicenseNameMapping*.xls/csv`
+Decision table data: `LicenseNameMapping*.xlsx/xls/csv`
 
 * LHS conditions:
 ** `RawLicense.declaredLicense` icon:magic[]
@@ -1092,7 +1092,7 @@ This phase consists of two decision tables.
 ==== Choosing specific License in case of Multi-Licensing
 This group of rules has the specialty that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as `Ignored`.
 
-Decision table data: `MultiLicenseSelection*.xls/csv`
+Decision table data: `MultiLicenseSelection*.xlsx/xls/csv`
 
 * LHS conditions:
 ** `ApplicationComponent.groupId` icon:magic[]
@@ -1114,7 +1114,7 @@ It is important to note that the rules only match, if all licenses given in the 
 
 The second decision table in this group is used to define the `effectiveNormalizedLicense` (if not already handled by the decision table before).
 
-Decision table data: `LicenseSelection*.xls/csv`
+Decision table data: `LicenseSelection*.xlsx/xls/csv`
 
 * LHS conditions:
 ** `ApplicationComponent.groupId` icon:magic[]
@@ -1137,7 +1137,7 @@ The third phase is the legal evaluation of the licenses and the check, whether O
 ==== Pre-Evaluation based on common rules
 Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furthermore, they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the `effectiveNormalizedLicense` and do not consider any project, application of component information.
 
-Decision table data: `LegalPreEvaluation*.xls/csv`
+Decision table data: `LegalPreEvaluation*.xlsx/xls/csv`
 
 * LHS condition:
 ** `NormalizedLicense.effectiveNormalizedLicenseType`
@@ -1155,7 +1155,7 @@ Decision table data: `LegalPreEvaluation*.xls/csv`
 The decision table for final legal evaluation defines all rules which are needed
 to create the result of the legal evaluation. Rules here might be general for all projects or even very specific to a project if the rule can not be applied to other projects.
 
-Decision table data: `LegalEvaluation*.xls/csv`
+Decision table data: `LegalEvaluation*.xlsx/xls/csv`
 
 * LHS condition:
 ** `Engagement.clientName`
@@ -1850,7 +1850,7 @@ The complete tree will be checked for curations. Any found curations will be mer
 The resulting curation will then be applied to the scancode data of the component.
 
 ==== Decision table rules
-As for license information obtained from the Readers the license information from ScanCode can also be altered using decision table rules. A new attribute `origin` was introduced in the `RawLicense` entity as well as condition field in decision table `LicenseAssignmentV2*.xls/csv`. The `origin` attribute in `Rawlicense` either contains the string `scancode` if the license information came from ScanCode or it contains the (lowercase) class name of the used Reader.
+As for license information obtained from the Readers the license information from ScanCode can also be altered using decision table rules. A new attribute `origin` was introduced in the `RawLicense` entity as well as condition field in decision table `LicenseAssignmentV2*.xlsx/xls/csv`. The `origin` attribute in `Rawlicense` either contains the string `scancode` if the license information came from ScanCode or it contains the (lowercase) class name of the used Reader.
 
 Using the <<Extended comparison syntax>> it is possible to qualify whether a rule should apply for licenses found by ScanCode or not:
 
@@ -1986,7 +1986,7 @@ The template is part of the <<Experimental Scancode Integration>> and requires S
 == Extending Solicitor
 `Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
 be required to correct, supplement and extend this data sets and templates. This can be done straightforward
-by creating copies of the appropriate resources (rule data XLS/CSV and template files), adopting them and further on referencing those copies instead of the original resources from the project configuration file.
+by creating copies of the appropriate resources (rule data Excel/CSV and template files), adopting them and further on referencing those copies instead of the original resources from the project configuration file.
 
 Even though this approach is possible it will result in hard to maintain configurations,
 especially in the case of multiple projects using `Solicitor` in parallel.
@@ -2093,7 +2093,7 @@ There are different ways to access the newly added properties:
 
 * Manipulate the new properties within a `SolicitorLifecycleListener` (see <<Extension Interfaces>>): This allows full programmatic access to the properties for setting and reading them.
 * Define additional rule sets as referenced in <<Working with Decision Tables>>. These rule sets might make use of the new properties as LHS (conditions) as well as RHS (result). Defining a new rule set consists of 
-creating a rule template file, defining the decision table as XLS or CSV file and referencing these resources within the "rules" section of the Solicitor configuration file (see <<Business Rules>>).
+creating a rule template file, defining the decision table as XLSX, XLS or CSV file and referencing these resources within the "rules" section of the Solicitor configuration file (see <<Business Rules>>).
 * Include the new properties within reports. This might require to extend the SQL statements used for creating the reporting tables (if selects do not use wildcards "*" anyway). The new properties might be used in report templates in the same way as the standard properties of the Solicitor data model.
 
 [appendix]
@@ -2101,6 +2101,7 @@ creating a rule template file, defining the decision table as XLS or CSV file an
 Changes in 1.49.0::
 * https://github.com/devonfw/solicitor/issues/360: Allow alignment of groupId, artifactId and version to PackageURL when reading component lists with Readers. See <<Deriving groupId, ArtifactId and Version from the PackageURL>>.
 * https://github.com/devonfw/solicitor/pull/363: Allow to delete rows in XLS files generated by the ExcelWriter. See <<Optional deletion of rows after template expansion>>.
+* https://github.com/devonfw/solicitor/issues/364: Support XLSX format for decision tables. 
 
 Changes in 1.48.0::
 * https://github.com/devonfw/solicitor/pull/357: Refactor model import logic.
