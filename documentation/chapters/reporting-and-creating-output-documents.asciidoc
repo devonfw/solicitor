@@ -1,0 +1,307 @@
+== Reporting and Creating output documents
+After applying the business rules the resulting data can can be used to create reports and
+other output documents.
+
+Creating such reports consists of three steps:
+
+* transform and filter the model data by using an embedded SQL database
+* determining difference to previously stored model (optional)
+* Template based reporting via
+** Velocity templates (for textual output like e.g. HTML)
+** Excel templates
+
+=== SQL transformation and filtering
+
+==== Database structure
+
+After the business rules have been processed (or a Solicitor data model has been loaded via
+command line option `-l`) the model data is stored in a dynamically created internal SQL database.
+
+* For each type of model object a separate table is created. The tablename is the name of model object type written in uppercase characters. (E.g. type `NormalizedLicense` stored in table `NORMALIZEDLICENSE`)
+* All properties of the model objects are stored as strings in fields named like the properties within the database table. Field names are case sensitive (see note below for handling this in SQL statements).
+* An additional primary key is defined for each table, named `ID_<TABLENAME>`.
+* For all model elements that belong to some parent in the object hierarchy (i.e. all objects except `ModelRoot`) a foreign key field is added named `PARENT_<TABLENAME>` which contains the unique key of the corresponding parent
+
+==== SQL queries for filtering and transformation
+
+Each Writer configuration (see <<Writers and Reporting>>) includes a section which references SQL select statements that are applied on the database data. The result of the SQL select statements is made accessible for the subsequent processing of the Writer via the dataTable name given in the configuration.
+
+==== Postprocessing of data selected from the database tables
+
+Before the result of the SQL select statement is handed over to the Writer the following postprocessing
+is done:
+
+* a `rowCount` column is added to the result which gives the position of the entry in the result set (starting with 1).
+* Columns named `ID_<TABLENAME>` are replaced with columns named `OBJ_<TABLENAME>`. The fields of those columns are filled with the corresponding original model objects (java objects).
+
+WARNING: The result table column `OBJ_<TABLENAME>` gives access to the native Solicitor data model (java objects), e.g. in the Velocity writer. As this breaks the decoupling done via the SQL database using this feature is explicitly discouraged. It should only be used with high caution and in exceptional situations. The feature might be discontinued in future versions without prior notice.
+
+=== Determining difference to previously stored model
+
+When using the command line option `-d` _Solicitor_ can determine difference information between two different data models (e.g. the difference between the licenses of the current release and a former release.) The difference is calculated on the result of the above described SQL statements:
+
+* First the internal reporting database is created for the current data model and all defined SQL statements are executed
+* Then the internal database is recreated for the "old" data model and all defined SQL statements are executed again
+* Finally for each defined result table the difference between the current result and the "old" result
+is calculated
+
+To correctly correlate corresponding rows of the two different versions of table data it is necessary to define explicit correlation keys for each table in the SQL select statement.
+It is possible to define up to 10 correlation keys named `CORR_KEY_X` with X in the range from 0 to 9. `CORR_KEY_0` has highest priority, `CORR_KEY_9` has lowest priority.
+
+The correlation algorithm will first try to match rows using `CORR_KEY_0`. It will then attempt to correlate unmatched rows using `CORR_KEY_1` e.t.c.. Correlation will stop, when
+
+* all correlations keys `CORR_KEY_0` to `CORR_KEY_9` have been processed OR
+* the required correlation key column does not exist in the SQL select result OR
+* there are no unmatched "new" rows OR
+* there are no unmatched "old" rows
+
+The result of the correlation / difference calculation is stored in the reporting table data structure. For each row the status is accessible if
+
+* The row is "new" (did not exist in the old data)
+* The row is unchanged (no changes in the field values representing the properties of the _Solicitor_ data model)
+* The row is changed (at least one field corresponding to the _Solicitor_ data model changed)
+
+For each field of "changed" or "unchanged" rows the following status is available:
+
+* Field is "changed"
+* Field is "unchanged"
+
+For each field of such rows it is further on possible to access the new and the old field value.
+
+=== Sample SQL statement
+
+The following shows a sample SQL statement showing some join over multiple tables and the use of
+correlations keys.
+
+[source,sql]
+----
+include::../files/allden_normalizedlicenses.sql[]
+----
+
+NOTE: Above example also shows how the case sensitive column names have to be handled within the SQL
+
+NOTE: The handling of reporting groups as included in the above statement (`a."reportingGroups" LIKE '%\#reportingGroup#%'`) is described in <<Evaluation of the Reporting Group in SQL>>.
+
+=== Writers
+
+The above described SQL processing is identical for all Writers. Writers only differ in the
+way how the output document is created based on a template and the reporting table data
+obtained by the SQL transformation.
+
+==== Velocity Writer
+
+The Velocity Writer uses the https://velocity.apache.org/[Apache Velocity Templating Engine]
+to create text based reports. The reporting data tables created by the SQL transformation are
+directly put to the into Velocity Context.
+
+For further information see the
+
+* Velocity Documentation
+* The _Solicitor_ JavaDoc (which also includes details on how to access the diff information for rows and fields of reporting data tables)
+* The samples included in _Solicitor_
+
+NOTE: The writer configuration parameter `includeDeletedRowsInDelta` (see <<Writers and Reporting>>) must only be set to `true` if the velocity template appropriately handles the rendering of deleted data rows.
+
+==== Excel Writer
+
+===== Using Placeholders in Excel Spreadsheets
+Within Excel spreadsheet templates there are two kinds of placeholders / markers possible, which control the processing.
+
+====== Iterator Control
+The templating logic searches within the XLSX workbook for string or formula cells containing the names of the
+reporting data tables as defined in the Writer configuration like e.g.:
+
+* `\#ENGAGEMENT#`
+* `\#LICENSE#`
+
+Whenever such a string is found in a string or formula cell this indicates that this row is a template row. For each entry in the respective resporting data table a copy of this row is created and the attribute replacement will be done with the data from that reporting table. (The pattern `\#...#` will be removed when copying.)
+
+====== Attribute replacement
+Within each row which was copied in the previous step the templating logic searches for the string pattern `$someAttributeName$` where `someAttributeName` corresponds to the column names of the reporting table. Any such occurrence in string or formula cells is replaced with the corresponding data value.
+
+NOTE: Performance hint: Using Hyperlinks in "template rows" might result in degraded performance when Solicitor processes the XLS template. This is
+due to the fact that copying cells that are marked to be hyperlinks might be slow if the XLS file contains a lot of hyperlinks. This performance issue might be avoided if hyperlinks are represented as formulas like `=HYPERLINK("https://www.google.com")` or `=HYPERLINK("$someUrlPlaceholder$")` instead of defining a hyperlink via the "Link" context menu entry of Excel.
+
+===== Optional deletion of rows after template expansion
+After the template has been expanded the ExcelWriter will look for any cells in the Excel-Sheet which contain the text `\_row_to_be_deleted_`. All rows containing such cells will be deleted.
+
+===== Representation of Diff Information
+In case that a difference processing (new vs. old model data) was done this will be represented
+as follows when using the XLS templating:
+
+* For rows that are "new" (so no corresponding old row available) an Excel note indicating that this row is new will be attached to the field that contained the `\#...#` placeholder.
+* Fields in non-new rows that have changed their value will be marked with an Excel note indicating the old value.
+* If the writer configuration sets parameter `includeDeletedRowsInDelta` to `true` (see <<Writers and Reporting>>) then any rows which exist in the old data set but not in the new data set will also be included in the output and will be printed as _strikethrough_ text. Additionally a note will be included in the field that contained the `\#...#` placeholder which indicates that this row was deleted.
+* If it is not possible to correlate/match old and new rows due to undefined correlation keys (see <<Determining difference to previously stored model>> ) then all affected rows will be marked with a note indicating this attached to the field that contained the `\#...#` placeholder.
+
+===== Excel sheet protection against unwanted manual changes
+The Excel Writer supports the activation of Excel built in worksheet protection to prevent unintended manual changes of the
+generated report. Protection is activated by setting the optional parameter `protectionPassword` in the writer configuration (<<Writers and Reporting>>):
+
+* `protectionPassword` undefined / null: Sheet protection disabled.
+* `protectionPassword` set to value `NONE`: Sheets are protected without a password.
+* `protectionPassword` set to value `RANDOM`: Sheets are protected with random password. This password is logged to the application log.
+* `protectionPassword` set to any other non empty / non null value: Sheets are protected using the given value as password.
+
+Cells (or ranges of cells) might be excluded from the locking enforced via protection by removing the "locked" tick mark in the cell format dialogue. (This needs to be done in the XLS template used for reporting.)
+
+==== Generic Excel Writer
+The Generic Excel Writer exists purely for debugging purposes. This writer writes the contents of the `dataTables` defined in the writer configuration to an Excel file. Each `dataTable` will be available in a separate Excel sheet.  To use this writer, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
+[listing]
+  "additionalWriters" : [ {
+    "type" : "genericxls",
+    "templateSource" : "", <1>
+    "target" : "${cfgdir}/output/GenericXLS.xlsx",
+    "description" : "Excel workbook with a separate sheet for each defined dataTable",
+    "dataTables" : {
+        "ENGAGEMENT"  : "classpath:com/devonfw/tools/solicitor/sql/allden_engagements.sql",
+        "APPLICATIONCOMPONENT" : "classpath:com/devonfw/tools/solicitor/sql/allden_applicationcomponents.sql",
+        "LICENSE" : "classpath:com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql",
+        "OSSLICENSES" : "classpath:com/devonfw/tools/solicitor/sql/ossapplicationcomponents.sql",
+        ...
+    }
+  } ]
+
+<1> This is unused and can be left empty.
+
+NOTE: The writer configuration parameter `includeDeletedRowsInDelta` must never be set to `true` for this type of Writer as the rendering logic does not support it.
+
+=== Reporting Groups
+Reporting Groups is an advanced reporting feature which might be used to create reports for defined subsets of the `Applications`  defined in the project configuration. This might be useful if e.g. separate and dedicated attribution documents need to be created for some of the applications which might then be included into each of those applications.
+
+==== Default Behavior
+Without any dedicated configuration each `Application` is assigned to the reporting group `default`. Each defined report (defined in the `writers` or `additionalWriters` section of the configuration) will then be written for the `default` reporting group. The templating mechanism for determining the reports target file includes some special handling so that the reporting group name `default` is not propagated to the final filename. Overall the introduction of the feature "Reporting Groups" (with _Solicitor_ 1.28.0) does not change any report output unless reporting groups are explicitly defined.
+
+==== Defining Reporting Groups and assigning `Applications`
+Reporting groups are implicitly created by assigning `Applications` to them. So in case that an `Application`
+shall be assigned to reporting groups `default` and `web app` then an additional `reportingGroups` node has to be defined within the configuration of the `Application`, see the configuration example in <<Applications>>. Note that in this case it is also required to explicitly include the `default` reporting group if the `Application` shall be assigned to it.
+
+Reporting Group names might only consist of US-ASCII uppercase (A-Z) and lowercase characters (a-z), digits (0-9), hyphens ("-"), underscores ("_") and spaces (" "). The name must start with an alphanumeric character.
+
+==== Enabling Reports/Writers to support Reporting Groups
+Due to compatibility reasons with prior Solicitor configurations it is required to explicitly enable support for reporting groups for each configured writer/report. This is done by setting property `enableReportingGroups` to true in the configuration as shown in the configuration snippet in <<Writers and Reporting>>.
+
+NOTE: All writers/reports which are predefined in the _Solicitor_ base configuration are enabled for reporting groups.
+
+Besides enabling/activating the reporting group feature within the writer configuration it is also required to adopt the SQL statements and target filename pattern to support reporting groups as given in the following.
+
+===== Evaluation of the Reporting Group in SQL
+Reporting groups are used to write reports for a subset of the defined `Applications` or even for single `Applications`. To do so it is normally required to include specific selection criteria into the SQL statements which limit the selected data to only those `Applications` which belong to the reporting group currently processed. To enable this the `Application` entity includes the field `reportingGroups` which stores the list of reporting groups this `Application` is assigned to. The list is stored as concatenated string, where `\#` is used as prefix, suffix and delimiter, which results in `#default#wepp app#` in the above case.
+
+Within the WHERE clause of the SQL statement the following snippet can be used to limit the selection of data to only those `Applications` which belong to the currently processed reporting group (see <<Sample SQL statement>> for the complete sample).
+
+----
+a."reportingGroups" LIKE '%#reportingGroup#%'`
+----
+
+Writers/Reports which are enabled for reporting group processing will replace any occurrence of `\#reportingGroup#` in the SQL with the current value of the reporting group (resulting in `\#default#` and `\#web app#` in the above example). Writers where the reporting group processing is not enabled will replace `\#reportingGroup#` with `\#default#`.
+
+NOTE: All SQL statements which are included in the _Solicitor_ built in configuration are supporting reporting groups.
+
+===== Using Reporting Group Information in Report Filename
+If writing the same report for different reporting groups it is required to control the target filename depending on the reporting group being processed. To support this a set of special placeholders is available for the target property of the writer configuration if the writer is enabled for reporting groups (see also sample in <<Writers and Reporting>>).
+
+
+.Placeholders for reporting group within the target property of the writer configuration
+[width="100%",options="header"]
+|====================
+| Placeholder | Replacement for reporting group `default`  | Replacement for other reporting groups (using `web app` as sample value); spaces in the reporting group name will be repaced by "_")
+| `${reportingGroup}` | _empty String_   | `web_app`
+| `${-reportingGroup}` | _empty String_   | `-web_app`
+| `${_reportingGroup}` | _empty String_   | `_web_app`
+| `${/reportingGroup}` | _empty String_   | `/web_app`
+|====================
+
+These placeholders allow to include the reporting groups name also with leading hyphen, underscore or slash, which will be omitted in case of the "default" reporting group. This enables to preserve the prior naming scheme for the "default" reporting group. It also allows to store the report of non default reporting groups to dedicated subdirectories.
+
+===== Using Reporting Group Information in Report Content
+The reporting group currently being processed is accessible via the property `reportingGroup` of entity `ModelRoot`, see <<ModelRoot>>.
+
+==== Controlling which Reporting Groups to process
+When defining and processing additional reporting groups the execution time of _Solicitor_ increases as well as the number of generated report files. Often it not required or desired to always create reports for all reporting groups. The application property `solicitor.reportinggroups.filterpattern` is used to define a (java) regular expression pattern which must be matched by the name of a reporting group for this reporting group to be processed. The default is
+
+----
+solicitor.reportinggroups.filterpattern=.*
+----
+
+which matches any processing group. In the above sample this might e.g. be changed to
+
+----
+solicitor.reportinggroups.filterpattern=web app
+----
+
+to only generate reports of this reporting group. The property might also be defined on command line (see <<Configuration of Technical Properties>>) to change it for a single execution of _Solicitor_.
+
+==== Configuration Example
+
+The below given excerpt from a project configuration file illustrates the interaction of writer configurations and reporting group definitions of `Applications`.
+
+----
+{
+  .
+  .
+  .
+  "applications" : [ <1>
+    {
+      "name" : "App1",
+      "reportingGroups" : [
+        "deliverableA",
+        "web app"
+      ]
+    },{
+      "name" : "App2",
+      "reportingGroups" : [
+        "default",
+        "deliverableA",
+        "backend"
+      ]
+    },{
+      "name" : "App3"  <2>
+    }
+  ],
+  .
+  .
+  .
+  "additionalWriters" : [ <1> <3>
+    {
+      "target" : "out${/reportingGroup}/report1${-reportingGroup}.txt",
+      "enableReportingGroups" : true
+    },{
+      "target" : "out/report2.txt" <4>
+    }
+  ]
+}
+
+----
+
+<1> parameters which might be required but are not relevant for the sample are omitted here
+<2> no reporting groups defined here
+<3> this sample makes use of the `additionalWriters` section; same applies for `writers`.
+<4> `enableReportingGroups`  not set here
+
+The following table shows the reporting groups and corresponding application assignments resulting from this configuration:
+
+[width="100%",cols="<3,^2,^2,^2,^2"]
+|====================
+|      | default | deliverableA | web app | backend
+|App1  |         |       X      |   X     |
+|App2  |   X     |       X      |         |    X
+|App3  |   X     |              |         |
+|====================
+
+Assuming the setting
+----
+solicitor.reportinggroups.filterpattern=default|deliverableA|backend
+----
+the following reports will be created:
+
+[width="100%",options="header",cols="1,2,1"]
+|====================
+|Reporting Group | Report File | Applications contained in Report
+|default | out/report1.txt | App2, App3
+|default | out/report2.txt | App2, App3
+|deliverableA |out/deliverableA/report1-deliverableA.txt | App1, App2
+|backend |out/backend/report1-backend.txt | App2
+|====================
+
+

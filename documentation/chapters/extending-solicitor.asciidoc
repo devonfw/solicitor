@@ -1,0 +1,114 @@
+[appendix]
+== Extending Solicitor
+`Solicitor` comes with a sample rule data set and sample reporting templates. In general it will
+be required to correct, supplement and extend this data sets and templates. This can be done straightforward
+by creating copies of the appropriate resources (rule data Excel/CSV and template files), adopting them and further on referencing those copies instead of the original resources from the project configuration file.
+
+Even though this approach is possible it will result in hard to maintain configurations,
+especially in the case of multiple projects using `Solicitor` in parallel.
+
+To support such scenarios `Solicitor` provides an easy extension mechanism which allows
+to package all those customized configurations into a single archive and reference it from the
+command line when starting `Solicitor`.
+
+This facilitates configuration management, distribution and deployment of such extensions.
+
+=== Format of the extension file
+The extensions might be provided as JAR file or even as a simple ZIP file. There is only
+one mandatory file which contains (at least metadata) about the extension and which needs
+to be included in this archive _in the root folder_.
+
+[source,properties]
+.application-extension.properties
+----
+include::../files/application-extension.properties[]
+----
+
+This file is included via the standard Spring Boot profile mechanism. Besides containing
+naming and version info on the extension this file might override any
+property values defined within `Solicitor`.
+
+Any other resources (like rule data or templates) which need to be part of the Extension
+can be included in the archive as well - either in the root directory or any subdirectories.
+If the extension is active those resources will be available _on the classpath_ like any
+resources included in the _Solicitor_ jar.
+
+Overriding / redefining the default base configuration within the Extension enables to
+update all rule data and templates without the need to touch the projects configuration
+file.
+
+=== Activating the Extension
+The Extension will be activated by referencing it as follows when starting _Solicitor_:
+
+[listing]
+java -Dloader.path=path/to/the/extension.zip -jar solicitor.jar <any other arguments>
+
+=== Java Extensions
+It is also possible to extend the functionality of _Solicitor_ within an extension by implementing Spring Beans
+which implement certain interfaces. As the resources contained in the extension are included into _Solicitors_  classpath those beans
+might be discovered through the Spring component scan mechanism and thus be activated.
+
+NOTE: The Spring components scanning mechanisms by default searches only in package `com.devonfw.tools.solicitor` (and subpackages). You either need to define the extension classes in these packages or create a specific configuration class in this package which has an
+appropriate `@ComponentScan` annotation which points to your packages.
+
+WARNING: Extending Solicitor via Java is an advanced topic. Only the Interfaces given below should be used. Even those should
+be regarded as unstable and might change without notice. For any details on the interfaces see the _Solicitor_ source code and corresponding Javadoc.
+
+==== Extension Interfaces
+===== `com.devonfw.tools.solicitor.componentinfo.ComponentInfoAdapter`
+A spring bean implementing this interface might provide `ComponentInfo`/`LicenseInfo` data for `ApplicationComponents` identified
+by their packageUrl. (The buildin implementation of this interface is reading such component info from scancode result files
+from the local file system, see <<Experimental Scancode Integration>>.) Alternative implementations might e.g. get this information
+from a corporate server or even a public service available on the internet.
+
+===== `com.devonfw.tools.solicitor.lifecycle.SolicitorLifecycleListener`
+Spring beans implementing this interface will be called at certain points in the _Solicitor_ processing lifecycle. See the Javadoc for details. Implementations should preferably use `com.devonfw.tools.solicitor.lifecycle.AbstractSolicitorLifecycleListener` as base class which contains NOOP functionality for all methods which might be overridden as required.
+
+==== Extending the Solicitor data model
+
+WARNING: Extending the Solicitor data model requires access to _Solicitor_ internal interfaces/classes. These shall be regarded as experimental / unstable and might change without prior notice. The hints given on how to extend the data model serve only as rough guidance.
+
+===== Adding additional properties to the data model
+
+It is possible to extend the _Solicitor_ builtin <<Data Model>> by adding additional properties to the existing entities. This requires at least 4 steps:
+
+* Extending the interface of the appropriate model entity, e.g. `com.devonfw.tools.model.inventory.NormalizedLicense`
+* Extending the implementation class of the appropriate model entity, e.g. `com.devonfw.tools.model.impl.inventory.NormalizedLicenseImpl`
+* Extending the `ModelFactory` implementation class `com.devonfw.tools.model.impl.ModelFactoryImpl` to instantiate the newly created model entity implementation class.
+* Activating the new `ModelFactory` by setting property `solicitor.modelfactory-classname` to its fully qualified class name.
+
+The following shows as an example the extension of the entity `NormalizedLicense` with new property `rating`:
+
+.Extension of Interface `NormalizedLicense`
+[source]
+----
+include::../files\extension_code\AcmeExtendedNormalizedLicense.java[]
+----
+
+.Extension of class `NormalizedLicenseImpl`
+[source]
+----
+include::../files\extension_code\AcmeExtendedNormalizedLicenseImpl.java[]
+----
+
+.Extension of class `ModelFactoryImpl`
+[source]
+----
+include::../files\extension_code\AcmeExtendedModelFactoryImpl.java[]
+----
+
+The ModelFactory will be activated by setting
+[source]
+----
+solicitor.modelfactory-classname=com.acme.compliance.AcmeExtendedModelFactoryImpl
+----
+
+===== Making use of the additional properties
+
+There are different ways to access the newly added properties:
+
+* Manipulate the new properties within a `SolicitorLifecycleListener` (see <<Extension Interfaces>>): This allows full programmatic access to the properties for setting and reading them.
+* Define additional rule sets as referenced in <<Working with Decision Tables>>. These rule sets might make use of the new properties as LHS (conditions) as well as RHS (result). Defining a new rule set consists of
+creating a rule template file, defining the decision table as XLSX, XLS or CSV file and referencing these resources within the "rules" section of the Solicitor configuration file (see <<Business Rules>>).
+* Include the new properties within reports. This might require to extend the SQL statements used for creating the reporting tables (if selects do not use wildcards "*" anyway). The new properties might be used in report templates in the same way as the standard properties of the Solicitor data model.
+

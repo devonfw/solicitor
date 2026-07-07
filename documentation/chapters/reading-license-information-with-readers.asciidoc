@@ -1,0 +1,377 @@
+== Reading License Information with Readers
+Different Readers are available to import raw component / license information for different
+technologies. This chapter describes how to setup the different build / dependency management systems to create the required input and how to configure the corresponding reader.
+
+=== Maven
+
+For the export of the licenses from a maven based project the license-maven-plugin is used, which can directly be called without the need to change anything in the pom.xml.
+
+To generate the input file required for _Solicitor_ the License Plugin needs to be executed with the following command:
+
+----
+mvn org.codehaus.mojo:license-maven-plugin:1.14:aggregate-download-licenses -Dlicense.excludedScopes=test,provided
+----
+
+The generated output file named `licenses.xml` (in the directory specified in the
+plugin config) should look like the following:
+
+----
+include::../files/licenses.xml[]
+----
+
+In _Solicitor_ the data is read with the following reader config:
+
+----
+"readers" : [ {
+  "type" : "maven",
+  "source" : "file:target/generated-resouces/licenses.xml",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+(the above assumes that _Solicitor_ is executed in the maven projects main directory)
+
+=== CSV
+The CSV input is normally manually generated and should look like this:
+
+[source]
+----
+include::../files/csvlicenses.csv[]
+----
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "packageType": "maven"
+} ]
+----
+
+The following 5 columns need to be contained in order (separated with ";"):
+
+* groupId
+* artifactId
+* version
+* license name
+* license URL
+
+Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.:
+
+----
+"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "configuration" : {
+    "charset" : "UTF-8",
+    "artifactId" : "0",
+    "version" : "1",
+    "format" : "Excel",
+    "skipHeaderRecord" : "true",
+    "delimiter" : ";"
+  }
+} ]
+----
+
+The minimum of following 2 configuration settings need to be contained:
+
+* artifactId
+* version
+
+With these settings one can specify the position of the value within the csv file.
+Additional positional settings include:
+
+* groupId
+* license
+* licenseUrl
+
+If a charset needs to be specified, one can use the following option:
+
+* charset (string, specified charset for reader e.g. UTF-8)
+
+Furthermore, one can configure a range of other csv structure options based on the https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html[Apache Commons CSV API]:
+
+* allowDuplicateHeaderNames (boolean)
+* allowMissingColumnNames (boolean)
+* autoFlush (boolean)
+* commentMarker (char)
+* delimiter (string)
+* escape (char)
+* ignoreEmptyLines (boolean)
+* ignoreHeaderCase (boolean)
+* ignoreSurroundingSpaces (boolean)
+* nullString (string)
+* quote (char)
+* recordSeparator (string)
+* skipHeaderRecord (boolean)
+* trailingDelimiter (boolean)
+* trim (boolean)
+
+These configurations may also be used to overwrite options of a https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html#enum-constant-summary[predefined format], which can be set with:
+
+* format (string, predefined format e.g. `Excel`)
+
+IMPORTANT: In case that a component has multiple licenses attached, there needs to be a separate
+line in the csv file for each license.
+
+
+=== NPM
+
+For NPM based projects, the NPM License Checker (https://www.npmjs.com/package/license-checker) plugin can be used.
+
+To install the NPM License Checker the following command needs to be executed.
+
+----
+npm i license-checker -g
+----
+
+To get the licenses, the checker needs to be executed like the following example. We require JSON output here with "--json" and developer dependencies can/should be excluded with "--production".
+
+----
+license-checker --production --json > /path/to/licenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::../files/licensesNpmLicenseChecker.json[]
+
+----
+
+
+Source: https://www.npmjs.com/package/license-checker
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "npm-license-checker",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "STATIC_LINKING"
+} ]
+----
+
+
+=== Yarn Classic (Yarn 1)
+
+To generate the input file required for Solicitor, yarn needs to be executed with the following command within the directory that contains the project's package.json (we require JSON output here):
+
+----
+yarn licenses list --json > /path/to/yarnlicenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::../files/yarnlicenses.json[]
+
+----
+
+Source: https://classic.yarnpkg.com/en/docs/cli/licenses/
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "yarn",
+  "source" : "file:path/to/yarnlicenses.json",
+  "usagePattern" : "STATIC_LINKING"
+} ]
+----
+
+=== Yarn Modern (Yarn 2 and above)
+
+In Yarn Modern the functionality to create a licenses report can be achieved with a separate component: https://github.com/mhassan1/yarn-plugin-licenses
+
+To generate the input file required for Solicitor, the plugin needs to be executed with the following command within the directory that contains the project's package.json (we require JSON output here):
+
+----
+yarn licenses list --production --recursive --json > /path/to/yarnmodernlicenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::../files/yarnmodernlicenses.json[]
+
+----
+
+Source: https://github.com/mhassan1/yarn-plugin-licenses
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "yarn-modern",
+  "source" : "file:path/to/yarnmodernlicenses.json",
+  "usagePattern" : "STATIC_LINKING"
+} ]
+----
+
+
+=== Pip
+
+To generate the input file required for Solicitor, one has to follow two steps:
+
+* Capsulate software with all relevant dependencies/requirements in a virtual environment (venv)
+* Install the pip-licenses plugin within this virtual environment
+
+After that, we execute following command within the virtual environment to extract the input file (we require JSON output here):
+----
+pip-licenses --from=all --format=json --with-urls --with-license-file > piplicenses.json
+----
+
+The export should look like the following
+
+[source]
+----
+include::../files/piplicenses.json[]
+
+----
+
+Source: https://pypi.org/project/pip-licenses/
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "pip",
+  "source" : "file:path/to/piplicenses.json",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+=== OSS Review Toolkit (ORT)
+
+In order to use the https://github.com/oss-review-toolkit/ort#analyzer[analyzer library of ORT], one must first install the software and run it to generate the result file.
+The detailed way on installing ORT can be found https://github.com/oss-review-toolkit/ort#installation[here] and a tutorial on how to run the analyzer library can be found https://github.com/oss-review-toolkit/ort/blob/main/docs/getting-started.md#4-run-the-analyzer-on-mime-types[here].
+
+Usually, the command to run the analyzer and get extract the result file from a project looks like this:
+----
+docker run -v C:\\path\\to\\project/:/project ort --info analyze -f JSON -i /project -o /project/ort/analyzer
+----
+
+Note that this command only works for the installation via https://www.docker.com/[Docker] and that we require JSON as the output format. For other installation methods, you need to adjust the command accordingly.
+
+It might also be necessary to set up a customized configuration for the analyzer. This can be achieved through a configuration file. The default path for that is the .ort/config/ directory below the current user's home directory. We can place a ort.conf file there, in which we can declare various configurations e.g. allowing dynamic versions in npm components via
+----
+analyzer {
+    allowDynamicVersions = true
+}
+----
+
+Further information about the configuration file can be found https://github.com/oss-review-toolkit/ort#configuration[here].
+
+The result file should look like the following
+
+[source]
+----
+include::../files/analyzer-result.json[]
+
+----
+
+Source: https://github.com/oss-review-toolkit/ort#analyzer
+
+In _Solicitor_ the data is read with the following part of the config
+
+----
+"readers" : [ {
+  "type" : "ort",
+  "source" : "file:path/to/analyzer-result.json",
+  "usagePattern" : "DYNAMIC_LINKING"
+} ]
+----
+
+WARNING: The ORT reader currently does not yet fill the attribute `licenseUrl`. Any functionality/reporting based on this attribute will be disfunctional for data read by the ORT reader.
+
+=== Gradle
+
+For Gradle the https://github.com/jk1/Gradle-License-Report[Gradle License Report plugin] can be used to create input data for Solicitor:
+
+Pick the correct version of the https://github.com/jk1/Gradle-License-Report[Gradle License Report plugin] depending on your Gradle version. Add the plugin to the list of plugins in your `build.gradle` file:
+
+Gradle v7+:
+----
+plugins {
+    id 'com.github.jk1.dependency-license-report' version '2.9'
+}
+----
+
+Gradle v1.x to v6.x:
+----
+plugins {
+    id 'com.github.jk1.dependency-license-report' version '1.17'
+}
+----
+
+Add also the following to the `build.gradle` file to configure the plugin:
+----
+import com.github.jk1.license.render.*
+licenseReport {
+    configurations = ['runtimeClasspath', 'releaseRuntimeClasspath']
+
+    renderers = [new JsonReportRenderer('dependencies.json', false)]
+}
+----
+
+Execute the plugin:
+----
+gradle generateLicenseReport
+----
+
+The report is stored at `$projectfolder/build/reports/dependency-license/dependencies.json` and should look like this:
+----
+include::../files/gradleLicenseReport.json[]
+----
+
+In Solicitor the Data is read with the following part of the config
+
+----
+      "readers" : [ {
+        "type" : ""type" : "gradle-license-report-json",",
+        "source" : "file:$/input/dependencies.json",
+        "usagePattern" : "DYNAMIC_LINKING"
+      } ]
+----
+
+=== CycloneDX
+
+The CycloneDX reader can read SBOMs in CycloneDX 1.4 or 1.5 format (https://cyclonedx.org/specification/overview/).
+CDXGEN (https://github.com/CycloneDX/cdxgen) is one tool which can create an SBOM in the required format.
+
+To install CDXGEN, the following command needs to be executed.
+----
+sudo npm install -g @cyclonedx/cdxgen
+----
+To run CDXGEN, change into the project directory containing the build file (i.e. pom.xml, package.json). For npm projects, execute "npm-install" before running CDXGEN to create a package-lock.json.
+
+Set the FETCH_LICENSE environmental variable, to fetch the declared licenses.
+----
+export FETCH_LICENSE=true
+----
+Then execute the following command:
+----
+cdxgen -o sbom.json
+----
+The export should look like the following
+----
+link:files/sbom.json[]
+----
+In Solicitor, the data is read with the following part of the config
+----
+"readers" : [ {
+      "type" : "cyclonedx",
+      "source" : "file:$/input/sbom.json",
+      "usagePattern" : "DYNAMIC_LINKING"
+    } ]
+----
+
+NOTE: Currently, Solicitor only has packageUrlHandlers for maven, npm, R and pip. For all other package types, some functionality (like determining URLs for downloading
+the package archive and corresponding source archives) will be unavailable.
+
