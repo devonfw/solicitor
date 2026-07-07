@@ -226,7 +226,7 @@ A "normalized" license id might be either a SPDX-Id, a `LicenseRef`-Id or a "pse
 
 * `OSS specific` (for license type `OSS-OTHER`) - a nonstandard OSS license which could not be mapped to a SPDX-Id
 * `PublicDomain` (for license type `OSS-OTHER`) - any form of public domain which is not represented by an explicit SPDX-Id
-* `Unchosen` (for license type `IGNORE`) - this is an unchosen alternative license in a multilicensing scenario.  
+* `Unchosen` (for license type `IGNORE`) - this is an unchosen alternative license in a multilicensing scenario.
 * `Ignored` (for license type `IGNORE`) - license will be ignored due to other reasons
 * `NonOSS` (for license type `COMMERCIAL`) - commercial license, not OSS
 
@@ -549,7 +549,7 @@ The writer configuration defines how the processed data will be exported and/or 
 <3> location of the output file
 <4> some textual description
 <5> flag which enables use of reporting groups for this writer (optional, see <<Reporting Groups>>)
-<6> optional flag which enables the inclusion of deleted rows/records in the report if used in delta/diff mode; defaults to `false`; this should only be set to `true` if the Writer and/or used template supports appropriate rendering of such rows (e.g. using strikethrough to clearly mark them as being no longer present); also see <<Writers>> 
+<6> optional flag which enables the inclusion of deleted rows/records in the report if used in delta/diff mode; defaults to `false`; this should only be set to `true` if the Writer and/or used template supports appropriate rendering of such rows (e.g. using strikethrough to clearly mark them as being no longer present); also see <<Writers>>
 <7> optional password which controls protection of the generated report against changes; only supported for <<Excel Writer>>; see <<Excel sheet protection against unwanted manual changes>> for details
 <8> reference to SQL statements used to transform the internal data model to data tables used for reporting
 <9> _placeholder patterns might be used here_
@@ -1290,7 +1290,7 @@ For further information see the
 * The _Solicitor_ JavaDoc (which also includes details on how to access the diff information for rows and fields of reporting data tables)
 * The samples included in _Solicitor_
 
-NOTE: The writer configuration parameter `includeDeletedRowsInDelta` (see <<Writers and Reporting>>) must only be set to `true` if the velocity template appropriately handles the rendering of deleted data rows. 
+NOTE: The writer configuration parameter `includeDeletedRowsInDelta` (see <<Writers and Reporting>>) must only be set to `true` if the velocity template appropriately handles the rendering of deleted data rows.
 
 ==== Excel Writer
 
@@ -1333,7 +1333,7 @@ generated report. Protection is activated by setting the optional parameter `pro
 * `protectionPassword` set to value `RANDOM`: Sheets are protected with random password. This password is logged to the application log.
 * `protectionPassword` set to any other non empty / non null value: Sheets are protected using the given value as password.
 
-Cells (or ranges of cells) might be excluded from the locking enforced via protection by removing the "locked" tick mark in the cell format dialogue. (This needs to be done in the XLS template used for reporting.) 
+Cells (or ranges of cells) might be excluded from the locking enforced via protection by removing the "locked" tick mark in the cell format dialogue. (This needs to be done in the XLS template used for reporting.)
 
 ==== Generic Excel Writer
 The Generic Excel Writer exists purely for debugging purposes. This writer writes the contents of the `dataTables` defined in the writer configuration to an Excel file. Each `dataTable` will be available in a separate Excel sheet.  To use this writer, an `additionalWriter` (see <<Writers and Reporting>> ) needs to be set in the `solicitor.cfg`.  Example:
@@ -1865,7 +1865,7 @@ Using the <<Extended comparison syntax>> it is possible to qualify whether a rul
 
 Due the automatic mapping of scancode based `RawLicenses` to `NormalizedLicenses` (see <<Automatic mapping of `RawLicense` data obtained from Scancode to `NormalizedLicense`>>) such explicit mapping rules are only required for licenses not handled by the automatism.
 
-== Chapter 12: Build-Breaker
+== Build-Breaker
 
 The Velocity template `Statistics.vm` creates a `Statistics.json` file that currently looks like this:
 
@@ -2051,7 +2051,7 @@ Spring beans implementing this interface will be called at certain points in the
 
 ==== Extending the Solicitor data model
 
-WARNING: Extending the Solicitor data model requires access to _Solicitor_ internal interfaces/classes. These shall be regarded as experimental / unstable and might change without prior notice. The hints given on how to extend the data model serve only as rough guidance. 
+WARNING: Extending the Solicitor data model requires access to _Solicitor_ internal interfaces/classes. These shall be regarded as experimental / unstable and might change without prior notice. The hints given on how to extend the data model serve only as rough guidance.
 
 ===== Adding additional properties to the data model
 
@@ -2064,19 +2064,19 @@ It is possible to extend the _Solicitor_ builtin <<Data Model>> by adding additi
 
 The following shows as an example the extension of the entity `NormalizedLicense` with new property `rating`:
 
-.Extension of Interface `NormalizedLicense`  
+.Extension of Interface `NormalizedLicense`
 [source]
 ----
 include::files\extension_code\AcmeExtendedNormalizedLicense.java[]
 ----
 
-.Extension of class `NormalizedLicenseImpl`  
+.Extension of class `NormalizedLicenseImpl`
 [source]
 ----
 include::files\extension_code\AcmeExtendedNormalizedLicenseImpl.java[]
 ----
 
-.Extension of class `ModelFactoryImpl`  
+.Extension of class `ModelFactoryImpl`
 [source]
 ----
 include::files\extension_code\AcmeExtendedModelFactoryImpl.java[]
@@ -2093,7 +2093,7 @@ solicitor.modelfactory-classname=com.acme.compliance.AcmeExtendedModelFactoryImp
 There are different ways to access the newly added properties:
 
 * Manipulate the new properties within a `SolicitorLifecycleListener` (see <<Extension Interfaces>>): This allows full programmatic access to the properties for setting and reading them.
-* Define additional rule sets as referenced in <<Working with Decision Tables>>. These rule sets might make use of the new properties as LHS (conditions) as well as RHS (result). Defining a new rule set consists of 
+* Define additional rule sets as referenced in <<Working with Decision Tables>>. These rule sets might make use of the new properties as LHS (conditions) as well as RHS (result). Defining a new rule set consists of
 creating a rule template file, defining the decision table as XLSX, XLS or CSV file and referencing these resources within the "rules" section of the Solicitor configuration file (see <<Business Rules>>).
 * Include the new properties within reports. This might require to extend the SQL statements used for creating the reporting tables (if selects do not use wildcards "*" anyway). The new properties might be used in report templates in the same way as the standard properties of the Solicitor data model.
 
@@ -2104,7 +2104,7 @@ Changes in 1.50.0::
 Changes in 1.49.0::
 * https://github.com/devonfw/solicitor/issues/360: Allow alignment of groupId, artifactId and version to PackageURL when reading component lists with Readers. See <<Deriving-coordinates,Deriving groupId, ArtifactId and Version from the PackageURL>>.
 * https://github.com/devonfw/solicitor/pull/363: Allow to delete rows in XLS files generated by the ExcelWriter. See <<Optional deletion of rows after template expansion>>.
-* https://github.com/devonfw/solicitor/issues/364: Support XLSX format for decision tables. 
+* https://github.com/devonfw/solicitor/issues/364: Support XLSX format for decision tables.
 
 Changes in 1.48.0::
 * https://github.com/devonfw/solicitor/pull/357: Refactor model import logic.
@@ -2145,9 +2145,9 @@ This is a maintenance release which focuses on reducing technical debt by updati
 ** Updating Spring Boot to version 3.
 ** Updating several other dependencies.
 ** Undo of no longer needed workaround introduced with https://github.com/devonfw/solicitor/pull/311.
-* https://github.com/devonfw/solicitor/pull/335: 
+* https://github.com/devonfw/solicitor/pull/335:
 ** Removed deprecated `npm` and `npm-license-crawler-csv` Reader.
-** Removed deprecated `gradle2` Reader. 
+** Removed deprecated `gradle2` Reader.
 ** Removed logic for deprecated REGEX prefix notation in decision tables.
 ** Removed deprecated `repoType` configuration attribute in Readers.
 ** Removed processing of deprecated 'LicenseAssignmentProject.xls' decision table.
