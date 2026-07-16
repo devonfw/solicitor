@@ -5,7 +5,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.devonfw.tools.solicitor.common.LicenseTextHelper;
 
 /**
- * TODO ohecker This type ...
+ * Extended version of {@link org.apache.velocity.tools.generic.EscapeTool}.
  *
  */
 public class EscapeTool extends org.apache.velocity.tools.generic.EscapeTool {

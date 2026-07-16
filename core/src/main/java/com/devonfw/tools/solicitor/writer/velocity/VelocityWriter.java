@@ -69,7 +69,7 @@ public class VelocityWriter implements Writer {
       context.put(entry.getKey(), entry.getValue());
     }
     context.put("esc", new EscapeTool());
-    context.put("purlhandler", this.packageURLHandler);
+    context.put("purlhandler", new DelegatingStringCapablePackageURLHandler(this.packageURLHandler));
 
     // read the template as a string (including the template as a property
     // when initializing the velocity engine doesn't work anymore with
