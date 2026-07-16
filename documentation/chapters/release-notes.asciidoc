@@ -1,6 +1,7 @@
 [appendix]
 == Release Notes
 Changes in 1.50.0::
+* https://github.com/devonfw/solicitor/pull/367: Split the monolithic asciidoc sources of the user guide into separate files (one per chapter/appendix).
 
 Changes in 1.49.0::
 * https://github.com/devonfw/solicitor/issues/360: Allow alignment of groupId, artifactId and version to PackageURL when reading component lists with Readers. See <<Deriving-coordinates,Deriving groupId, ArtifactId and Version from the PackageURL>>.
