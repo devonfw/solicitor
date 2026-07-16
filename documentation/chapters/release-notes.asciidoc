@@ -1,5 +1,7 @@
 [appendix]
 == Release Notes
+Changes in 1.51.0::
+
 Changes in 1.50.0::
 * https://github.com/devonfw/solicitor/pull/367: Split the monolithic asciidoc sources of the user guide into separate files (one per chapter/appendix).
 * https://github.com/devonfw/solicitor/issues/366: Fixed broken access to PackageURLs in the VelocityWriter based reporting. 
