@@ -167,6 +167,9 @@
             <goals>
               <goal>process-asciidoc</goal>
             </goals>
+            <configuration>
+              <sourceDocumentName>master-solicitor.asciidoc</sourceDocumentName>
+            </configuration>
           </execution>
           <execution>
             <id>output-pdf</id>
@@ -175,6 +178,7 @@
               <goal>process-asciidoc</goal>
             </goals>
             <configuration>
+              <sourceDocumentName>master-solicitor.asciidoc</sourceDocumentName>
               <outputFile>solicitor_userguide.pdf</outputFile>
               <backend>pdf</backend>
               <doctype>book</doctype>
